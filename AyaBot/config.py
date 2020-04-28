@@ -5,10 +5,10 @@ HOST = '127.0.0.1'
 PORT = 8080
 
 #设置超级用户
-SUPERUSERS = {2791352599}
+SUPERUSERS = {1172294279}
 
 #机器人赋名，替代@
-NICKNAME = {'喵内', 'rbq', ''}
+NICKNAME = {'喵内', 'rbq', 'Aya'}
 
 #自定义命令开头
 COMMAND_START = {'', '/', '!', '／', '！'}
