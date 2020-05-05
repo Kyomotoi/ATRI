@@ -8,18 +8,16 @@ import pytz
 from pandas import Timestamp
 
 
-CST_TIMEZONE = 'Asia/Shanghai'
+CST = 'Asia/Shanghai'
 
-
-def beijing_now(freq: Optional[str] = None) -> datetime:
-    now = datetime.now(pytz.timezone(CST_TIMEZONE))
+def get_beijing_time(freq: Optional[str] = None) -> datetime:
+    now = datetime.now(pytz.timezone(CST))
     if freq is not None:
         now = Timestamp(now).round(freq)
     return now
 
-
 def beijing_from_timestamp(timestamp: int) -> datetime:
-    return datetime.fromtimestamp(timestamp, pytz.timezone(CST_TIMEZONE))
+    return datetime.fromtimestamp(timestamp, pytz.timezone(CST))
 
 
 @on_command('阿这', only_to_me=False)
@@ -57,7 +55,3 @@ async def _(session: CommandSession):
         return
     
     await session.send(f'本群目前共有{len(seach_group_member)}人')
-    
-
-
-    
