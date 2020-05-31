@@ -1,4 +1,4 @@
-# Aya Bot
+# Aya 綾
 ---
  CoolQ Bot by Python
 ---

@@ -29,7 +29,7 @@ response_3 = requests.get(url=url_3).json()
 data_3 = json.loads(response_3['data'])
 
 lastUpdateTime = data_1["lastUpdateTime"]
-directory = "D:\code\Aya\AyaBot\plugins\data_yiqing\ "
+directory = "改成数据保存路径，防止防爬"
 
 filename1 = directory + lastUpdateTime.split(' ')[0] + "_data_1.json"
 with open(filename1, "w", encoding="utf-8") as f:
@@ -75,7 +75,7 @@ LIST_FG = """国外数据来源于世卫，故更新会略慢
 """
 
 
-@on_command('yiqing', aliases=['疫情', '疫情情况', 'test'], only_to_me=False)
+@on_command('yiqing', aliases=['疫情', '疫情情况'], only_to_me=False)
 async def yiqing(session: CommandSession):
     country = session.get('country', prompt='你想查哪个国家呢？(例:中国)')
     if country == "中国":
