@@ -4,7 +4,7 @@ from nonebot.default_config import *
 HOST = '127.0.0.1'
 PORT = 8080
 
-#设置超级用户
+#ADMIN
 SUPERUSERS = {1172294279}
 
 #机器人赋名，替代@
