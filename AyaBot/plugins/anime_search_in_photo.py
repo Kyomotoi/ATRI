@@ -4,6 +4,7 @@ import nonebot
 from aiohttp import ClientSession
 from nonebot import on_command, CommandSession
 
+#FROM Joenothing-lst
 
 async def get_bytes(url, headers=None):
     async with ClientSession() as asyncsession:
