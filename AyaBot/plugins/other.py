@@ -1,7 +1,9 @@
 import os
+import jieba
 import random
 import nonebot
 from nonebot import on_command, CommandSession, permission as perm, on_request
+from nonebot import on_natural_language, NLPSession, IntentCommand
 
 
 bot = nonebot.get_bot()
@@ -29,10 +31,6 @@ async def _(session: CommandSession):
 @on_command('掷骰子', aliases=['投骰子'], only_to_me=False)
 async def _(session: CommandSession):
     await session.send(str(random.randint(1,6)))
-
-@on_command('?', aliases=['？', '❓'], only_to_me=False)
-async def _(session: CommandSession):
-    await session.send('?')
 
 @on_command('seach_this_group_p', aliases=['本群总人数', '总人数', '群人数'], only_to_me=False, permission=perm.GROUP)
 async def _(session: CommandSession):
