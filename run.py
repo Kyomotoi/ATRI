@@ -10,4 +10,3 @@ if __name__ == '__main__':
         path.join(path.dirname(__file__), 'AyaBot', 'plugins'),
         'AyaBot.plugins')
     nonebot.run()
-
