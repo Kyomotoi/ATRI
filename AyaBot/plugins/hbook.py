@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import re
 import nonebot
 from aiohttp import ClientSession

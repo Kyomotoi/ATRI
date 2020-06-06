@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import re
 import sys
 sys.path.append('D:\code\Aya\AyaBot\plugins\Module')

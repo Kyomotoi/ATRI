@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from nonebot.default_config import *
 
 #配置监听的 IP 和端口

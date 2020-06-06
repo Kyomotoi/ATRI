@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import nonebot
 from AyaBot import config
 from os import path
