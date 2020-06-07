@@ -6,7 +6,7 @@ HOST = '127.0.0.1'
 PORT = 8080
 
 #ADMIN
-SUPERUSERS = {1172294279}
+SUPERUSERS = {}
 
 #机器人赋名，替代@
 NICKNAME = {'喵内', 'rbq', 'Aya'}

@@ -2,14 +2,15 @@
 import os
 import re
 import sys
-sys.path.append('D:\code\Aya\AyaBot\plugins\Module')
+sys.path.append(r'请改成你机器人的对应目录\Aya\AyaBot\plugins\Module')
 import json
 import requests
 from nonebot import on_command, CommandSession
 import google_translate
 
-API_URL = 'https://api.weatherbit.io/v2.0/current?city={city}'
-API_URL_2 = ',CN&key=1df2eb2951f3470a94cb323bb4647c18'
+API_URL = 'https://api.weatherbit.io/v2.0/current?city='
+API_URL_2 = '&key=1df2eb2951f3470a94cb323bb4647c18'
+API_URL_3 = 'https://www.tianqiapi.com/free/day?appid=36628957&appsecret=WKn4dtVg&city='
 
 
 LIST = """{city} 情况如下:
@@ -54,76 +55,130 @@ LIST_ALL = """{city} 详细情况如下:
 太阳斜角(°): {elev_angle}
 太阳时角(°): {h_angle}"""
 
+LIST_CN = """{city} 今日信息如下:
+更新时间:{time}
+天气情况:{wea}
+空气质量:{air}
+温度:
+    现在温度:{tem}
+    最高温度:{temday}
+    最低温度:{temnight}
+风向:{win}
+风力等级:{winspeed}
+风速:{winmeter}"""
 
-@on_command('weather', aliases=['查天气', '天气', '天气情况'], only_to_me=False)
+
+@on_command('weather', aliases=['天气'], only_to_me=False)
 async def weather(session: CommandSession):
-    city = session.get('city', prompt='请键入你需要查询的城市(例:北京)')
-    re_msg = google_translate.translate(city[:4999], to='en', source='zh-CN')
-    URL = API_URL + re_msg[0] + API_URL_2
-    # print(URL)
-    res = requests.get(URL)
-    res.encoding = 'utf-8'
-    html = res.text
-    wt = json.loads(html)
-    await session.send(LIST.format(
-        city=wt["data"][0]["city_name"],
-        ob_time=wt["data"][0]["ob_time"],
-        description=wt["data"][0]["weather"]["description"],
-        temp=wt["data"][0]["temp"],
-        wind_spd=wt["data"][0]["wind_spd"],
-        wind_cdir=wt["data"][0]["wind_cdir"],
-        clouds=wt["data"][0]["clouds"],
+    cy_ct = session.get('weather', prompt='输入的信息似乎出问题了呢...例:天气 CN 北京 或 天气 JP 东京')
+    ms = cy_ct.split(' ')
+    try:
+        country = ms[0]
+        city = ms[1]
+        re_msg = google_translate.translate(city[:4999], to='en', source='zh-CN')
+        URL = API_URL + re_msg[0] + ',' + country + API_URL_2
+        # print(URL)
+        res = requests.get(URL)
+        res.encoding = 'utf-8'
+        html = res.text
+        wt = json.loads(html)
+        await session.send(LIST.format(
+            city=wt["data"][0]["city_name"],
+            ob_time=wt["data"][0]["ob_time"],
+            description=wt["data"][0]["weather"]["description"],
+            temp=wt["data"][0]["temp"],
+            wind_spd=wt["data"][0]["wind_spd"],
+            wind_cdir=wt["data"][0]["wind_cdir"],
+            clouds=wt["data"][0]["clouds"],
+            )
         )
-    )
+    except:
+        await session.send('搜索似乎出问题了呢...请重试')
 
 @on_command('wtlist', aliases=['天气详细'])
-async def _(session: CommandSession):
-    city = session.get('city', prompt='请键入你需要查询的城市(例:北京)')
-    session.send('正在搜寻...')
-    re_msg = google_translate.translate(city[:4999], to='en', source='zh-CN')
-    URL = API_URL + re_msg[0] + API_URL_2
-    # print(URL)
-    res = requests.get(URL)
-    res.encoding = 'utf-8'
-    html = res.text
-    wt = json.loads(html)
-    await session.send(LIST_ALL.format(
-        rh=wt["data"][0]["rh"],
-        pod=wt["data"][0]["pod"],
-        lon=wt["data"][0]["lon"],
-        pres=wt["data"][0]["pres"],
-        timezone=wt["data"][0]["timezone"],
-        ob_time=wt["data"][0]["ob_time"],
-        clouds=wt["data"][0]["clouds"],
-        solar_rad=wt["data"][0]["solar_rad"],
-        city=wt["data"][0]["city_name"],
-        wind_spd=wt["data"][0]["wind_spd"],
-        last_ob_time=wt["data"][0]["last_ob_time"],
-        wind_cdir_full=wt["data"][0]["wind_cdir_full"],
-        wind_cdir=wt["data"][0]["wind_cdir"],
-        temp=wt["data"][0]["temp"],
-        slp=wt["data"][0]["slp"],
-        vis=wt["data"][0]["vis"],
-        h_angle=wt["data"][0]["h_angle"],
-        sunset=wt["data"][0]["sunset"],
-        dni=wt["data"][0]["dni"],
-        dewpt=wt["data"][0]["dewpt"],
-        snow=wt["data"][0]["snow"],
-        uv=wt["data"][0]["uv"],
-        precip=wt["data"][0]["precip"],
-        wind_dir=wt["data"][0]["wind_dir"],
-        sunrise=wt["data"][0]["sunrise"],
-        ghi=wt["data"][0]["ghi"],
-        dhi=wt["data"][0]["dhi"],
-        aqi=wt["data"][0]["aqi"],
-        lat=wt["data"][0]["lat"],
-        description=wt["data"][0]["weather"]["description"],
-        datetime=wt["data"][0]["datetime"],
-        station=wt["data"][0]["station"],
-        elev_angle=wt["data"][0]["elev_angle"],
-        app_temp=wt["data"][0]["app_temp"],
+async def wtlist(session: CommandSession):
+    cy_ct = session.get('wtlist', prompt='输入的信息似乎出问题了呢...例:天气 CN 北京 或 天气 JP 东京')
+    ms = cy_ct.split(' ')
+    try:
+        country = ms[0]
+        city = ms[1]
+        re_msg = google_translate.translate(city[:4999], to='en', source='zh-CN')
+        URL = API_URL + re_msg[0] + ',' + country + API_URL_2
+        # print(URL)
+        res = requests.get(URL)
+        res.encoding = 'utf-8'
+        html = res.text
+        wt = json.loads(html)
+        await session.send(LIST_ALL.format(
+            rh=wt["data"][0]["rh"],
+            pod=wt["data"][0]["pod"],
+            lon=wt["data"][0]["lon"],
+            pres=wt["data"][0]["pres"],
+            timezone=wt["data"][0]["timezone"],
+            ob_time=wt["data"][0]["ob_time"],
+            clouds=wt["data"][0]["clouds"],
+            solar_rad=wt["data"][0]["solar_rad"],
+            city=wt["data"][0]["city_name"],
+            wind_spd=wt["data"][0]["wind_spd"],
+            last_ob_time=wt["data"][0]["last_ob_time"],
+            wind_cdir_full=wt["data"][0]["wind_cdir_full"],
+            wind_cdir=wt["data"][0]["wind_cdir"],
+            temp=wt["data"][0]["temp"],
+            slp=wt["data"][0]["slp"],
+            vis=wt["data"][0]["vis"],
+            h_angle=wt["data"][0]["h_angle"],
+            sunset=wt["data"][0]["sunset"],
+            dni=wt["data"][0]["dni"],
+            dewpt=wt["data"][0]["dewpt"],
+            snow=wt["data"][0]["snow"],
+            uv=wt["data"][0]["uv"],
+            precip=wt["data"][0]["precip"],
+            wind_dir=wt["data"][0]["wind_dir"],
+            sunrise=wt["data"][0]["sunrise"],
+            ghi=wt["data"][0]["ghi"],
+            dhi=wt["data"][0]["dhi"],
+            aqi=wt["data"][0]["aqi"],
+            lat=wt["data"][0]["lat"],
+            description=wt["data"][0]["weather"]["description"],
+            datetime=wt["data"][0]["datetime"],
+            station=wt["data"][0]["station"],
+            elev_angle=wt["data"][0]["elev_angle"],
+            app_temp=wt["data"][0]["app_temp"],
+            )
         )
-    )
+    except:
+        await session.send('搜索似乎出问题了呢...请重试')
+
+
+@on_command('weathercn', aliases=['国内天气详细'], only_to_me=False)
+async def weathercn(session: CommandSession):
+    city = session.get('weathercn', prompt='输入格式似乎有问题呢...例:国内天气详细 北京')
+    ms = city.split(' ')
+    try:
+        msg = ms[0]
+        print(msg)
+        res = API_URL_3 + msg
+        print(res)
+        res1 = requests.get(res)
+        res1.encoding = 'utf-8'
+        html = res1.text
+        wt = json.loads(html)
+        await session.send(LIST_CN.format(
+            city=wt["city"],
+            time=wt["update_time"],
+            wea=wt["wea"],
+            tem=wt["tem"],
+            temday=wt["tem_day"],
+            temnight=wt["tem_night"],
+            win=wt["win"],
+            winspeed=wt["win_speed"],
+            winmeter=wt["win_meter"],
+            air=wt["air"]
+            )
+        )
+    except:
+        await session.send('获取数据时出问题，请尝试发送:天气')
+        return
 
 
 
@@ -132,7 +187,31 @@ async def _(session: CommandSession):
     stripped_arg = session.current_arg_text.strip()
     if session.is_first_run:
         if stripped_arg:
-            session.state['city'] = stripped_arg
+            session.state['weather'] = stripped_arg
+        return
+
+    if not stripped_arg:
+        session.pause('要查询的城市不能为空，请重新输入')
+    session.state[session.current_key] = stripped_arg
+
+@wtlist.args_parser
+async def _(session: CommandSession):
+    stripped_arg = session.current_arg_text.strip()
+    if session.is_first_run:
+        if stripped_arg:
+            session.state['wtlist'] = stripped_arg
+        return
+
+    if not stripped_arg:
+        session.pause('要查询的城市不能为空，请重新输入')
+    session.state[session.current_key] = stripped_arg
+
+@weathercn.args_parser
+async def _(session: CommandSession):
+    stripped_arg = session.current_arg_text.strip()
+    if session.is_first_run:
+        if stripped_arg:
+            session.state['weathercn'] = stripped_arg
         return
 
     if not stripped_arg:
