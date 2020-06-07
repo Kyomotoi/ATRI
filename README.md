@@ -19,7 +19,7 @@
     以图搜番
     在线翻译
     
-详细用法请[看这](https://lolihub.icu/#/robot/Changlog)
+详细用法请[看这](https://lolihub.icu/#/robot/user)
 
 ---
 
