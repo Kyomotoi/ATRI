@@ -2,7 +2,7 @@
 import os
 import re
 import sys
-sys.path.append('D:\\code\\Aya\\AyaBot\\plugins\\Module')
+sys.path.append(r'请改成你机器人的对应目录\Aya\AyaBot\plugins\Module')
 import json
 import requests
 from nonebot import on_command, CommandSession
