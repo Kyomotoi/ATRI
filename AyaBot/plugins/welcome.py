@@ -4,7 +4,7 @@ from aiocqhttp.exceptions import ActionFailed
 
 bot=nonebot.get_bot()
 request_flag=False
-master = bot.config.SUPERUSERS
+master = bot.config.SUPERUSERS[0]
 
 #FROM Joenothing-lst
 
