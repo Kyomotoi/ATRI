@@ -13,7 +13,7 @@ async def post_bytes(url, headers=None,data=None):
 
 
 hbook_switch = True
-@on_command('switch', aliases=['开启', '关闭'], only_to_me=False)
+@on_command('hbook_switch', aliases=['开启', '关闭'], only_to_me=False)
 async def _(session: CommandSession):
     if session.ctx['user_id'] in session.bot.config.SUPERUSERS:
         command = session.ctx['raw_message'].split(' ', 1)

@@ -2,7 +2,7 @@
 import re
 import json
 import sys
-sys.path.append(r'请改成你机器人的对应目录\Aya\AyaBot\plugins\Module')
+sys.path.append('D:\\code\\Aya\\AyaBot\\plugins\\Module')
 import demjson
 import requests
 from pprint import pformat, pprint

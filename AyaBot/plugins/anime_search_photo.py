@@ -54,6 +54,7 @@ async def _(session: CommandSession):
     img = re.findall(p, msg)
     if img:
         URL = f'https://trace.moe/api/search?url={img[0]}'
+        print(URL)
         req = await get_bytes(URL)
         if req:
             data = json.loads(req.decode())
