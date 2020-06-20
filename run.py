@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import nonebot
 from AyaBot import config
+from AyaBot.plugins import module
 from os import path
 
 

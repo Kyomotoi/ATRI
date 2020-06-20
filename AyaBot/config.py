@@ -5,7 +5,7 @@ from nonebot.default_config import *
 HOST = '127.0.0.1'
 PORT = 8080
 
-#ADMIN
+#咱的主人(QQ号)
 SUPERUSERS = {1172294279}
 
 #机器人赋名，替代@
@@ -13,3 +13,6 @@ NICKNAME = {'喵内', 'rbq', 'Aya'}
 
 #自定义命令开头
 COMMAND_START = {'', '/', '!', '／', '！'}
+
+#推送屏蔽群名单
+bangroup = []

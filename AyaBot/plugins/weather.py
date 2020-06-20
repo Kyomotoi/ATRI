@@ -1,12 +1,16 @@
 # -*- coding:utf-8 -*-
 import os
 import re
+<<<<<<< HEAD
+=======
 import sys
-sys.path.append('D:\\code\\Aya\\AyaBot\\plugins\\Module')
+sys.path.append(r'请改成你机器人的对应目录\Aya\AyaBot\plugins\Module')
+>>>>>>> af9b3ef683d28a2e4dd3bbc23cc1b2c455fc4fe2
 import json
 import requests
+from os import path
 from nonebot import on_command, CommandSession
-import google_translate
+from AyaBot.plugins.module import google_translate
 
 API_URL = 'https://api.weatherbit.io/v2.0/current?city='
 API_URL_2 = '&key=1df2eb2951f3470a94cb323bb4647c18'

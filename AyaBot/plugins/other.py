@@ -9,7 +9,7 @@ from nonebot import on_natural_language, NLPSession, IntentCommand
 
 bot = nonebot.get_bot()
 master = bot.config.SUPERUSERS
-bangroup = [] #推送屏蔽群名单
+bangroup = bot.config.bangroup
 
 
 @on_command('抽签', only_to_me=False)
@@ -19,6 +19,14 @@ async def _(session: CommandSession):
 @on_command('掷骰子', aliases=['投骰子'], only_to_me=False)
 async def _(session: CommandSession):
     await session.send(str(random.randint(1,6)))
+
+@on_command('关于', aliases=['关于', '关于机器人'], only_to_me=False)
+async def _(session: CommandSession):
+    await session.send('阿？想了解咱？\n写出咱的是Kyomotoi~\n他的主页:https://lolihub.icu\n项目地址:https://github.com/Kyomotoi/Aya')
+
+@on_command('帮助', aliases=['帮助', '食用方法'], only_to_me=False)
+async def _(session: CommandSession):
+    await session.send('嗯...不会用咱的话，看这吧！https://lolihub.icu/#/robot/user')
 
 @on_command('seach_this_group_p', aliases=['本群总人数', '总人数', '群人数'], only_to_me=False, permission=perm.GROUP)
 async def _(session: CommandSession):
@@ -42,7 +50,7 @@ async def send_all_group(session: CommandSession):
         for group in group_list:
             if group['group_id'] not in bangroup:
                 try:
-                    await bot.send_group_msg( group_id=group['group_id'], message='ADMIN推送:\n' + msg)
+                    await bot.send_group_msg( group_id=group['group_id'], message=msg)
                 except:
                     pass
         await session.send('推送完成')
