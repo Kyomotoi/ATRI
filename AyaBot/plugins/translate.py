@@ -1,10 +1,5 @@
 # -*- coding:utf-8 -*-
 import re
-<<<<<<< HEAD
-=======
-import sys
-sys.path.append(r'请改成你机器人的对应目录\Aya\AyaBot\plugins\Module')
->>>>>>> af9b3ef683d28a2e4dd3bbc23cc1b2c455fc4fe2
 import demjson
 import requests
 from os import path
