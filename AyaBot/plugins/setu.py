@@ -7,6 +7,7 @@ import requests
 from aiohttp import ClientSession
 from nonebot import on_command, CommandSession
 
+bot = nonebot.get_bot()
 
 async def post_bytes(url, headers=None,data=None):
     async with ClientSession() as asyncsession:
@@ -62,8 +63,9 @@ async def _(session: CommandSession):
             await session.send(f'[CQ:image,file={pt}]')
         if r == '2':
             url = 'https://api.lolicon.app/setu/'
+            apikey = bot.config.LOLICONAPI
             values = {
-                "apikey": "574300555ee56eb2be5e03",
+                "apikey": apikey,
                 "r18": "0",
                 "num": "1"
              }
@@ -78,7 +80,7 @@ async def _(session: CommandSession):
         # if r == '2':
         #     URL = 'https://danbooru.donmai.us/post.json'
         #     values = {
-        #         "api_key": "UoTNRNeta73tqqdGVvsU9mmH"
+        #         "api_key": ""
         #     }
         #     response = requests.get(URL, params=values)
         #     html = response.text
@@ -89,7 +91,7 @@ async def _(session: CommandSession):
         # if r == '3':
         #     URL = 'https://yande.re/post.json'
         #     values = {
-        #         "api_key": "zgBbal8sZVuRYp3UNX5Frg"
+        #         "api_key": ""
         #     }
         #     response = requests.get(URL, params=values)
         #     html = response.text
