@@ -1,1 +1,6 @@
-待更新
+opencv3>=4.0.0.21
+nonebot>=1.6.0
+aiohttp>=2.3.10
+aiocqhttp>=1.2.5
+demjson>=2.2.4
+requests>=2.23.0
