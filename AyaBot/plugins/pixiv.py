@@ -6,7 +6,7 @@ from nonebot import on_command, CommandSession
 
 @on_command('pixivsearch', aliases=['p站搜索'], only_to_me=False)
 async def pixivsearch(session: CommandSession):
-    gets = session.get('gets', pormpt='请输入需要查询的pid码')
+    gets = session.get('gets', prompt='请输入需要查询的pid码')
     try:
         URL = 'https://api.imjad.cn/pixiv/v1/?type=illust&id=' + gets
         print(URL)
@@ -17,10 +17,11 @@ async def pixivsearch(session: CommandSession):
         title = sr["response"][0]["title"]
         width = sr["response"][0]["width"]
         height = sr["response"][0]["height"]
+        tags = sr["response"][0]["tags"]
         userid = sr["response"][0]["user"]["id"]
         account = sr["response"][0]["user"]["account"]
         name = sr["response"][0]["user"]["name"]
-        await session.send(f'搜索结果如下:\nPid:{i}\nTitle:{title}\n宽高:{width},{height}\nTags:{tags}\n作者id:{userid}\n账号名称:{account}\n名称:{name}')
+        await session.send(f'搜索结果如下:\nPid:{i}\nTitle:{title}\n宽高:{width}x{height}\nTags:{tags}\n作者id:{userid}\n账号名称:{account}\n名称:{name}')
     except:
         await session.send('连接似乎失败了呢...请稍后尝试')
    
