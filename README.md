@@ -1,5 +1,7 @@
 # Aya 綾
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/06a32769a78248109e94a4cfacf38719)](https://app.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&utm_medium=referral&utm_content=Kyomotoi/Aya&utm_campaign=Badge_Grade_Dashboard)
+
  CoolQ Bot by Python
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b1a014b7de964842a4236a6fe5452a02)](https://www.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kyomotoi/Aya&amp;utm_campaign=Badge_Grade)
 ---
