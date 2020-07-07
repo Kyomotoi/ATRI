@@ -17,7 +17,7 @@ async def post_bytes(url, headers=None,data=None):
 
 
 a = '1'
-b = '2'
+b = '1'
 c = '3'
 
 hphoto_switch = True
@@ -51,32 +51,23 @@ async def _(session: CommandSession):
 @on_command('hphoto', aliases=['涩图', '涩图来！', '涩图来', '图来', '开冲', '来点好康的', '来丶好康的', '车来'], only_to_me=False)
 async def _(session: CommandSession):
     if hphoto_switch:
-        r = random.choice([a, b])
-        print(r)
-        if r == '1':
-            URL = 'https://konachan.com/post.json'
-            response = requests.request("GET", URL)
-            html = response.text
-            hp = json.loads(html)
-            re = random.randint(0,20)
-            pt = hp[re]["jpeg_url"]
-            await session.send(f'[CQ:image,file={pt}]')
-        if r == '2':
-            url = 'https://api.lolicon.app/setu/'
-            apikey = bot.config.LOLICONAPI
-            values = {
-                "apikey": apikey,
-                "r18": "0",
-                "num": "1"
-             }
-            response = requests.get(url, params=values)
-            html = response.text
-            se = json.loads(html)
-            # print(se)
-            title=se["data"][0]["title"]
-            pid=se["data"][0]["pid"]
-            setu=se["data"][0]["url"]
-            await session.send(f'Title: {title}\nPid: {pid}\n[CQ:image,file={setu}]')
+        
+        url = 'https://api.lolicon.app/setu/'
+        apikey = bot.config.LOLICONAPI
+        values = {
+            "apikey": apikey,
+            "r18": "0",
+            "num": "1"
+         }
+        response = requests.get(url, params=values)
+        html = response.text
+        se = json.loads(html)
+        # print(se)
+        title=se["data"][0]["title"]
+        pid=se["data"][0]["pid"]
+        setu=se["data"][0]["url"]
+        await session.send(f'Title: {title}\nPid: {pid}\n[CQ:image,file={setu}]')
+        
         # if r == '2':
         #     URL = 'https://danbooru.donmai.us/post.json'
         #     values = {
