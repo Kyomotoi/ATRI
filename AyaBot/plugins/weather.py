@@ -1,9 +1,6 @@
 # -*- coding:utf-8 -*-
-import os
-import re
 import json
 import requests
-from os import path
 from nonebot import on_command, CommandSession
 from AyaBot.plugins.module import google_translate
 
