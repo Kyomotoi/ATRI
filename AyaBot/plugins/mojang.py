@@ -29,7 +29,7 @@ async def _(session: CommandSession):
 
     server = MinecraftServer.lookup(ip)
     status = server.status()
-    await session.finish(f'IP:{ip}\nPlayers: {0}\nms: {1}'.format(status.players.online, status.latency))
+    await session.send(f'IP:{ip}\nPlayers: {0}\nms: {1}'.format(status.players.online, status.latency))
 
 
 @on_command('check_mc_id', aliases=['mc正版查询', 'MC正版查询'], only_to_me=False)
