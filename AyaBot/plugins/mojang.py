@@ -1,6 +1,4 @@
 import json
-import base64
-import nonebot
 import requests
 from mcstatus import MinecraftServer
 from nonebot import on_command, CommandSession
