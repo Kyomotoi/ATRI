@@ -24,6 +24,10 @@
     以图搜番
     在线翻译
     涩图
+    P站搜图
+    Bilibili视频信息检索
+    mc正版验证
+    mc服务器状态查询
     
 详细用法请[看这](https://lolihub.icu/#/robot/user)
 
