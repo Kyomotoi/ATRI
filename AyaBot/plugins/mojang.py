@@ -12,16 +12,16 @@ async def _(session: CommandSession):
 
     if ip == '南外手艺':
         ip = str('mc.nflsedition.com:26164')
-
+        
     elif ip == 'hypixel':
         ip = str('mc.hypixel.net')
         
     elif ip == 'shotbow':
         ip = str('us.shotbow.net')
-
+        
     elif ip == 'potterworld':
         ip = str('potterworldmc.com')
-    
+        
     else:
         pass
 
