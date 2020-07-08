@@ -42,5 +42,6 @@ async def send_all_group(session: CommandSession):
                 try:
                     await bot.send_group_msg( group_id=group['group_id'], message=msg)
                 except:
+                    print('error')
                     pass
         await session.send('推送完成')
