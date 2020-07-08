@@ -89,6 +89,7 @@ async def weather(session: CommandSession):
             )
         )
     except:
+        print('error')
         await session.send('搜索似乎出问题了呢...请重试')
 
 @on_command('wtlist', aliases=['天气详细'])
