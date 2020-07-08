@@ -7,7 +7,7 @@ import hashlib
 from AyaBot.plugins import *
 from random import randint
 from urllib.parse import urlencode
-from nonebot.helpers import context_id, render_expression
+from nonebot.helpers import render_expression
 from nonebot import on_command, CommandSession, on_natural_language, NLPSession, IntentCommand
 
 bot = nonebot.get_bot()
