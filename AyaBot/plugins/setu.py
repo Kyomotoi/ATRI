@@ -44,12 +44,12 @@ async def _(session: CommandSession):
         await session.send('完成')
     else:
         await session.send('恁哪位?')
-            
+
 
 @on_command('hphoto', aliases=['涩图', '涩图来！', '涩图来', '图来', '开冲', '来点好康的', '来丶好康的', '车来'], only_to_me=False)
 async def _(session: CommandSession):
     if hphoto_switch:
-        
+
         url = 'https://api.lolicon.app/setu/'
         apikey = bot.config.LOLICONAPI
         values = {
