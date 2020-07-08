@@ -66,7 +66,7 @@ async def bot_request(session: RequestSession):
                         print(e.retcode)
 
                     await session.bot.send_private_msg(self_id = session.self_id, user_id = mt, message='吾辈遵旨！')
-                    
+
                     await session.bot.send_private_msg(self_id = session.self_id, user_id = u, message='你的请求已被吾辈的主人同意！')
 
                 elif wait == '否':
