@@ -1,5 +1,4 @@
 # -*- coding:utf-8 -*-
-import json
 import asyncio
 import requests
 from typing import Any
