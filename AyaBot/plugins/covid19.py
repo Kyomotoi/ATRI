@@ -62,6 +62,7 @@ async def covid19(session: CommandSession):
             )
         )
     except:
+        print('error')
         await session.send('搜索出问题了呢，重新试试?')
 
 @covid19.args_parser
