@@ -1,5 +1,4 @@
 # -*- coding:utf-8 -*-
-import random
 import nonebot
 from nonebot import on_command, CommandSession, permission as perm
 
