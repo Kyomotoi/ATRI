@@ -55,4 +55,5 @@ async def check_mc_id(session: CommandSession):
             await session.send(f'{player}可能为非正版玩家，无法查询到其信息')
 
     except:
+        print('error')
         await session.send('mojang似乎炸了...等一会吧')
