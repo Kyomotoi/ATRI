@@ -1,7 +1,6 @@
 import nonebot
-from nonebot import on_command, on_natural_language, on_notice
+from nonebot import on_command, on_notice
 from nonebot import CommandSession
-from nonebot import session
 from nonebot.notice_request import NoticeSession, RequestSession
 from nonebot.plugin import on_request
 from aiocqhttp.exceptions import ActionFailed
@@ -46,7 +45,7 @@ async def bot_request(session: RequestSession):
     print(mt)
 
     if session.event.sub_type == 'invite':
-        
+
         if welcome_switch:
 
             await session.bot.send_private_msg(self_id = session.self_id, user_id = u, message='你的请求吾辈已经告诉主人，请等待咱主人同意。\n作者联系方式：\nhttps://lolihub.icu/#/about')
