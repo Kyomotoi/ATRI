@@ -28,6 +28,7 @@ async def pixivsearch(session: CommandSession):
         await session.send(f'搜索结果如下:\nPid: {i}\nTitle: {title}\n宽高: {width}x{height}\nTags: {tags}\n账号名称: {account}\n名称: {name}\nLink: {user_link}\n[CQ:image,file={img}]')
     
     except:
+        print('error')
         await session.send('连接似乎失败了呢...请稍后尝试')
    
 @pixivsearch.args_parser
