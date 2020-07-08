@@ -1,10 +1,7 @@
 # -*- coding:utf-8 -*-
-import os
-import jieba
 import random
 import nonebot
-from nonebot import on_command, CommandSession, permission as perm, on_request
-from nonebot import on_natural_language, NLPSession, IntentCommand
+from nonebot import on_command, CommandSession, permission as perm
 
 
 bot = nonebot.get_bot()
@@ -32,7 +29,7 @@ async def _(session: CommandSession):
 async def _(session: CommandSession):
     try:
         seach_group_member = await session.bot.get_group_member_list(
-            group_id=session.ctx['group_id']
+            group_id=session.event.group_id
         )
     except:
         await session.send('获取数据时出问题，请重试')
@@ -42,7 +39,7 @@ async def _(session: CommandSession):
 
 @on_command('send_all_group', aliases=['公告', '群发', '推送'], only_to_me=False)
 async def send_all_group(session: CommandSession):
-    if session.ctx['user_id'] in master:
+    if session.event.user_id in master:
         msg=session.current_arg.strip()
         if not msg:
             msg = session.get('message', prompt='请键入内容')
