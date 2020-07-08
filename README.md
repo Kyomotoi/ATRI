@@ -32,7 +32,7 @@
 详细用法请[看这](https://lolihub.icu/#/robot/user)
 
 ### 安装
-具体操作请[看这](https://lolihub.icu/#/robot/install
+具体操作请[看这](https://lolihub.icu/#/robot/install)
 
 ### 关于开源
 ![](https://www.gnu.org/graphics/gplv3-88x31.png)
