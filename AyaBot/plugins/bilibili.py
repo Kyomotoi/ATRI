@@ -39,10 +39,9 @@ def enc(x):
 
 @on_command('bilibili_search_vd', aliases=['b站视频搜索', '批站视频搜索', 'B站视频搜索'], only_to_me=False)
 async def bilibili_search_vd(session: CommandSession):
-	
+
 	bi = session.current_arg.strip()
 	if not bi:
-
 		bi = session.get('bi', prompt='请输入bv号或av号')
 
 	str_av = 'av'
