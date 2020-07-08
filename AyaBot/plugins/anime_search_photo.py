@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 import re
 import json
-import nonebot
 from aiohttp import ClientSession
 from nonebot import on_command, CommandSession
 
