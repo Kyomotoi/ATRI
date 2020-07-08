@@ -44,6 +44,6 @@
 
 
 ### 其它
-Blog: http://lolihub.icu
+Blog: <http://lolihub.icu>
 
 我会将更新动态具体写在我的blog
