@@ -9,14 +9,6 @@ master = bot.config.SUPERUSERS
 bangroup = bot.config.bangroup
 
 
-@on_command('抽签', only_to_me=False)
-async def _(session: CommandSession):
-    await session.send(str(random.choice(['大凶', '小凶', '凶', '吉', '小吉', '中吉', '大吉'])))
-
-@on_command('掷骰子', aliases=['投骰子'], only_to_me=False)
-async def _(session: CommandSession):
-    await session.send(str(random.randint(1,6)))
-
 @on_command('关于', aliases=['关于', '关于机器人'], only_to_me=False)
 async def _(session: CommandSession):
     await session.send('阿？想了解咱？\n写出咱的是Kyomotoi~\n他的主页:https://lolihub.icu\n项目地址:https://github.com/Kyomotoi/Aya')
