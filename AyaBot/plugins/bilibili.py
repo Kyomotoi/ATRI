@@ -1,7 +1,5 @@
-import re
 import json
 import requests
-import nonebot
 from nonebot import on_command, CommandSession
 
 
@@ -44,7 +42,8 @@ async def bilibili_search_vd(session: CommandSession):
 	
 	bi = session.current_arg.strip()
 	if not bi:
-	    bi = session.get('bi', prompt='请输入bv号或av号')
+
+		bi = session.get('bi', prompt='请输入bv号或av号')
 
 	str_av = 'av'
 	str_bv = 'BV'
