@@ -8,15 +8,15 @@ Blog: lolihub.icu
 ==================================================="""
 )
 print(COPYRIGHT)
-time.sleep(0)
+time.sleep(2)
 
 
 from AyaBot import config
-time.sleep(0)
+time.sleep(2)
 print("开始执行主程序...RCnb!")
 
 
-time.sleep(0)
+time.sleep(2)
 from os import path
 from AyaBot.plugins import module
 
