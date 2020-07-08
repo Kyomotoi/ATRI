@@ -52,28 +52,6 @@ def mr(q, TKK):
     return (str(a) + "." + str(a ^ b))
 
 
-"""
-def Sr(a, TKK):
-    a = ''.join(a['a']['b']['q'])
-    return mr(a, TKK)
-d = {
-    'a':{
-        'a': ['q'],
-        'b': {
-            'q': ['me']
-        },
-        'c': 1,
-        'g': 1
-    },
-    'b': 1,
-    'c': None,
-    'j': False,
-}
-TKK = '426151.3141811846'
-tk = Sr(d, TKK)
-print(tk)
-"""
-
 session = requests.session()
 
 
