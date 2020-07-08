@@ -24,6 +24,7 @@ async def _(session: CommandSession):
             group_id=session.event.group_id
         )
     except:
+        print('error')
         await session.send('获取数据时出问题，请重试')
         return
     
