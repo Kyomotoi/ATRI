@@ -5,7 +5,7 @@ from AyaBot.plugins.module import google_translate
 #FROM Joenothing-lst
 
 
-@on_command('ja_to_zh', aliases=('日语翻译',), only_to_me=False)         
+@on_command('ja_to_zh', aliases=['日语翻译'], only_to_me=False)
 async def _(session: CommandSession):
     if ' ' in session.ctx['raw_message']:
         msg=session.ctx['raw_message'][5:]
@@ -13,7 +13,7 @@ async def _(session: CommandSession):
         if re_msg[0]!='' and re_msg[0]!=msg:
             await session.send(re_msg[0])
 
-@on_command('ja_to_en', aliases=('英语翻译',), only_to_me=False)
+@on_command('ja_to_en', aliases=['英语翻译'], only_to_me=False)
 async def _(session: CommandSession):
     if ' ' in session.ctx['raw_message']:
         msg=session.ctx['raw_message'][5:]
@@ -21,7 +21,7 @@ async def _(session: CommandSession):
         if re_msg[0]!='':
             await session.send(re_msg[0])
 
-@on_command('zh_to_ja', aliases=('翻译日语',), only_to_me=False)
+@on_command('zh_to_ja', aliases=['翻译日语'], only_to_me=False)
 async def _(session: CommandSession):
     if ' ' in session.ctx['raw_message']:
         msg=session.ctx['raw_message'][5:]
@@ -29,7 +29,7 @@ async def _(session: CommandSession):
         if re_msg[0]!='':
             await session.send(re_msg[0])
 
-@on_command('zh_to_en', aliases=('翻译英语',), only_to_me=False)
+@on_command('zh_to_en', aliases=['翻译英语'], only_to_me=False)
 async def _(session: CommandSession):
     if ' ' in session.ctx['raw_message']:
         msg=session.ctx['raw_message'][5:]
