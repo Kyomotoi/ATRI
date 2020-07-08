@@ -1,7 +1,5 @@
 import re
 import json
-import random
-import urllib
 import nonebot
 import requests
 from aiohttp import ClientSession
