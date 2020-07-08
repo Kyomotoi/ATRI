@@ -1,5 +1,4 @@
 import json
-import nonebot
 import requests
 from nonebot import on_command, CommandSession
 

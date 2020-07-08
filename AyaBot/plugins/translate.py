@@ -1,10 +1,4 @@
 # -*- coding:utf-8 -*-
-import re
-import demjson
-import requests
-from os import path
-from pprint import pformat, pprint
-from urllib.parse import urlencode
 from nonebot import on_command, CommandSession
 from AyaBot.plugins.module import google_translate
 
