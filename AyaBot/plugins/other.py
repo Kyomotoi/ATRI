@@ -4,7 +4,6 @@ from nonebot import on_command, CommandSession, permission as perm
 
 
 bot = nonebot.get_bot()
-master = bot.config.SUPERUSERS
 
 
 @on_command('关于', aliases=['关于', '关于机器人'], only_to_me=False)
