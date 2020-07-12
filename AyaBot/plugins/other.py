@@ -28,19 +28,3 @@ async def _(session: CommandSession):
         return
     
     await session.send(f'本群目前共有{len(seach_group_member)}人')
-
-@on_command('send_all_group', aliases=['公告', '群发', '推送'], only_to_me=False)
-async def send_all_group(session: CommandSession):
-    if session.event.user_id in master:
-        msg=session.current_arg.strip()
-        if not msg:
-            msg = session.get('message', prompt='请键入内容')
-        group_list = await session.bot.get_group_list()
-        for group in group_list:
-            if group['group_id'] not in bangroup:
-                try:
-                    await bot.send_group_msg( group_id=group['group_id'], message=msg)
-                except:
-                    print('error')
-                    pass
-        await session.send('推送完成')
