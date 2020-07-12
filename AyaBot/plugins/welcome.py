@@ -45,39 +45,23 @@ async def bot_request(session: RequestSession):
     print(mt)
 
     if session.event.sub_type == 'invite':
-
+        
         if welcome_switch:
 
-            await session.bot.send_private_msg(self_id = session.self_id, user_id = u, message='你的请求吾辈已经告诉主人，请等待咱主人同意。\n作者联系方式：\nhttps://lolihub.icu/#/about')
+            await session.bot.send_private_msg(self_id = session.self_id, user_id = u, message='嗯哼？想邀请吾辈入群嘛，既然这样，那吾辈来了呐。\n作者联系方式：\nhttps://lolihub.icu/#/about')
 
-            await session.bot.send_private_msg(self_id = session.self_id, user_id = mt, message=f'吾辈收到一个新邀请:\n裙: {g}\n邀请人: {u}\n是否同意(是 or 否)')
+            await session.bot.send_private_msg(self_id = session.self_id, user_id = mt, message=f'吾辈收到一个新邀请:\n裙: {g}\n邀请人: {u}')
 
-            @on_command('taowa', aliases=['是', '否'], only_to_me=False)
-            async def _(session: CommandSession):
-                waiting = session.event.raw_message.split(' ', 1)
-                wait = waiting[0]
-
-                if wait == '是':
-                    try:
-                        @on_request('group')
-                        async def _(session: RequestSession):
-                            await session.approve()
-                    except ActionFailed as e:
-                        print(e.retcode)
-
-                    await session.bot.send_private_msg(self_id = session.self_id, user_id = mt, message='吾辈遵旨！')
-
-                    await session.bot.send_private_msg(self_id = session.self_id, user_id = u, message='你的请求已被吾辈的主人同意！')
-
-                elif wait == '否':
-                    await session.bot.send_private_msg(self_id = session.self_id, user_id = mt, message='吾辈已回应拒绝')
-
-                    await session.bot.send_private_msg(self_id = session.self_id, user_id = u, message='你的请求已被吾辈的主人拒绝...')
+            try:
+                await session.approve()
+            except ActionFailed as e:
+                print(e.retcode)
 
         else:
             await session.bot.send_private_msg(self_id = session.self_id, user_id = u, message='主人告诉吾辈不能同意任何人的请求呢...\n作者联系方式：\nhttps://lolihub.icu/#/about')
             
-            await session.bot.send_private_msg(self_id = session.self_id, user_id = mt, message=f'吾辈收到一个新的邀请请求，由于主人并未告知吾辈可以邀请，故做出拒绝的回应。\n邀请人: {u}')
+            await session.bot.send_private_msg(self_id = session.self_id, user_id = mt, message=f'吾辈收到一个新的邀请请求，由于主人并未告知吾辈可以邀请，故做出拒绝的回应。\n裙: {g}\n邀请人: {u}')
+
 
 welcome_switch = True
 @on_command('welcome_switch', aliases=['开启', '关闭'], only_to_me=False)
