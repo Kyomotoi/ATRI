@@ -15,7 +15,7 @@ NICKNAME = {}
 COMMAND_START = {}
 
 #推送屏蔽群名单
-bangroup = []
+BANGROUP = []
 
 #LOLICONAPI url:https://api.lolicon.app/#/setu
 LOLICONAPI = ""
