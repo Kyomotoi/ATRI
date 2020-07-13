@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import time
 COPYRIGHT = (
-    r"""AyaCoolQBot
+    r"""ATRI bot byPython
 Copyright © 2018-2020 Kyomotoi,All Rights Reserved
 Project: https://github.com/Kyomotoi/Aya
 Blog: lolihub.icu
