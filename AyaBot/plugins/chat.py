@@ -70,11 +70,39 @@ class Chat(object):
 
 @on_command('chat')
 async def chat(session: CommandSession):
-    msg = session.state.get('msg')
-    reply = await Chat.request(msg)
-    await session.finish(reply)
-    return
+    if chat_switch:
+        msg = session.state.get('msg')
+        reply = await Chat.request(msg)
+        await session.finish(reply)
+        return
+    else:
+        await session.send('えつ，アトリ被主人告知不能与陌生人说话')
 
 @on_natural_language
 async def _(session: NLPSession):
     return IntentCommand(60.0, ('chat'), {'msg': session.msg_text})
+
+chat_switch = True
+@on_command('chat_switch', aliases=['开启', '关闭'], only_to_me=False)
+async def _(session: CommandSession):
+    if session.event.user_id in master:
+        command = session.event.raw_message.split(' ', 1)
+        switch = command[0]
+        com = command[1]
+        global chat_switch
+        if switch == '开启':
+            if com == '闲聊':
+                chat_switch = True
+            else:
+                pass
+
+        elif switch == '关闭':
+            if com == '闲聊':
+                chat_switch = False
+            else:
+                pass
+        
+        await session.send('完成')
+    
+    else:
+        await session.send('恁哪位?')
