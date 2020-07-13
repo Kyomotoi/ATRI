@@ -11,6 +11,7 @@ from nonebot.helpers import render_expression
 from nonebot import on_command, CommandSession, on_natural_language, NLPSession, IntentCommand
 
 bot = nonebot.get_bot()
+mastwr = bot.config.SUPERUSERS
 
 ERROR_REPLY = (
     '吾辈不是很能理解主人的意思...',
