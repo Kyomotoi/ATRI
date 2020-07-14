@@ -53,8 +53,6 @@ async def send_to_group(session: CommandSession):
                     await session.send('发送失败，请重试')
         
         else:
-            await session.send('吾辈推送...完成！')
-
             try:
                 await bot.send_group_msg(group_id = group, message = msg)
             except:
