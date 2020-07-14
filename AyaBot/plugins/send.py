@@ -43,10 +43,10 @@ async def send_to_group(session: CommandSession):
 
         group = lg[0]
         msg = lg[1]
-        rei = lg[2]
+        rei = int(lg[2])
         
         if rei:
-            for i in range(1, int(rei)):
+            for i in range(1, rei):
                 try:
                     await bot.send_group_msg(group_id = group, message = msg)
                 except:
