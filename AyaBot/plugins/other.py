@@ -26,3 +26,17 @@ async def _(session: CommandSession):
         return
     
     await session.send(f'本群目前共有{len(seach_group_member)}人')
+
+
+@on_command('seach_this_group_qq', aliases=['本群列表'], only_to_me=False, permission=perm.GROUP)
+async def _(session: CommandSession):
+    try:
+        seach_group_member = await session.bot.get_group_member_list(
+            group_id=session.event.group_id
+        )
+    except:
+        print('error')
+        await session.send('获取数据时出问题，请重试')
+        return
+    
+    await session.send(f'本群成员信息:\n{seach_group_member}')
