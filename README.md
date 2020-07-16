@@ -1,4 +1,4 @@
-![](image/f603918fa0ec08fa513d0677aea62a6d55fbb3fb6c80.png)
+
 
 アトリ | ATRI
 
