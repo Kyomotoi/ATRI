@@ -15,7 +15,7 @@ async def _(session: NoticeSession):
     me = session.event.self_id
 
     if q == me :
-        await session.send('在下綾，今后请多指教呐❤')
+        await session.send('在下アトリ，今后请多指教呐❤')
     else:
         await session.send(f'ねえ❤...是新人欸！\nここでは遠慮はいらないのだからね❤')
 
