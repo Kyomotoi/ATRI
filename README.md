@@ -1,4 +1,6 @@
+![](image/f603918fa0ec08fa513d0677aea62a6d55fbb3fb6c80.png)
 
+アトリ | ATRI
 
 ---
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/06a32769a78248109e94a4cfacf38719)](https://app.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&utm_medium=referral&utm_content=Kyomotoi/Aya&utm_campaign=Badge_Grade_Dashboard)
