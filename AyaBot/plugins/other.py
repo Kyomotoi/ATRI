@@ -8,7 +8,7 @@ bot = nonebot.get_bot()
 
 @on_command('关于', aliases=['关于', '关于机器人'], only_to_me=False)
 async def _(session: CommandSession):
-    await session.send('阿？想了解咱？\n写出咱的是Kyomotoi~\n他的主页:https://lolihub.icu\n项目地址:https://github.com/Kyomotoi/Aya')
+    await session.send('阿？想了解咱？\n写出咱的是Kyomotoi~\n他的主页:https://lolihub.icu\n项目地址:https://github.com/Kyomotoi/ATRI')
 
 @on_command('帮助', aliases=['帮助', '食用方法'], only_to_me=False)
 async def _(session: CommandSession):
