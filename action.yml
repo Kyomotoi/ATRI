@@ -1,0 +1,26 @@
+name: 'ATRI'
+author: test
+description: 'test'
+
+inputs:
+  GH_TOKEN:
+    description: 'GitHub access token with Repo scope'
+    required: true
+    default: ${{ github.token }}
+
+  WAKATIME_API_KEY:
+    description: '645fe7fb-8780-4862-bd97-5ea2e83289bc'
+    required: true
+
+  USERNAME:
+    description: 'Kyomotoi'
+    default: ${{ github.repository_owner }}
+
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+
+branding:
+  icon: 'info'
+  color: 'blue'
