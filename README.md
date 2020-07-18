@@ -12,8 +12,7 @@
 
 [ANIPLEX.EXE](https://aniplex-exe.com/) 发行作品 [ATRI -My Dear Moments-](https://atri-mdm.com/) 中的 [アトリ](https://atri-mdm.com/character/)
 
-力求还原其自身的特色
-
+此README中的图取自P站画师[四度水](https://www.pixiv.net/users/43194796)的作品
 </div>
 
 现在仍处于开放版，功能大多应该或许可能能正常使用，这个仓库先挂着
