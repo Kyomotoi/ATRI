@@ -1,5 +1,5 @@
 <div align=center>
- <img width = '358' height ='358' src ="image/atri_s.png"/>
+ <img width = '358' height ='358' src ="image/atri_s.png">
 
 # アトリ | ATRI
 
