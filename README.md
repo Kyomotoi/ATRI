@@ -1,6 +1,6 @@
-![](image/atri_s.png)
+<div align=center><img width = '245' height ='403' src ="image/atri_s.png"/></div>
 
-<div align='center'><font size='70'>アトリ | ATRI</font></div>
+<div align='center'><font size='100'>アトリ | ATRI</font></div>
 
 文档正在重写ing...
 
