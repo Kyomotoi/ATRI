@@ -1,6 +1,6 @@
 ![](image/atri_s.png)
 
-# アトリ | ATRI
+<div align='center'><font size='50'>アトリ | ATRI</font></div>
 
 文档正在重写ing...
 
