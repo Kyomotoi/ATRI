@@ -1,4 +1,4 @@
-![](image/atriw.png)
+
 
 # アトリ | ATRI
 
