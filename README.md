@@ -14,8 +14,7 @@
 此README中的图取自P站画师[四度水](https://www.pixiv.net/users/43194796)的作品
 </div>
 
-### アトリ
----
+## アトリ
 现在仍处于开放版，功能大多应该或许可能能正常使用，这个仓库先挂着
 
 持续更新中......
@@ -54,7 +53,9 @@
 ## 感谢
 [Richard Chien](https://github.com/richardchien): [CQHTTP](https://github.com/richardchien/coolq-http-api) 和 [NoneBot](https://github.com/nonebot/nonebot)
 
-[mnixry](https://github.com/mnixry) 所提及的建议
+[mnixry](https://github.com/mnixry): 给予建议
+
+以及NoneBot裙友萌
 
 ## 其它
 Blog: <http://lolihub.icu>
