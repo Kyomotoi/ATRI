@@ -3,11 +3,16 @@
 
 # アトリ | ATRI
 
-文档正在重写ing...
-
----
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/06a32769a78248109e94a4cfacf38719)](https://app.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&utm_medium=referral&utm_content=Kyomotoi/Aya&utm_campaign=Badge_Grade_Dashboard)
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
+
+アトリ 为一个在全平台下运行的QQBot，主要实现方式是`CoolQ+CQHTTP+Nonebot`以`Python`为主语言的项目
+
+此项目名称来源于
+
+[ANIPLEX.EXE](https://aniplex-exe.com/) 发行作品 [ATRI -My Dear Moments-](https://atri-mdm.com/) 中的 [アトリ](https://atri-mdm.com/character/)
+
+力求还原其自身的特色
 
 </div>
 
