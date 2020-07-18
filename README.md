@@ -1,8 +1,8 @@
 <div align=center>
- <img width = '358' height ='358' src ="image/atri_s.png">
+ <img width = '180' height ='180' src ="image/atri_s.png">
 
 # アトリ | ATRI
-
+---
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/06a32769a78248109e94a4cfacf38719)](https://app.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&utm_medium=referral&utm_content=Kyomotoi/Aya&utm_campaign=Badge_Grade_Dashboard)
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
 
@@ -14,6 +14,9 @@
 
 此README中的图取自P站画师[四度水](https://www.pixiv.net/users/43194796)的作品
 </div>
+
+#### アトリ
+
 
 现在仍处于开放版，功能大多应该或许可能能正常使用，这个仓库先挂着
 
