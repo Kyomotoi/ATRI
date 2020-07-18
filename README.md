@@ -1,6 +1,7 @@
-<div align=center><img width = '358' height ='358' src ="image/atri_s.png"/></div>
+<div align=center>
+ <img width = '358' height ='358' src ="image/atri_s.png"/></div>
 
-<div align='center'><font size='100'>アトリ | ATRI</font></div>
+# アトリ | ATRI
 
 文档正在重写ing...
 
@@ -8,8 +9,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/06a32769a78248109e94a4cfacf38719)](https://app.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&utm_medium=referral&utm_content=Kyomotoi/Aya&utm_campaign=Badge_Grade_Dashboard)
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
 
- CoolQ Bot by Python
----
+</div>
 
 现在仍处于开放版，功能大多应该或许可能能正常使用，这个仓库先挂着
 
