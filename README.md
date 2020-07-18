@@ -1,4 +1,4 @@
-<div align=center><img width = '593' height ='593' src ="image/atri_m.png"/></div>
+<div align=center><img width = '358' height ='358' src ="image/atri_s.png"/></div>
 
 <div align='center'><font size='100'>アトリ | ATRI</font></div>
 
