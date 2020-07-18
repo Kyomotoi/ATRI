@@ -1,6 +1,6 @@
-<center>![](image/atri_s.png)</center>
+<center> ![](image/atri_s.png) </center>
 
-<center># アトリ | ATRI</center>
+<center> アトリ | ATRI </center>
 
 文档正在重写ing...
 
