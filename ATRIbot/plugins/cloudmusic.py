@@ -42,7 +42,7 @@ async def fk_tx_app_cloudmusic(session: nonebot.NLPSession):
     url = f'https://api.imjad.cn/cloudmusic/?type=song&id={wid}&br=320000'
     print(url)
 
-    dc = json.loads(response.request_api(url))
+    dc = json.loads(request_api(url))
 
     await session.send(
         REPORT_FORMAT.format(
@@ -74,7 +74,7 @@ async def cloudmusic_link(session: nonebot.NLPSession):
     url = f'https://api.imjad.cn/cloudmusic/?type=song&id={wid}&br=320000'
     print(url)
 
-    dc = json.loads(response.request_api(url))
+    dc = json.loads(request_api(url))
 
     await session.send(
         REPORT_FORMAT.format(
