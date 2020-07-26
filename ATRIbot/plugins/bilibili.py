@@ -1,6 +1,16 @@
 import json
+import nonebot
+from orjson import loads
+from html import unescape
+
+
 import requests
-from nonebot import on_command, CommandSession
+
+def request_api(url):
+    response = requests.request("GET", url)
+    html = response.text
+    return html
+
 
 
 REPORT_FORMAT = """({aid})信息如下:
@@ -37,60 +47,53 @@ def enc(x):
 	return ''.join(r)
 
 
-@on_command('bilibili_search_vd', aliases=['b站视频搜索', '批站视频搜索', 'B站视频搜索'], only_to_me=False)
-async def bilibili_search_vd(session: CommandSession):
+@nonebot.on_natural_language(only_to_me = False)
+async def fk_tx_app_bilibili(session: nonebot.NLPSession):
+    rich_message = [x for x in session.ctx['message'] if x.get('type') == 'rich']
 
-	bi = session.current_arg.strip()
-	if not bi:
-		bi = session.get('bi', prompt='请输入bv号或av号')
+    if not rich_message:
+        return
 
-	str_av = 'av'
-	str_bv = 'BV'
+    rich_message = rich_message[0]['data']
 
-	if str_av in bi:
-		aid = bi
-	elif str_bv in bi:
-		aid = str(dec(bi))
-		print(aid)
-	else:
-		await session.finish('检查下bv/av号是否输入错误呢...')
-	
-	URL = f'https://api.imjad.cn/bilibili/v2/?aid={aid}'
-	print(URL)
+    if '小程序' or '哔哩哔哩' not in rich_message['title']:
+        return
+    
+    rich_message = rich_message['content']
+    data = loads(unescape(rich_message))
+    
+    if 'detail_1' not in str(rich_message):
+        return
+    
+    URL = data['detail_1']['qqdocurl']
+    rep = URL.replace('?', '/')
+    rep = rep.split('/')
+    biv = rep[4]
 
-	ad = 'av' + aid
-	print(ad)
+    aid = str(dec(biv))
 
-	try:
-		response = requests.request("GET", URL)
-	
-		try:
-			html = response.text
-			mg = json.loads(html)
-			print('az')
+    url = f'https://api.imjad.cn/bilibili/v2/?aid={aid}'
+    ad = 'av' + aid
+    print(ad)
 
-			pic = mg["data"]["pic"]
+    dc = json.loads(request_api(url))
 
-			await session.send(REPORT_FORMAT.format(
-					title = mg["data"]["title"],
+    pic = dc["data"]["pic"]
 
-					view = mg["data"]["stat"]["view"],
-					coin = mg["data"]["stat"]["coin"],
-					share = mg["data"]["stat"]["share"],
-					like = mg["data"]["stat"]["like"],
+    await session.send(REPORT_FORMAT.format(
+        title = dc["data"]["title"],
 
-					bid = mg["data"]["bvid"],
-					bid_link = mg["data"]["short_link"],
+        view = dc["data"]["stat"]["view"],
+        coin = dc["data"]["stat"]["coin"],
+        share = dc["data"]["stat"]["share"],
+        like = dc["data"]["stat"]["like"],
 
-					aid = ad,
-					aid_link = f'https://b23.tv/{ad}',
+        bid = biv,
+        bid_link = dc["data"]["short_link"],
 
-					img = f'[CQ:image,file={pic}]',
-				)
-			)
-		
-		except:
-			await session.send('吾辈在请求数据的时候失败了...')
-	
-	except:
-		await session.send('吾辈一直在努力尝试和主服取得通信ing...ERROR')
+        aid = ad,
+        aid_link = f'https://b23.tv/{ad}',
+
+        img = f'[CQ:image,file={pic}]',
+        )
+    )
