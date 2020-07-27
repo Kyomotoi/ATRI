@@ -12,6 +12,8 @@
 [ANIPLEX.EXE](https://aniplex-exe.com/) 发行作品 [ATRI -My Dear Moments-](https://atri-mdm.com/) 中的 [アトリ](https://atri-mdm.com/character/)
 
 此README中的图取自P站画师[四度水](https://www.pixiv.net/users/43194796)的作品
+
+**重构进行中，现有的库太多Bug了**
 </div>
 
 ## アトリ
@@ -22,8 +24,6 @@
 示例机器人：2791352599（可直接添加）
 
 近期(直到8月前)，此机器人不再更新，如出现bug请联系本人
-
-**重构进行中...**
 
 ---
 
