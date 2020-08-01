@@ -12,35 +12,14 @@
 [ANIPLEX.EXE](https://aniplex-exe.com/) 发行作品 [ATRI -My Dear Moments-](https://atri-mdm.com/) 中的 [アトリ](https://atri-mdm.com/character/)
 
 此README中的图取自P站画师[四度水](https://www.pixiv.net/users/43194796)的作品
-
-**重构进行中，现有的库太多Bug了**
 </div>
 
 ## アトリ
 现在仍处于开放版，功能大多应该或许可能能正常使用，这个仓库先挂着
 
-持续更新中......
-
 示例机器人：2791352599（可直接添加）
 
-近期(直到8月前)，此机器人不再更新，如出现bug请联系本人
-
----
-
-现已支持:
-
-    疫情查询
-    r6战绩查询(正在申请API使用权，目前无望...)
-    天气查询
-    一言
-    群信息一键推送
-    本子查询
-    以图搜番
-    涩图
-    P站搜图
-    Bilibili视频信息检索
-    mc正版验证
-    mc服务器状态查询
+持续更新中......
     
 详细用法请[看这](https://lolihub.icu/#/robot/user)
 
