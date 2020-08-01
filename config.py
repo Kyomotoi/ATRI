@@ -16,6 +16,8 @@ NICKNAME = {}
 #自定义命令开头
 COMMAND_START = {}
 
+BANGROUP = []
+
 #API url:https://api.lolicon.app/#/setu
 LOLICONAPI = "574300555ee56eb2be5e03"
 
