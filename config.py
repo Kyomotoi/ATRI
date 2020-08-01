@@ -8,7 +8,7 @@ HOST = '127.0.0.1'
 PORT = 8080
 
 #机器人的主人（QQ号）
-SUPERUSERS = [1172294279]
+SUPERUSERS = []
 
 #机器人名称，替代 @ 和 命令开头
 NICKNAME = {}
@@ -19,11 +19,11 @@ COMMAND_START = {}
 BANGROUP = []
 
 #API url:https://api.lolicon.app/#/setu
-LOLICONAPI = "574300555ee56eb2be5e03"
+LOLICONAPI = ""
 
 #API url:https://ai.qq.com/
-TX_APP_ID = "2149641190"
-TX_APPKEY = "Au8cFoAPWyGJBGpv"
+TX_APP_ID = ""
+TX_APPKEY = ""
 
 
 
