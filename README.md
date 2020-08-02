@@ -5,7 +5,13 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/06a32769a78248109e94a4cfacf38719)](https://app.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&utm_medium=referral&utm_content=Kyomotoi/Aya&utm_campaign=Badge_Grade_Dashboard)
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
 
-アトリ 为一个在全平台下运行的QQBot，主要实现方式是`CoolQ+CQHTTP+Nonebot`以`Python`为主语言的项目
+アトリ 为一个在全平台下运行的QQBot
+
+此Master实现方式是 `CoolQ + CQHTTP + Nonebot`以 `Python` 为主语言的项目
+
+**谨此纪念 CoolQ 的停运**
+
+**愿我们能在更开放的平行世界里相遇**
 
 此项目名称来源于
 
