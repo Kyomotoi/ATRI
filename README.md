@@ -7,7 +7,9 @@
 
 アトリ 为一个在全平台下运行的QQBot
 
-此Master实现方式是 `CoolQ + CQHTTP + Nonebot`以 `Python` 为主语言的项目
+此项目实现方式是 `Mirai + CQHTTPmirai + NoneBot` 以 `Python` 为主语言的项目
+
+**前身框架 CoolQ**
 
 **谨此纪念 CoolQ 的停运**
 
