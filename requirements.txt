@@ -2,3 +2,5 @@ nonebot[scheduler]~=1.6.0
 aiohttp>=3.6
 requests>=2.24
 orjson>=3.3.0
+fastapi>=0.60.1
+uvicorn>=0.11.6
