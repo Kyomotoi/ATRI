@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import time
 import random
 import nonebot
 from nonebot import on_command, CommandSession
@@ -15,6 +16,41 @@ HELP_REPLY = (
     '阿这',
     '不会使用嘛...ええと'
 )
+
+
+MENU_REPO = '''
+=====================
+ATRI 使用说明
+=====================
+* 发送[]内的关键词以激活相关指令
+
+====[基本功能]====
+[以图搜番] 字面意思
+[本子] 搜索本子
+[一言] 字面意思
+[P站搜图] 以Pid码搜索P站的图片
+[画师] 以画师ID搜索P站画师的作品
+[P站排行榜] 获取实时更新的P站排行榜
+[涩图] 获取一张涩图
+======[HELP]======
+[帮助] 获取网页版使用手册
+[菜单] 打开本页面
+[关于] 获取项目、作者信息
+=====[小功能]=====
+[掷骰子] 1~6的随机数
+[抽签] 抽取今日运势
+
+* 管理类使用方法会附在网页版的使用手册
+'''.strip()
+
+MENU_AND = '''
+* 由于本项目以及本人一些个人原因，出现Bug请及时反馈
+* 本项目开源，可自行搭建，方法附在网页版使用手册中
+* 如有意愿fork本项目，提交修改，作者会非常感动
+* 运行示例、开发、维护需要成本，作者希望能被赞助
+* Star、提交Issus以及Fork并提交修改意见是本项目继续下去的动力
+* 运行时请适当使用，滥用可能会导致账号被封禁
+'''.strip()
 
 
 # 论如何将 Python 写出 Java 的味道
@@ -103,7 +139,6 @@ https://lolihub.icu/#/robot/user"""
     only_to_me = False
 )
 async def _(session: CommandSession):
-    await session.send(
-        f"""
-        """
-    )
+    await session.send(MENU_REPO)
+    time.sleep(0.5)
+    await session.send(MENU_AND)
