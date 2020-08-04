@@ -3,11 +3,11 @@ import sqlite3
 
 from fastapi import FastAPI
 from enum import Enum
+from pathlib import Path
 
 
 app = FastAPI()
-path_setu = f'ATRI\\splite\\setu\\'
-path_cloudmusic = f'ATRI\\splite\\cloudmusic\\'
+
 
 class ModelName(str, Enum):
     alexnet = "normal"
@@ -15,10 +15,15 @@ class ModelName(str, Enum):
     lenet = "r18"
 
 
+@app.get("/")
+def index():
+    return {"我只是一个API": "使用方法：https://blog.lolihub.icu/#/api"}
+
+
 @app.get("/setu/{h_type}")
 def get_setu(h_type: str):
     if h_type == ModelName.alexnet:
-        con = sqlite3.connect(path_setu + 'normal.db')
+        con = sqlite3.connect(Path('.') / 'ATRI' / 'sqlite' / 'setu' / 'normal.db')
         cur = con.cursor()
         msg = cur.execute('SELECT * FROM normal ORDER BY RANDOM() limit 1;')
         for i in msg:
@@ -36,7 +41,7 @@ def get_setu(h_type: str):
             return {"Pid": pid, 0:{"title": title,"tags": tags,"account": account, "name": name,"u_id": u_id, "user_link": user_link, "img": img}}
     
     elif h_type == ModelName.resnet:
-        con = sqlite3.connect(path_setu + 'nearR18.db')
+        con = sqlite3.connect(Path('.') / 'ATRI' / 'sqlite' / 'setu' / 'nearR18.db')
         cur = con.cursor()
         msg = cur.execute('SELECT * FROM nearR18 ORDER BY RANDOM() limit 1;')
         for i in msg:
@@ -54,7 +59,7 @@ def get_setu(h_type: str):
             return {"Pid": pid, 0:{"title": title,"tags": tags,"account": account, "name": name,"u_id": u_id, "user_link": user_link, "img": img}}
 
     elif h_type == ModelName.lenet:
-        con = sqlite3.connect(path_setu + 'r18.db')
+        con = sqlite3.connect(Path('.') / 'ATRI' / 'sqlite' / 'setu' / 'r18.db')
         cur = con.cursor()
         msg = cur.execute('SELECT * FROM r18 ORDER BY RANDOM() limit 1;')
         for i in msg:
@@ -73,7 +78,7 @@ def get_setu(h_type: str):
 
 @app.get("/cloudmusic")
 async def Depression():
-    con = sqlite3.connect(path_cloudmusic + 'cloudmusic.db')
+    con = sqlite3.connect(Path('.') / 'ATRI' / 'sqlite' / 'cloudmusic' / 'cloudmusic.db')
     cur = con.cursor()
     msg = cur.execute('SELECT * FROM cloudmusic ORDER BY RANDOM() limit 1;')
     for i in msg:

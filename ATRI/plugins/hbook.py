@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import re
+import time
 import json
 from nonebot import on_command, CommandSession
 
@@ -8,10 +9,11 @@ from ATRI.modules import response # type: ignore
 
 @on_command('hbook', aliases = ['本子', '本子搜索', '本子查询'], only_to_me = False)
 async def _(session: CommandSession):
-    with open(f'ATRI\\plugins\\switch\\switch.json', 'r') as f:
+    with open('ATRI/plugins/switch/switch.json', 'r') as f:
         data = json.load(f)
     
     if data["hbook"] == 0:
+        start = time.perf_counter()
         h_msg = session.current_arg.strip()
 
         if not h_msg:
@@ -50,6 +52,10 @@ async def _(session: CommandSession):
             for i in range(n):
                 msg0 = ('\n——————————\n本子链接：https://b-upp.com%s \n本子标题：%s '%(data[i]))
                 msg += msg0
+            end = time.perf_counter()
+            msg0 = f'\n——————————\n耗时: {round(end - start, 3)}s'
+            msg += msg0
+
             await session.send(message=msg)
 
     else:

@@ -72,10 +72,10 @@ async def _(session: CommandSession):
 async def _(session: CommandSession):
     await session.send(
         f"""想了解ATRI嘛
-        写出咱的是Kyomotoi
-        他的主页:https://lolihub.icu
-        项目地址:https://github.com/Kyomotoi/ATRI
-        欢迎star~w!"""
+写出咱的是Kyomotoi
+他的主页:https://blog.lolihub.icu
+项目地址:https://github.com/Kyomotoi/ATRI
+欢迎star~w!"""
     )
 
 @on_command(
@@ -90,6 +90,20 @@ async def _(session: CommandSession):
 async def _(session: CommandSession):
     await session.send(
         f"""{render_expression(HELP_REPLY)}
-        看这吧！
-        https://lolihub.icu/#/robot/user"""
+发送：菜单
+或看这吧！
+https://lolihub.icu/#/robot/user"""
+        )
+
+@on_command(
+    'menu',
+    aliases = [
+        '菜单'
+    ],
+    only_to_me = False
+)
+async def _(session: CommandSession):
+    await session.send(
+        f"""
+        """
     )

@@ -10,7 +10,7 @@ master = bot.config.SUPERUSERS
 
 @on_command('switch', aliases = ['开启', '关闭'], only_to_me = False)
 async def _(session: CommandSession):
-    with open(f'ATRI\\plugins\\switch\\switch.json', 'r') as f:
+    with open(f"ATRI/plugins/switch/switch.json", 'r') as f:
         data = json.load(f)
 
     if session.event.user_id in master:
@@ -69,7 +69,7 @@ async def _(session: CommandSession):
                 pass
         
         a = json.dumps(data)
-        f2 = open(f'ATRI\\plugins\\switch\\switch.json', 'w')
+        f2 = open(f"ATRI/plugins/switch/switch.json", 'w')
         f2.write(a)
         f2.close
 

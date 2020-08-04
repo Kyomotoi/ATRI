@@ -2,7 +2,7 @@
 import json
 from nonebot import on_command, on_natural_language, CommandSession
 from nonebot import NLPSession, NLPResult
-from ATRI.modules import response
+from ATRI.modules import response # type: ignore
 
 
 url = f'https://api.imjad.cn/hitokoto/?cat=a&charset=utf-8&length=50&encode=json&fun=sync&source='
@@ -30,4 +30,4 @@ async def hitokoto(session: CommandSession):
 
 @on_natural_language('一言', only_to_me = False)
 async def _(session: NLPSession):
-    return NLPResult(60.0, ('hitokoto',), None)
+    return NLPResult(60.0, ('hitokoto'), None)

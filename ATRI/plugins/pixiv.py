@@ -31,7 +31,7 @@ Link: {user_link}
 
 @on_command('pixiv_seach_img', aliases = ['p站搜图', 'P站搜图', '批站搜图'], only_to_me = False)
 async def _(session: CommandSession):
-    with open(f'ATRI\\plugins\\switch\\switch.json', 'r') as f:
+    with open('ATRI/plugins/switch/switch.json', 'r') as f:
         data = json.load(f)
 
     if data["pixiv_seach_img"] == 0:
@@ -52,6 +52,7 @@ async def _(session: CommandSession):
             session.finish('ATRI在网络上走散了...请重试...')
 
         img = f'https://pixiv.cat/{pid}.jpg'
+        
 
         end = time.perf_counter()
 
@@ -66,7 +67,7 @@ async def _(session: CommandSession):
                 account = dc["response"][0]["user"]["account"],
                 name = dc["response"][0]["user"]["name"],
                 user_link = f'https://www.pixiv.net/users/' + f'{dc["response"][0]["user"]["id"]}',
-                img = f'[CQ:image, file={img}]',
+                img = img,
                 time = round(end - start, 3)
             )
         )
@@ -75,9 +76,9 @@ async def _(session: CommandSession):
         await session.send('该功能已被禁用...')
 
 
-@on_command('pixiv_seach_author', aliases = ['画师'], only_to_me = False)
+@on_command('pixiv_seach_author', aliases = ['画师', '搜索画师', '画师搜索'], only_to_me = False)
 async def _(session: CommandSession):
-    with open(f'ATRI\\plugins\\switch\\switch.json', 'r') as f:
+    with open('ATRI/plugins/switch/switch.json', 'r') as f:
         data = json.load(f)
         
     if data["pixiv_seach_author"] == 0:
@@ -116,7 +117,7 @@ async def _(session: CommandSession):
 
         for i in result:
             t += 1
-            msg = (f'\n---------------\n({t})\nPid: {i[1][0]}\n[CQ:image, file={i[1][1]}]')
+            msg = (f'\n---------------\n({t})\nPid: {i[1][0]}\n{i[1][1]}')
             msg0 += msg
         end = time.perf_counter()
 
@@ -131,7 +132,7 @@ async def _(session: CommandSession):
 
 @on_command('pixiv_daily_rank', aliases = ['P站排行榜', '批站排行榜', 'p站排行榜'], only_to_me = False)
 async def _(session: CommandSession):
-    with open(f'ATRI\\plugins\\switch\\switch.json', 'r') as f:
+    with open('ATRI/plugins/switch/switch.json', 'r') as f:
         data = json.load(f)
         
     if data["pixiv_daily_rank"] == 0:
@@ -161,7 +162,7 @@ async def _(session: CommandSession):
 
         for i in result:
             t += 1
-            msg = (f'\n---------------\n({t})\nPid: {i[1][0]}\n[CQ:image, file={i[1][1]}]')
+            msg = (f'\n---------------\n({t})\nPid: {i[1][0]}\n{i[1][1]}')
             msg0 += msg
         end = time.perf_counter()
 

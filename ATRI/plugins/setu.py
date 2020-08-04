@@ -3,6 +3,9 @@ import time
 import json
 import nonebot
 from nonebot import on_command, CommandSession
+from nonebot import NLPSession
+from nonebot.natural_language import NLPResult
+from nonebot.plugin import on_natural_language
 
 from ATRI.modules import response # type: ignore
 
@@ -15,17 +18,18 @@ URL = 'https://api.lolicon.app/setu/'
 
 SETU_REPLY = """Title: {title}
 Pid: {pid}
-[CQ:image,file={setu}]
+{setu}
 ---------------
 完成时间:{time}s"""
 
 
-@on_command('setu', aliases = ['图来'], only_to_me = False)
-async def _(session: CommandSession):
-    with open(f'ATRI\\plugins\\switch\\switch.json', 'r') as f:
+@on_command('setu', aliases = ['图来', '涩图', '涩图来'], only_to_me = False)
+async def setu(session: CommandSession):
+    with open('ATRI/plugins/switch/switch.json', 'r') as f:
         data = json.load(f)
 
     if data["setu"] == 0:
+        await session.send('别急！正在找图！')
         start = time.perf_counter()
         values = {
             "apikey": apikey,
@@ -47,3 +51,7 @@ async def _(session: CommandSession):
 
     else:
         await session.send('该功能已被禁用...')
+
+@on_natural_language(['涩图', '色图'], only_to_me = False)
+async def _(session: NLPSession):
+    return NLPResult(60.0, ('setu'), None)

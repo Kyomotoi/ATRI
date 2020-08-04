@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import json
 import nonebot
+from pathlib import Path
 from nonebot import on_notice
 from nonebot.notice_request import NoticeSession, RequestSession
 from nonebot.plugin import on_request
@@ -28,7 +29,7 @@ async def _(session: NoticeSession, CommandSession):
         message = f'{user}\n想认识ATRI欸欸欸！！'
     )
 
-    with open(f'ATRI\\plugins\\switch\\switch.json', 'r') as f:
+    with open(Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json', 'r') as f:
         data = json.load(f)
     
     if data["approve_friend_add"] == 0:
@@ -57,7 +58,7 @@ async def _(session: RequestSession):
     group = session.event.group_id
     user = session.event.user_id
 
-    with open(f'ATRI\\plugins\\switch\\switch.json', 'r') as f:
+    with open(Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json', 'r') as f:
         data = json.load(f)
 
     if session.event.sub_type == 'invite':

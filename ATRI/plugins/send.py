@@ -9,10 +9,12 @@ master = bot.config.SUPERUSERS
 ban_group = bot.config.BANGROUP # type: ignore
 
 
-@on_command('send_all_group', aliases=['公告', '群发', '推送'], only_to_me=False)
+@on_command('send_all_group', aliases = ['公告', '群发', '推送'], only_to_me=False)
 async def send_all_group(session: CommandSession):
     if session.event.user_id in master:
         msg = session.current_arg.strip()
+
+        start =time.perf_counter()
 
         if not msg:
             msg = session.get('message', prompt='请告诉吾辈需要群发的内容~！')
@@ -28,8 +30,10 @@ async def send_all_group(session: CommandSession):
 
                 except:
                     pass
+        
+        end = time.perf_counter()
 
-        await session.send('推送完成！')
+        await session.send(f'推送完成！\n耗时：{round(end - start, 3)}')
 
 
 @on_command('send_to_group', aliases=['对群'], only_to_me=False)
