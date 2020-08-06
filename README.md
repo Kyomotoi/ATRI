@@ -7,7 +7,7 @@
 
 アトリ 为一个在全平台下运行的QQBot
 
-此项目实现方式是 `Mirai + CQHTTPmirai + NoneBot` 以 `Python` 为主语言的项目
+此分支实现方式是 `OPQBot + CQHTTPmirai + NoneBot` 以 `Python` 为主语言的项目
 
 **前身框架 CoolQ**
 
@@ -23,18 +23,10 @@
 </div>
 
 ## アトリ
-**文档重写进行中**
 
-现在仍处于开放版，功能大多应该或许可能能正常使用，这个仓库先挂着
-
-示例群聊：567297659
-
-持续更新中......
-    
-详细用法请[看这](https://lolihub.icu/#/robot/user)
 
 ## 安装
-具体操作请[看这](https://lolihub.icu/#/robot/install)
+
 
 ## 关于开源
 本项目使用 [GPLv3](https://github.com/Kyomotoi/Aya/blob/master/LICENSE) 开源协议，这意味着你可以使用本项目运行你的机器人，并向你的用户提供服务，但如果你需要对项目的源码进行修改，则必须将你修改后的版本对你的用户开源。
