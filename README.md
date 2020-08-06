@@ -5,9 +5,9 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/06a32769a78248109e94a4cfacf38719)](https://app.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&utm_medium=referral&utm_content=Kyomotoi/Aya&utm_campaign=Badge_Grade_Dashboard)
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
 
-アトリ 为一个在全平台下运行的QQBot
+アトリ 为一个在`Linux`下运行的QQBot
 
-此分支实现方式是 `OPQBot + CQHTTPmirai + NoneBot` 以 `Python` 为主语言的项目
+此分支实现方式是 `OPQBot + Python-iotbot` 以 `Python` 为主语言的项目
 
 **前身框架 CoolQ**
 
