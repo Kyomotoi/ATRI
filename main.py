@@ -3,12 +3,12 @@
 from iotbot import *
 
 
-bot_qq = 2791352599
+bot_qq = 
 
 bot = IOTBOT(
     qq = bot_qq,
-    host = 'http://8.210.1.20',
-    port = 8888,
+    host = '',
+    port = ,
     log = True,
     use_plugins = True
 )
