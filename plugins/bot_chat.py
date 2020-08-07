@@ -10,7 +10,7 @@ from iotbot.sugar import Picture, Text, Voice
 
 
 # 一些必要参数
-bot_qq = 2791352599
+bot_qq = 
 comm_morning = ['早安','早上好', 'ohayo', '哦哈哟', 'お早う', '早']
 comm_night = ['晚安', 'oyasuminasai', 'おやすみなさい']
 voice_M_list =(
