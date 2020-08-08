@@ -368,7 +368,7 @@ def receive_group_msg(ctx: GroupMsg):
                     time.sleep(0.5)
                     Voice(voice_path = str(path_VOICE) + '/RocketPunch.mp3')
 
-    elif re.findall(r"(CIALLO|ciallo)", msg): # CIALLO
+    elif re.findall(r"(CIALLO|Ciallo|ciallo)", msg): # CIALLO
         if random.randint(1,2) == 1:
             res = random.randint(1,2)
             if res == 1:
