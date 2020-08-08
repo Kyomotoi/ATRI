@@ -1,23 +1,21 @@
-import json
+import os
+from random import randint
+import re
 import random
+import base64
 from datetime import datetime
-from random import choice, randint
 import time
-from nonebot.helpers import render_expression
 from pathlib import Path
+from iotbot.action import Action
 from iotbot import GroupMsg
 from iotbot import decorators as deco
-from iotbot.sugar import Picture, Text, Voice
+from iotbot.sugar import Text, Voice
 
 
 # 一些必要参数
 bot_qq = 2791352599
-comm_morning = ['早安','早上好', 'ohayo', '哦哈哟', 'お早う', '早']
-comm_night = ['晚安', 'oyasuminasai', 'おやすみなさい']
-AZ = ['az', 'AZ', '阿这', '啊这']
-WENHAO = ['?', '？',]
 path_VOICE = Path('.') / 'data' / 'voice'
-path_pic = 'data\\emoji\\'
+path_pic = Path('.') / 'data' / 'emoji'
 
 
 def now_time():
@@ -27,19 +25,29 @@ def now_time():
     now = hour + minute / 60
     return now
 
+def b64_str_img(file_name: str):
+    find_file = os.path.join(str(path_pic) + file_name)
+    with open(find_file, 'rb') as f:
+        content = f.read()
+    b64_str = base64.b64encode(content).decode()
+    return b64_str
+
 
 @deco.not_botself
 def receive_group_msg(ctx: GroupMsg):
-    msg = ctx.message['CurrentPacket']['Data']['Content']
-    try:
-        msg = json.loads(msg)
-        if msg["UserID"] is bot_qq:
-            pass
-    except:
-        pass
+    msg = ctx.Content
+
+# ============================================= -> 分词
+    # gets = ''
+    # try:
+    #     import jieba
+    #     gets = jieba.lcut(msg)
+    #     print(gets)
+    # except:
+    #     pass
 
 # ============================================= -> 早安
-    if msg in comm_morning:
+    if re.findall(r"(早安|早上好|ohayo|哦哈哟|お早う|早)", msg):
 
         if 5.5 <= now_time() < 9:
             res = random.randint(1,10)
@@ -47,15 +55,19 @@ def receive_group_msg(ctx: GroupMsg):
                 Voice(
                     voice_path = str(path_VOICE) + random.choice(
                         [
-                            'ohayo1.mp3',
-                            'ohayo2.mp3',
-                            'ohayo3.mp3',
-                            'ohayo4.mp3'
+                            '/ohayo1.mp3',
+                            '/ohayo2.mp3',
+                            '/ohayo3.mp3',
+                            '/ohayo4.mp3'
                         ]
                     )
                 )
                 time.sleep(0.5)
-                Picture(pic_path = str(path_pic) + 'HE.jpg')
+                # Picture(pic_path = str(path_pic) + '\\HE.jpg')
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img(str('/HE.jpg'))
+                )
             elif 6 < res <= 10:
                 Text(
                     random.choice(
@@ -103,20 +115,26 @@ def receive_group_msg(ctx: GroupMsg):
                         'zzzzzzzz......',
                         'zzz...好涩哦..zzz....',
                         '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
+                        '嘻嘻..zzz..呐~..zzzz..',
+                        '...zzz....哧溜哧溜....'
                     ]
                 )
             )
 
 # ============================================= -> 晚安
-    elif msg in comm_night:
+    elif re.findall(r"(晚安|oyasuminasai|おやすみなさい)", msg):
         
         if 5.5 <= now_time() < 11:
             res = random.randint(1,10)
             if 1 <= res <= 5:
-                Picture(
-                    pic_path = str(path_pic) + render_expression(
-                        'AZ.jpg', 'ZN.jpg', 'ZZ.jpg'
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img(
+                        random.choice(
+                            [
+                                '/AZ.jpg', '/ZN.jpg', '/ZZ.jpg'
+                            ]
+                        )
                     )
                 )
             elif 5 < res <= 10:
@@ -153,7 +171,7 @@ def receive_group_msg(ctx: GroupMsg):
         elif 19 <= now_time() < 24:
             res = random.randint(1,10)
             if 1 <= res <= 6:
-                Voice(voice_path = str(path_VOICE) + 'oyasuminasai.mp3' )
+                Voice(voice_path = str(path_VOICE) + '/oyasuminasai.mp3')
             elif 6 < res <= 10:
                 Text(
                     random.choice(
@@ -180,17 +198,19 @@ def receive_group_msg(ctx: GroupMsg):
             )
 
 # ============================================= -> 闲聊
-    elif msg in AZ: #阿这
+    elif re.findall(r"(az|AZ|阿这|啊这|a z|A Z|阿 这|啊 这)", msg): #阿这
         res = random.randint(1,2)
         if res == 1:
             res = random.randint(1,10)
             if 1 <= res <= 5:
-                Picture(
-                    pic_path = str(path_pic) + random.choice(
-                        [
-                            'AZ.jpg',
-                            'AZ1.jpg'
-                        ]
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img(
+                        random.choice(
+                            [
+                                '/AZ.jpg', '/ZN.jpg', '/ZZ.jpg'
+                            ]
+                        )
                     )
                 )
             elif 5 < res <= 10:
@@ -209,81 +229,195 @@ def receive_group_msg(ctx: GroupMsg):
                     )
                 )
 
-    elif '喜欢你' or '爱你' or '喜欢' in msg: # 表白
-        if '不喜欢' or 'nm' in msg:
-            pass
+    elif re.findall(r"(喜欢|爱你|爱|suki|daisuki|すき|好き)", msg): # 表白
+        if re.findall(r"(ATRI|アトリ|atri|萝卜子)", msg):
+            if random.randint(1,3) == 1:
+                if re.findall(r"(草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴)", msg): # 表白
+                    res = random.randint(1,5)
+                    if 1 <= res < 2:
+                        Action(ctx.CurrentQQ).send_group_pic_msg(
+                            ctx.FromGroupId,
+                            picBase64Buf = b64_str_img(
+                                random.choice(
+                                    [
+                                        '/WQ.jpg', '/WQ.png'
+                                    ]
+                                )
+                            )
+                        )
 
-        else:
-            Voice(
-                voice_path = str(path_VOICE) + random.choice(
-                    [
-                        'suki1.mp3',
-                        'suki2.mp3'
-                    ]
+                    elif 2 <= res <= 5:
+                        res = random.randint(1,3)
+                        if res == 1:
+                            Text('对坏人以火箭组合必杀拳，来让他好好喝一壶！哼！')
+                            time.sleep(0.5)
+                            Voice(voice_path = str(path_VOICE) + '/ATR_b402_027.mp3')
+                        
+                        elif res == 2:
+                            Text('鱼雷组合拳——————————————————啊————！！！')
+                            time.sleep(0.5)
+                            Voice(voice_path = str(path_VOICE) + '/CombinationTorpedoFist.mp3')
+                        
+                        elif res == 3:
+                            Text('火箭拳——————————————————————————！！！')
+                            time.sleep(0.5)
+                            Voice(voice_path = str(path_VOICE) + '/RocketPunch.mp3')
+
+                else:
+                    Voice(
+                        voice_path = str(path_VOICE) + random.choice(
+                            [
+                                '/suki1.mp3',
+                                '/suki2.mp3'
+                            ]
+                        )
+                    )
+
+    elif re.findall(r"('?'|'？')", msg): # ？
+        if random.randint(1,3) == 1:
+            res = random.randint(1,5)
+            if 1 <= res < 2:
+                Text(
+                    random.choice(
+                        [
+                            '?', '？', '嗯？'
+                        ]
+                    )
+                )
+            
+            elif 2 <= res <= 5:
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img(
+                        random.choice(
+                            [
+                                '/WH.jpg', '/ZN.jpg'
+                            ]
+                        )
+                    )
+                )
+
+    elif re.findall(r"(是|否)", msg): # 是/否
+        if random.randint(1,3) == 1:
+            Action(ctx.CurrentQQ).send_group_pic_msg(
+                ctx.FromGroupId,
+                picBase64Buf = b64_str_img(
+                    random.choice(
+                        [
+                            '/YIQI_YES.png', '/YIQI_NO.jpg'
+                        ]
+                    )
                 )
             )
 
-    elif '?' or '？' in msg: # ？
-        res = random.randint(1,5)
-        if 1 <= res < 2:
+    elif re.findall(r"(涩|色图|涩批|炼|铜|好康|下面|胸|上你)", msg): # 涩批
+        if random.randint(1,3) == 1:
+            res = random.randint(1,5)
+            if 1 <= res < 2:
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img('/SP.jpg')
+                )
+
+            elif 2 <= res <= 5:
+                res = random.randint(1,3)
+                if res == 1:
+                    Text('对涩批以火箭组合必杀拳，来让他好好喝一壶！哼！')
+                    time.sleep(0.5)
+                    Voice(voice_path = str(path_VOICE) + '/ATR_b402_027.mp3')
+                
+                elif res == 2:
+                    Text('鱼雷组合拳——————————————————啊————！！！')
+                    time.sleep(0.5)
+                    Voice(voice_path = str(path_VOICE) + '/CombinationTorpedoFist.mp3')
+                
+                elif res == 3:
+                    Text('火箭拳——————————————————————————！！！')
+                    time.sleep(0.5)
+                    Voice(voice_path = str(path_VOICE) + '/RocketPunch.mp3')
+
+    elif re.findall(r"(草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴)", msg): # 骂人
+        if random.randint(1,2) == 1:
+            res = random.randint(1,5)
+            if 1 <= res < 2:
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img(
+                        random.choice(
+                            [
+                                '/WQ.jpg', '/WQ.png'
+                            ]
+                        )
+                    )
+                )
+
+            elif 2 <= res <= 5:
+                res = random.randint(1,3)
+                if res == 1:
+                    Text('对坏人以火箭组合必杀拳，来让他好好喝一壶！哼！')
+                    time.sleep(0.5)
+                    Voice(voice_path = str(path_VOICE) + '/ATR_b402_027.mp3')
+                
+                elif res == 2:
+                    Text('鱼雷组合拳——————————————————啊————！！！')
+                    time.sleep(0.5)
+                    Voice(voice_path = str(path_VOICE) + '/CombinationTorpedoFist.mp3')
+                
+                elif res == 3:
+                    Text('火箭拳——————————————————————————！！！')
+                    time.sleep(0.5)
+                    Voice(voice_path = str(path_VOICE) + '/RocketPunch.mp3')
+
+    elif re.findall(r"(CIALLO|ciallo)", msg): # CIALLO
+        if random.randint(1,2) == 1:
+            res = random.randint(1,2)
+            if res == 1:
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img(
+                        random.choice(
+                            [
+                                '/CIALLO.jpg', '/CIALLO1.jpg', '/CIALLO2.jpg'
+                            ]
+                        )
+                    )
+                )
+            elif res == 2:
+                Text('Ciallo～(∠・ω< )⌒★')
+
+    elif re.findall(r"(呐)", msg): # 呐
+        if random.randint(1,3) == 1:
             Text(
                 random.choice(
                     [
-                        '?',
-                        '？',
-                        '嗯？'
-                    ]
-                )
-            )
-        
-        elif 2 <= res <= 5:
-            Picture(
-                pic_path = str(path_pic) + random.choice(
-                    [
-                        'WH.jpg',
-                        'ZN.jpg'
+                        '呐', '呐呐呐', 'ねえ', 'ねえねえ'
                     ]
                 )
             )
 
-    elif '是' or '否' in msg: # 是/否
-        Picture(
-            pic_path = str(path_pic) + random.choice(
-                [
-                    'YIQI_YES.png',
-                    'YIQI_NO.jpg'
-                ]
-            )
-        )
-
-    elif '涩批' or '炼' or '铜' or '涩图' or '色图' or '上你' in msg: # 涩批
-        Picture(pic_path = str(path_pic) + 'SP.jpg')
-
-    elif '草' or '你妈' or '就这' or 'dnmd' or 'cnm' in msg: # 骂人
-        res = random.randint(1,5)
-        if 1 <= res < 2:
-            Picture(
-                pic_path = str(path_pic) + random.choice(
-                    [
-                        'WQ.jpg',
-                        'WQ.png'
-                    ]
-                )
-            )
-
-        elif 2 <= res <=5:
+    elif re.findall(r"", msg): # 随机回复
+        if random.randint(1,12) == 1:
             res = random.randint(1,3)
             if res == 1:
-                Text('对坏人以火箭组合必杀拳，来让他好好喝一壶！哼！')
-                time.sleep(0.5)
-                Voice(voice_path = str(path_VOICE) + 'ATR_b402_027.mp3')
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img(
+                        random.choice(
+                            [
+                                '/D.jpg', '/D1.jpg', '/ZN.jpg', '/ZZ.jpg'
+                            ]
+                        )
+                    )
+                )
             
             elif res == 2:
-                Text('鱼雷组合拳——————————————————啊————！！！')
-                time.sleep(0.5)
-                Voice(voice_path = str(path_VOICE) + 'CombinationTorpedoFist.mp3')
-            
-            elif res == 3:
-                Text('火箭拳——————————————————————————！！！')
-                time.sleep(0.5)
-                Voice(voice_path = str(path_VOICE) + 'RocketPunch.mp3')
+                Action(ctx.CurrentQQ).send_group_pic_msg(
+                    ctx.FromGroupId,
+                    picBase64Buf = b64_str_img(
+                        random.choice(
+                            [
+                                '/AZ1.jpg', '/AZ2.jpg'
+                            ]
+                        )
+                    )
+                )
