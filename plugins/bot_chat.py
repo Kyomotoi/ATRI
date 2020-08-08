@@ -1,5 +1,4 @@
 import os
-from random import randint
 import re
 import random
 import base64
@@ -11,9 +10,11 @@ from iotbot import GroupMsg
 from iotbot import decorators as deco
 from iotbot.sugar import Text, Voice
 
+import config_ #type: ignore
 
 # 一些必要参数
-bot_qq = 2791352599
+bot_qq = config_.BOT_QQ()
+master = config_.MASTER()
 path_VOICE = Path('.') / 'data' / 'voice'
 path_pic = Path('.') / 'data' / 'emoji'
 
@@ -47,7 +48,7 @@ def receive_group_msg(ctx: GroupMsg):
     #     pass
 
 # ============================================= -> 早安
-    if re.findall(r"(早安|早上好|ohayo|哦哈哟|お早う|早)", msg):
+    if re.findall(r"安|早上好|ohayo|哦哈哟|お早う|早", msg):
 
         if 5.5 <= now_time() < 9:
             res = random.randint(1,10)
@@ -122,7 +123,7 @@ def receive_group_msg(ctx: GroupMsg):
             )
 
 # ============================================= -> 晚安
-    elif re.findall(r"(晚安|oyasuminasai|おやすみなさい)", msg):
+    elif re.findall(r"晚安|oyasuminasai|おやすみなさい", msg):
         
         if 5.5 <= now_time() < 11:
             res = random.randint(1,10)
@@ -198,7 +199,7 @@ def receive_group_msg(ctx: GroupMsg):
             )
 
 # ============================================= -> 闲聊
-    elif re.findall(r"(az|AZ|阿这|啊这|a z|A Z|阿 这|啊 这)", msg): #阿这
+    elif re.findall(r"az|AZ|阿这|啊这|a z|A Z|阿 这|啊 这", msg): #阿这
         res = random.randint(1,3)
         if res == 1:
             res = random.randint(1,10)
@@ -229,12 +230,22 @@ def receive_group_msg(ctx: GroupMsg):
                     )
                 )
 
-    elif re.findall(r"(喜欢|爱你|爱|suki|daisuki|すき|好き)", msg): # 表白
+    elif re.findall(r"喜欢|爱你|爱|suki|daisuki|すき|好き|贴贴", msg): # 表白
         if re.findall(r"(ATRI|アトリ|atri|萝卜子)", msg):
-            if random.randint(1,2) == 1:
-                if re.findall(r"(草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴)", msg): # 表白
+            if ctx.CurrentQQ == master:
+                Voice(
+                    voice_path = str(path_VOICE) + random.choice(
+                        [
+                            '/suki1.mp3',
+                            '/suki2.mp3'
+                        ]
+                    )
+                )
+            elif random.randint(1,2) == 1:
+                if re.findall(r"(草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴|nm)", msg): # 表白
                     res = random.randint(1,5)
-                    if 1 <= res < 2:
+                    if 1 <= res < 2: 
+
                         Action(ctx.CurrentQQ).send_group_pic_msg(
                             ctx.FromGroupId,
                             picBase64Buf = b64_str_img(
@@ -273,7 +284,7 @@ def receive_group_msg(ctx: GroupMsg):
                         )
                     )
 
-    elif re.findall(r"('?'|'？')", msg): # ？
+    elif re.findall(r"'?'|'？'", msg): # ？
         if random.randint(1,3) == 1:
             res = random.randint(1,5)
             if 1 <= res < 2:
@@ -297,7 +308,7 @@ def receive_group_msg(ctx: GroupMsg):
                     )
                 )
 
-    elif re.findall(r"(是(.*?)[吗]|是否)", msg): # 是/否
+    elif re.findall(r"是[吗]|是否", msg): # 是/否
         if random.randint(1,3) == 1:
             Action(ctx.CurrentQQ).send_group_pic_msg(
                 ctx.FromGroupId,
@@ -310,8 +321,8 @@ def receive_group_msg(ctx: GroupMsg):
                 )
             )
 
-    elif re.findall(r"(涩|色图|涩批|炼|铜|好康|下面|胸|上你)", msg): # 涩批
-        if random.randint(1,3) == 1:
+    elif re.findall(r"涩|色图|涩批|炼|铜|好康|下面|胸|上你|中出", msg): # 涩批
+        if random.randint(1,4) == 1:
             res = random.randint(1,5)
             if 1 <= res < 2:
                 Action(ctx.CurrentQQ).send_group_pic_msg(
@@ -336,7 +347,7 @@ def receive_group_msg(ctx: GroupMsg):
                     time.sleep(0.5)
                     Voice(voice_path = str(path_VOICE) + '/RocketPunch.mp3')
 
-    elif re.findall(r"(草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴)", msg): # 骂人
+    elif re.findall(r"草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴|sb|SB|啥b|傻b|2b", msg): # 骂人
         if random.randint(1,2) == 1:
             res = random.randint(1,5)
             if 1 <= res < 2:
@@ -368,7 +379,7 @@ def receive_group_msg(ctx: GroupMsg):
                     time.sleep(0.5)
                     Voice(voice_path = str(path_VOICE) + '/RocketPunch.mp3')
 
-    elif re.findall(r"(CIALLO|Ciallo|ciallo)", msg): # CIALLO
+    elif re.findall(r"CIALLO|Ciallo|ciallo", msg): # CIALLO
         if random.randint(1,2) == 1:
             res = random.randint(1,2)
             if res == 1:
@@ -385,7 +396,7 @@ def receive_group_msg(ctx: GroupMsg):
             elif res == 2:
                 Text('Ciallo～(∠・ω< )⌒★')
 
-    elif re.findall(r"(呐)", msg): # 呐
+    elif re.findall(r"呐", msg): # 呐
         if random.randint(1,3) == 1:
             Text(
                 random.choice(
@@ -416,8 +427,23 @@ def receive_group_msg(ctx: GroupMsg):
                     picBase64Buf = b64_str_img(
                         random.choice(
                             [
-                                '/AZ1.jpg', '/AZ2.jpg'
+                                '/AZ.jpg', '/AZ1.jpg'
                             ]
                         )
                     )
                 )
+
+    elif '螃蟹' or '🦀' or 'カニ' or 'kani' in msg: # 螃蟹！！
+        if random.randint(1,2) == 1:
+            Voice(
+                voice_path = str(path_VOICE) + random.choice(
+                    [
+                        '/PX1.mp3',
+                        '/PX2.mp3',
+                        '/PX3.mp3',
+                        '/PX4.mp3',
+                        '/PX5.mp3',
+                        '/PX6.mp3'
+                    ]
+                )
+            )
