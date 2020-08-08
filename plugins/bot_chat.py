@@ -199,7 +199,7 @@ def receive_group_msg(ctx: GroupMsg):
 
 # ============================================= -> 闲聊
     elif re.findall(r"(az|AZ|阿这|啊这|a z|A Z|阿 这|啊 这)", msg): #阿这
-        res = random.randint(1,2)
+        res = random.randint(1,3)
         if res == 1:
             res = random.randint(1,10)
             if 1 <= res <= 5:
