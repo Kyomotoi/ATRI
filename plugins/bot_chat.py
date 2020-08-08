@@ -231,7 +231,7 @@ def receive_group_msg(ctx: GroupMsg):
 
     elif re.findall(r"(喜欢|爱你|爱|suki|daisuki|すき|好き)", msg): # 表白
         if re.findall(r"(ATRI|アトリ|atri|萝卜子)", msg):
-            if random.randint(1,3) == 1:
+            if random.randint(1,2) == 1:
                 if re.findall(r"(草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴)", msg): # 表白
                     res = random.randint(1,5)
                     if 1 <= res < 2:
@@ -297,7 +297,7 @@ def receive_group_msg(ctx: GroupMsg):
                     )
                 )
 
-    elif re.findall(r"(是|否)", msg): # 是/否
+    elif re.findall(r"(是(.*?)[吗]|是否)", msg): # 是/否
         if random.randint(1,3) == 1:
             Action(ctx.CurrentQQ).send_group_pic_msg(
                 ctx.FromGroupId,
