@@ -48,7 +48,7 @@ def receive_group_msg(ctx: GroupMsg):
     #     pass
 
 # ============================================= -> 早安
-    if re.findall(r"安|早上好|ohayo|哦哈哟|お早う|早", msg):
+    if re.findall(r"早安|早上好|ohayo|哦哈哟|お早う|早", msg):
 
         if 5.5 <= now_time() < 9:
             res = random.randint(1,10)
