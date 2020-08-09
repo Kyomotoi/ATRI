@@ -41,6 +41,6 @@
 以及NoneBot裙友萌
 
 ## 其它
-Blog: <http://lolihub.icu>
+Blog: <https://blog.lolihub.icu/>
 
 我会将更新动态具体写在我的blog
