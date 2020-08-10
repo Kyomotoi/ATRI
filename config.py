@@ -8,9 +8,9 @@ HOST = '127.0.0.1'
 PORT = 8080
 
 # 机器人的主人（QQ号）即 超级用户
-SUPERUSERS = [1172294279]
+SUPERUSERS = [123456]
 def MASTER():
-    return 1172294279
+    return 123456
 
 # 机器人名称，替代 @ 和 命令开头
 NICKNAME = {'ATRI'}
@@ -21,11 +21,7 @@ COMMAND_START = {''}
 BANGROUP = []
 
 # API url:https://api.lolicon.app/#/setu
-LOLICONAPI = "574300555ee56eb2be5e03"
-
-# API url:https://ai.qq.com/
-TX_APP_ID = "2149641190"
-TX_APPKEY = "Au8cFoAPWyGJBGpv"
+LOLICONAPI = ""
 
 
 
@@ -84,29 +80,6 @@ if LOLICONAPI:
 else:
     print("似乎没拿到大门的钥匙呢...如需帮助，请查看安装手册")
     print("...跳过！")
-    time.sleep(1)
-    wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
-        pass
-    else:
-        os._exit(0)
-
-if TX_APP_ID:
-    print("TX知识库识别码已加载！")
-else:
-    print("ATRI无法在记忆储蓄模块找到TX知识库识别码呢...如需帮助，请查看安装手册")
-    print("...跳过！")
-    time.sleep(1)
-    wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
-        pass
-    else:
-        os._exit(0)
-
-if TX_APPKEY:
-    print("TX识别密匙已加载！")
-else:
-    print("ATRI无法在记忆模块中找到TX识别密匙呢...如需帮助，请查看安装手册")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
     if wait == "Y" or 'y':
