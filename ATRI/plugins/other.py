@@ -113,7 +113,7 @@ async def _(session: CommandSession):
     await session.send(
         f"""想了解ATRI嘛
 写出咱的是Kyomotoi
-他的主页:https://blog.lolihub.icu
+他的主页:https://blog.lolihub.icu/
 项目地址:https://github.com/Kyomotoi/ATRI
 欢迎star~w!"""
     )
@@ -132,7 +132,7 @@ async def _(session: CommandSession):
         f"""{render_expression(HELP_REPLY)}
 发送：菜单
 或看这吧！
-https://lolihub.icu/#/robot/user"""
+https://blog.lolihub.icu/#/ATRI/user"""
         )
 
 @on_command(
