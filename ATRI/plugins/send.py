@@ -20,6 +20,7 @@ async def send_all_group(session: CommandSession):
             msg = session.get('message', prompt='请告诉吾辈需要群发的内容~！')
 
         group_list = await session.bot.get_group_list() # type: ignore
+        g_list = len(group_list)
 
         for group in group_list:
 
@@ -33,7 +34,7 @@ async def send_all_group(session: CommandSession):
         
         end = time.perf_counter()
 
-        await session.send(f'推送完成！\n耗时：{round(end - start, 3)}')
+        await session.send(f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}')
 
 
 @on_command('send_to_group', aliases=['对群'], only_to_me=False)

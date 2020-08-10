@@ -5,9 +5,11 @@ import nonebot
 from nonebot import on_command, CommandSession
 from nonebot.helpers import render_expression
 
+import config # type: ignore
+
 
 bot = nonebot.get_bot()
-master = bot.config.SUPERUSERS
+master = config.MASTER()
 
 
 HELP_REPLY = (
@@ -19,28 +21,30 @@ HELP_REPLY = (
 
 
 MENU_REPO = '''
-=====================
+======================
 ATRI 使用说明
-=====================
+======================
 * 发送[]内的关键词以激活相关指令
+* 命令前带'@'表示需要atBOT
+* 命令前带'FIX'表示暂时失效
+* 管理类使用方法会附在网页版的使用手册
 
-====[基本功能]====
+======[基本功能]======
 [以图搜番] 字面意思
-[本子] 搜索本子
+[FIX 本子] 搜索本子
 [一言] 字面意思
 [P站搜图] 以Pid码搜索P站的图片
 [画师] 以画师ID搜索P站画师的作品
 [P站排行榜] 获取实时更新的P站排行榜
-[涩图] 获取一张涩图
-======[HELP]======
+[来份涩图] 获取一张涩图
+========[HELP]========
 [帮助] 获取网页版使用手册
 [菜单] 打开本页面
 [关于] 获取项目、作者信息
-=====[小功能]=====
+[@ 来杯红茶] 向作者反馈
+=======[小功能]=======
 [掷骰子] 1~6的随机数
 [抽签] 抽取今日运势
-
-* 管理类使用方法会附在网页版的使用手册
 '''.strip()
 
 MENU_AND = '''
@@ -142,3 +146,22 @@ async def _(session: CommandSession):
     await session.send(MENU_REPO)
     time.sleep(0.5)
     await session.send(MENU_AND)
+
+@on_command(
+    'report',
+    aliases = [
+        '来杯红茶'
+    ],
+    only_to_me = True
+)
+async def _(session: CommandSession):
+    msg = session.current_arg.strip()
+    user = session.event.user_id
+    group = session.event.group_id
+    if not msg:
+        msg = session.get('message', prompt='请键入需要反馈的信息')
+    
+    await bot.send_private_msg(
+        user_id = master,
+        message = f"来自群[{group}]，用户[{user}]的反馈：\n{msg}"
+    ) # type: ignore

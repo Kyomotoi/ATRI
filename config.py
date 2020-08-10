@@ -7,23 +7,25 @@ from nonebot.default_config import *
 HOST = '127.0.0.1'
 PORT = 8080
 
-#机器人的主人（QQ号）
-SUPERUSERS = []
+# 机器人的主人（QQ号）即 超级用户
+SUPERUSERS = [1172294279]
+def MASTER():
+    return 1172294279
 
-#机器人名称，替代 @ 和 命令开头
-NICKNAME = {}
+# 机器人名称，替代 @ 和 命令开头
+NICKNAME = {'ATRI'}
 
-#自定义命令开头
-COMMAND_START = {}
+# 自定义命令开头
+COMMAND_START = {''}
 
 BANGROUP = []
 
-#API url:https://api.lolicon.app/#/setu
-LOLICONAPI = ""
+# API url:https://api.lolicon.app/#/setu
+LOLICONAPI = "574300555ee56eb2be5e03"
 
-#API url:https://ai.qq.com/
-TX_APP_ID = ""
-TX_APPKEY = ""
+# API url:https://ai.qq.com/
+TX_APP_ID = "2149641190"
+TX_APPKEY = "Au8cFoAPWyGJBGpv"
 
 
 

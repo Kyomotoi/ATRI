@@ -2,10 +2,10 @@
 import time
 COPYRIGHT = (
     r"""====================ATRI | アトリ====================
-* CoolQ + NoneBot + Python
+* Mirai + NoneBot + Python
 * Copyright © 2018-2020 Kyomotoi,All Rights Reserved
 * Project: https://github.com/Kyomotoi/ATRI
-* Blog: lolihub.icu
+* Blog: blog.lolihub.icu
 ====================================================="""
 )
 print(COPYRIGHT)

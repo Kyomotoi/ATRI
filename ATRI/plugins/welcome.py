@@ -25,7 +25,7 @@ async def _(session: NoticeSession):
 async def _(session: NoticeSession, CommandSession):
     user = session.event.user_id
     await bot.send_private_msg(
-        user_id = master, # type: ignore
+        user_id = master,
         message = f'{user}\n想认识ATRI欸欸欸！！'
     )
 
