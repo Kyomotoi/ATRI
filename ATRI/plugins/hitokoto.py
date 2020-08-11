@@ -5,7 +5,7 @@ from nonebot import NLPSession, NLPResult
 from ATRI.modules import response # type: ignore
 
 
-url = f'https://api.imjad.cn/hitokoto/?cat=a&charset=utf-8&length=50&encode=json&fun=sync&source='
+url = 'https://api.imjad.cn/hitokoto/?cat=a&charset=utf-8&length=50&encode=json&fun=sync&source='
 
 
 HITOKOTO_REPLY = """{hitokoto}

@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 import os
 import time
-from nonebot.default_config import *
 
 #配置监听的 IP 和 端口
 HOST = '127.0.0.1'

@@ -10,9 +10,9 @@ from ATRI.modules import response # type: ignore
 bot = nonebot.get_bot()
 master = bot.config.SUPERUSERS
 
-URL_1 = f'https://api.imjad.cn/pixiv/v1/?type=illust&id=' #单图搜索
-URL_2 = f'https://api.imjad.cn/pixiv/v1/?type=member_illust&id=' #画师作品搜索
-URL_3 = f'https://api.imjad.cn/pixiv/v1/?type=rank' #每日排行榜
+URL_1 = 'https://api.imjad.cn/pixiv/v1/?type=illust&id=' #单图搜索
+URL_2 = 'https://api.imjad.cn/pixiv/v1/?type=member_illust&id=' #画师作品搜索
+URL_3 = 'https://api.imjad.cn/pixiv/v1/?type=rank' #每日排行榜
 
 
 IMG_SEACH_REPLY = """[CQ:at,qq={user}]

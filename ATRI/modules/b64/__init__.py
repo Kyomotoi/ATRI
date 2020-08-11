@@ -1,9 +1,6 @@
 import os
-import time
 import base64
-import requests
 from pathlib import Path
-from PIL import Image, ImageGrab
 
 
 path_emoji = Path('.') / 'ATRI' / 'data' / 'emoji'

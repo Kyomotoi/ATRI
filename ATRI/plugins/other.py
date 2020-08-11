@@ -57,14 +57,7 @@ MENU_AND = '''
 '''.strip()
 
 
-# 论如何将 Python 写出 Java 的味道
-# 接下来给各位展示一下
-# 咱的屎山
-
-@on_command(
-    '抽签',
-    only_to_me = False
-)
+@on_command('抽签', only_to_me = False)
 async def _(session: CommandSession):
     await session.send(
         str(
@@ -85,14 +78,7 @@ async def _(session: CommandSession):
         )
     )
 
-@on_command(
-    '掷骰子',
-    aliases = [
-        '扔骰子',
-        '骰子'
-    ],
-    only_to_me = False
-)
+@on_command('掷骰子', aliases = ['扔骰子', '骰子'], only_to_me = False)
 async def _(session: CommandSession):
     await session.send(
         str(
@@ -102,66 +88,49 @@ async def _(session: CommandSession):
         )
     )
 
-@on_command(
-    '关于',
-    aliases = [
-        '关于机器人'
-    ],
-    only_to_me = False
-)
+@on_command('关于', aliases = ['关于机器人'], only_to_me = False)
 async def _(session: CommandSession):
     await session.send(
-        f"""想了解ATRI嘛
+        """想了解ATRI嘛
 写出咱的是Kyomotoi
 他的主页:https://blog.lolihub.icu/
 项目地址:https://github.com/Kyomotoi/ATRI
 欢迎star~w!"""
     )
 
-@on_command(
-    'help',
-    aliases = [
-        '帮助',
-        '如何使用ATRI',
-        '机器人帮助'
-    ],
-    only_to_me = False
-)
+@on_command('help', aliases = ['帮助', '如何使用ATRI', '机器人帮助'], only_to_me = False)
 async def _(session: CommandSession):
     await session.send(
         f"""{render_expression(HELP_REPLY)}
 发送：菜单
 或看这吧！
 https://blog.lolihub.icu/#/ATRI/user"""
-        )
+    )
 
-@on_command(
-    'menu',
-    aliases = [
-        '菜单'
-    ],
-    only_to_me = False
-)
+@on_command('menu', aliases = ['菜单'], only_to_me = False)
 async def _(session: CommandSession):
     await session.send(MENU_REPO)
     time.sleep(0.5)
     await session.send(MENU_AND)
 
-@on_command(
-    'report',
-    aliases = [
-        '来杯红茶'
-    ],
-    only_to_me = True
-)
+@on_command('report', aliases = ['来杯红茶'], only_to_me = True)
 async def _(session: CommandSession):
+    h_type = session.event.detail_type
     msg = session.current_arg.strip()
     user = session.event.user_id
     group = session.event.group_id
+
     if not msg:
         msg = session.get('message', prompt='请键入需要反馈的信息')
+
+    if h_type == 'group':
+        await bot.send_private_msg(
+            user_id = master,
+            message = f"来自群[{group}]，用户[{user}]的反馈：\n{msg}"
+        ) # type: ignore
     
-    await bot.send_private_msg(
-        user_id = master,
-        message = f"来自群[{group}]，用户[{user}]的反馈：\n{msg}"
-    ) # type: ignore
+    elif h_type == 'private':
+        await bot.send_private_msg(
+            user_id = master,
+            message = f"来自用户[{user}]的反馈：\n{msg}"
+        ) # type: ignore

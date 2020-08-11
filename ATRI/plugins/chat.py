@@ -17,7 +17,7 @@ bot = nonebot.get_bot()
     hour = 7
 )
 async def _():
-    '''早安'''
+    """早安"""
     try:
         group_list = await bot.get_group_list() #type: ignore
         groups = [group['group_id'] for group in group_list]
@@ -55,7 +55,7 @@ async def _():
     hour = 22
 )
 async def _():
-    '''晚安'''
+    """晚安"""
     try:
         group_list = await bot.get_group_list() #type: ignore
         groups = [group['group_id'] for group in group_list]
@@ -97,7 +97,7 @@ def now_time():
 
 
 @on_command('morning', patterns = [r"早[安哇]|早上好|ohayo|哦哈哟|お早う"], only_to_me = False)
-async def az(session: CommandSession):
+async def _(session: CommandSession):
     if 5.5 <= now_time() < 9:
         await session.send(
             choice(
@@ -166,7 +166,7 @@ async def _(session: CommandSession):
 
 
 @on_command('night', patterns = [r"晚安|oyasuminasai|おやすみなさい"], only_to_me = False)
-async def az(session: CommandSession):
+async def _(session: CommandSession):
     if 5.5 <= now_time() < 11:
         await session.send(
             choice(
@@ -267,7 +267,7 @@ async def az(session: CommandSession):
 
 
 @on_command('wenhao', patterns = [r"'?'|？"], only_to_me = False)
-async def az(session: CommandSession):
+async def _(session: CommandSession):
     res = randint(1,3)
     if res == 1:
         res = randint(1,5)
@@ -291,7 +291,7 @@ async def az(session: CommandSession):
             await session.send(f'[CQ:image,file=file:///{img}]')
 
 @on_command('yn', patterns = [r"是[吗]|是否"], only_to_me = False)
-async def az(session: CommandSession):
+async def _(session: CommandSession):
     if randint(1,3) == 1:
         img = choice(
             [
@@ -305,7 +305,7 @@ async def az(session: CommandSession):
 
 
 @on_command('kouchou', patterns = [r"草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴|sb|SB|啥[b批比逼]|傻b|2b"], only_to_me = False)
-async def az(session: CommandSession):
+async def _(session: CommandSession):
     if randint(1,2) == 1:
         if randint(1,2) == 1:
             img = choice(
@@ -329,7 +329,7 @@ async def az(session: CommandSession):
                 await session.send('火箭拳——————————————————————————！！！')
 
 @on_command('ciallo', patterns = [r"[Cc][iI][aA][lL][lL][oO]"], only_to_me = False)
-async def az(session: CommandSession):
+async def _(session: CommandSession):
     if randint(1,2) == 1:
         res = randint(1,2)
         if res == 1:
@@ -346,7 +346,7 @@ async def az(session: CommandSession):
             await session.send('Ciallo～(∠・ω< )⌒★')
 
 @on_command('ne', patterns = [r"呐|ねえ|口内"], only_to_me = False)
-async def az(session: CommandSession):
+async def _(session: CommandSession):
     if randint(1,3) == 1:
         await session.send(
             choice(
@@ -357,7 +357,7 @@ async def az(session: CommandSession):
         )
 
 @on_command('kani', patterns = [r"螃蟹|🦀|カニ|[kK]ani"], only_to_me = False)
-async def az(session: CommandSession):
+async def _(session: CommandSession):
     if random.randint(1,2) == 1:
         img = choice(
             [

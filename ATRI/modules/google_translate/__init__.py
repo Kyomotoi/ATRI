@@ -1,9 +1,6 @@
-# -*- coding:utf-8 -*-
 import re
 import requests
 import demjson
-from pprint import pformat, pprint
-from urllib.parse import urlencode
 
 
 def int_overflow(val):

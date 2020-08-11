@@ -6,7 +6,6 @@ from random import choice, randint
 from pathlib import Path
 import nonebot
 from nonebot import on_command, CommandSession
-from nonebot import MessageSegment
 
 import config # type: ignore
 from ATRI.modules import response # type: ignore
