@@ -9,7 +9,7 @@ from ATRI.modules import response # type: ignore
 
 pattern = r"来(.*?)[点丶份张幅](.*?)的?本子"
 
-@on_command('hbook', patterns = [r"来(.*?)[点丶份张幅](.*?)的本子"], only_to_me = False)
+@on_command('hbook', patterns = pattern, only_to_me = False)
 async def _(session: CommandSession):
     with open('ATRI/plugins/switch/switch.json', 'r') as f:
         data = json.load(f)
@@ -23,7 +23,7 @@ async def _(session: CommandSession):
         info = re.findall(pattern, h_msg)
         if info:
             num = int(info[0][0] or 1)
-            tag = info[0][1]
+            tag = str(info[0][1])
         if num > 5:
             await session.send('你是不是涩批啊！要那么多干啥？！我最多发5份！')
             num = 5
@@ -31,11 +31,15 @@ async def _(session: CommandSession):
         h_type = session.event.detail_type
         h_user = session.event.user_id
 
-        header = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'}
-        keyword = {'show':'title,titleen,tags','keyboard':f'{tag}'}
+        try:
+            header = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'}
+            keyword = {'show':'title,titleen,tags','keyboard':tag}
+            print(keyword)
 
-        res = await response.post_bytes('https://b-upp.com/search/', headers=header, data=keyword)
-        res = res.decode()
+            res = await response.post_bytes('https://b-upp.com/search/', headers=header, data=keyword)
+            res = res.decode()
+        except:
+            session.finish('貌似请求数据失败了...')
 
         if '没有搜索到相关的内容' in res:
             n_msg = '...似乎没有找到[{}]相关的本子呢'.format(tag)
@@ -45,17 +49,12 @@ async def _(session: CommandSession):
             p = '<a href="(.*?)" target="_blank" title="(.*?)">'
             data = re.findall(p,res)
             n = len(data)
-
-            if h_type == 'group':
-                limit = num
-
-            elif h_type == 'private':
-                limit = num
+            limit = num
             
             if n > limit: # type: ignore
                 n = limit # type: ignore
 
-            msg = f'根据提供信息，已查询到{n}本关键词为[{tag}]的本子:'
+            msg = f'据提供信息，已查询到{n}本关键词为[{tag}]的本子:'
             if h_type == 'group':
                 msg = f'[CQ:at,qq={h_user}]\n根据提供信息，已查询到{n}本关键词为[{tag}]的本子:'
             for i in range(n):
