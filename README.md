@@ -31,10 +31,10 @@
 
 持续更新中......
     
-详细用法请[看这](https://lolihub.icu/#/robot/user)
+使用文档正在编写
 
 ## 安装
-具体操作请[看这](https://lolihub.icu/#/robot/install)
+安装文档正在编写
 
 ## 关于开源
 本项目使用 [GPLv3](https://github.com/Kyomotoi/Aya/blob/master/LICENSE) 开源协议，这意味着你可以使用本项目运行你的机器人，并向你的用户提供服务，但如果你需要对项目的源码进行修改，则必须将你修改后的版本对你的用户开源。
