@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import time
+import json
 import random
 import nonebot
 from nonebot import on_command, CommandSession
@@ -59,59 +60,94 @@ MENU_AND = '''
 
 @on_command('抽签', only_to_me = False)
 async def _(session: CommandSession):
-    await session.send(
-        str(
-            random.choice(
-                [
-                    '大凶',
-                    '大胸',
-                    '小凶',
-                    '小胸',
-                    '凶',
-                    '吉',
-                    '中吉',
-                    '大吉',
-                    '特大吉',
-                    '超特大吉'
-                ]
+    user = session.event.user_id
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
+
+    if data[f"{user}"] == str(user):
+        pass
+    else:
+        await session.send(
+            str(
+                random.choice(
+                    [
+                        '大凶',
+                        '大胸',
+                        '小凶',
+                        '小胸',
+                        '凶',
+                        '吉',
+                        '中吉',
+                        '大吉',
+                        '特大吉',
+                        '超特大吉'
+                    ]
+                )
             )
         )
-    )
 
 @on_command('掷骰子', aliases = ['扔骰子', '骰子'], only_to_me = False)
 async def _(session: CommandSession):
-    await session.send(
-        str(
-            random.randint(
-                1,6
+    user = session.event.user_id
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
+
+    if data[f"{user}"] == str(user):
+        pass
+    else:
+        await session.send(
+            str(
+                random.randint(
+                    1,6
+                )
             )
         )
-    )
 
 @on_command('关于', aliases = ['关于机器人'], only_to_me = False)
 async def _(session: CommandSession):
-    await session.send(
-        """想了解ATRI嘛
-写出咱的是Kyomotoi
-他的主页:https://blog.lolihub.icu/
-项目地址:https://github.com/Kyomotoi/ATRI
-欢迎star~w!"""
-    )
+    user = session.event.user_id
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
+
+    if data[f"{user}"] == str(user):
+        pass
+    else:
+        await session.send(
+            """想了解ATRI嘛
+    写出咱的是Kyomotoi
+    他的主页:https://blog.lolihub.icu/
+    项目地址:https://github.com/Kyomotoi/ATRI
+    欢迎star~w!"""
+        )
 
 @on_command('help', aliases = ['帮助', '如何使用ATRI', '机器人帮助'], only_to_me = False)
 async def _(session: CommandSession):
-    await session.send(
-        f"""{render_expression(HELP_REPLY)}
-发送：菜单
-或看这吧！
-https://blog.lolihub.icu/#/ATRI/user"""
-    )
+    user = session.event.user_id
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
+
+    if data[f"{user}"] == str(user):
+        pass
+    else:
+        await session.send(
+            f"""{render_expression(HELP_REPLY)}
+    发送：菜单
+    或看这吧！
+    https://blog.lolihub.icu/#/ATRI/user"""
+        )
 
 @on_command('menu', aliases = ['菜单'], only_to_me = False)
 async def _(session: CommandSession):
-    await session.send(MENU_REPO)
-    time.sleep(0.5)
-    await session.send(MENU_AND)
+    user = session.event.user_id
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
+
+    if data[f"{user}"] == str(user):
+        pass
+    else:
+        await session.send(MENU_REPO)
+        time.sleep(0.5)
+        await session.send(MENU_AND)
 
 @on_command('report', aliases = ['来杯红茶'], only_to_me = True)
 async def _(session: CommandSession):

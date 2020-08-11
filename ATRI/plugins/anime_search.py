@@ -46,67 +46,69 @@ def toSimpleString(str):
     return "".join(output_str_list)
 
 
-@on_command(
-    'anime_search',
-    aliases = ['以图搜番'],
-    only_to_me = False
+@on_command('anime_search', aliases = ['以图搜番'], only_to_me = False
 )
 async def _(session: CommandSession):
     user = session.event.user_id
     msg = session.current_arg.strip()
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
 
-    if not msg:
-        msg = session.get('message', prompt = "请发送一张图片")
-    
-    await session.send("开始以图搜番\n(如搜索时间过长或无反应则为图片格式有问题)")
-
-    p = '\\[CQ\\:image\\,file\\=.*?\\,url\\=(.*?)\\]'
-
-    img = re.findall(p, msg)
-
-    if img:
-        URL = f'https://trace.moe/api/search?url={img[0]}'
-
-        req = await get_bytes(URL)
-
-        if req:
-            data = json.loads(req.decode())
-
-            d = {}
-
-            for i in range(len(data['docs'])):
-                if data['docs'][i]['title_chinese'] in d.keys():
-                    d[data['docs'][i]['title_chinese']][0] += data['docs'][i]['similarity']
-            
-                else:
-                    m = data['docs'][i]['at']/60
-                    s = data['docs'][i]['at']%60
-
-                    if data['docs'][i]['episode'] == '':
-                        n = 1
-                    
-                    else:
-                        n = data['docs'][i]['episode']
-                    
-                    d[toSimpleString(data['docs'][i]['title_chinese'])] = [data['docs'][i]['similarity'],f'第{n}集',f'{int(m)}分{int(s)}秒处']
-
-            result = sorted(
-                d.items(),
-                key = lambda x:x[1],
-                reverse = True
-            )
-
-            t = 0
-
-            msg0 = f'[CQ:at,qq={user}]\n根据所提供的图片按照相似度找到{len(d)}个结果:'
-
-            for i in result:
-                t +=1
-                lk = ('%.2f%%' % (i[1][0] * 100))
-                msg = (f'\n——————————\n({t})\n相似度：{lk}\n动漫名：《{i[0]}》\n时间点：{i[1][1]} {i[1][2]}')
-                msg0 += msg
-            
-            await session.send(msg0)
+    if data[f"{user}"] == str(user):
+        pass
+    else:
+        if not msg:
+            msg = session.get('message', prompt = "请发送一张图片")
         
-        else:
-            await session.send("搜索似乎失败了呢...")
+        await session.send("开始以图搜番\n(如搜索时间过长或无反应则为图片格式有问题)")
+
+        p = '\\[CQ\\:image\\,file\\=.*?\\,url\\=(.*?)\\]'
+
+        img = re.findall(p, msg)
+
+        if img:
+            URL = f'https://trace.moe/api/search?url={img[0]}'
+
+            req = await get_bytes(URL)
+
+            if req:
+                data = json.loads(req.decode())
+
+                d = {}
+
+                for i in range(len(data['docs'])):
+                    if data['docs'][i]['title_chinese'] in d.keys():
+                        d[data['docs'][i]['title_chinese']][0] += data['docs'][i]['similarity']
+                
+                    else:
+                        m = data['docs'][i]['at']/60
+                        s = data['docs'][i]['at']%60
+
+                        if data['docs'][i]['episode'] == '':
+                            n = 1
+                        
+                        else:
+                            n = data['docs'][i]['episode']
+                        
+                        d[toSimpleString(data['docs'][i]['title_chinese'])] = [data['docs'][i]['similarity'],f'第{n}集',f'{int(m)}分{int(s)}秒处']
+
+                result = sorted(
+                    d.items(),
+                    key = lambda x:x[1],
+                    reverse = True
+                )
+
+                t = 0
+
+                msg0 = f'[CQ:at,qq={user}]\n根据所提供的图片按照相似度找到{len(d)}个结果:'
+
+                for i in result:
+                    t +=1
+                    lk = ('%.2f%%' % (i[1][0] * 100))
+                    msg = (f'\n——————————\n({t})\n相似度：{lk}\n动漫名：《{i[0]}》\n时间点：{i[1][1]} {i[1][2]}')
+                    msg0 += msg
+                
+                await session.send(msg0)
+            
+            else:
+                await session.send("搜索似乎失败了呢...")
