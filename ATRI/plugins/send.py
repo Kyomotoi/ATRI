@@ -3,6 +3,8 @@ import time
 import nonebot
 from nonebot import on_command, CommandSession
 
+import config # type: ignore
+
 
 bot = nonebot.get_bot()
 master = bot.config.SUPERUSERS
@@ -14,7 +16,7 @@ async def send_all_group(session: CommandSession):
     if session.event.user_id in master:
         msg = session.current_arg.strip()
 
-        start =time.perf_counter()
+        start = time.perf_counter()
 
         if not msg:
             msg = session.get('message', prompt='请告诉吾辈需要群发的内容~！')
@@ -36,7 +38,6 @@ async def send_all_group(session: CommandSession):
 
         await session.send(f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}')
 
-
 @on_command('send_to_group', aliases=['对群'], only_to_me=False)
 async def send_to_group(session: CommandSession):
     if session.event.user_id in master:
@@ -49,8 +50,12 @@ async def send_to_group(session: CommandSession):
 
         group = lg[0]
         msg = lg[1]
-        rei = int(lg[2]) + 1
-        
+        rei = 1 
+        try:
+            rei = int(lg[2]) + 1
+        except:
+            pass
+
         if rei:
             for i in range(1, rei):
                 try:
@@ -66,6 +71,32 @@ async def send_to_group(session: CommandSession):
         
         await session.send('推送完成！')
 
+
+@on_command('send_all_friend', aliases = ['全体用户'], only_to_me = False)
+async def send_all_friend(session: CommandSession):
+    if session.event.user_id in master:
+        msg = session.current_arg.strip()
+
+        start = time.perf_counter()
+
+        if not msg:
+            msg = session.get('message', prompt='请告诉吾辈需要群发的内容~！')
+        
+        friend_list = await session.bot.get_friend_list() # type: ignore
+        print(friend_list)
+        f_list = len(friend_list)
+
+        for friend in friend_list:
+
+            try:
+                await bot.send_private_msg(user_id = friend['user_id'], message = msg) # type: ignore
+            
+            except:
+                await bot.send_private_msg(user_id = master, message = f"列表用户[{friend['user_id']}]推送失败") # type: ignore
+        
+        end = time.perf_counter()
+
+        await session.send(f'已推送到[{f_list}]位用户\n耗时：{round(end - start, 3)}')
 
 @on_command('send_to_qq', aliases=['对QQ'], only_to_me=False)
 async def send_to_qq(session: CommandSession):
@@ -84,43 +115,5 @@ async def send_to_qq(session: CommandSession):
             await bot.send_private_msg(user_id = qq, message = msg) # type: ignore
         except:
             await session.send('发送失败，请重试')
-        
-        await session.send('推送完成！')
-
-
-@on_command('send_to_group_pr', aliases=['对群私聊'], only_to_me=False)
-async def _(session: CommandSession):
-    if session.event.user_id in master:
-        msg = session.current_arg.strip()
-    
-        if not msg:
-            msg = session.get('message', prompt='请告诉吾辈完整内容呢...\n例：对群 12345647(群号) message 1')
-        
-        lg = msg.split(' ')
-
-        group = lg[0]
-        msg = lg[1]
-        rei = int(lg[2]) + 1
-
-        group_user_list = await session.bot.get_group_member_list(group_id = group) # type: ignore
-
-        for i in group_user_list:
-            time.sleep(0.5)
-            userid = i['user_id']
-            print(userid)
-        
-            if rei:
-                for a in range(1, rei):
-                    time.sleep(0.5)
-                    try:
-                        await bot.send_private_msg(user_id = userid, message = msg) # type: ignore
-                    except:
-                        await session.send('发送失败，请重试')
-            
-            else:
-                try:
-                    await bot.send_private_msg(user_id = userid, message = msg) # type: ignore
-                except:
-                    await session.send('发送失败，请重试')
         
         await session.send('推送完成！')

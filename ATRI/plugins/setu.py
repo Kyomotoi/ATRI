@@ -4,8 +4,11 @@ import time
 import json
 from random import choice, randint
 from pathlib import Path
+import aiocqhttp
 import nonebot
-from nonebot import on_command, CommandSession
+from nonebot import NoneBot, on_command, CommandSession
+from nonebot import message_preprocessor
+from nonebot.plugin import PluginManager
 
 import config # type: ignore
 from ATRI.modules import response # type: ignore

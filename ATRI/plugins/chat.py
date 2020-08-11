@@ -1,14 +1,23 @@
 import os
+import re
+import json
 import nonebot
 import random
 from pathlib import Path
 from random import randint, choice
-from datetime import datetime
+from datetime import datetime, timedelta
+from nonebot import on_command, scheduler
 from nonebot import CommandSession
 from nonebot import on_command
+from apscheduler.triggers.date import DateTrigger
+
+from ATRI.modules import response # type: ignore
+import config # type: ignore
 
 
 bot = nonebot.get_bot()
+master = config.MASTER()
+KC_URL = 'https://nmsl.shadiao.app/api.php?level=min&lang=zh_cn'
 
 
 @nonebot.scheduler.scheduled_job(
@@ -47,7 +56,6 @@ async def _():
     
     except:
         pass
-
 
 @nonebot.scheduler.scheduled_job(
     'cron',
@@ -94,7 +102,6 @@ def now_time():
     minute = now_.minute
     now = hour + minute / 60
     return now
-
 
 @on_command('morning', patterns = [r"早[安哇]|早上好|ohayo|哦哈哟|お早う"], only_to_me = False)
 async def _(session: CommandSession):
@@ -304,10 +311,11 @@ async def _(session: CommandSession):
 
 
 
-@on_command('kouchou', patterns = [r"草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴|sb|SB|啥[b批比逼]|傻b|2b"], only_to_me = False)
+@on_command('kouchou', patterns = [r"草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴|sb|SB|啥[b批比逼]|傻b|2b|给👴爬|嘴臭"], only_to_me = False)
 async def _(session: CommandSession):
     if randint(1,2) == 1:
-        if randint(1,2) == 1:
+        res = randint(1,3)
+        if res == 1:
             img = choice(
                 [
                     'WQ.jpg', 'WQ.png', 'WQ2.jpg', 'WQ3.jpg', 'FN.jpg'
@@ -317,7 +325,7 @@ async def _(session: CommandSession):
             img = os.path.abspath(img)
             await session.send(f'[CQ:image,file=file:///{img}]')
 
-        elif randint(1,2) == 2:
+        elif res == 2:
             res = randint(1,3)
             if res == 1:
                 await session.send('对嘴臭人以火箭组合必杀拳，来让他好好喝一壶！哼！')
@@ -327,6 +335,9 @@ async def _(session: CommandSession):
             
             elif res == 3:
                 await session.send('火箭拳——————————————————————————！！！')
+        
+        elif res == 3:
+            await session.send(response.request_api(KC_URL))
 
 @on_command('ciallo', patterns = [r"[Cc][iI][aA][lL][lL][oO]"], only_to_me = False)
 async def _(session: CommandSession):
@@ -358,7 +369,7 @@ async def _(session: CommandSession):
 
 @on_command('kani', patterns = [r"螃蟹|🦀|カニ|[kK]ani"], only_to_me = False)
 async def _(session: CommandSession):
-    if random.randint(1,2) == 1:
+    if randint(1,2) == 1:
         img = choice(
             [
                 'KN.png', 'KN.jpg', 'KN1.jpg', 'KN2.jpg', 'KN3.png'
@@ -367,3 +378,60 @@ async def _(session: CommandSession):
         img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
         img = os.path.abspath(img)
         await session.send(f'[CQ:image,file=file:///{img}]')
+
+@on_command('hai', patterns = [r"青[洁结]"], only_to_me = False)
+async def _(session: CommandSession):
+    if randint(1,2) == 1:
+        img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'H.jpg'
+        await session.send(f'[CQ:image,file=file:///{img}]')
+
+@on_command('ntr', patterns = [r"[nN][tT][rR]|[牛🐂]头人"], only_to_me = False)
+async def _(session: CommandSession):
+    user = session.event.user_id
+    msg = str(session.event.message)
+    noobList = []
+    bL = {}
+    pattern = r"[nN][tT][rR]|[牛🐂]头人"
+    if re.findall(pattern, msg):
+        await session.send('你妈的，牛头人，' + response.request_api(KC_URL))
+        noobList.append(user)
+        if countX(noobList, user) == 10:
+            if user == master:
+                pass
+            else:
+                await session.send('哼！接下来10分钟别想让我理你！')
+                bL[f"{user}"] = f"{user}"
+                file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
+                f = open(file, 'w')
+                f.write(json.dumps(bL))
+                f.close()
+                delta = timedelta(minutes = 10)
+                trigger = DateTrigger(
+                    run_date = datetime.now() + delta
+                )
+
+                scheduler.add_job( #type: ignore
+                    func = rmQQfromNoobLIST,
+                    trigger = trigger,
+                    args = (user),
+                    misfire_grace_time = 60,
+                )
+
+        else:
+            pass
+
+async def countX(lst, x):
+    count = 0
+    for ele in lst:
+        if (ele == x):
+            count = count + 1
+    return count
+
+async def rmQQfromNoobLIST(user):
+    file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
+    with open(file, 'r') as f:
+        bL = json.load(f)
+    bL.pop(f"{user}")
+    f = open(file, 'w')
+    f.write(json.dumps(bL))
+    f.close()    

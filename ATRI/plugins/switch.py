@@ -71,7 +71,7 @@ async def _(session: CommandSession):
         a = json.dumps(data)
         f2 = open("ATRI/plugins/switch/switch.json", 'w')
         f2.write(a)
-        f2.close
+        f2.close()
 
         await session.send('设置完成！')
     

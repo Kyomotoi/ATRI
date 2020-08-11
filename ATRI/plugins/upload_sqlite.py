@@ -164,10 +164,10 @@ async def _(session: CommandSession):
     con.close()
 
     await session.send(
-        f"""目前ATRI数据库收录了：
-    涩图：
-        normal: {data_normal}
-        nearR18: {data_nearR18}
-        r18：{data_r18}
-    网抑云语录：{data_cloudmusic}"""
+        f"""目前螃蟹™数据库收录了：
+涩图：
+    normal: {data_normal}
+    nearR18: {data_nearR18}
+    r18：{data_r18}
+网抑云语录：{data_cloudmusic}"""
     )
