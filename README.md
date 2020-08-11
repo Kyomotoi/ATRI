@@ -41,7 +41,7 @@
 
 由于本项目的特殊性，本项目的源码中出现在 NoneBot 文档的部分（例如作为其示例代码），不使用 AGPLv3 许可，而使用和 NoneBot 一样的 MIT 许可。
 
-## 感谢
+## 特别感谢
 [Richard Chien](https://github.com/richardchien): [CQHTTP](https://github.com/richardchien/coolq-http-api) 和 [NoneBot](https://github.com/nonebot/nonebot)
 
 [mnixry](https://github.com/mnixry): 给予建议
@@ -51,8 +51,8 @@
 ## 其它
 Blog: <http://blog.lolihub.icu>
 
-我会将更新动态具体写在我的blog
+我会将更新动态具体写在我的 Blog
 
-本项目已开启爱发电，如有意愿请作者几杯红茶那会将常非谢谢你！
+本项目已开启爱发电，如有意愿请作者几杯红茶那会将常非感谢！
 
-并且将会你的ID写在感谢一栏！ --> <https://afdian.net/@Kyomotoi>
+并且将会您的ID写在特别感谢一栏！ --> <https://afdian.net/@Kyomotoi>
