@@ -55,4 +55,4 @@ Blog: <http://blog.lolihub.icu>
 
 本项目已开启爱发电，如有意愿请作者几杯红茶那会将常非谢谢你！
 
-并且将会你的大名写在感谢一栏！ --> <https://afdian.net/@Kyomotoi>
+并且将会你的ID写在感谢一栏！ --> <https://afdian.net/@Kyomotoi>
