@@ -4,11 +4,8 @@ import time
 import json
 from random import choice, randint
 from pathlib import Path
-import aiocqhttp
 import nonebot
-from nonebot import NoneBot, on_command, CommandSession
-from nonebot import message_preprocessor
-from nonebot.plugin import PluginManager
+from nonebot import on_command, CommandSession
 
 import config # type: ignore
 from ATRI.modules import response # type: ignore
@@ -32,15 +29,14 @@ async def setu(session: CommandSession):
     group = session.event.group_id
     user = session.event.user_id
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
-        data = json.load(f)
+        data0 = json.load(f)
+    with open(Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json', 'r') as f:
+        data1 = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data0.keys():
         pass
     else:
-        with open(Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json', 'r') as f:
-            data = json.load(f)
-
-        if data["setu"] == 0:
+        if data1["setu"] == 0:
             await session.send('别急！正在找图！')
             start = time.perf_counter()
             values = {

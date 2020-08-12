@@ -109,7 +109,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if 5.5 <= now_time() < 9:
@@ -171,7 +171,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if 11 <= now_time() <= 15:
@@ -192,7 +192,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if 5.5 <= now_time() < 11:
@@ -261,7 +261,7 @@ async def az(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         res = randint(1,3)
@@ -282,7 +282,7 @@ async def az(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         res = randint(1,3)
@@ -314,7 +314,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         res = randint(1,3)
@@ -345,7 +345,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if randint(1,3) == 1:
@@ -366,7 +366,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if randint(1,2) == 1:
@@ -401,7 +401,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if randint(1,2) == 1:
@@ -425,7 +425,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if randint(1,3) == 1:
@@ -443,7 +443,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if randint(1,2) == 1:
@@ -462,7 +462,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         if randint(1,2) == 1:
@@ -475,7 +475,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         msg = str(session.event.message)
@@ -487,6 +487,7 @@ async def _(session: CommandSession):
             noobList.append(user)
             if countX(noobList, user) == 10:
                 if user == master:
+                    await session.send('是主人的话...那算了...呜呜')
                     pass
                 else:
                     await session.send('哼！接下来10分钟别想让我理你！')

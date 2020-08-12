@@ -7,8 +7,10 @@ from nonebot.notice_request import NoticeSession, RequestSession
 from nonebot.plugin import on_request
 from aiocqhttp.exceptions import ActionFailed
 
+import config # type: ignore
+
 bot = nonebot.get_bot()
-master = bot.config.SUPERUSERS
+master = config.MASTER()
 
 
 @on_notice('group_increase')
@@ -22,10 +24,10 @@ async def _(session: NoticeSession):
         await session.send(f'[CQ:at,qq={user}]\nねえ❤...是新人欸！\nここでは遠慮はいらないのだからね❤')
 
 @on_notice('firend_add')
-async def _(session: NoticeSession, CommandSession):
+async def _(session: NoticeSession):
     user = session.event.user_id
     await bot.send_private_msg(
-        user_id = master,
+        user_id = master, # type: ignore
         message = f'{user}\n想认识ATRI欸欸欸！！'
     )
 
@@ -52,6 +54,14 @@ async def _(session: NoticeSession, CommandSession):
             message = f'主人似乎不想让ATRI接触陌生人呢...'
         )
 
+@on_request('friend_add')
+async def _(session: RequestSession):
+    with open(Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json', 'r') as f:
+        data = json.load(f)
+    
+    if data["approve_friend_add"] == 0:
+        await session.approve()
+
 
 @on_request('group')
 async def _(session: RequestSession):
@@ -72,7 +82,7 @@ async def _(session: RequestSession):
                 user_id = master, # type: ignore
                 message = f'ATRI收到一个新邀请:\n裙: {group}\n邀请人: {user}\n已同意'
             )
-    
+
             try:
                 await session.approve()
             except ActionFailed as e:

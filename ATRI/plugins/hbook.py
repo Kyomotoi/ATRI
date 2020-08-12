@@ -15,7 +15,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{h_user}"] == str(h_user):
+    if str(user) in data.keys():
         pass
     else:
         with open('ATRI/plugins/switch/switch.json', 'r') as f:

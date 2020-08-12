@@ -64,7 +64,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         await session.send(
@@ -92,7 +92,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         await session.send(
@@ -109,7 +109,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         await session.send(
@@ -126,7 +126,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         await session.send(
@@ -142,7 +142,7 @@ async def _(session: CommandSession):
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
 
-    if data[f"{user}"] == str(user):
+    if str(user) in data.keys():
         pass
     else:
         await session.send(MENU_REPO)
