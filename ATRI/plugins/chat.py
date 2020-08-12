@@ -3,7 +3,9 @@ import re
 import json
 import nonebot
 import random
+import warnings
 from pathlib import Path
+import numpy as np
 from random import randint, choice
 from datetime import datetime, timedelta
 from nonebot import on_command, scheduler
@@ -102,6 +104,24 @@ def now_time():
     minute = now_.minute
     now = hour + minute / 60
     return now
+
+def countX(lst, x):
+    warnings.simplefilter('ignore', ResourceWarning)
+    count = 0
+    for ele in lst:
+        if (ele == x):
+            count = count + 1
+    return count
+
+def rmQQfromNoobLIST(user):
+    file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
+    with open(file, 'r') as f:
+        bL = json.load(f)
+    bL.pop(f"{user}")
+    f = open(file, 'w')
+    f.write(json.dumps(bL))
+    f.close()
+
 
 @on_command('morning', patterns = [r"早[安哇]|早上好|ohayo|哦哈哟|お早う"], only_to_me = False)
 async def _(session: CommandSession):
@@ -290,7 +310,7 @@ async def az(session: CommandSession):
             # res = random.randint(1,10)
             img = choice(
                 [
-                    'SUKI.jpg', 'SUKI1.jpg', 'HE1.jpg'
+                    'SUKI.jpg', 'SUKI1.jpg',  'SUKI2.jpg','HE1.jpg'
                 ]
             )
             img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
@@ -469,8 +489,10 @@ async def _(session: CommandSession):
             img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'H.jpg'
             await session.send(f'[CQ:image,file=file:///{img}]')
 
+noobList = []
 @on_command('ntr', patterns = [r"[nN][tT][rR]|[牛🐂]头人"], only_to_me = False)
 async def _(session: CommandSession):
+    global noobList
     user = session.event.user_id
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
@@ -479,23 +501,27 @@ async def _(session: CommandSession):
         pass
     else:
         msg = str(session.event.message)
-        noobList = []
         bL = {}
         pattern = r"[nN][tT][rR]|[牛🐂]头人"
         if re.findall(pattern, msg):
             await session.send('你妈的，牛头人，' + response.request_api(KC_URL))
             noobList.append(user)
-            if countX(noobList, user) == 10:
+            print(noobList)
+            print(countX(noobList, user))
+            if countX(noobList, user) == 5:
                 if user == master:
-                    await session.send('是主人的话...那算了...呜呜')
+                    await session.send('是主人的话...那算了...呜呜\n即使到达了ATRI的最低忍耐限度......')
+                    noobList = list(set(noobList))
                     pass
                 else:
-                    await session.send('哼！接下来10分钟别想让我理你！')
+                    await session.send(f'[CQ:at,qq={user}]哼！接下来10分钟别想让我理你！')
                     bL[f"{user}"] = f"{user}"
                     file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
                     f = open(file, 'w')
                     f.write(json.dumps(bL))
                     f.close()
+                    noobList = list(set(noobList))
+                    print(noobList)
                     delta = timedelta(minutes = 10)
                     trigger = DateTrigger(
                         run_date = datetime.now() + delta
@@ -509,20 +535,4 @@ async def _(session: CommandSession):
                     )
 
             else:
-                pass
-
-async def countX(lst, x):
-    count = 0
-    for ele in lst:
-        if (ele == x):
-            count = count + 1
-    return count
-
-async def rmQQfromNoobLIST(user):
-    file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
-    with open(file, 'r') as f:
-        bL = json.load(f)
-    bL.pop(f"{user}")
-    f = open(file, 'w')
-    f.write(json.dumps(bL))
-    f.close()    
+                pass    

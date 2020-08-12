@@ -72,7 +72,7 @@ async def setu(session: CommandSession):
                         )
                     
                     elif res == 3:
-                        await session.send('我找到涩图了！但我发给主人了ο(=•ω＜=)ρ⌒☆')
+                        await session.send('我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆')
                         end = time.perf_counter()
                         await bot.send_private_msg( # type: ignore
                             user_id = master,
