@@ -22,7 +22,12 @@ BANGROUP = []
 # API url:https://api.lolicon.app/#/setu
 LOLICONAPI = ""
 
+# API url:https://api-cn.faceplusplus.com/
+def FACE_KEY():
+    return ""
 
+def FACE_SECRET():
+    return ""
 
 
 
