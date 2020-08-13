@@ -1,10 +1,8 @@
 import json
-from pathlib import Path
 from random import randint
 import nonebot
 from nonebot import on_command
 from nonebot import CommandSession
-from nonebot import MessageSegment
 
 import config # type: ignore
 
@@ -13,7 +11,7 @@ bot = nonebot.get_bot()
 master = config.MASTER()
 
 
-@on_command('add_word', aliases = ['增加词汇'], only_to_me = False)
+@on_command('add_word', aliases = ['增加词汇', '删除词汇'], only_to_me = False)
 async def _(session: CommandSession):
     if session.event.user_id == master:
         msg = session.event.raw_message.split(' ', 3)
@@ -24,7 +22,7 @@ async def _(session: CommandSession):
         with open('ATRI/plugins/wordcloud/wordcloud.json', 'r') as f:
             data = json.load(f)
 
-        if w_tpye == '添加词云' or '上传词云':
+        if w_tpye == '增加词汇':
             if word in data.keys():
                 await session.send('该词已存在~！')
 
@@ -35,7 +33,7 @@ async def _(session: CommandSession):
                 f.close()
                 session.finish(f"学習しました！\nWord：[{word}]\nRepo：[{repo}]\nProbability：[{'%.2f%%' % (round(1 / prob , 1) * 100)}]")
         
-        elif w_tpye == '删除词云':
+        elif w_tpye == '删除词汇':
             if word in data.keys():
                 data.pop(word)
                 await session.send(f'已成功从ATRI记忆模块中抹除[{word}]')
