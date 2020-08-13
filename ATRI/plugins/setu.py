@@ -129,6 +129,7 @@ async def setu(session: CommandSession):
                     ]
                 )
                 img = Path('.') / 'ATRI' / 'data' / 'img' / 'niceIMG' / f'{img}'
+                img = os.path.abspath(img)
                 await session.send(f'[CQ:image,file=file:///{img}]')
 
         else:

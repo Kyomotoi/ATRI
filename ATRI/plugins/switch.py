@@ -19,13 +19,13 @@ async def _(session: CommandSession):
         com = command[1]
 
         if switch == '开启':
-            if com == 'p站搜图':
+            if com == 'p站搜图' or 'P站搜图':
                 data["pixiv_seach_img"] = 0
             
             elif com == '画师':
                 data["pixiv_seach_author"] = 0
             
-            elif com == 'P站排行榜':
+            elif com == 'P站排行榜' or 'P站排行榜':
                 data["pixiv_daily_rank"] = 0
             
             elif com == '好友添加':
@@ -40,17 +40,23 @@ async def _(session: CommandSession):
             elif com == '本子':
                 data["hbook"] = 0
             
+            elif com == 'AI换脸' or 'ai换脸':
+                data["change_face"] = 0
+            
+            elif com == '接头霸王':
+                data["chouYou"] = 0
+
             else:
                 pass
 
         elif switch == '关闭':
-            if com == 'p站搜图':
+            if com == 'p站搜图' or 'P站搜图':
                 data["pixiv_seach_img"] = 1
             
             elif com == '画师':
                 data["pixiv_seach_author"] = 1
             
-            elif com == 'P站排行榜':
+            elif com == 'P站排行榜' or 'p站排行榜':
                 data["pixiv_daily_rank"] = 1
 
             elif com == '好友添加':
@@ -64,6 +70,12 @@ async def _(session: CommandSession):
             
             elif com == '本子':
                 data["hbook"] = 1
+            
+            elif com == 'AI换脸' or 'ai换脸':
+                data["change_face"] = 1
+            
+            elif com == '接头霸王':
+                data["chouYou"] = 1
             
             else:
                 pass

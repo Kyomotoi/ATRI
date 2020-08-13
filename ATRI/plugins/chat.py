@@ -2,7 +2,6 @@ import os
 import re
 import json
 import nonebot
-import random
 import warnings
 from pathlib import Path
 import numpy as np
@@ -284,17 +283,30 @@ async def az(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        res = randint(1,3)
-        if res == 1:
-            # res = random.randint(1,10)
-            img = choice(
-                [
-                    'AZ.jpg', 'AZ1.jpg', 'AZ2.jpg', 'AZ3.png', 'ZN.jpg'
-                ]
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
+                )
             )
-            img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-            img = os.path.abspath(img)
-            await session.send(f'[CQ:image,file=file:///{img}]')
+        else:
+            res = randint(1,3)
+            if res == 1:
+                # res = random.randint(1,10)
+                img = choice(
+                    [
+                        'AZ.jpg', 'AZ1.jpg', 'AZ2.jpg', 'AZ3.png', 'ZN.jpg'
+                    ]
+                )
+                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                img = os.path.abspath(img)
+                await session.send(f'[CQ:image,file=file:///{img}]')
 
 @on_command('suki', patterns = [r"喜欢|爱你|爱|suki|daisuki|すき|好き|贴贴|老婆|[Mm][Uu][Aa]|亲一个"], only_to_me = True)
 async def az(session: CommandSession):
@@ -305,27 +317,40 @@ async def az(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        res = randint(1,3)
-        if res == 1:
-            # res = random.randint(1,10)
-            img = choice(
-                [
-                    'SUKI.jpg', 'SUKI1.jpg',  'SUKI2.jpg','HE1.jpg'
-                ]
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
+                )
             )
-            img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-            img = os.path.abspath(img)
-            await session.send(f'[CQ:image,file=file:///{img}]')
-        
-        elif 2 <= res <= 3:
-            img = choice(
-                [
-                    'TZ.jpg', 'TZ1.jpg', 'TZ1.jpg'
-                ]
-            )
-            img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-            img = os.path.abspath(img)
-            await session.send(f'[CQ:image,file=file:///{img}]')
+        else:
+            res = randint(1,3)
+            if res == 1:
+                # res = random.randint(1,10)
+                img = choice(
+                    [
+                        'SUKI.jpg', 'SUKI1.jpg', 'SUKI2.png', 'HE1.jpg'
+                    ]
+                )
+                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                img = os.path.abspath(img)
+                await session.send(f'[CQ:image,file=file:///{img}]')
+            
+            elif 2 <= res <= 3:
+                img = choice(
+                    [
+                        'TZ.jpg', 'TZ1.jpg', 'TZ2.jpg'
+                    ]
+                )
+                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                img = os.path.abspath(img)
+                await session.send(f'[CQ:image,file=file:///{img}]')
 
 
 @on_command('wenhao', patterns = [r"'?'|？"], only_to_me = False)
@@ -337,27 +362,40 @@ async def _(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        res = randint(1,3)
-        if res == 1:
-            res = randint(1,5)
-            if 1 <= res < 2:
-                await session.send(
-                    choice(
-                        [
-                            '?', '？', '嗯？', '(。´・ω・)ん?', 'ん？'
-                        ]
-                    )
-                )
-            
-            elif 2 <= res <= 5:
-                img = choice(
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
                     [
-                        'WH.jpg', 'WH1.jpg', 'WH2.jpg', 'WH3.jpg', 'WH4.jpg'
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
                     ]
                 )
-                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-                img = os.path.abspath(img)
-                await session.send(f'[CQ:image,file=file:///{img}]')
+            )
+        else:
+            res = randint(1,3)
+            if res == 1:
+                res = randint(1,5)
+                if 1 <= res < 2:
+                    await session.send(
+                        choice(
+                            [
+                                '?', '？', '嗯？', '(。´・ω・)ん?', 'ん？'
+                            ]
+                        )
+                    )
+                
+                elif 2 <= res <= 5:
+                    img = choice(
+                        [
+                            'WH.jpg', 'WH1.jpg', 'WH2.jpg', 'WH3.jpg', 'WH4.jpg'
+                        ]
+                    )
+                    img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                    img = os.path.abspath(img)
+                    await session.send(f'[CQ:image,file=file:///{img}]')
 
 @on_command('yn', patterns = [r"是[吗]|是否"], only_to_me = False)
 async def _(session: CommandSession):
@@ -368,15 +406,28 @@ async def _(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        if randint(1,3) == 1:
-            img = choice(
-                [
-                    'YIQI_YES.png', 'YIQI_NO.jpg', 'KD.jpg', 'FD.jpg'
-                ]
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
+                )
             )
-            img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-            img = os.path.abspath(img)
-            await session.send(f'[CQ:image,file=file:///{img}]')
+        else:
+            if randint(1,3) == 1:
+                img = choice(
+                    [
+                        'YIQI_YES.png', 'YIQI_NO.jpg', 'KD.jpg', 'FD.jpg'
+                    ]
+                )
+                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                img = os.path.abspath(img)
+                await session.send(f'[CQ:image,file=file:///{img}]')
 
 
 
@@ -389,31 +440,44 @@ async def _(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        if randint(1,2) == 1:
-            res = randint(1,3)
-            if res == 1:
-                img = choice(
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
                     [
-                        'WQ.jpg', 'WQ.png', 'WQ2.jpg', 'WQ3.jpg', 'FN.jpg'
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
                     ]
                 )
-                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-                img = os.path.abspath(img)
-                await session.send(f'[CQ:image,file=file:///{img}]')
-
-            elif res == 2:
+            )
+        else:
+            if randint(1,2) == 1:
                 res = randint(1,3)
                 if res == 1:
-                    await session.send('对嘴臭人以火箭组合必杀拳，来让他好好喝一壶！哼！')
-                
+                    img = choice(
+                        [
+                            'WQ.jpg', 'WQ.png', 'WQ1.jpg', 'WQ2.jpg', 'FN.jpg'
+                        ]
+                    )
+                    img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                    img = os.path.abspath(img)
+                    await session.send(f'[CQ:image,file=file:///{img}]')
+
                 elif res == 2:
-                    await session.send('鱼雷组合拳——————————————————啊————！！！')
+                    res = randint(1,3)
+                    if res == 1:
+                        await session.send('对嘴臭人以火箭组合必杀拳，来让他好好喝一壶！哼！')
+                    
+                    elif res == 2:
+                        await session.send('鱼雷组合拳——————————————————啊————！！！')
+                    
+                    elif res == 3:
+                        await session.send('火箭拳——————————————————————————！！！')
                 
                 elif res == 3:
-                    await session.send('火箭拳——————————————————————————！！！')
-            
-            elif res == 3:
-                await session.send(response.request_api(KC_URL))
+                    await session.send(response.request_api(KC_URL))
 
 @on_command('ciallo', patterns = [r"[Cc][iI][aA][lL][lL][oO]"], only_to_me = False)
 async def _(session: CommandSession):
@@ -424,20 +488,33 @@ async def _(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        if randint(1,2) == 1:
-            res = randint(1,2)
-            if res == 1:
-                img = choice(
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
                     [
-                        'CIALLO.jpg', 'CIALLO1.jpg', 'CIALLO2.jpg', 'CIALLO3.jpg', 'CIALLO4.jpg', 'CIALLO5.jpg'
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
                     ]
                 )
-                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-                img = os.path.abspath(img)
-                await session.send(f'[CQ:image,file=file:///{img}]')
-            
-            elif res == 2:
-                await session.send('Ciallo～(∠・ω< )⌒★')
+            )
+        else:
+            if randint(1,2) == 1:
+                res = randint(1,2)
+                if res == 1:
+                    img = choice(
+                        [
+                            'CIALLO.jpg', 'CIALLO1.jpg', 'CIALLO2.jpg', 'CIALLO3.jpg', 'CIALLO4.jpg', 'CIALLO5.jpg'
+                        ]
+                    )
+                    img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                    img = os.path.abspath(img)
+                    await session.send(f'[CQ:image,file=file:///{img}]')
+                
+                elif res == 2:
+                    await session.send('Ciallo～(∠・ω< )⌒★')
 
 @on_command('ne', patterns = [r"呐|ねえ|口内"], only_to_me = False)
 async def _(session: CommandSession):
@@ -448,14 +525,27 @@ async def _(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        if randint(1,3) == 1:
+        if 0 <= now_time() < 5.5:
             await session.send(
                 choice(
                     [
-                        '呐', '呐呐呐', 'ねえ', 'ねえねえ'
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
                     ]
                 )
             )
+        else:
+            if randint(1,3) == 1:
+                await session.send(
+                    choice(
+                        [
+                            '呐', '呐呐呐', 'ねえ', 'ねえねえ'
+                        ]
+                    )
+                )
 
 @on_command('kani', patterns = [r"螃蟹|🦀|カニ|[kK]ani"], only_to_me = False)
 async def _(session: CommandSession):
@@ -466,17 +556,30 @@ async def _(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        if randint(1,2) == 1:
-            img = choice(
-                [
-                    'KN.png', 'KN.jpg', 'KN1.jpg', 'KN2.jpg', 'KN3.png'
-                ]
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
+                )
             )
-            img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-            img = os.path.abspath(img)
-            await session.send(f'[CQ:image,file=file:///{img}]')
+        else:
+            if randint(1,2) == 1:
+                img = choice(
+                    [
+                        'KN.png', 'KN.jpg', 'KN1.jpg', 'KN2.jpg', 'KN3.png'
+                    ]
+                )
+                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                img = os.path.abspath(img)
+                await session.send(f'[CQ:image,file=file:///{img}]')
 
-@on_command('hai', patterns = [r"青[洁结]"], only_to_me = False)
+@on_command('qingjie', patterns = [r"青[洁结]"], only_to_me = False)
 async def _(session: CommandSession):
     user = session.event.user_id
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
@@ -485,12 +588,85 @@ async def _(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        if randint(1,2) == 1:
-            img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'H.jpg'
-            await session.send(f'[CQ:image,file=file:///{img}]')
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
+                )
+            )
+        else:
+            if randint(1,2) == 1:
+                img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'H.jpg'
+                img = os.path.abspath(img)
+                await session.send(f'[CQ:image,file=file:///{img}]')
+
+@on_command('jz', patterns = [r"就这"], only_to_me = False)
+async def _(session: CommandSession):
+    user = session.event.user_id
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
+
+    if str(user) in data.keys():
+        pass
+    else:
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
+                )
+            )
+        else:
+            if randint(1,2) == 1:
+                img = choice(
+                    [
+                        'JZ.png', 'JZ1.png'
+                    ]
+                )
+                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                img = os.path.abspath(img)
+                await session.send(f'[CQ:image,file=file:///{img}]')
+
+@on_command('hai', patterns = [r"害|嗐"], only_to_me = False)
+async def _(session: CommandSession):
+    user = session.event.user_id
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
+
+    if str(user) in data.keys():
+        pass
+    else:
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
+                )
+            )
+        else:
+            if randint(1,2) == 1:
+                img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'H.jpg'
+                img = os.path.abspath(img)
+                await session.send(f'[CQ:image,file=file:///{img}]')
 
 noobList = []
-@on_command('ntr', patterns = [r"[nN][tT][rR]|[牛🐂]头人"], only_to_me = False)
+@on_command('ntr', patterns = [r"[nNηиɴИ][tT][rR]|[牛🐂]头人"], only_to_me = False)
 async def _(session: CommandSession):
     global noobList
     user = session.event.user_id
@@ -500,40 +676,53 @@ async def _(session: CommandSession):
     if str(user) in data.keys():
         pass
     else:
-        msg = str(session.event.message)
-        bL = {}
-        pattern = r"[nN][tT][rR]|[牛🐂]头人"
-        if re.findall(pattern, msg):
-            await session.send('你妈的，牛头人，' + response.request_api(KC_URL))
-            noobList.append(user)
-            print(noobList)
-            print(countX(noobList, user))
-            if countX(noobList, user) == 5:
-                if user == master:
-                    await session.send('是主人的话...那算了...呜呜\n即使到达了ATRI的最低忍耐限度......')
-                    noobList = list(set(noobList))
-                    pass
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
+                )
+            )
+        else:
+            msg = str(session.event.message)
+            bL = {}
+            pattern = r"[nNηиɴИ][tT][rR]|[牛🐂]头人"
+            if re.findall(pattern, msg):
+                await session.send('你妈的，牛头人，' + response.request_api(KC_URL))
+                noobList.append(user)
+                print(noobList)
+                print(countX(noobList, user))
+                if countX(noobList, user) == 5:
+                    if user == master:
+                        await session.send('是主人的话...那算了...呜呜\n即使到达了ATRI的最低忍耐限度......')
+                        noobList = list(set(noobList))
+                        pass
+
+                    else:
+                        await session.send(f'[CQ:at,qq={user}]哼！接下来10分钟别想让我理你！')
+                        bL[f"{user}"] = f"{user}"
+                        file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
+                        f = open(file, 'w')
+                        f.write(json.dumps(bL))
+                        f.close()
+                        noobList = list(set(noobList))
+                        print(noobList)
+                        delta = timedelta(minutes = 10)
+                        trigger = DateTrigger(
+                            run_date = datetime.now() + delta
+                        )
+
+                        scheduler.add_job( #type: ignore
+                            func = rmQQfromNoobLIST,
+                            trigger = trigger,
+                            args = (user),
+                            misfire_grace_time = 60,
+                        )
 
                 else:
-                    await session.send(f'[CQ:at,qq={user}]哼！接下来10分钟别想让我理你！')
-                    bL[f"{user}"] = f"{user}"
-                    file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
-                    f = open(file, 'w')
-                    f.write(json.dumps(bL))
-                    f.close()
-                    noobList = list(set(noobList))
-                    print(noobList)
-                    delta = timedelta(minutes = 10)
-                    trigger = DateTrigger(
-                        run_date = datetime.now() + delta
-                    )
-
-                    scheduler.add_job( #type: ignore
-                        func = rmQQfromNoobLIST,
-                        trigger = trigger,
-                        args = (user),
-                        misfire_grace_time = 60,
-                    )
-
-            else:
-                pass    
+                    pass
