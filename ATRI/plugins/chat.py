@@ -34,7 +34,7 @@ async def _():
         groups = [group['group_id'] for group in group_list]
         res = randint(1,2)
         if res == 1:
-            msg = random.choice(
+            msg = choice(
                 [
                     '啊......早上好...(哈欠)',
                     '唔......吧唧...早上...哈啊啊~~~\n早上好......',
@@ -71,7 +71,7 @@ async def _():
         groups = [group['group_id'] for group in group_list]
         res = randint(1,2)
         if res == 1:
-            msg = random.choice(
+            msg = choice(
                 [
                     '忙累了一天，快休息吧',
                     '辛苦了一天，准备睡觉吧',
@@ -513,6 +513,7 @@ async def _(session: CommandSession):
                     await session.send('是主人的话...那算了...呜呜\n即使到达了ATRI的最低忍耐限度......')
                     noobList = list(set(noobList))
                     pass
+
                 else:
                     await session.send(f'[CQ:at,qq={user}]哼！接下来10分钟别想让我理你！')
                     bL[f"{user}"] = f"{user}"
