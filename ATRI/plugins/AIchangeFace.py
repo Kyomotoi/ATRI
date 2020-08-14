@@ -1,5 +1,4 @@
 import os
-import cv2
 import json
 import requests
 import base64
