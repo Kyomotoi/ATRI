@@ -1,15 +1,16 @@
 # -*- coding:utf-8 -*-
 import os
 import time
+from nonebot.default_config import *
 
 #配置监听的 IP 和 端口
 HOST = '127.0.0.1'
 PORT = 8080
 
 # 机器人的主人（QQ号）即 超级用户
-SUPERUSERS = [123456]
+SUPERUSERS = [123456789]
 def MASTER():
-    return 123456
+    return 123456789
 
 # 机器人名称，替代 @ 和 命令开头
 NICKNAME = {'ATRI'}
@@ -20,14 +21,19 @@ COMMAND_START = {''}
 BANGROUP = []
 
 # API url:https://api.lolicon.app/#/setu
-LOLICONAPI = ""
+def LOLICONAPI():
+    return ""
 
 # API url:https://api-cn.faceplusplus.com/
+FACE_KEY = ""
 def FACE_KEY():
     return ""
 
+FACE_SECRET = ""
 def FACE_SECRET():
     return ""
+
+
 
 
 
@@ -58,6 +64,7 @@ if NICKNAME:
     print("对ATRI的特别称呼已加载！")
 else:
     print("ATRI没特别的小昵称嘛...彳亍8")
+    time.sleep(1)
     print("既然这样那叫我ATRI就好力！")
     NICKNAME = {'ATRI', 'アトリ'}
     time.sleep(1)
@@ -79,10 +86,34 @@ else:
     else:
         os._exit(0)
 
-if LOLICONAPI:
+if LOLICONAPI():
     print("涩图大门的钥匙已到手！")
 else:
     print("似乎没拿到大门的钥匙呢...如需帮助，请查看安装手册")
+    print("...跳过！")
+    time.sleep(1)
+    wait = input("是否继续： Y/N\n")
+    if wait == "Y" or 'y':
+        pass
+    else:
+        os._exit(0)
+
+if FACE_KEY():
+    print("用于人脸识别的钥匙已到手！")
+else:
+    print("貌似没拿到人脸识别的钥匙呢...如需帮助，请查看安装手册")
+    print("...跳过！")
+    time.sleep(1)
+    wait = input("是否继续： Y/N\n")
+    if wait == "Y" or 'y':
+        pass
+    else:
+        os._exit(0)
+
+if FACE_SECRET():
+    print("用于人脸识别的验证码已到手！")
+else:
+    print("貌似没拿到人脸识别的验证码呢...如需帮助，请查看安装手册")
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")

@@ -1,5 +1,6 @@
 import json
-from random import randint
+from random import randint, choice
+from datetime import datetime
 import nonebot
 from nonebot import on_command
 from nonebot import CommandSession
@@ -9,6 +10,14 @@ import config # type: ignore
 
 bot = nonebot.get_bot()
 master = config.MASTER()
+
+
+def now_time():
+    now_ = datetime.now()
+    hour = now_.hour
+    minute = now_.minute
+    now = hour + minute / 60
+    return now
 
 
 @on_command('add_word', aliases = ['增加词汇', '删除词汇'], only_to_me = False)
@@ -48,23 +57,26 @@ async def repo(context):
     group = context["group_id"]
     word = context["message"]
     print(word)
-    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
-        nL = json.load(f)
-
-    if str(user) in nL.keys():
+    if 0 <= now_time() < 5.5:
         pass
     else:
-        with open('ATRI/plugins/wordcloud/wordcloud.json', 'r') as f:
-            data = json.load(f)
+        with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+            nL = json.load(f)
 
-        if str(word) in data.keys():
-            lt = data[f"{word}"]
-            print(lt)
-            msg = lt[0]
-            prob = int(lt[1])
-            res = randint(1,prob)
-            if res == 1:
-                await bot.send_msg(
-                    group_id = group,
-                    message = msg
-                ) # type: ignore
+        if str(user) in nL.keys():
+            pass
+        else:
+            with open('ATRI/plugins/wordcloud/wordcloud.json', 'r') as f:
+                data = json.load(f)
+
+            if str(word) in data.keys():
+                lt = data[f"{word}"]
+                print(lt)
+                msg = lt[0]
+                prob = int(lt[1])
+                res = randint(1,prob)
+                if res == 1:
+                    await bot.send_msg(
+                        group_id = group,
+                        message = msg
+                    ) # type: ignore

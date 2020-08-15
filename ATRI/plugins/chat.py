@@ -4,7 +4,6 @@ import json
 import nonebot
 import warnings
 from pathlib import Path
-import numpy as np
 from random import randint, choice
 from datetime import datetime, timedelta
 from nonebot import on_command, scheduler
@@ -49,7 +48,8 @@ async def _():
             )
         
         elif res == 2:
-            img = Path('.') / 'ATRI' / 'data' / 'voice' / 'SY.jpg'
+            img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'SY.jpg'
+            img = os.path.abspath(img)
             msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
 
         for group in groups:
@@ -87,7 +87,8 @@ async def _():
                     'SJ.jpg', 'SJ1.jpg'
                 ]
             )
-            img = Path('.') / 'ATRI' / 'data' / 'voice' / f'{img}'
+            img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+            img = os.path.abspath(img)
             msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
 
         for group in groups:
@@ -284,17 +285,7 @@ async def az(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             res = randint(1,3)
             if res == 1:
@@ -318,17 +309,7 @@ async def az(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             res = randint(1,3)
             if res == 1:
@@ -363,17 +344,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             res = randint(1,3)
             if res == 1:
@@ -407,17 +378,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             if randint(1,3) == 1:
                 img = choice(
@@ -431,7 +392,7 @@ async def _(session: CommandSession):
 
 
 
-@on_command('kouchou', patterns = [r"草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴|sb|SB|啥[b批比逼]|傻b|2b|给👴爬|嘴臭"], only_to_me = False)
+@on_command('kouchou', patterns = [r"草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴|sb|SB|啥[b批比逼]|傻b|给[爷👴]爬|嘴臭"], only_to_me = False)
 async def _(session: CommandSession):
     user = session.event.user_id
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
@@ -441,17 +402,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             if randint(1,2) == 1:
                 res = randint(1,3)
@@ -489,17 +440,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             if randint(1,2) == 1:
                 res = randint(1,2)
@@ -526,17 +467,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             if randint(1,3) == 1:
                 await session.send(
@@ -557,17 +488,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             if randint(1,2) == 1:
                 img = choice(
@@ -589,17 +510,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             if randint(1,2) == 1:
                 img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'H.jpg'
@@ -616,17 +527,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             if randint(1,2) == 1:
                 img = choice(
@@ -648,17 +549,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             if randint(1,2) == 1:
                 img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'H.jpg'
@@ -677,17 +568,7 @@ async def _(session: CommandSession):
         pass
     else:
         if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+            pass
         else:
             msg = str(session.event.message)
             bL = {}
