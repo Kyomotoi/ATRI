@@ -1,5 +1,5 @@
 nonebot[scheduler]~=1.6.0
-git+https://github.com/nonebot/nonebot/tree/master
+git+https://github.com/nonebot/nonebot.git@master
 aiohttp~=3.6
 requests~=2.24
 orjson~=3.3.0
