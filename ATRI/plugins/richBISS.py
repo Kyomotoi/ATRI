@@ -122,26 +122,27 @@ async def Fuck_CloudMusic(context):
         if 0 <= now_time() < 5.5:
             pass
         else:
-            if music_id:
-                music_id = str(music_id[0])
-                music_id = re.findall(r"-?[1-9]\d*", music_id)
-                URL = f'https://api.imjad.cn/cloudmusic/?type=song&id={music_id[0]}&br=320000'
-                print(URL)
+            if 'music.163.com' in msg:
+                if music_id:
+                    music_id = str(music_id[0])
+                    music_id = re.findall(r"-?[1-9]\d*", music_id)
+                    URL = f'https://api.imjad.cn/cloudmusic/?type=song&id={music_id[0]}&br=320000'
+                    print(URL)
 
-                try:
-                    res = response.request_api(URL)
-                    mg = json.loads(res)
+                    try:
+                        res = response.request_api(URL)
+                        mg = json.loads(res)
 
-                    msg = REPORT_FORMAT.format(
-                        status = mg["code"],
-                        id = mg["data"][0]["id"],
-                        br = mg["data"][0]["br"],
-                        url = mg["data"][0]["url"],
-                        md5 = mg["data"][0]["md5"],
-                        )
-                    await bot.send_msg(
-                        group_id = group,
-                        message = msg
-                        ) # type: ignore
-                except:
-                    pass
+                        msg = REPORT_FORMAT.format(
+                            status = mg["code"],
+                            id = mg["data"][0]["id"],
+                            br = mg["data"][0]["br"],
+                            url = mg["data"][0]["url"],
+                            md5 = mg["data"][0]["md5"],
+                            )
+                        await bot.send_msg(
+                            group_id = group,
+                            message = msg
+                            ) # type: ignore
+                    except:
+                        pass
