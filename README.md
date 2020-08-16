@@ -48,6 +48,10 @@
 
 以及NoneBot裙友萌
 
+还有以下：
+ - 50861735 三杯红茶
+ - 1072324725 7r
+
 ## 其它
 Blog: <http://blog.lolihub.icu>
 
