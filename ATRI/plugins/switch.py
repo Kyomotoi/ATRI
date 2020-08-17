@@ -7,84 +7,85 @@ bot = nonebot.get_bot()
 master = bot.config.SUPERUSERS
 
 
-@on_command('switch', aliases = ['开启', '关闭'], only_to_me = False)
+@on_command('switch', aliases = ['on', 'off'], only_to_me = False)
 async def _(session: CommandSession):
     with open("ATRI/plugins/switch/switch.json", 'r') as f:
         data = json.load(f)
+    print(data)
 
     if session.event.user_id in master:
         command = session.event.raw_message.split(' ', 1)
         switch = command[0]
         com = command[1]
+        print(command)
 
-        if switch == '开启':
-            if com == 'p站搜图' or 'P站搜图':
-                data["pixiv_seach_img"] = 0
+        if switch == 'on':
+            if com == 'PixivSearchIMG':
+                data["pixiv_seach_img"] = "on"
             
-            elif com == '画师':
-                data["pixiv_seach_author"] = 0
+            elif com == 'PixivSearchAuthor':
+                data["pixiv_seach_author"] = "on"
             
-            elif com == 'P站排行榜' or 'P站排行榜':
-                data["pixiv_daily_rank"] = 0
+            elif com == 'PixivRank':
+                data["pixiv_daily_rank"] = "on"
             
-            elif com == '好友添加':
-                data["approve_friend_add"] = 0
+            elif com == 'FriendADD':
+                data["approve_friend_add"] = "on"
             
-            elif com == '群邀请':
-                data["approve_invite_join_group"] = 0
+            elif com == 'GroupInvite':
+                data["approve_invite_join_group"] = "on"
 
-            elif com == '涩图':
-                data["setu"] = 0
+            elif com == 'Setu':
+                data["setu"] = "on"
             
-            elif com == '本子':
-                data["hbook"] = 0
+            elif com == 'Hbook':
+                data["hbook"] = "on"
             
-            elif com == 'AI换脸' or 'ai换脸':
-                data["change_face"] = 0
+            elif com == 'AIchFace':
+                data["change_face"] = "on"
             
-            elif com == '接头霸王':
-                data["chouYou"] = 0
+            elif com == 'Kyaru':
+                data["chouYou"] = "on"
 
             else:
                 pass
 
-        elif switch == '关闭':
-            if com == 'p站搜图' or 'P站搜图':
-                data["pixiv_seach_img"] = 1
+        elif switch == 'off':
+            if com == 'PixivSearchIMG':
+                data["pixiv_seach_img"] = "off"
             
-            elif com == '画师':
-                data["pixiv_seach_author"] = 1
+            elif com == 'PixivSearchAuthor':
+                data["pixiv_seach_author"] = "off"
             
-            elif com == 'P站排行榜' or 'p站排行榜':
-                data["pixiv_daily_rank"] = 1
+            elif com == 'PixivRank':
+                data["pixiv_daily_rank"] = "off"
 
-            elif com == '好友添加':
-                data["approve_friend_add"] = 1
+            elif com == 'FriendADD':
+                data["approve_friend_add"] = "off"
             
-            elif com == '群邀请':
-                data["approve_invite_join_group"] = 1
+            elif com == 'GroupInvite':
+                data["approve_invite_join_group"] = "off"
 
-            elif com == '涩图':
-                data["setu"] = 1
+            elif com == 'Setu':
+                data["setu"] = "off"
             
-            elif com == '本子':
-                data["hbook"] = 1
+            elif com == 'Hbook':
+                data["hbook"] = "off"
             
-            elif com == 'AI换脸' or 'ai换脸':
-                data["change_face"] = 1
+            elif com == 'AIchFace':
+                data["change_face"] = "off"
             
-            elif com == '接头霸王':
-                data["chouYou"] = 1
+            elif com == 'Kyaru':
+                data["chouYou"] = "off"
             
             else:
                 pass
         
-        a = json.dumps(data)
         f2 = open("ATRI/plugins/switch/switch.json", 'w')
-        f2.write(a)
+        f2.write(json.dumps(data))
         f2.close()
 
-        await session.send('设置完成！')
+        await session.send('Success！')
     
     else:
         await session.send('恁哪位？')

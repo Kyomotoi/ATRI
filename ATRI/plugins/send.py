@@ -37,38 +37,38 @@ async def send_all_group(session: CommandSession):
 
         await session.send(f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}')
 
-@on_command('send_to_group', aliases=['对群'], only_to_me=False)
-async def send_to_group(session: CommandSession):
-    if session.event.user_id in master:
-        msg = session.current_arg.strip()
+# @on_command('send_to_group', aliases=['对群'], only_to_me=False)
+# async def send_to_group(session: CommandSession):
+#     if session.event.user_id in master:
+#         msg = session.current_arg.strip()
     
-        if not msg:
-            msg = session.get('message', prompt='请告诉吾辈完整内容呢...\n例：对群 12345647(群号) message 1')
+#         if not msg:
+#             msg = session.get('message', prompt='请告诉吾辈完整内容呢...\n例：对群 12345647(群号) message 1')
         
-        lg = msg.split(' ')
+#         lg = msg.split(' ')
 
-        group = lg[0]
-        msg = lg[1]
-        rei = 1 
-        try:
-            rei = int(lg[2]) + 1
-        except:
-            pass
+#         group = lg[0]
+#         msg = lg[1]
+#         rei = 1 
+#         try:
+#             rei = int(lg[2]) + 1
+#         except:
+#             pass
 
-        if rei:
-            for i in range(1, rei):
-                try:
-                    await bot.send_group_msg(group_id = group, message = msg) # type: ignore
-                except:
-                    await session.send('发送失败，请重试')
+#         if rei:
+#             for i in range(1, rei):
+#                 try:
+#                     await bot.send_group_msg(group_id = group, message = msg) # type: ignore
+#                 except:
+#                     await session.send('发送失败，请重试')
         
-        else:
-            try:
-                await bot.send_group_msg(group_id = group, message = msg) # type: ignore
-            except:
-                await session.send('发送失败，请重试')
+#         else:
+#             try:
+#                 await bot.send_group_msg(group_id = group, message = msg) # type: ignore
+#             except:
+#                 await session.send('发送失败，请重试')
         
-        await session.send('推送完成！')
+#         await session.send('推送完成！')
 
 
 @on_command('send_all_friend', aliases = ['全体用户'], only_to_me = False)
@@ -97,22 +97,22 @@ async def send_all_friend(session: CommandSession):
 
         await session.send(f'已推送到[{f_list}]位用户\n耗时：{round(end - start, 3)}')
 
-@on_command('send_to_qq', aliases=['对QQ'], only_to_me=False)
-async def send_to_qq(session: CommandSession):
-    if session.event.user_id in master:
-        msg = session.current_arg.strip()
+# @on_command('send_to_qq', aliases=['对QQ'], only_to_me=False)
+# async def send_to_qq(session: CommandSession):
+#     if session.event.user_id in master:
+#         msg = session.current_arg.strip()
     
-        if not msg:
-            msg = session.get('message', prompt='请告诉吾辈完整内容呢...\n例：对QQ 12345647(QQ号) message')
+#         if not msg:
+#             msg = session.get('message', prompt='请告诉吾辈完整内容呢...\n例：对QQ 12345647(QQ号) message')
         
-        lg = msg.split(' ')
+#         lg = msg.split(' ')
 
-        qq = lg[0]
-        msg = lg[1]
+#         qq = lg[0]
+#         msg = lg[1]
 
-        try:
-            await bot.send_private_msg(user_id = qq, message = msg) # type: ignore
-        except:
-            await session.send('发送失败，请重试')
+#         try:
+#             await bot.send_private_msg(user_id = qq, message = msg) # type: ignore
+#         except:
+#             await session.send('发送失败，请重试')
         
-        await session.send('推送完成！')
+#         await session.send('推送完成！')

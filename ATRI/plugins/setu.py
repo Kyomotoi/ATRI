@@ -61,7 +61,7 @@ async def setu(session: CommandSession):
         if str(user) in data0.keys():
             pass
         else:
-            if data1["setu"] == 0:
+            if data1["setu"] == "on":
                 res = randint(1,10)
                 if 1 <= res < 9:
                     res = randint(1,4)

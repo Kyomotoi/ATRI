@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import time
 import nonebot
 import warnings
 from pathlib import Path
@@ -10,6 +11,7 @@ from nonebot import on_command, scheduler
 from nonebot import CommandSession
 from nonebot import on_command
 from apscheduler.triggers.date import DateTrigger
+from nonebot import session
 
 from ATRI.modules import response # type: ignore
 import config # type: ignore
@@ -25,11 +27,12 @@ KC_URL = 'https://nmsl.shadiao.app/api.php?level=min&lang=zh_cn'
     day_of_week = "mon,tue,wed,thu,fri,sat,sun",
     hour = 7
 )
-async def _():
+async def _(session: CommandSession):
     """早安"""
     try:
+        start = time.perf_counter()
         group_list = await bot.get_group_list() #type: ignore
-        groups = [group['group_id'] for group in group_list]
+        g_list = len(group_list)
         res = randint(1,2)
         if res == 1:
             msg = choice(
@@ -52,8 +55,11 @@ async def _():
             img = os.path.abspath(img)
             msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
 
-        for group in groups:
-            await bot.send_group_msg(group_id = group, message = msg) #type: ignore
+        for group in group_list:
+            await bot.send_group_msg(group_id = group['group_id'], message = msg) #type: ignore
+        
+        end = time.perf_counter()
+        await session.send(f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}')
     
     except:
         pass
@@ -63,11 +69,12 @@ async def _():
     day_of_week = "mon,tue,wed,thu,fri,sat,sun",
     hour = 22
 )
-async def _():
+async def _(session: CommandSession):
     """晚安"""
     try:
+        start = time.perf_counter()
         group_list = await bot.get_group_list() #type: ignore
-        groups = [group['group_id'] for group in group_list]
+        g_list = len(group_list)
         res = randint(1,2)
         if res == 1:
             msg = choice(
@@ -91,8 +98,11 @@ async def _():
             img = os.path.abspath(img)
             msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
 
-        for group in groups:
-            await bot.send_group_msg(group_id = group, message = msg) #type: ignore
+        for group in group_list:
+            await bot.send_group_msg(group_id = group['group_id'], message = msg) #type: ignore
+        
+        end = time.perf_counter()
+        await session.send(f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}')
 
     except:
         pass
@@ -556,10 +566,54 @@ async def _(session: CommandSession):
                 img = os.path.abspath(img)
                 await session.send(f'[CQ:image,file=file:///{img}]')
 
-noobList = []
+noobList0 = []
+@on_command('robot', patterns = [r"萝卜子"], only_to_me = False)
+async def _(session: CommandSession):
+    global noobList0
+    user = session.event.user_id
+    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
+        data = json.load(f)
+
+    if str(user) in data.keys():
+        pass
+    else:
+        if 0 <= now_time() < 5.5:
+            pass
+        else:
+            bL = {}
+            await session.send('萝卜子是对机器人的蔑称！')
+            noobList0.append(user)
+            if countX(noobList0, user) == 2:
+                if user == master:
+                    await session.send('是主人的话...那算了...呜呜\n即使到达了ATRI的最低忍耐限度......')
+                    noobList0 = list(set(noobList0))
+                    pass
+                await session.send('是亚托莉......萝卜子可是对机器人的蔑称......\n这是第二次警告哦，接下来5分钟我不会再理你了！哼唧！')
+                bL[f"{user}"] = f"{user}"
+                file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
+                f = open(file, 'w')
+                f.write(json.dumps(bL))
+                f.close()
+                noobList0 = list(set(noobList0))
+                print(noobList0)
+                delta = timedelta(minutes = 5)
+                trigger = DateTrigger(
+                    run_date = datetime.now() + delta
+                )
+
+                scheduler.add_job( #type: ignore
+                    func = rmQQfromNoobLIST,
+                    trigger = trigger,
+                    args = (user),
+                    misfire_grace_time = 60,
+                )
+
+
+
+noobList1 = []
 @on_command('ntr', patterns = [r"[nNηиɴИ][tT][rR]|[牛🐂]头人"], only_to_me = False)
 async def _(session: CommandSession):
-    global noobList
+    global noobList1
     user = session.event.user_id
     with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
         data = json.load(f)
@@ -575,13 +629,13 @@ async def _(session: CommandSession):
             pattern = r"[nNηиɴИ][tT][rR]|[牛🐂]头人"
             if re.findall(pattern, msg):
                 await session.send('你妈的，牛头人，' + response.request_api(KC_URL))
-                noobList.append(user)
-                print(noobList)
-                print(countX(noobList, user))
-                if countX(noobList, user) == 5:
+                noobList1.append(user)
+                print(noobList1)
+                print(countX(noobList1, user))
+                if countX(noobList1, user) == 5:
                     if user == master:
                         await session.send('是主人的话...那算了...呜呜\n即使到达了ATRI的最低忍耐限度......')
-                        noobList = list(set(noobList))
+                        noobList1 = list(set(noobList1))
                         pass
 
                     else:
@@ -591,8 +645,8 @@ async def _(session: CommandSession):
                         f = open(file, 'w')
                         f.write(json.dumps(bL))
                         f.close()
-                        noobList = list(set(noobList))
-                        print(noobList)
+                        noobList1 = list(set(noobList1))
+                        print(noobList1)
                         delta = timedelta(minutes = 10)
                         trigger = DateTrigger(
                             run_date = datetime.now() + delta
@@ -604,6 +658,3 @@ async def _(session: CommandSession):
                             args = (user),
                             misfire_grace_time = 60,
                         )
-
-                else:
-                    pass

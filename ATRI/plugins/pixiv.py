@@ -63,7 +63,7 @@ async def _(session: CommandSession):
             with open('ATRI/plugins/switch/switch.json', 'r') as f:
                 data = json.load(f)
 
-            if data["pixiv_seach_img"] == 0:
+            if data["pixiv_seach_img"] == "on":
                 pid = session.current_arg.strip()
 
                 if not pid:
@@ -129,7 +129,7 @@ async def _(session: CommandSession):
             with open('ATRI/plugins/switch/switch.json', 'r') as f:
                 data = json.load(f)
                 
-            if data["pixiv_seach_author"] == 0:
+            if data["pixiv_seach_author"] == "on":
                 author_id = session.current_arg.strip()
 
                 if not author_id:
@@ -202,7 +202,7 @@ async def _(session: CommandSession):
             with open('ATRI/plugins/switch/switch.json', 'r') as f:
                 data = json.load(f)
                 
-            if data["pixiv_daily_rank"] == 0:
+            if data["pixiv_daily_rank"] == "on":
 
                 await session.send('ATRI正在获取P站每日排行榜前五作品...')
 

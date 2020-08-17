@@ -10,7 +10,7 @@ import config # type: ignore
 
 bot = nonebot.get_bot()
 master = config.MASTER()
-
+__plugin_name__ = "LearnRepo"
 
 def now_time():
     now_ = datetime.now()
@@ -26,18 +26,18 @@ async def _(session: CommandSession):
         msg = session.event.raw_message.split(' ', 3)
         w_tpye = msg[0]
         word = msg[1]
-        repo = msg[2]
-        prob = int(msg[3])
-        with open('ATRI/plugins/wordcloud/wordcloud.json', 'r') as f:
+        with open('ATRI/plugins/LearnRepo/LearnRepo.json', 'r') as f:
             data = json.load(f)
 
         if w_tpye == '增加词汇':
+            repo = msg[2]
+            prob = int(msg[3])
             if word in data.keys():
                 await session.send('该词已存在~！')
 
             else:
                 data[f"{word}"] = [f"{repo}",prob]
-                f = open('ATRI/plugins/wordcloud/wordcloud.json', 'w')
+                f = open('ATRI/plugins/LearnRepo/LearnRepo.json', 'w')
                 f.write(json.dumps(data))
                 f.close()
                 session.finish(f"学習しました！\nWord：[{word}]\nRepo：[{repo}]\nProbability：[{'%.2f%%' % (round(1 / prob , 1) * 100)}]")
@@ -66,7 +66,7 @@ async def repo(context):
         if str(user) in nL.keys():
             pass
         else:
-            with open('ATRI/plugins/wordcloud/wordcloud.json', 'r') as f:
+            with open('ATRI/plugins/LearnRepo/LearnRepo.json', 'r') as f:
                 data = json.load(f)
 
             if str(word) in data.keys():

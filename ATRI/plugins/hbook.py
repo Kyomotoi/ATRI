@@ -43,7 +43,7 @@ async def _(session: CommandSession):
             with open('ATRI/plugins/switch/switch.json', 'r') as f:
                 data = json.load(f)
             
-            if data["hbook"] == 0:
+            if data["hbook"] == "on":
                 num = 1
                 tag = ''
                 start = time.perf_counter()

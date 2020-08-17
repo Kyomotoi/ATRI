@@ -65,7 +65,7 @@ async def Fuck_bili_rich(context):
         else:
             if bv:
                 bv = bv[0]
-                bv.replace('?', '')
+                bv = bv.replace('?', '')
 
                 aid = str(dec(bv))
                 ad = 'av' + aid

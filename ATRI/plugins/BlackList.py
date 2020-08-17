@@ -11,7 +11,7 @@ master = config.MASTER()
 
 @on_command('add_noobList', aliases = ['屏蔽', '移除'], only_to_me = False)
 async def _(session: CommandSession):
-    if session.event.user_id in master:
+    if session.event.user_id == master:
         msg = session.event.raw_message.split(' ', 1)
         b_type = msg[0]
         user = msg[1]

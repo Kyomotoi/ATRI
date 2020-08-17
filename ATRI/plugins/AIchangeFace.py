@@ -71,8 +71,9 @@ def change_face(image_1, image_2, user, number=99):
 
 
 @on_command('ai_ch_face', aliases = ['AI换脸', 'ai换脸'], only_to_me = False)
-async def _(session: CommandSession):
+async def AIchFace(session: CommandSession):
     user = session.event.user_id
+    group = session.event.group_id
     if 0 <= now_time() < 5.5:
         await session.send(
             choice(
@@ -89,11 +90,15 @@ async def _(session: CommandSession):
         with open(Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json', 'r') as f:
             data = json.load(f)
         
-        if data["change_face"] == 0:
+        if data["change_face"] == "on":
             with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json', 'r') as f:
                 data0 = json.load(f)
-            
+            with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
+                data1 = json.load(f)
+
             if str(user) in data0.keys():
+                pass
+            elif str(group) in data1.keys():
                 pass
             else:
                 img1 = session.get('message1', prompt = '请发送需要换脸的图片')
@@ -141,6 +146,16 @@ async def _(session: CommandSession):
                 await session.send(f'[CQ:image,file=file:///{img}]')
                 files = f'ATRI/data/temp/face/{user}'
                 os.remove(files)
+        
+        else:
+            session.finish('该功能已关闭...')
+
+
+@AIchFace.args_parser
+async def _(session: CommandSession):
+    if not session.is_first_run and session.current_arg.startswith('算了，'):
+        session.switch(session.current_arg[len('算了，'):])
+
 
 
 # def f_1(x, A, B):
