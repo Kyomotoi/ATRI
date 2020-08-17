@@ -23,7 +23,7 @@
 </div>
 
 ## アトリ
-**文档重写进行中**
+**star上100、fork上30👴在README贴女装照**
 
 现在仍处于开放版，功能大多应该或许可能能正常使用，这个仓库先挂着
 
@@ -34,7 +34,7 @@
 详细功能介绍请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/user)
 
 ## 安装
-安装文档正在编写
+详细部署教程请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/install)
 
 ## 关于开源
 本项目使用 [GPLv3](https://github.com/Kyomotoi/Aya/blob/master/LICENSE) 开源协议，这意味着你可以使用本项目运行你的机器人，并向你的用户提供服务，但如果你需要对项目的源码进行修改，则必须将你修改后的版本对你的用户开源。
@@ -47,6 +47,10 @@
 [mnixry](https://github.com/mnixry): 给予建议
 
 以及NoneBot裙友萌
+
+还有以下：
+ - 50861735 三杯红茶
+ - 1072324725 7r
 
 ## 其它
 Blog: <http://blog.lolihub.icu>
