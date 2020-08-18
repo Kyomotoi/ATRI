@@ -2,7 +2,7 @@
  <img width = '200' height ='200' src ="image/atri_s.png">
 
 # アトリ | ATRI
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/06a32769a78248109e94a4cfacf38719)](https://app.codacy.com/manual/Kyomotoi/Aya?utm_source=github.com&utm_medium=referral&utm_content=Kyomotoi/Aya&utm_campaign=Badge_Grade_Dashboard)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/bef72993062f422f83e882c6d8e6f20e)](https://www.codacy.com/manual/Kyomotoi/ATRI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kyomotoi/ATRI&amp;utm_campaign=Badge_Grade)
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
 
 アトリ 为一个在全平台下运行的QQBot
