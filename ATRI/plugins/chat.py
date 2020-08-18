@@ -55,7 +55,7 @@ async def _():
         elif res == 2:
             img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'SY.jpg'
             img = os.path.abspath(img)
-            msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
+            msg = f'[CQ:image,file=file:///{img}]'
 
         for group in groups:
             await bot.send_group_msg(group_id = group, message = msg) #type: ignore
