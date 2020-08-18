@@ -30,41 +30,37 @@ KC_URL = 'https://nmsl.shadiao.app/api.php?level=min&lang=zh_cn'
 )
 async def _():
     """早安"""
-    try:
-        start = time.perf_counter()
-        group_list = await bot.get_group_list() #type: ignore
-        groups = [group['group_id'] for group in group_list]
-        g_list = len(group_list)
-        res = randint(1,2)
-        if res == 1:
-            msg = choice(
-                [
-                    '啊......早上好...(哈欠)',
-                    '唔......吧唧...早上...哈啊啊~~~\n早上好......',
-                    '早上好......',
-                    '早上好呜......呼啊啊~~~~',
-                    '啊......早上好。\n昨晚也很激情呢！',
-                    '吧唧吧唧......怎么了...已经早上了么...',
-                    '早上好！',
-                    '......看起来像是傍晚，其实已经早上了吗？',
-                    '早上好......欸~~~脸好近呢'
-                    '......(打瞌睡)',
-                ]
-            )
-        
-        elif res == 2:
-            img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'SY.jpg'
-            img = os.path.abspath(img)
-            msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
-
-        for group in groups:
-            await bot.send_group_msg(group_id = group, message = msg) #type: ignore
-        
-        end = time.perf_counter()
-        await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
+    start = time.perf_counter()
+    group_list = await bot.get_group_list() #type: ignore
+    groups = [group['group_id'] for group in group_list]
+    g_list = len(group_list)
+    res = randint(1,2)
+    if res == 1:
+        msg = choice(
+            [
+                '啊......早上好...(哈欠)',
+                '唔......吧唧...早上...哈啊啊~~~\n早上好......',
+                '早上好......',
+                '早上好呜......呼啊啊~~~~',
+                '啊......早上好。\n昨晚也很激情呢！',
+                '吧唧吧唧......怎么了...已经早上了么...',
+                '早上好！',
+                '......看起来像是傍晚，其实已经早上了吗？',
+                '早上好......欸~~~脸好近呢'
+                '......(打瞌睡)',
+            ]
+        )
     
-    except:
-        pass
+    elif res == 2:
+        img = Path('.') / 'ATRI' / 'data' / 'emoji' / 'SY.jpg'
+        img = os.path.abspath(img)
+        msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
+
+    for group in groups:
+        await bot.send_group_msg(group_id = group, message = msg) #type: ignore
+    
+    end = time.perf_counter()
+    await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
 
 @nonebot.scheduler.scheduled_job(
     'cron',
@@ -74,42 +70,38 @@ async def _():
 )
 async def _():
     """晚安"""
-    try:
-        start = time.perf_counter()
-        group_list = await bot.get_group_list() #type: ignore
-        groups = [group['group_id'] for group in group_list]
-        g_list = len(group_list)
-        res = randint(1,2)
-        if res == 1:
-            msg = choice(
-                [
-                    '忙累了一天，快休息吧',
-                    '辛苦了一天，准备睡觉吧',
-                    '一起睡觉吧~~~~~',
-                    '......该睡觉了',
-                    '还不睡等着猝死？嗯！？'
+    start = time.perf_counter()
+    group_list = await bot.get_group_list() #type: ignore
+    groups = [group['group_id'] for group in group_list]
+    g_list = len(group_list)
+    res = randint(1,2)
+    if res == 1:
+        msg = choice(
+            [
+                '忙累了一天，快休息吧',
+                '辛苦了一天，准备睡觉吧',
+                '一起睡觉吧~~~~~',
+                '......该睡觉了',
+                '还不睡等着猝死？嗯！？'
 
-                ]
-            )
+            ]
+        )
 
-        elif res == 2:
-            img = choice(
-                [
-                    'SJ.jpg', 'SJ1.jpg'
-                ]
-            )
-            img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-            img = os.path.abspath(img)
-            msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
+    elif res == 2:
+        img = choice(
+            [
+                'SJ.jpg', 'SJ1.jpg'
+            ]
+        )
+        img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+        img = os.path.abspath(img)
+        msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
 
-        for group in groups:
-            await bot.send_group_msg(group_id = group, message = msg) #type: ignore
-        
-        end = time.perf_counter()
-        await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
-
-    except:
-        pass
+    for group in groups:
+        await bot.send_group_msg(group_id = group, message = msg) #type: ignore
+    
+    end = time.perf_counter()
+    await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
 
 @nonebot.scheduler.scheduled_job(
     'cron',
@@ -119,27 +111,23 @@ async def _():
 )
 async def _():
     """到 点 了"""
-    try:
-        start = time.perf_counter()
-        group_list = await bot.get_group_list() # type: ignore
-        groups = [group['group_id'] for group in group_list]
-        g_list = len(group_list)
-        img = choice(
-            [
-                'WYY.gif', 'WYY.jpg', 'WYY1.jpg'
-            ]
-        )
-        img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-        img = os.path.abspath(img)
-        msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
-        for group in groups:
-            await bot.send_group_msg(group_id = group, message = msg) #type: ignore
-        
-        end = time.perf_counter()
-        await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
+    start = time.perf_counter()
+    group_list = await bot.get_group_list() # type: ignore
+    groups = [group['group_id'] for group in group_list]
+    g_list = len(group_list)
+    img = choice(
+        [
+            'WYY.gif', 'WYY.jpg', 'WYY1.jpg'
+        ]
+    )
+    img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+    img = os.path.abspath(img)
+    msg = f'[CQ:image,file=file:///{os.path.abspath(img)}]'
+    for group in groups:
+        await bot.send_group_msg(group_id = group, message = msg) #type: ignore
     
-    except:
-        pass
+    end = time.perf_counter()
+    await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
 
 
 def now_time():
