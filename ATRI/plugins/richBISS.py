@@ -1,6 +1,7 @@
 import re
 import json
 import nonebot
+from pathlib import Path
 from datetime import datetime
 
 from ATRI.modules import response # type: ignore
@@ -49,52 +50,63 @@ def enc(x):
 
 @bot.on_message("group")
 async def Fuck_bili_rich(context):
-    msg = str(context["message"])
     user = str(context["user_id"])
     group = context["group_id"]
-    pattern = re.compile(r"BV\S+\?")
-    bv = re.findall(pattern, msg)
-    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
-        data = json.load(f)
+    try:
+        with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
+            data = json.load(f)
+    except:
+        data = {}
+    try:
+        with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json', 'r') as f:
+            data1 = json.load(f)
+    except:
+        data1 = {}
 
-    if user in data.keys():
+    if str(group) in data.keys():
         pass
     else:
-        if 0 <= now_time() < 5.5:
+        if user in data1.keys():
             pass
         else:
-            if bv:
-                bv = bv[0]
-                bv = bv.replace('?', '')
+            if 0 <= now_time() < 5.5:
+                pass
+            else:
+                msg = str(context["message"])
+                pattern = re.compile(r"BV\S+\?")
+                bv = re.findall(pattern, msg)
+                if bv:
+                    bv = bv[0]
+                    bv = bv.replace('?', '')
 
-                aid = str(dec(bv))
-                ad = 'av' + aid
-                URL = f'https://api.imjad.cn/bilibili/v2/?aid={aid}'
+                    aid = str(dec(bv))
+                    ad = 'av' + aid
+                    URL = f'https://api.imjad.cn/bilibili/v2/?aid={aid}'
 
-                try:
-                    res = response.request_api(URL)
-                    mg = json.loads(res)
-                    msg = BILI_REPORT_FORMAT.format(
-                        title = mg["data"]["title"],
+                    try:
+                        res = response.request_api(URL)
+                        mg = json.loads(res)
+                        msg = BILI_REPORT_FORMAT.format(
+                            title = mg["data"]["title"],
 
-                        view = mg["data"]["stat"]["view"],
-                        coin = mg["data"]["stat"]["coin"],
-                        share = mg["data"]["stat"]["share"],
-                        like = mg["data"]["stat"]["like"],
+                            view = mg["data"]["stat"]["view"],
+                            coin = mg["data"]["stat"]["coin"],
+                            share = mg["data"]["stat"]["share"],
+                            like = mg["data"]["stat"]["like"],
 
-                        bid = mg["data"]["bvid"],
-                        bid_link = mg["data"]["short_link"],
+                            bid = mg["data"]["bvid"],
+                            bid_link = mg["data"]["short_link"],
 
-                        aid = ad,
-                        aid_link = f'https://b23.tv/{ad}'
-                        )
+                            aid = ad,
+                            aid_link = f'https://b23.tv/{ad}'
+                            )
 
-                    await bot.send_msg( # type: ignore
-                        group_id = group,
-                        message = msg
-                        )
-                except:
-                    pass
+                        await bot.send_msg( # type: ignore
+                            group_id = group,
+                            message = msg
+                            )
+                    except:
+                        pass
 
 
 REPORT_FORMAT = """Status: {status}
@@ -105,44 +117,52 @@ MD5: {md5}"""
 
 @bot.on_message("group")
 async def Fuck_CloudMusic(context):
-    msg = str(context["message"])
     user = str(context["user_id"])
     group = context["group_id"]
-    m_type = context["sub_type"]
-    pattern = re.compile(r"song\S+\/|id=\S+\&")
-    music_id = re.findall(pattern, msg)
-    print(music_id)
+    try:
+        with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
+            data = json.load(f)
+    except:
+        data = {}
+    try:
+        with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json', 'r') as f:
+            data1 = json.load(f)
+    except:
+        data1 = {}
 
-    with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
-        data = json.load(f)
-
-    if user in data.keys():
+    if str(group) in data.keys():
         pass
     else:
-        if 0 <= now_time() < 5.5:
+        if user in data1.keys():
             pass
         else:
-            if 'music.163.com' in msg:
-                if music_id:
-                    music_id = str(music_id[0])
-                    music_id = re.findall(r"-?[1-9]\d*", music_id)
-                    URL = f'https://api.imjad.cn/cloudmusic/?type=song&id={music_id[0]}&br=320000'
-                    print(URL)
+            if 0 <= now_time() < 5.5:
+                pass
+            else:
+                msg = str(context["message"])
+                pattern = re.compile(r"song\S+\/|id=\S+\&")
+                music_id = re.findall(pattern, msg)
+                if 'music.163.com' in msg:
+                    if music_id:
+                        music_id = str(music_id[0])
+                        music_id = re.findall(r"-?[1-9]\d*", music_id)
+                        URL = f'https://api.imjad.cn/cloudmusic/?type=song&id={music_id[0]}&br=320000'
+                        print(URL)
 
-                    try:
-                        res = response.request_api(URL)
-                        mg = json.loads(res)
+                        try:
+                            res = response.request_api(URL)
+                            mg = json.loads(res)
 
-                        msg = REPORT_FORMAT.format(
-                            status = mg["code"],
-                            id = mg["data"][0]["id"],
-                            br = mg["data"][0]["br"],
-                            url = mg["data"][0]["url"],
-                            md5 = mg["data"][0]["md5"],
-                            )
-                        await bot.send_msg(
-                            group_id = group,
-                            message = msg
-                            ) # type: ignore
-                    except:
-                        pass
+                            msg = REPORT_FORMAT.format(
+                                status = mg["code"],
+                                id = mg["data"][0]["id"],
+                                br = mg["data"][0]["br"],
+                                url = mg["data"][0]["url"],
+                                md5 = mg["data"][0]["md5"],
+                                )
+                            await bot.send_msg(
+                                group_id = group,
+                                message = msg
+                                ) # type: ignore
+                        except:
+                            pass

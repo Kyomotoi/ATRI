@@ -1,6 +1,7 @@
 import json
-from random import randint, choice
+from random import randint
 from datetime import datetime
+from pathlib import Path
 import nonebot
 from nonebot import on_command
 from nonebot import CommandSession
@@ -26,8 +27,11 @@ async def _(session: CommandSession):
         msg = session.event.raw_message.split(' ', 3)
         w_tpye = msg[0]
         word = msg[1]
-        with open('ATRI/plugins/LearnRepo/LearnRepo.json', 'r') as f:
-            data = json.load(f)
+        try:
+            with open(Path('.') / 'ATRI' / 'plugins' / 'LearnRepo' / 'LearnRepo.json', 'r') as f:
+                data = json.load(f)
+        except:
+            data = {}
 
         if w_tpye == '增加词汇':
             repo = msg[2]
@@ -37,7 +41,7 @@ async def _(session: CommandSession):
 
             else:
                 data[f"{word}"] = [f"{repo}",prob]
-                f = open('ATRI/plugins/LearnRepo/LearnRepo.json', 'w')
+                f = open(Path('.') / 'ATRI' / 'plugins' / 'LearnRepo' / 'LearnRepo.json', 'w')
                 f.write(json.dumps(data))
                 f.close()
                 session.finish(f"学習しました！\nWord：[{word}]\nRepo：[{repo}]\nProbability：[{'%.2f%%' % (round(1 / prob , 1) * 100)}]")
@@ -60,23 +64,37 @@ async def repo(context):
     if 0 <= now_time() < 5.5:
         pass
     else:
-        with open('ATRI/plugins/noobList/noobList.json', 'r') as f:
-            nL = json.load(f)
+        try:
+            with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
+                data = json.load(f)
+        except:
+            data = {}
+        try:
+            with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json', 'r') as f:
+                data1 = json.load(f)
+        except:
+            data1 = {}
 
-        if str(user) in nL.keys():
+        if str(group) in data.keys():
             pass
         else:
-            with open('ATRI/plugins/LearnRepo/LearnRepo.json', 'r') as f:
-                data = json.load(f)
+            if str(user) in data1.keys():
+                pass
+            else:
+                try:
+                    with open(Path('.') / 'ATRI' / 'plugins' / 'LearnRepo' / 'LearnRepo.json', 'r') as f:
+                        data = json.load(f)
+                except:
+                    data = {}
 
-            if str(word) in data.keys():
-                lt = data[f"{word}"]
-                print(lt)
-                msg = lt[0]
-                prob = int(lt[1])
-                res = randint(1,prob)
-                if res == 1:
-                    await bot.send_msg(
-                        group_id = group,
-                        message = msg
-                    ) # type: ignore
+                if str(word) in data.keys():
+                    lt = data[f"{word}"]
+                    print(lt)
+                    msg = lt[0]
+                    prob = int(lt[1])
+                    res = randint(1,prob)
+                    if res == 1:
+                        await bot.send_msg(
+                            group_id = group,
+                            message = msg
+                        ) # type: ignore

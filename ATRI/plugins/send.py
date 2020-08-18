@@ -1,13 +1,12 @@
 import time
+import json
+from pathlib import Path
 import nonebot
 from nonebot import on_command, CommandSession
-
-import config # type: ignore
 
 
 bot = nonebot.get_bot()
 master = bot.config.SUPERUSERS
-ban_group = bot.config.BANGROUP # type: ignore
 
 
 @on_command('send_all_group', aliases = ['公告', '群发', '推送'], only_to_me=False)
@@ -16,6 +15,14 @@ async def send_all_group(session: CommandSession):
         msg = session.current_arg.strip()
 
         start = time.perf_counter()
+
+        try:
+            with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
+                data = json.load(f)
+        except:
+            data = {}
+
+        ban_group = list(data.keys())
 
         if not msg:
             msg = session.get('message', prompt='请告诉吾辈需要群发的内容~！')

@@ -25,13 +25,13 @@ async def _(session: NoticeSession):
 
 @on_notice('group_decrease')
 async def _(session: NoticeSession):
-    user = str(session.event.user_id)
-    now = str(session.event.operator_id)
+    user = session.event.user_id
+    now = session.event.operator_id
 
     if now == user:
         inf = await bot.get_stranger_info(user_id = user) # type: ignore
         name = inf['nickname']
-        await session.send(f'{name}({user}) 跑了')
+        await session.send(f'{name}({user}) 跑了......')
 
 
 @on_request('friend_add')

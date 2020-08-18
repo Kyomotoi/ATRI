@@ -74,81 +74,88 @@ def change_face(image_1, image_2, user, number=99):
 async def AIchFace(session: CommandSession):
     user = session.event.user_id
     group = session.event.group_id
-    if 0 <= now_time() < 5.5:
-        await session.send(
-            choice(
-                [
-                    'zzzz......',
-                    'zzzzzzzz......',
-                    'zzz...好涩哦..zzz....',
-                    '别...不要..zzz..那..zzz..',
-                    '嘻嘻..zzz..呐~..zzzz..'
-                ]
-            )
-        )
-    else:
-        with open(Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json', 'r') as f:
+    try:
+        with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
             data = json.load(f)
-        
-        if data["change_face"] == "on":
-            with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json', 'r') as f:
-                data0 = json.load(f)
-            with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
-                data1 = json.load(f)
+    except:
+        data = {}
+    try:
+        with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json', 'r') as f:
+            data1 = json.load(f)
+    except:
+        data1 = {}
 
-            if str(user) in data0.keys():
-                pass
-            elif str(group) in data1.keys():
-                pass
-            else:
-                img1 = session.get('message1', prompt = '请发送需要换脸的图片')
-                print(img1)
-                img2 = session.get('message2', prompt = '请发送素材图片')
-
-                # 我承认了，我是取名废！
-                a = img1.split(',')
-                a = a[2].replace(']', '')
-                a = a.replace('url=', '')
-                print(a)
-                imgres1 = requests.get(a)
-
-                b = img2.split(',')
-                b = b[2].replace(']', '')
-                b = b.replace('url=', '')
-                imgres2 = requests.get(b)
-
-                try:
-                    file1 = f'ATRI/data/temp/face/{user}'
-                    if not os.path.exists(file1):
-                        os.mkdir(file1)
-                    with open(file1 + '/img1.jpg', 'wb') as f:
-                        f.write(imgres1.content)
-
-                    file2 = f'ATRI/data/temp/face/{user}'
-                    if not os.path.exists(file2):
-                        os.mkdir(file2)
-                    with open(file2 + '/img2.jpg', 'wb') as f:
-                        f.write(imgres2.content)
-                except:
-                    session.finish('请求数据貌似失败了...')
-                
-                img1File = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img1.jpg'
-                img2File = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img2.jpg'
-
-                try:
-                    change_face(img1File, img2File, user, 1)
-                except:
-                    session.finish('emm...貌似失败了呢......')
-                
-                time.sleep(0.5)
-                doneIMG = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img3.jpg'
-                img = os.path.abspath(doneIMG)
-                await session.send(f'[CQ:image,file=file:///{img}]')
-                files = f'ATRI/data/temp/face/{user}'
-                os.remove(files)
-        
+    if str(group) in data.keys():
+        pass
+    else:
+        if str(user) in data1.keys():
+            pass
         else:
-            session.finish('该功能已关闭...')
+            if 0 <= now_time() < 5.5:
+                await session.send(
+                    choice(
+                        [
+                            'zzzz......',
+                            'zzzzzzzz......',
+                            'zzz...好涩哦..zzz....',
+                            '别...不要..zzz..那..zzz..',
+                            '嘻嘻..zzz..呐~..zzzz..'
+                        ]
+                    )
+                )
+            else:
+                with open(Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json', 'r') as f:
+                    data = json.load(f)
+                
+                if data["change_face"] == "on":
+                    img1 = session.get('message1', prompt = '请发送需要换脸的图片')
+                    print(img1)
+                    img2 = session.get('message2', prompt = '请发送素材图片')
+
+                    # 我承认了，我是取名废！
+                    a = img1.split(',')
+                    a = a[2].replace(']', '')
+                    a = a.replace('url=', '')
+                    print(a)
+                    imgres1 = requests.get(a)
+
+                    b = img2.split(',')
+                    b = b[2].replace(']', '')
+                    b = b.replace('url=', '')
+                    imgres2 = requests.get(b)
+
+                    try:
+                        file1 = f'ATRI/data/temp/face/{user}'
+                        if not os.path.exists(file1):
+                            os.mkdir(file1)
+                        with open(file1 + '/img1.jpg', 'wb') as f:
+                            f.write(imgres1.content)
+
+                        file2 = f'ATRI/data/temp/face/{user}'
+                        if not os.path.exists(file2):
+                            os.mkdir(file2)
+                        with open(file2 + '/img2.jpg', 'wb') as f:
+                            f.write(imgres2.content)
+                    except:
+                        session.finish('请求数据貌似失败了...')
+                    
+                    img1File = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img1.jpg'
+                    img2File = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img2.jpg'
+
+                    try:
+                        change_face(img1File, img2File, user, 1)
+                    except:
+                        session.finish('emm...貌似失败了呢......')
+                    
+                    time.sleep(0.5)
+                    doneIMG = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img3.jpg'
+                    img = os.path.abspath(doneIMG)
+                    await session.send(f'[CQ:image,file=file:///{img}]')
+                    files = f'ATRI/data/temp/face/{user}'
+                    os.remove(files)
+        
+                else:
+                    session.finish('该功能已关闭...')
 
 
 @AIchFace.args_parser

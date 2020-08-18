@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 import os
 import time
 from nonebot.default_config import *
@@ -13,26 +12,36 @@ def MASTER():
     return 123456789
 
 # 机器人名称，替代 @ 和 命令开头
-NICKNAME = {'ATRI'}
+NICKNAME = {'ATRI', '亚托莉', 'アトリ'}
 
 # 自定义命令开头
 COMMAND_START = {''}
 
-BANGROUP = []
-
 # API url:https://api.lolicon.app/#/setu
+a = "" # key
 def LOLICONAPI():
-    return ""
+    return a
 
-# API url:https://api-cn.faceplusplus.com/
-FACE_KEY = ""
+# API url:https://www.faceplusplus.com.cn/
+b = ""
 def FACE_KEY():
-    return ""
+    return b
 
-FACE_SECRET = ""
+c = ""
 def FACE_SECRET():
-    return ""
+    return c
 
+# API url:https://cloud.baidu.com/
+def BAIDU_APP_ID():
+    return 123 # id
+
+d = "" # key
+def BAIDU_API_KEY():
+    return d
+
+e = "" # secret
+def BAIDU_SECRET():
+    return e
 
 
 
@@ -114,6 +123,42 @@ if FACE_SECRET():
     print("用于人脸识别的验证码已到手！")
 else:
     print("貌似没拿到人脸识别的验证码呢...如需帮助，请查看安装手册")
+    print("...跳过！")
+    time.sleep(1)
+    wait = input("是否继续： Y/N\n")
+    if wait == "Y" or 'y':
+        pass
+    else:
+        os._exit(0)
+
+if BAIDU_APP_ID():
+    print("用于图片识别的ID已到手！")
+else:
+    print("貌似没拿到图片识别的ID呢...如需帮助，请查看安装手册")
+    print("...跳过！")
+    time.sleep(1)
+    wait = input("是否继续： Y/N\n")
+    if wait == "Y" or 'y':
+        pass
+    else:
+        os._exit(0)
+
+if BAIDU_API_KEY():
+    print("用于图片识别的KEY已到手！")
+else:
+    print("貌似没拿到图片识别的KEY呢...如需帮助，请查看安装手册")
+    print("...跳过！")
+    time.sleep(1)
+    wait = input("是否继续： Y/N\n")
+    if wait == "Y" or 'y':
+        pass
+    else:
+        os._exit(0)
+
+if BAIDU_SECRET():
+    print("用于图片识别的SECRET已到手！")
+else:
+    print("貌似没拿到图片识别的SECRET呢...如需帮助，请查看安装手册")
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
