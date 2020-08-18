@@ -26,7 +26,7 @@ KC_URL = 'https://nmsl.shadiao.app/api.php?level=min&lang=zh_cn'
     'cron',
     day_of_week = "mon,tue,wed,thu,fri,sat,sun",
     hour = 7,
-    misfire_grace_time=60
+    misfire_grace_time= 300
 )
 async def _():
     """早安"""
@@ -66,7 +66,7 @@ async def _():
     'cron',
     day_of_week = "mon,tue,wed,thu,fri,sat,sun",
     hour = 22,
-    misfire_grace_time=60
+    misfire_grace_time = 300
 )
 async def _():
     """晚安"""
@@ -107,7 +107,7 @@ async def _():
     'cron',
     day_of_week = "mon,tue,wed,thu,fri,sat,sun",
     hour = 0,
-    misfire_grace_time=60
+    misfire_grace_time = 300
 )
 async def _():
     """到 点 了"""
