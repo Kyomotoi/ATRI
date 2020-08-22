@@ -1,4 +1,5 @@
 # ATRI——一个厨力项目
+アトリは、高性能ですから！
 ## 关于
 本项目名称、灵感均来自 [ANIPLEX](https://aniplex-exe.com/) 发行的 [ATRI-My Dear Moments-](https://atri-mdm.com/)
 
