@@ -1,6 +1,6 @@
 # ATRI——一个厨力项目
 ## 关于
-本项目名称，灵感均来自 [ANIPLEX](https://aniplex-exe.com/) 发行的 [ATRI-My Dear Moments-](https://atri-mdm.com/)
+本项目名称、灵感均来自 [ANIPLEX](https://aniplex-exe.com/) 发行的 [ATRI-My Dear Moments-](https://atri-mdm.com/)
 
 为QQ群中复现一个活灵活现的 ATRI 是这个项目的目标
 
@@ -25,6 +25,10 @@
 详细功能介绍请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/user)
 
 详细部署教程请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/install)
+
+以及
+
+~~满100star、30fork，👴直接在个人Blog介绍页贴女转照~~
 
 ## 特别感谢
 [Richard Chien](https://github.com/richardchien): [CQHTTP](https://github.com/richardchien/coolq-http-api) 和 [NoneBot](https://github.com/nonebot/nonebot)
