@@ -8,7 +8,7 @@
 
 为QQ群中复现一个活灵活现的 ATRI 是这个项目的目标
 
-项目拥有者，即此Blog的拥有者，初接触Python任未满半年，故此项目所写的东西可能会让您血压升高，我会加油在往后日子对其进行改进！
+项目拥有者，初接触Python仍未满半年，故此项目所写的东西可能会让您血压升高，我会加油在往后日子对其进行改进！
 
 此项目也作为我学习Python的一个很好的渠道，这里特别感谢[Richard Chien](https://github.com/richardchien)以及对此项目提供巨大帮助的Python-SDK：[NoneBot](https://github.com/nonebot/nonebot)
 
