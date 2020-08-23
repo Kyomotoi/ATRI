@@ -38,6 +38,9 @@ async def _(session: CommandSession):
             elif com == 'Setu':
                 data["setu"] = "on"
             
+            elif com == 'SetuIMG':
+                data["setu_img"] = "on"
+            
             elif com == 'Hbook':
                 data["hbook"] = "on"
             
@@ -68,6 +71,9 @@ async def _(session: CommandSession):
 
             elif com == 'Setu':
                 data["setu"] = "off"
+            
+            elif com == 'SetuIMG':
+                data["setu_img"] = "off"
             
             elif com == 'Hbook':
                 data["hbook"] = "off"

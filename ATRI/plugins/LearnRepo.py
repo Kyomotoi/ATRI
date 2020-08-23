@@ -54,6 +54,8 @@ async def _(session: CommandSession):
             else:
                  session.finish(f'ATRI貌似没法从记忆中找到关键词[{word}]呢...')
 
+# @on_command('add_tech', aliases = ['添加'])
+
 
 @bot.on_message("group")
 async def repo(context):
