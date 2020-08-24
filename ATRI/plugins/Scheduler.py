@@ -95,7 +95,7 @@ async def _():
 
 @nonebot.scheduler.scheduled_job(
     'cron',
-    hour = 24,
+    hour = 0,
     misfire_grace_time = 60
 )
 async def _():
