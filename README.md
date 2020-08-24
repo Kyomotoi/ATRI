@@ -32,7 +32,7 @@
 
 以及
 
-~~满100star、30fork，👴直接在个人Blog介绍页贴女转照~~
+~~满100star、30fork，👴直接在个人Blog介绍页贴女装照~~
 
 ## 特别感谢
 [Richard Chien](https://github.com/richardchien): [CQHTTP](https://github.com/richardchien/coolq-http-api) 和 [NoneBot](https://github.com/nonebot/nonebot)
