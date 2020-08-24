@@ -78,7 +78,7 @@ else:
     NICKNAME = {'ATRI', 'アトリ'}
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
+    if wait == "Y" or wait == 'y':
         pass
     else:
         os._exit(0)
@@ -90,7 +90,7 @@ else:
     COMMAND_START = {'ATRI', ''}
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
+    if wait == "Y" or wait == 'y':
         pass
     else:
         os._exit(0)
@@ -102,7 +102,7 @@ else:
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
+    if wait == "Y" or wait == 'y':
         pass
     else:
         os._exit(0)
@@ -114,7 +114,7 @@ else:
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
+    if wait == "Y" or wait == 'y':
         pass
     else:
         os._exit(0)
@@ -126,7 +126,7 @@ else:
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
+    if wait == "Y" or wait == 'y':
         pass
     else:
         os._exit(0)
@@ -138,7 +138,7 @@ else:
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
+    if wait == "Y" or wait == 'y':
         pass
     else:
         os._exit(0)
@@ -150,7 +150,7 @@ else:
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
+    if wait == "Y" or wait == 'y':
         pass
     else:
         os._exit(0)

@@ -5,6 +5,7 @@ from nonebot.plugin import on_request
 from nonebot.helpers import send_to_superusers
 
 import config # type: ignore
+from ATRI.modules.funcControl import checkNoob # type: ignore
 
 
 bot = nonebot.get_bot()
@@ -24,12 +25,11 @@ async def _(session: NoticeSession):
 @on_notice('group_decrease')
 async def _(session: NoticeSession):
     user = session.event.user_id
+    group = session.event.group_id
     now = session.event.operator_id
-
-    if now == user:
-        inf = await bot.get_stranger_info(user_id = user) # type: ignore
-        name = inf['nickname']
-        await session.send(f'{name}({user}) 跑了......')
+    if checkNoob(user, group):
+        if now == user:
+            await session.send(f'[{user}]离开了我们......')
 
 
 @on_request('friend_add')

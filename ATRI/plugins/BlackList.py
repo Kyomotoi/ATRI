@@ -1,4 +1,3 @@
-import time
 import json
 from pathlib import Path
 from nonebot import on_command, CommandSession

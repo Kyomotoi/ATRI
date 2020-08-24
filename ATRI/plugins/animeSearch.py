@@ -1,11 +1,14 @@
 import re
 import json
-from pathlib import Path
 from datetime import datetime
 from random import choice
 from aiohttp import ClientSession
 from nonebot import on_command, CommandSession
 
+from ATRI.modules.funcControl import checkSwitch, checkNoob # type: ignore
+
+
+__plugin_name__ = "anime_search"
 
 async def get_bytes(url, headers = None):
     async with ClientSession() as asyncSession:
@@ -55,42 +58,27 @@ def toSimpleString(str):
     return "".join(output_str_list)
 
 
-@on_command('anime_search', aliases = ['以图搜番'], only_to_me = False
-)
-async def _(session: CommandSession):
+@on_command('anime_search', aliases = ['以图搜番'], only_to_me = False)
+async def AnimeSearch(session: CommandSession):
     user = session.event.user_id
     group = session.event.group_id
     msg = session.current_arg.strip()
-    try:
-        with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
-            data = json.load(f)
-    except:
-        data = {}
-    try:
-        with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json', 'r') as f:
-            data1 = json.load(f)
-    except:
-        data1 = {}
-
-    if str(group) in data.keys():
-        pass
-    else:
-        if str(user) in data1.keys():
-            pass
-        else:
-            if 0 <= now_time() < 5.5:
-                await session.send(
-                    choice(
-                        [
-                            'zzzz......',
-                            'zzzzzzzz......',
-                            'zzz...好涩哦..zzz....',
-                            '别...不要..zzz..那..zzz..',
-                            '嘻嘻..zzz..呐~..zzzz..'
-                        ]
-                    )
+    
+    if checkNoob(user, group):
+        if 0 <= now_time() < 5.5:
+            await session.send(
+                choice(
+                    [
+                        'zzzz......',
+                        'zzzzzzzz......',
+                        'zzz...好涩哦..zzz....',
+                        '别...不要..zzz..那..zzz..',
+                        '嘻嘻..zzz..呐~..zzzz..'
+                    ]
                 )
-            else:
+            )
+        else:
+            if checkSwitch(__plugin_name__):
                 if not msg:
                     msg = session.get('message', prompt = "请发送一张图片")
                 
@@ -146,3 +134,11 @@ async def _(session: CommandSession):
                     
                     else:
                         await session.send("搜索似乎失败了呢...")
+            
+            else:
+                session.finish('该功能已关闭...')
+
+@AnimeSearch.args_parser
+async def _(session: CommandSession):
+    if not session.is_first_run and session.current_arg.startswith('算了'):
+        session.switch(session.current_arg[len('算了'):])

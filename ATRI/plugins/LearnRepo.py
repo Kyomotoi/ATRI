@@ -7,6 +7,7 @@ from nonebot import on_command
 from nonebot import CommandSession
 
 import config # type: ignore
+from ATRI.modules.funcControl import checkNoob # type: ignore
 
 
 bot = nonebot.get_bot()
@@ -54,49 +55,29 @@ async def _(session: CommandSession):
             else:
                  session.finish(f'ATRI貌似没法从记忆中找到关键词[{word}]呢...')
 
-# @on_command('add_tech', aliases = ['添加'])
-
 
 @bot.on_message("group")
 async def repo(context):
     user = context["user_id"]
     group = context["group_id"]
     word = context["message"]
-    print(word)
     if 0 <= now_time() < 5.5:
         pass
     else:
-        try:
-            with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json', 'r') as f:
-                data = json.load(f)
-        except:
-            data = {}
-        try:
-            with open(Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json', 'r') as f:
-                data1 = json.load(f)
-        except:
-            data1 = {}
+        if checkNoob(user, group):
+            try:
+                with open(Path('.') / 'ATRI' / 'plugins' / 'LearnRepo' / 'LearnRepo.json', 'r') as f:
+                    data = json.load(f)
+            except:
+                data = {}
 
-        if str(group) in data.keys():
-            pass
-        else:
-            if str(user) in data1.keys():
-                pass
-            else:
-                try:
-                    with open(Path('.') / 'ATRI' / 'plugins' / 'LearnRepo' / 'LearnRepo.json', 'r') as f:
-                        data = json.load(f)
-                except:
-                    data = {}
-
-                if str(word) in data.keys():
-                    lt = data[f"{word}"]
-                    print(lt)
-                    msg = lt[0]
-                    prob = int(lt[1])
-                    res = randint(1,prob)
-                    if res == 1:
-                        await bot.send_msg(
-                            group_id = group,
-                            message = msg
-                        ) # type: ignore
+            if str(word) in data.keys():
+                lt = data[f"{word}"]
+                msg = lt[0]
+                prob = int(lt[1])
+                res = randint(1,prob)
+                if res == 1:
+                    await bot.send_msg(
+                        group_id = group,
+                        message = msg
+                    ) # type: ignore

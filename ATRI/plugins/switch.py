@@ -41,8 +41,8 @@ async def _(session: CommandSession):
             elif com == 'SetuIMG':
                 data["setu_img"] = "on"
             
-            elif com == 'Hbook':
-                data["hbook"] = "on"
+            elif com == "AnimeSearch":
+                data["anime_search"] = "on"
             
             elif com == 'AIchFace':
                 data["change_face"] = "on"
@@ -75,8 +75,8 @@ async def _(session: CommandSession):
             elif com == 'SetuIMG':
                 data["setu_img"] = "off"
             
-            elif com == 'Hbook':
-                data["hbook"] = "off"
+            elif com == "AnimeSearch":
+                data["anime_search"] = "off"
             
             elif com == 'AIchFace':
                 data["change_face"] = "off"

@@ -16,7 +16,7 @@ master = config.MASTER()
 @nonebot.scheduler.scheduled_job(
     'cron',
     hour = 7,
-    misfire_grace_time= 600
+    misfire_grace_time= 60
 )
 async def _():
     """早安"""
@@ -44,7 +44,7 @@ async def _():
 
         try:
             for group in groups:
-                time.sleep(randint(60,90))
+                time.sleep(randint(1,5))
                 await bot.send_group_msg(group_id = group, message = msg) #type: ignore
         except:
             await bot.send_private_msg(user_id = master, message = f'在推送[早安]到某些群的时候貌似失败了呢') # type: ignore
@@ -58,7 +58,7 @@ async def _():
 @nonebot.scheduler.scheduled_job(
     'cron',
     hour = 22,
-    misfire_grace_time = 600
+    misfire_grace_time = 60
 )
 async def _():
     """晚安"""
@@ -82,7 +82,7 @@ async def _():
 
         try:
             for group in groups:
-                time.sleep(randint(60,90))
+                time.sleep(randint(1,5))
                 await bot.send_group_msg(group_id = group, message = msg) #type: ignore
         except:
             await bot.send_private_msg(user_id = master, message = f'在推送[晚安]到某些群的时候貌似失败了呢') # type: ignore
@@ -95,8 +95,8 @@ async def _():
 
 @nonebot.scheduler.scheduled_job(
     'cron',
-    hour = 0,
-    misfire_grace_time = 600
+    hour = 24,
+    misfire_grace_time = 60
 )
 async def _():
     """到 点 了"""
@@ -111,7 +111,7 @@ async def _():
 
         try:
             for group in groups:
-                time.sleep(randint(60,90))
+                time.sleep(randint(1,5))
                 await bot.send_group_msg(group_id = group, message = msg) #type: ignore
         except:
             await bot.send_private_msg(user_id = master, message = f'在推送[网抑云]到某些群的时候貌似失败了呢') # type: ignore
@@ -128,6 +128,7 @@ async def _():
     misfire_grace_time= 10
 )
 async def _():
+    print('ATRI开始自检...')
     cpu = psutil.cpu_percent(interval=1)
     memory = psutil.virtual_memory().percent
     disk = psutil.disk_usage('/').percent
@@ -152,4 +153,4 @@ async def _():
         ) # type: ignore
     
     else:
-        pass
+        print('ATRI运作正常！')
