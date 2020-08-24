@@ -162,7 +162,7 @@ else:
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
-    if wait == "Y" or 'y':
+    if wait == "Y" or wait == 'y':
         pass
     else:
         os._exit(0)
