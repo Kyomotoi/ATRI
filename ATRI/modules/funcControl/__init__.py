@@ -19,6 +19,7 @@ def checkNoob(user: int, group: Optional[int] = None):
             dataU = json.load(f)
     except:
         dataU = {}
+
     try:
         with open(fileG, 'r') as f:
             dataG = json.load(f)
