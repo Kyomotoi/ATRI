@@ -161,7 +161,7 @@ async def _(session: CommandSession):
 
 @nonebot.scheduler.scheduled_job(
     'cron',
-    hour = 24,
+    hour = 0,
     misfire_grace_time = 10 
 )
 async def _():
