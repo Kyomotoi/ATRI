@@ -39,6 +39,8 @@
 
 [mnixry](https://github.com/mnixry): 给予建议
 
+[JetBrains](https://www.jetbrains.com/) 为本项目提供 [PyCharm](https://www.jetbrains.com/pycharm/) 等授权
+
 以及以下：
  - 50861735 三杯红茶
  - 1072324725 17r
