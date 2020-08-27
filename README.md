@@ -10,7 +10,7 @@ This project name and inspiration from [ATRI-My Dear Moments-](https://atri-mdm.
 
 For Tencent QQ group add a lively ATRI is the goal of this project.
 
-The project leader, learn Python is still less than half a year, so i think the code of this project mayy increase your blood pressure. But i'll do it better!
+The project leader, learn Python is still less than half a year, so i think the code of this project may increase your blood pressure. But i'll do it better!
 
 This project also serves as a good channel for me to learn Python. Thanks you [Richard Chien](https://github.com/richardchien) and the Python-SDK: [NoneBot](https://github.com/nonebot/nonebot), them provided great help to this project.
 
