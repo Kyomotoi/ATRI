@@ -1,6 +1,8 @@
 # ATRI——一个厨力项目
 アトリは、高性能ですから！
 
+[ENG](README.md)
+
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/bef72993062f422f83e882c6d8e6f20e)](https://www.codacy.com/manual/Kyomotoi/ATRI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kyomotoi/ATRI&amp;utm_campaign=Badge_Grade)
 ## 关于
