@@ -13,7 +13,7 @@
 此项目也作为我学习Python的一个很好的渠道，这里特别感谢 [Richard Chien](https://github.com/richardchien) 以及对此项目提供巨大帮助的 Python-SDK：[NoneBot](https://github.com/nonebot/nonebot)
 
 ## 实现
-アトリ 为一个在全平台下运行的QQBot
+アトリ可以在任何平台下运行
 
 此项目实现方式是 `go-CQHTTP + NoneBot` 以 `Python` 为主语言的项目
 
@@ -26,9 +26,9 @@
 
 如需查看其运作效果，请添加示例群聊：567297659
 
-详细功能介绍请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/user)
+- 详细功能介绍请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/user)
 
-详细部署教程请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/install)
+- 详细部署教程请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/install)
 
 以及
 
