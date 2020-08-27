@@ -7,7 +7,6 @@ import nonebot
 
 from pathlib import Path
 from nonebot import on_command, CommandSession
-from nonebot import session
 
 from ATRI.modules import response # type: ignore
 
@@ -156,6 +155,41 @@ async def _(session: CommandSession):
         end = time.perf_counter()
 
         await session.send(f'数据上传完成！\n耗时: {round(end - start, 3)}s')
+
+
+# @on_command('del_setu', aliases = ['删除涩图'], only_to_me = False)
+# async def _(session: CommandSession):
+#     user = session.event.user_id
+#     if user in master or user in sepi:
+#         start = time.perf_counter()
+#         msg = session.event.raw_message.split(' ', 2)
+#         print(msg)
+#         i_tpye = msg[1]
+#         pid = msg[2]
+
+#         if i_tpye == '正常':
+#             if os.path.exists(Path('.') / 'ATRI' / 'data' / 'sqlite' / 'setu' / 'normal.db'):
+#                 print('数据文件存在！')
+#             else:
+#                 session.finish('ERROR: 恁都没库删锤子')
+#             con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'sqlite' / 'setu' / 'normal.db')
+#             cur = con.cursor()
+#             cur.execute(f'DELETE FROM COMPANY WHERE ID = {pid}')
+#             con.commit()
+#             con.close()
+        
+#         elif i_tpye == '擦边球':
+#             if os.path.exists(Path('.') / 'ATRI' / 'data' / 'sqlite' / 'setu' / 'normal.db'):
+#                 print('数据文件存在！')
+#             else:
+#                 session.finish('ERROR: 恁都没库删锤子')
+        
+
+#         elif i_tpye == 'r18':
+#             if os.path.exists(Path('.') / 'ATRI' / 'data' / 'sqlite' / 'setu' / 'normal.db'):
+#                 print('数据文件存在！')
+#             else:
+#                 session.finish('ERROR: 恁都没库删锤子')
 
 
 @on_command('add_check_sepi', aliases=['添加涩批', '移除涩批'], only_to_me = False)

@@ -530,7 +530,7 @@ async def _(session: CommandSession):
         if 0 <= now_time() < 5.5:
             pass
         else:
-            if datetime.date.today().strftime('%y%m%d') == 200828:
+            if datetime.date.today().strftime('%y%m%d') == '200828':
                 res = randint(1,3)
                 if res == 1:
                     msg = choice(
@@ -657,10 +657,7 @@ async def _(session: CommandSession):
                 bL = {}
             pattern = r"[nNηиɴИ][tT][rR]|[牛🐂]头人"
             if re.findall(pattern, msg):
-                await session.send('你妈的，牛头人，' + request_api(KC_URL))
                 noobList1.append(user)
-                print(noobList1)
-                print(countX(noobList1, user))
                 if countX(noobList1, user) == 5:
                     if user == master:
                         await session.send('是主人的话...那算了...呜呜\n即使到达了ATRI的最低忍耐限度......')
@@ -687,3 +684,6 @@ async def _(session: CommandSession):
                             args = (session.event.user_id,),
                             misfire_grace_time = 60,
                         )
+                
+                else:
+                    await session.send('你妈的，牛头人，' + request_api(KC_URL))
