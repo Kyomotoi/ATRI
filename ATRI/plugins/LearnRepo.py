@@ -49,7 +49,10 @@ async def _(session: CommandSession):
         
         elif w_tpye == '删除词汇':
             if word in data.keys():
-                data.pop(word)
+                data.pop(f"{word}")
+                f = open(Path('.') / 'ATRI' / 'plugins' / 'LearnRepo' / 'LearnRepo.json', 'w')
+                f.write(json.dumps(data))
+                f.close()
                 await session.send(f'已成功从ATRI记忆模块中抹除[{word}]')
             
             else:
