@@ -1,7 +1,7 @@
-import os
 import time
 import nonebot
 import psutil
+import asyncio
 from datetime import datetime
 from random import randint, choice
 from pathlib import Path
@@ -22,12 +22,12 @@ async def _():
     """早安"""
     try:
         await bot.send_private_msg(user_id = master, message = f'ATRI将在三秒后开始执行定时任务：早安') # type: ignore
-        time.sleep(3)
+        asyncio.sleep(3)
         start = time.perf_counter()
         group_list = await bot.get_group_list() #type: ignore
         groups = [group['group_id'] for group in group_list]
         g_list = len(group_list)
-        msg = choice(
+        msg = await choice(
             [
                 '啊......早上好...(哈欠)',
                 '唔......吧唧...早上...哈啊啊~~~\n早上好......',
@@ -44,7 +44,7 @@ async def _():
 
         try:
             for group in groups:
-                time.sleep(randint(1,5))
+                asyncio.sleep(randint(1,5))
                 await bot.send_group_msg(group_id = group, message = msg) #type: ignore
         except:
             await bot.send_private_msg(user_id = master, message = f'在推送[早安]到某些群的时候貌似失败了呢') # type: ignore
@@ -64,12 +64,12 @@ async def _():
     """晚安"""
     try:
         await bot.send_private_msg(user_id = master, message = f'ATRI将在三秒后开始执行定时任务：晚安') # type: ignore
-        time.sleep(3)
+        asyncio.sleep(3)
         start = time.perf_counter()
         group_list = await bot.get_group_list() #type: ignore
         groups = [group['group_id'] for group in group_list]
         g_list = len(group_list)
-        msg = choice(
+        msg = await choice(
             [
                 '忙累了一天，快休息吧',
                 '辛苦了一天，准备睡觉吧',
@@ -82,7 +82,7 @@ async def _():
 
         try:
             for group in groups:
-                time.sleep(randint(1,5))
+                asyncio.sleep(randint(1,5))
                 await bot.send_group_msg(group_id = group, message = msg) #type: ignore
         except:
             await bot.send_private_msg(user_id = master, message = f'在推送[晚安]到某些群的时候貌似失败了呢') # type: ignore
@@ -102,7 +102,7 @@ async def _():
     """到 点 了"""
     try:
         await bot.send_private_msg(user_id = master, message = f'ATRI将在三秒后开始执行定时任务：网抑云') # type: ignore
-        time.sleep(3)
+        asyncio.sleep(3)
         start = time.perf_counter()
         group_list = await bot.get_group_list() # type: ignore
         groups = [group['group_id'] for group in group_list]
@@ -111,7 +111,7 @@ async def _():
 
         try:
             for group in groups:
-                time.sleep(randint(1,5))
+                asyncio.sleep(randint(1,5))
                 await bot.send_group_msg(group_id = group, message = msg) #type: ignore
         except:
             await bot.send_private_msg(user_id = master, message = f'在推送[网抑云]到某些群的时候貌似失败了呢') # type: ignore
