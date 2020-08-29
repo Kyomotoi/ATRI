@@ -43,7 +43,10 @@ e = "" # secret
 def BAIDU_SECRET():
     return e
 
-
+# API url:https://saucenao.com/search.php
+f = "" # key
+def SAUCENAO_KEY():
+    return f
 
 
 
@@ -159,6 +162,18 @@ if BAIDU_SECRET():
     print("用于图片识别的SECRET已到手！")
 else:
     print("貌似没拿到图片识别的SECRET呢...如需帮助，请查看安装手册")
+    print("...跳过！")
+    time.sleep(1)
+    wait = input("是否继续： Y/N\n")
+    if wait == "Y" or wait == 'y':
+        pass
+    else:
+        os._exit(0)
+
+if SAUCENAO_KEY():
+    print("用于SAUCENAO的钥匙已到手！")
+else:
+    print("貌似没拿到SAUCENAO的钥匙呢...如需帮助，请查看安装手册")
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
