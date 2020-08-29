@@ -6,9 +6,10 @@ from random import choice
 from nonebot import on_command, CommandSession
 from aiohttp import ClientSession
 
+import config # type: ignore
 from ATRI.modules.funcControl import checkSwitch, checkNoob # type: ignore
 
-API_KEY = config.SAUCENAO_API_KEY()
+API_KEY = config.SAUCENAO_KEY()
 __plugin_name__ = "saucenao_search"
 
 async def get_bytes(url, headers = None):
