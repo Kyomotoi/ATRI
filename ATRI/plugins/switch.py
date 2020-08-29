@@ -88,7 +88,7 @@ async def _(session: CommandSession):
                 data["chouYou"] = "off"
             
             elif com == 'SauceNAO':
-                data["saucenao_search"] = "on"
+                data["saucenao_search"] = "off"
             
             else:
                 pass
