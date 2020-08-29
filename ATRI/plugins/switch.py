@@ -49,7 +49,10 @@ async def _(session: CommandSession):
             
             elif com == 'Kyaru':
                 data["chouYou"] = "on"
-
+            
+            elif com == 'SauceNAO':
+                data["saucenao_search"] = "on"
+            
             else:
                 pass
 
@@ -83,6 +86,9 @@ async def _(session: CommandSession):
             
             elif com == 'Kyaru':
                 data["chouYou"] = "off"
+            
+            elif com == 'SauceNAO':
+                data["saucenao_search"] = "on"
             
             else:
                 pass
