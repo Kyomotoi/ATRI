@@ -8,6 +8,7 @@ from aiohttp import ClientSession
 
 from ATRI.modules.funcControl import checkSwitch, checkNoob # type: ignore
 
+API_KEY = config.SAUCENAO_API_KEY()
 __plugin_name__ = "saucenao_search"
 
 async def get_bytes(url, headers = None):
@@ -73,7 +74,7 @@ async def SaucenaoSearch(session: CommandSession):
 
                 img = re.findall(p, msg)
 
-                task = SauceNAO(api_key='2cc2772ca550dbacb4c35731a79d341d1a143cb5')
+                task = SauceNAO(api_key=API_KEY)
                 data = task.search(url=img)
                 msg0 = ''
                 try:
