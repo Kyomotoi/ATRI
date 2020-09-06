@@ -1,19 +1,18 @@
-# -*- coding:utf-8 -*-
 import time
 COPYRIGHT = (
-    r"""====================ATRI | アトリ====================
+    r"""====================[ATRI | アトリ]====================
 * Mirai + NoneBot + Python
 * Copyright © 2018-2020 Kyomotoi,All Rights Reserved
 * Project: https://github.com/Kyomotoi/ATRI
 * Blog: blog.lolihub.icu
-====================================================="""
+======================================================="""
 )
 print(COPYRIGHT)
 time.sleep(2)
 
-import config # type: ignore
-time.sleep(2)
+import config
 print("ATRI正在苏醒...")
+time.sleep(2)
 
 from os import path
 

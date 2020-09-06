@@ -2,14 +2,24 @@ import os
 import time
 from nonebot.default_config import *
 
-#配置监听的 IP 和 端口
+# 配置监听的 IP 和 端口
 HOST = '127.0.0.1'
 PORT = 8080
+
+# 机器人在繁忙之时的回复
+SESSION_RUNNING_EXPRESSION = '欸欸欸...能否等一下呢...ATRI处理不过来啦！'
+
+# 机器人在用户取消操作时的回复
+SESSION_CANCEL_EXPRESSION = (
+    '好吧...',
+    'ATRI会随时待命的！毕竟我可是高性能的！',
+    '下次如有需要请尽管依赖ATRI吧！'
+    )
 
 # 机器人的主人（QQ号）即 超级用户
 SUPERUSERS = [123456789]
 def MASTER():
-    return 123456789
+    return SUPERUSERS
 
 # 机器人名称，替代 @ 和 命令开头
 NICKNAME = {'ATRI', '亚托莉', 'アトリ'}
@@ -23,17 +33,17 @@ def LOLICONAPI():
     return a
 
 # API url:https://www.faceplusplus.com.cn/
-b = ""
+b = "" # key
 def FACE_KEY():
     return b
 
-c = ""
+c = "" # secret
 def FACE_SECRET():
     return c
 
 # API url:https://cloud.baidu.com/
 def BAIDU_APP_ID():
-    return 123 # id
+    return 123456 # id
 
 d = "" # key
 def BAIDU_API_KEY():
@@ -47,6 +57,8 @@ def BAIDU_SECRET():
 f = "" # key
 def SAUCENAO_KEY():
     return f
+
+
 
 
 
@@ -150,6 +162,18 @@ if BAIDU_API_KEY():
     print("用于图片识别的KEY已到手！")
 else:
     print("貌似没拿到图片识别的KEY呢...如需帮助，请查看安装手册")
+    print("...跳过！")
+    time.sleep(1)
+    wait = input("是否继续： Y/N\n")
+    if wait == "Y" or wait == 'y':
+        pass
+    else:
+        os._exit(0)
+
+if BAIDU_SECRET():
+    print("用于图片识别的SECRET已到手！")
+else:
+    print("貌似没拿到图片识别的SECRET呢...如需帮助，请查看安装手册")
     print("...跳过！")
     time.sleep(1)
     wait = input("是否继续： Y/N\n")
