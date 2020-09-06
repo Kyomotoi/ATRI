@@ -16,6 +16,7 @@ def b64_str_img_url(url: str):
         f.write(img_d.content)
     if find_img.stat().st_size >= 1000000:
         print('超过1MB，跳过！')
+        return
     else:
         with open(find_img, 'rb') as f:
             content = f.read()

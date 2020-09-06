@@ -3,13 +3,19 @@ from pathlib import Path
 from typing import Optional
 
 
-def checkSwitch(funcName: str):
-    file = Path('.') / 'ATRI' / 'plugins' / 'switch' / 'switch.json'
+def checkSwitch(funcName: str, g: int):
+    file = Path('.') / 'ATRI' / 'modules' / 'funcControl' / 'ALLswitch.json'
     with open(file, 'r') as f:
         data = json.load(f)
-    
     if data[funcName] == "on":
         return True
+    else:
+        file = Path('.') / 'ATRI' / 'data' / 'groupData' / f'{g}' / 'switch.json'
+        with open(file, 'r') as f:
+            data = json.load(f)
+        
+        if data[funcName] == "on":
+            return True
 
 def checkNoob(user: int, group: Optional[int] = None):
     fileU = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
