@@ -198,3 +198,29 @@ async def _(session: CommandSession):
 * BytesSENT: {inteSENT}
 * BytesRECV: {inteRECV}
 {status}""".strip())
+
+
+@on_command('trackERROR', aliases = ['追踪'], only_to_me = False)
+async def _(session: CommandSession):
+    if session.event.user_id in master:
+        msg = session.current_arg.strip()
+        if not msg:
+            msg = session.get('message', prompt = '请发送trackID')
+
+        try:
+            with open(Path('.') / 'ATRI' / 'data' / 'errorData' / 'errorData.json', 'r') as f:
+                data = json.load(f)
+        except:
+            data = {}
+
+        if str(msg) in data.keys():
+            err = data[f"{msg}"]
+            msg0 = f'trackID: {msg}\n'
+            msg0 += err
+            await session.send(msg0)
+
+        else:
+            session.finish('未发现该ID')
+    
+    else:
+        await session.send('恁哪位呀~？')

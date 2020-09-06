@@ -10,9 +10,9 @@ from nonebot import on_command, scheduler
 from nonebot import CommandSession
 from apscheduler.triggers.date import DateTrigger
 
-import config # type: ignore
-from ATRI.modules.response import request_api # type: ignore
-from ATRI.modules.funcControl import checkNoob # type: ignore
+import config
+from ATRI.modules.response import request_api
+from ATRI.modules.funcControl import checkNoob
 
 
 bot = nonebot.get_bot()
@@ -619,7 +619,7 @@ async def _(session: CommandSession):
                     pass
 
                 else:
-                    await session.send('是亚托莉......萝卜子可是对机器人的蔑称......\n这是第二次警告哦，接下来5分钟我不会再理你了！哼唧！')
+                    await session.send('是亚托莉......萝卜子可是对机器人的蔑称......\n这是第二次警告哦，接下来10分钟我不会再理你了！哼唧！')
                     bL[f"{user}"] = f"{user}"
                     file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
                     f = open(file, 'w')
@@ -627,7 +627,7 @@ async def _(session: CommandSession):
                     f.close()
                     noobList0 = list(set(noobList0))
                     print(noobList0)
-                    delta = timedelta(minutes = 5)
+                    delta = timedelta(minutes = 10)
                     trigger = DateTrigger(
                         run_date = datetime.now() + delta
                     )
@@ -640,7 +640,7 @@ async def _(session: CommandSession):
                     )
 
 noobList1 = []
-@on_command('ntr', patterns = [r"[nNηиɴИ][tT][rR]|[牛🐂]头人"], only_to_me = False)
+@on_command('ntr', patterns = [r"[nNηиɴИ][tT][rR]|[牛🐂🐮]头人"], only_to_me = False)
 async def _(session: CommandSession):
     global noobList1
     user = session.event.user_id
@@ -655,7 +655,7 @@ async def _(session: CommandSession):
                     bL = json.load(f)
             except:
                 bL = {}
-            pattern = r"[nNηиɴИ][tT][rR]|[牛🐂]头人"
+            pattern = r"[nNηиɴИ][tT][rR]|[牛🐂🐮]头人"
             if re.findall(pattern, msg):
                 noobList1.append(user)
                 if countX(noobList1, user) == 5:
@@ -665,7 +665,7 @@ async def _(session: CommandSession):
                         pass
 
                     else:
-                        await session.send(f'[CQ:at,qq={user}]哼！接下来10分钟别想让我理你！')
+                        await session.send(f'[CQ:at,qq={user}]哼！接下来30分钟别想让我理你！')
                         bL[f"{user}"] = f"{user}"
                         file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
                         f = open(file, 'w')
@@ -673,7 +673,7 @@ async def _(session: CommandSession):
                         f.close()
                         noobList1 = list(set(noobList1))
                         print(noobList1)
-                        delta = timedelta(minutes = 10)
+                        delta = timedelta(minutes = 30)
                         trigger = DateTrigger(
                             run_date = datetime.now() + delta
                         )

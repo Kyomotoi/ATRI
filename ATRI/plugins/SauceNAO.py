@@ -4,19 +4,15 @@ import re
 from datetime import datetime
 from random import choice
 from nonebot import on_command, CommandSession
-from aiohttp import ClientSession
 
-import config # type: ignore
-from ATRI.modules.funcControl import checkSwitch, checkNoob # type: ignore
+import config
+from ATRI.modules.error import errorBack
+from ATRI.modules.funcControl import checkSwitch, checkNoob
+
 
 API_KEY = config.SAUCENAO_KEY()
 __plugin_name__ = "saucenao_search"
 
-async def get_bytes(url, headers = None):
-    async with ClientSession() as asyncSession:
-        async with asyncSession.get(url, headers = headers) as response:
-            a = await response.read()
-    return a
 
 def now_time():
     now_ = datetime.now()
@@ -45,7 +41,7 @@ class SauceNAO:
         res = requests.get(url=self.api,params=self.params)
         return res.content
 
-@on_command('SauceNAO', aliases = ['以图识图'], only_to_me = False)
+@on_command('SauceNAO', aliases = ['以图识图', '以图搜图'], only_to_me = False)
 async def SaucenaoSearch(session: CommandSession):
     user = session.event.user_id
     group = session.event.group_id
@@ -65,45 +61,48 @@ async def SaucenaoSearch(session: CommandSession):
                 )
             )
         else:
-            if checkSwitch(__plugin_name__):
+            if checkSwitch(__plugin_name__, group):
                 if not msg:
                     msg = session.get('message', prompt="请发送一张图片")
 
-                await session.send("开始以图识图\n(如搜索时间过长或无反应则为图片格式有问题)")
+                await session.send("开始以图识图")
 
-                p = '\\[CQ\\:image\\,file\\=.*?\\,url\\=(.*?)\\]'
-
-                img = re.findall(p, msg)
-
-                task = SauceNAO(api_key=API_KEY)
-                data = task.search(url=img)
-                msg0 = ''
                 try:
-                    data = json.loads(data)['results'][0]
-                    url = data['data']['ext_urls'][0]
-                    title = data['data']['title']
-                    pixiv_id = data['data']['pixiv_id']
-                    member_name = data['data']['member_name']
-                    member_id = data['data']['member_id']
-                    similarity = data['header']['similarity']
-                    mini_url = data['header']['thumbnail']
-                    msg0 = f'SauceNAO结果：'
-                    msg0 += f'[CQ:image,file={mini_url}]\n'
-                    msg0 += f'相似度：{similarity}%\n'
-                    msg0 += f'标题：{title}\n'
-                    msg0 += f'插画ID：{pixiv_id}\n'
-                    msg0 += f'画师：{member_name}\n'
-                    msg0 += f'画师ID：{member_id}\n'
-                    msg0 += f'直链：https://pixiv.cat/{pixiv_id}.jpg'
-                except:
-                    print('网络请求失败...')
-                if msg0:
+                    p = '\\[CQ\\:image\\,file\\=.*?\\,url\\=(.*?)\\]'
+
+                    img = re.findall(p, msg)
+
+                    task = SauceNAO(api_key=API_KEY)
+                    data = task.search(url=img)
+                    msg0 = ''
+
+                    try:
+                        data = json.loads(data)['results'][0]
+                        title = data['data']['title']
+                        pixiv_id = data['data']['pixiv_id']
+                        member_name = data['data']['member_name']
+                        member_id = data['data']['member_id']
+                        similarity = data['header']['similarity']
+                        mini_url = data['header']['thumbnail']
+                        msg0 = f'[CQ:at,qq={user}]'
+                        msg0 += f'SauceNAO结果：'
+                        msg0 += f'[CQ:image,file={mini_url}]\n'
+                        msg0 += f'相似度：{similarity}%\n'
+                        msg0 += f'标题：{title}\n'
+                        msg0 += f'插画ID：{pixiv_id}\n'
+                        msg0 += f'画师：{member_name}\n'
+                        msg0 += f'画师ID：{member_id}\n'
+                        msg0 += f'直链：https://pixiv.cat/{pixiv_id}.jpg'
+                    except:
+                        msg = '数据处理失败'
+
                     if float(similarity) > 70:
                         await session.send(msg0)
                     else:
                         await session.send("找不到相似的图呢...")
-                else:
-                        await session.send("搜索似乎失败了呢...")
+
+                except Exception:
+                    session.finish(errorBack(msg))
             else:
                 session.finish('该功能已关闭...')
 

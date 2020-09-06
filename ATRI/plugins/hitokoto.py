@@ -4,8 +4,9 @@ from random import choice
 from nonebot import on_command, on_natural_language, CommandSession
 from nonebot import NLPSession, NLPResult
 
-from ATRI.modules import response # type: ignore
-from ATRI.modules.funcControl import checkNoob # type: ignore
+from ATRI.modules.response import request_api
+from ATRI.modules.error import errorBack
+from ATRI.modules.funcControl import checkNoob
 
 
 def now_time():
@@ -37,12 +38,12 @@ async def hitokoto(session: CommandSession):
                 )
             )
         else:
-            rep = response.request_api(url)
+            try:
+                rep = request_api(url)
+            except:
+                session.finish(errorBack('请求错误'))
             
-            if not rep:
-                session.finish('获取失败')
-            
-            dc = json.loads(response.request_api(url))
+            dc = json.loads(rep)
 
             await session.send(dc["hitokoto"])
 

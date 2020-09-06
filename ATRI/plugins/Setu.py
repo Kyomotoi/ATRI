@@ -12,10 +12,11 @@ from random import choice
 import nonebot
 from nonebot import on_command, CommandSession
 
-import config # type: ignore
-from ATRI.modules.b64 import b64_str_img_url # type: ignore
-from ATRI.modules.response import request_api_params # type: ignore
-from ATRI.modules.funcControl import checkSwitch, checkNoob # type: ignore
+import config
+from ATRI.modules.error import errorBack
+from ATRI.modules.b64 import b64_str_img_url
+from ATRI.modules.response import request_api_params
+from ATRI.modules.funcControl import checkSwitch, checkNoob
 
 
 bot = nonebot.get_bot()
@@ -64,19 +65,19 @@ async def setu(session: CommandSession):
                 )
             )
         else:
-            if checkSwitch(__plugin_name__):
+            if checkSwitch(__plugin_name__, group):
                 res = randint(1,10)
-                if 1 <= res < 9:
+                if 1 <= res <= 9:
                     res = randint(1,4)
-                    if 1 <= res < 3:
+                    if 1 <= res <= 3:
                         if setu_type == 1:
-                            res = randint(1,4)
+                            res = randint(1,5)
                             await session.send('别急！正在找图！')
                             con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'sqlite' / 'setu' / 'nearR18.db')
                             cur = con.cursor()
                             msg = cur.execute('SELECT * FROM nearR18 ORDER BY RANDOM() limit 1;')
                         
-                            if 1 <= res < 3:
+                            if 1 <= res <= 4:
                                 for i in msg:
                                     pid = i[0]
                                     title = i[1]
@@ -90,7 +91,7 @@ async def setu(session: CommandSession):
                                         time = round(end - start, 3)
                                         )
                                     )
-                            elif res == 4:
+                            elif res == 5:
                                 for i in msg:
                                     pid = i[0]
                                     title = i[1]
@@ -103,7 +104,7 @@ async def setu(session: CommandSession):
                                     )
                         
                         elif setu_type == 2:
-                            res = randint(1,4)
+                            res = randint(1,5)
                             await session.send('别急！正在找图！')
                             start = time.perf_counter()
                             values = {
@@ -118,9 +119,9 @@ async def setu(session: CommandSession):
                                 pid = dc["data"][0]["pid"]
                                 setu = dc["data"][0]["url"] #b64.b64_str_img_url(dc["data"][0]["url"])
                             except:
-                                await session.send('失败了失败了失败了失...')
-                                return
-                            if 1 <= res < 3:
+                                session.finish(errorBack('请求数据失败'))
+
+                            if 1 <= res <= 4:
                                 end = time.perf_counter()
                                 await session.send(
                                     SETU_REPLY.format(
@@ -130,7 +131,7 @@ async def setu(session: CommandSession):
                                     time = round(end - start, 3)
                                     )
                                 )
-                            elif res == 4:
+                            elif res == 5:
                                 end = time.perf_counter()
                                 await session.send('我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆')
                                 await bot.send_private_msg( # type: ignore
@@ -175,7 +176,7 @@ async def _(session: CommandSession):
             setu_type = 2
         
         else:
-            pass
+            session.finish('请检查输入~~~（')
         
         await session.send('okay~~~~')
 
@@ -186,7 +187,7 @@ async def _(context):
     user = context["user_id"]
     group = context["group_id"]
     if checkNoob(user, group):
-            if checkSwitch(__plugin_name1__):
+            if checkSwitch(__plugin_name1__, group):
                 try:
                     img = str(context["message"])
                     pattern = re.compile(r"url=(.*)]")
@@ -197,121 +198,125 @@ async def _(context):
                 except:
                     return
 
-                img = b64_str_img_url(img)
-                if img:
-                    try:
-                        host = f'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={API_KEY}&client_secret={SECRECT_KEY}'
-                        headers = {
-                            'Content-Type': 'application/json;charset=UTF-8'
-                        }
-                        res = json.loads(request_api_params(host, headers))
-                        access_token=res['access_token']
-                        url = f'https://aip.baidubce.com/rest/2.0/ocr/v1/general?access_token={access_token}'
-                        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-                        data = urlencode({'image': img})
-                        res = requests.post(url=url, headers=headers, data=data)
-                    except:
-                        return
-                    
-                    try:
-                        words = json.loads(res.content)['words_result'][0]['words']
-                        print(words)
-                    except:
-                        return
+                try:
+                    img = b64_str_img_url(img)
+                except:
+                    return
 
-                    if re.findall(r"[涩色]图|炼铜", words):
-                        if checkSwitch(__plugin_name__):
-                            res = randint(1,10)
-                            if 1 <= res < 9:
-                                res = randint(1,4)
-                                if 1 <= res < 3:
-                                    if setu_type == 1:
-                                        res = randint(1,4)
-                                        con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'sqlite' / 'setu' / 'nearR18.db')
-                                        cur = con.cursor()
-                                        msg = cur.execute('SELECT * FROM nearR18 ORDER BY RANDOM() limit 1;')
-                                    
-                                        if 1 <= res < 3:
-                                            for i in msg:
-                                                pid = i[0]
-                                                title = i[1]
-                                                img = i[7]
-                                                end = time.perf_counter()
-                                                msg = SETU_REPLY.format(
-                                                    title = title,
-                                                    pid = pid,
-                                                    setu = img,
-                                                    time = round(end - start, 3)
-                                                )
-                                                await bot.send_group_msg(group_id = group, message = msg) # type: ignore
-                                        elif res == 4:
-                                            for i in msg:
-                                                pid = i[0]
-                                                title = i[1]
-                                                img = i[7]
-                                                end = time.perf_counter()
-                                                await bot.send_group_msg(group_id = group, message = '我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆') # type: ignore
-                                                await bot.send_private_msg( # type: ignore
-                                                    user_id = master,
-                                                    message = f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{img}\nComplete time: {round(end - start, 3)}"
-                                                )
-                                    
-                                    elif setu_type == 2:
-                                        res = randint(1,4)
-                                        await bot.send_group_msg(group_id = group, message = '别急！正在找图！') # type: ignore
-                                        start = time.perf_counter()
-                                        values = {
-                                            "apikey": apikey_LOLI,
-                                            "r18": "0",
-                                            "num": "1"
-                                        }
+                try:
+                    host = f'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={API_KEY}&client_secret={SECRECT_KEY}'
+                    headers = {
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    }
+                    res = json.loads(request_api_params(host, headers))
+                    access_token=res['access_token']
+                    url = f'https://aip.baidubce.com/rest/2.0/ocr/v1/general?access_token={access_token}'
+                    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+                    data = urlencode({'image': img})
+                    res = requests.post(url=url, headers=headers, data=data)
+                except:
+                    return
+                
+                try:
+                    words = json.loads(res.content)['words_result'][0]['words']
+                    print(words)
+                except:
+                    return
 
-                                        try:
-                                            dc = json.loads(request_api_params(URL, values))
-                                            title = dc["data"][0]["title"]
-                                            pid = dc["data"][0]["pid"]
-                                            setu = dc["data"][0]["url"] #b64.b64_str_img_url(dc["data"][0]["url"])
-                                        except:
-                                            await bot.send_group_msg(group_id = group, message = '失败了失败了失...') # type: ignore
-                                            return
-                                        if 1 <= res < 3:
+                if re.findall(r"[涩色]图|炼铜", words):
+                    if checkSwitch(__plugin_name__, group):
+                        res = randint(1,10)
+                        if 1 <= res <= 9:
+                            res = randint(1,5)
+                            if 1 <= res <= 4:
+                                if setu_type == 1:
+                                    res = randint(1,5)
+                                    await bot.send_group_msg(group_id = group, message = '别急！正在找图！') # type: ignore
+                                    con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'sqlite' / 'setu' / 'nearR18.db')
+                                    cur = con.cursor()
+                                    msg = cur.execute('SELECT * FROM nearR18 ORDER BY RANDOM() limit 1;')
+                                
+                                    if 1 <= res <= 4:
+                                        for i in msg:
+                                            pid = i[0]
+                                            title = i[1]
+                                            img = i[7]
                                             end = time.perf_counter()
                                             msg = SETU_REPLY.format(
-                                                    title = title,
-                                                    pid = pid,
-                                                    setu = img,
-                                                    time = round(end - start, 3)
-                                                )
+                                                title = title,
+                                                pid = pid,
+                                                setu = img,
+                                                time = round(end - start, 3)
+                                            )
                                             await bot.send_group_msg(group_id = group, message = msg) # type: ignore
-                                        elif res == 4:
+                                    elif res == 5:
+                                        for i in msg:
+                                            pid = i[0]
+                                            title = i[1]
+                                            img = i[7]
                                             end = time.perf_counter()
                                             await bot.send_group_msg(group_id = group, message = '我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆') # type: ignore
                                             await bot.send_private_msg( # type: ignore
                                                 user_id = master,
-                                                message = f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{setu}\nComplete time: {round(end - start, 3)}"
+                                                message = f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{img}\nComplete time: {round(end - start, 3)}"
                                             )
-                                elif res == 4:
-                                    img = choice(
-                                        [
-                                            'SP.jpg', 'SP1.jpg', 'SP2.jpg'
-                                        ]
-                                    )
-                                    img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-                                    img = os.path.abspath(img)
-                                    await bot.send_group_msg(group_id = group, message = f'[CQ:image,file=file:///{img}]') # type: ignore
-                            
-                            elif res == 10:
+                                
+                                elif setu_type == 2:
+                                    res = randint(1,5)
+                                    await bot.send_group_msg(group_id = group, message = '别急！正在找图！') # type: ignore
+                                    start = time.perf_counter()
+                                    values = {
+                                        "apikey": apikey_LOLI,
+                                        "r18": "0",
+                                        "num": "1"
+                                    }
+
+                                    try:
+                                        dc = json.loads(request_api_params(URL, values))
+                                        title = dc["data"][0]["title"]
+                                        pid = dc["data"][0]["pid"]
+                                        setu = dc["data"][0]["url"] #b64.b64_str_img_url(dc["data"][0]["url"])
+                                    except:
+                                        await bot.send_group_msg(group_id = group, message = errorBack('数据请求失败')) # type: ignore
+                                        return
+                                    if 1 <= res <= 4:
+                                        end = time.perf_counter()
+                                        msg = SETU_REPLY.format(
+                                                title = title,
+                                                pid = pid,
+                                                setu = img,
+                                                time = round(end - start, 3)
+                                            )
+                                        await bot.send_group_msg(group_id = group, message = msg) # type: ignore
+                                    elif res == 5:
+                                        end = time.perf_counter()
+                                        await bot.send_group_msg(group_id = group, message = '我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆') # type: ignore
+                                        await bot.send_private_msg( # type: ignore
+                                            user_id = master,
+                                            message = f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{setu}\nComplete time: {round(end - start, 3)}"
+                                        )
+                            elif res == 5:
                                 img = choice(
                                     [
-                                        'GDZ.png', 'SHZY1.jpg', 'SHZY2.jpg', 'SHZY3.jpg', 'SHZY4.jpg', 'SHZY5.jpg', 'SHZY6.jpg'
+                                        'SP.jpg', 'SP1.jpg', 'SP2.jpg'
                                     ]
                                 )
-                                img = Path('.') / 'ATRI' / 'data' / 'img' / 'niceIMG' / f'{img}'
+                                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
                                 img = os.path.abspath(img)
                                 await bot.send_group_msg(group_id = group, message = f'[CQ:image,file=file:///{img}]') # type: ignore
+                        
+                        elif res == 10:
+                            img = choice(
+                                [
+                                    'GDZ.png', 'SHZY1.jpg', 'SHZY2.jpg', 'SHZY3.jpg', 'SHZY4.jpg', 'SHZY5.jpg', 'SHZY6.jpg'
+                                ]
+                            )
+                            img = Path('.') / 'ATRI' / 'data' / 'img' / 'niceIMG' / f'{img}'
+                            img = os.path.abspath(img)
+                            await bot.send_group_msg(group_id = group, message = f'[CQ:image,file=file:///{img}]') # type: ignore
 
-                        else:
-                            pass
+                    else:
+                        pass
             
             else:
                 pass

@@ -6,7 +6,7 @@ from datetime import datetime
 from random import randint, choice
 from pathlib import Path
 
-import config # type: ignore
+import config
 
 
 bot = nonebot.get_bot()
@@ -27,7 +27,7 @@ async def _():
         group_list = await bot.get_group_list() #type: ignore
         groups = [group['group_id'] for group in group_list]
         g_list = len(group_list)
-        msg = await choice(
+        msg = choice(
             [
                 '啊......早上好...(哈欠)',
                 '唔......吧唧...早上...哈啊啊~~~\n早上好......',
@@ -69,7 +69,7 @@ async def _():
         group_list = await bot.get_group_list() #type: ignore
         groups = [group['group_id'] for group in group_list]
         g_list = len(group_list)
-        msg = await choice(
+        msg = choice(
             [
                 '忙累了一天，快休息吧',
                 '辛苦了一天，准备睡觉吧',

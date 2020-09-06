@@ -5,7 +5,8 @@ from random import choice
 from aiohttp import ClientSession
 from nonebot import on_command, CommandSession
 
-from ATRI.modules.funcControl import checkSwitch, checkNoob # type: ignore
+from ATRI.modules.error import errorBack
+from ATRI.modules.funcControl import checkSwitch, checkNoob
 
 
 __plugin_name__ = "anime_search"
@@ -78,7 +79,7 @@ async def AnimeSearch(session: CommandSession):
                 )
             )
         else:
-            if checkSwitch(__plugin_name__):
+            if checkSwitch(__plugin_name__, group):
                 if not msg:
                     msg = session.get('message', prompt = "请发送一张图片")
                 
@@ -91,11 +92,14 @@ async def AnimeSearch(session: CommandSession):
                 if img:
                     URL = f'https://trace.moe/api/search?url={img[0]}'
 
-                    req = await get_bytes(URL)
+                    try:
+                        req = await get_bytes(URL)
+                    except:
+                        session.finish(errorBack('请求数据失败'))
 
-                    if req:
-                        data = json.loads(req.decode())
+                    data = json.loads(req.decode())
 
+                    try:
                         d = {}
 
                         for i in range(len(data['docs'])):
@@ -113,27 +117,26 @@ async def AnimeSearch(session: CommandSession):
                                     n = data['docs'][i]['episode']
                                 
                                 d[toSimpleString(data['docs'][i]['title_chinese'])] = [data['docs'][i]['similarity'],f'第{n}集',f'{int(m)}分{int(s)}秒处']
+                    except:
+                        session.finish(errorBack('处理数据失败'))
 
-                        result = sorted(
-                            d.items(),
-                            key = lambda x:x[1],
-                            reverse = True
-                        )
+                    result = sorted(
+                        d.items(),
+                        key = lambda x:x[1],
+                        reverse = True
+                    )
 
-                        t = 0
+                    t = 0
 
-                        msg0 = f'[CQ:at,qq={user}]\n根据所提供的图片按照相似度找到{len(d)}个结果:'
+                    msg0 = f'[CQ:at,qq={user}]\n根据所提供的图片按照相似度找到{len(d)}个结果:'
 
-                        for i in result:
-                            t +=1
-                            lk = ('%.2f%%' % (i[1][0] * 100))
-                            msg = (f'\n——————————\n({t})\n相似度：{lk}\n动漫名：《{i[0]}》\n时间点：{i[1][1]} {i[1][2]}')
-                            msg0 += msg
-                        
-                        await session.send(msg0)
+                    for i in result:
+                        t +=1
+                        lk = ('%.2f%%' % (i[1][0] * 100))
+                        msg = (f'\n——————————\n({t})\n相似度：{lk}\n动漫名：《{i[0]}》\n时间点：{i[1][1]} {i[1][2]}')
+                        msg0 += msg
                     
-                    else:
-                        await session.send("搜索似乎失败了呢...")
+                    await session.send(msg0)
             
             else:
                 session.finish('该功能已关闭...')

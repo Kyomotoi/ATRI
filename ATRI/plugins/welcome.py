@@ -1,28 +1,27 @@
-import nonebot
 from nonebot import on_notice
-from nonebot.notice_request import NoticeSession, RequestSession
 from nonebot.plugin import on_request
-from nonebot.helpers import send_to_superusers
+from nonebot.notice_request import NoticeSession, RequestSession
 
-import config # type: ignore
-from ATRI.modules.funcControl import checkNoob # type: ignore
+import config
+from ATRI.modules.funcControl import checkNoob
 
 
-bot = nonebot.get_bot()
 master = config.MASTER()
 
 
 @on_notice('group_increase')
 async def _(session: NoticeSession):
     user = session.event.user_id
+    group = session.event.group_id
     me = session.event.self_id
 
-    if user == me:
-        await session.send('在下アトリ，今后请多指教呐❤')
-    else:
-        await session.send(f'[CQ:at,qq={user}]\nねえ❤...是新人欸！\nここでは遠慮はいらないのだからね❤')
+    if checkNoob(group):
+        if user == me:
+            await session.send('在下アトリ，今后请多指教呐❤')
+        else:
+            await session.send(f'[CQ:at,qq={user}]\nねえ❤...是新人欸！\nここでは遠慮はいらないのだからね❤')
 
-@on_notice('group_decrease')
+@on_notice('group_decrease.leave')
 async def _(session: NoticeSession):
     user = session.event.user_id
     group = session.event.group_id
@@ -32,14 +31,18 @@ async def _(session: NoticeSession):
             await session.send(f'[{user}]离开了我们......')
 
 
-@on_request('friend_add')
+@on_request('friend', 'group.invite')
 async def _(session: RequestSession):
     user = session.event.user_id
-    await send_to_superusers(bot, f'{user}\n想认识ATRI欸欸欸！！')
-
-@on_request('group')
-async def _(session: RequestSession):
-    if session.event.user_id == master:
-        await session.approve()
-    else:
-        await session.send(f'邀请入群请联系ATRI的主人[{master}]')
+    if checkNoob(user):
+        try:
+            group = session.event.group_id
+        except:
+            group = False
+        
+        if group:
+            await bot.send_private_msg(user_id = user, message = f'如有需要，请联系维护组{master}哦~') # type: ignore
+            await bot.send_private_msg(user_id = master, message = f'报告主人！ATRI收到一条请求：\n类型：邀请入群\n邀请人：{user}\n对象群：{group}') # type: ignore
+        
+        else:
+            await bot.send_private_msg(user_id = master, message = f'报告主人！ATRI收到一条请求：\n类型：添加好友\n申请人：{user}') # type: ignore

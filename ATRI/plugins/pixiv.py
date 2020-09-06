@@ -2,12 +2,12 @@ import time
 import json
 from datetime import datetime
 from random import choice
-from pathlib import Path
 import nonebot
 from nonebot import on_command, CommandSession
 
-from ATRI.modules import response # type: ignore
-from ATRI.modules.funcControl import checkSwitch, checkNoob # type: ignore
+from ATRI.modules.response import request_api
+from ATRI.modules.error import errorBack
+from ATRI.modules.funcControl import checkSwitch, checkNoob
 
 
 bot = nonebot.get_bot()
@@ -62,42 +62,45 @@ async def _(session: CommandSession):
                 )
             )
         else:
-            if checkSwitch(__plugin_name1__):
+            if checkSwitch(__plugin_name1__, group):
                 pid = session.current_arg.strip()
 
                 if not pid:
                     pid = session.get('message', prompt = '请告诉ATRI需要查询的Pid码')
                 
                 start =time.perf_counter()
-                await session.send('开始P站搜图\n如搜索时间过长或许为图片过大上传较慢')
+                await session.send('开始P站搜图')
 
                 URL = URL_1 + pid
 
-                dc = json.loads(response.request_api(URL))
-
-                if not dc:
-                    session.finish('ATRI在网络上走散了...请重试...')
+                try:
+                    dc = json.loads(request_api(URL))
+                except:
+                    session.finish(errorBack('请求数据失败'))
 
                 img = f'https://pixiv.cat/{pid}.jpg'
                 
 
                 end = time.perf_counter()
 
-                await session.send(
-                    IMG_SEACH_REPLY.format(
-                        user = user,
-                        pid = pid,
-                        title = dc["response"][0]["title"],
-                        width = dc["response"][0]["width"],
-                        height = dc["response"][0]["height"],
-                        tags = dc["response"][0]["tags"],
-                        account = dc["response"][0]["user"]["account"],
-                        name = dc["response"][0]["user"]["name"],
-                        user_link = f'https://www.pixiv.net/users/' + f'{dc["response"][0]["user"]["id"]}',
-                        img = img,
-                        time = round(end - start, 3)
+                try:
+                    await session.send(
+                        IMG_SEACH_REPLY.format(
+                            user = user,
+                            pid = pid,
+                            title = dc["response"][0]["title"],
+                            width = dc["response"][0]["width"],
+                            height = dc["response"][0]["height"],
+                            tags = dc["response"][0]["tags"],
+                            account = dc["response"][0]["user"]["account"],
+                            name = dc["response"][0]["user"]["name"],
+                            user_link = f'https://www.pixiv.net/users/' + f'{dc["response"][0]["user"]["id"]}',
+                            img = img,
+                            time = round(end - start, 3)
+                        )
                     )
-                )
+                except:
+                    session.finish(errorBack('处理数据失败'))
             
             else:
                 await session.send('该功能已关闭...')
@@ -121,7 +124,7 @@ async def _(session: CommandSession):
                 )
             )
         else:
-            if checkSwitch(__plugin_name2__):
+            if checkSwitch(__plugin_name2__, group):
                 author_id = session.current_arg.strip()
 
                 if not author_id:
@@ -132,17 +135,20 @@ async def _(session: CommandSession):
 
                 URL = URL_2 + author_id
 
-                dc = json.loads(response.request_api(URL))
-
-                if not dc:
-                    session.finish('ATRI在网络上走散了...请重试...')
+                try:
+                    dc = json.loads(request_api(URL))
+                except:
+                    session.finish(errorBack('请求数据失败'))
 
                 d ={}
 
-                for i in range(0,3):
-                    pid = dc["response"][i]["id"]
-                    pidURL = f'https://pixiv.cat/{pid}.jpg'
-                    d[i] = [f'{pid}',f'{pidURL}']
+                try:
+                    for i in range(0,3):
+                        pid = dc["response"][i]["id"]
+                        pidURL = f'https://pixiv.cat/{pid}.jpg'
+                        d[i] = [f'{pid}',f'{pidURL}']
+                except:
+                    session.finish(errorBack('处理数据失败'))
                 
                 msg0 = (f'[CQ:at,qq={user}]\n画师id:{author_id}，接下来展示前三作品')
 
@@ -187,18 +193,25 @@ async def _(session: CommandSession):
                 )
             )
         else:
-            if checkSwitch(__plugin_name__):
+            if checkSwitch(__plugin_name__, group):
                 await session.send('ATRI正在获取P站每日排行榜前五作品...')
 
                 start =time.perf_counter()
-                dc = json.loads(response.request_api(URL_3))
+
+                try:
+                    dc = json.loads(request_api(URL_3))
+                except:
+                    session.finish(errorBack('请求数据失败'))
 
                 d = {}
 
-                for i in range(0,5):
-                    pid = dc["response"][0]["works"][i]["work"]["id"]
-                    pidURL = f'https://pixiv.cat/{pid}.jpg'
-                    d[i] = [f'{pid}',f'{pidURL}']
+                try:
+                    for i in range(0,5):
+                        pid = dc["response"][0]["works"][i]["work"]["id"]
+                        pidURL = f'https://pixiv.cat/{pid}.jpg'
+                        d[i] = [f'{pid}',f'{pidURL}']
+                except:
+                    session.finish('处理数据失败')
 
                 msg0 = (f'[CQ:at,qq={user}]')
 

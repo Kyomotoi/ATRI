@@ -1,11 +1,10 @@
 import re
 import json
 import nonebot
-from pathlib import Path
 from datetime import datetime
 
-from ATRI.modules import response # type: ignore
-from ATRI.modules.funcControl import checkNoob # type: ignore
+from ATRI.modules.response import request_api
+from ATRI.modules.funcControl import checkNoob
 
 
 bot = nonebot.get_bot()
@@ -70,7 +69,7 @@ async def Fuck_bili_rich(context):
                 URL = f'https://api.imjad.cn/bilibili/v2/?aid={aid}'
 
                 try:
-                    res = response.request_api(URL)
+                    res = request_api(URL)
                     mg = json.loads(res)
                     msg = BILI_REPORT_FORMAT.format(
                         title = mg["data"]["title"],
@@ -120,7 +119,7 @@ async def Fuck_CloudMusic(context):
                     print(URL)
 
                     try:
-                        res = response.request_api(URL)
+                        res = request_api(URL)
                         mg = json.loads(res)
 
                         msg = REPORT_FORMAT.format(

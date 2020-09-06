@@ -8,8 +8,9 @@ from random import choice
 from pathlib import Path
 from nonebot import on_command, CommandSession
 
-import config # type: ignore
-from ATRI.modules.funcControl import checkSwitch, checkNoob # type: ignore
+import config
+from ATRI.modules.error import errorBack
+from ATRI.modules.funcControl import checkSwitch, checkNoob
 
 
 bot = nonebot.get_bot()
@@ -89,20 +90,23 @@ async def AIchFace(session: CommandSession):
                 )
             )
         else:
-            if checkSwitch(__plugin_name__):
+            if checkSwitch(__plugin_name__, group):
                 img1 = session.get('message1', prompt = '请发送需要换脸的图片')
                 img2 = session.get('message2', prompt = '请发送素材图片')
 
-                # 我承认了，我是取名废！
-                a = img1.split(',')
-                a = a[2].replace(']', '')
-                a = a.replace('url=', '')
-                imgres1 = requests.get(a)
+                try:
+                    # 我承认了，我是取名废！
+                    a = img1.split(',')
+                    a = a[2].replace(']', '')
+                    a = a.replace('url=', '')
+                    imgres1 = requests.get(a)
 
-                b = img2.split(',')
-                b = b[2].replace(']', '')
-                b = b.replace('url=', '')
-                imgres2 = requests.get(b)
+                    b = img2.split(',')
+                    b = b[2].replace(']', '')
+                    b = b.replace('url=', '')
+                    imgres2 = requests.get(b)
+                except:
+                    session.finish(errorBack('获取图片失败'))
 
                 try:
                     file1 = f'ATRI/data/temp/face/{user}'
@@ -117,7 +121,7 @@ async def AIchFace(session: CommandSession):
                     with open(file2 + '/img2.jpg', 'wb') as f:
                         f.write(imgres2.content)
                 except:
-                    session.finish('请求数据貌似失败了...')
+                    session.finish(errorBack('加载图片失败'))
                 
                 img1File = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img1.jpg'
                 img2File = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img2.jpg'
@@ -125,7 +129,7 @@ async def AIchFace(session: CommandSession):
                 try:
                     change_face(img1File, img2File, user, 1)
                 except:
-                    session.finish('emm...貌似失败了呢......')
+                    session.finish(errorBack('换脸操作失败'))
                 
                 time.sleep(0.5)
                 doneIMG = Path('.') / 'ATRI' / 'data' / 'temp' / 'face' / f'{user}' / 'img3.jpg'

@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from nonebot import on_command, CommandSession
 
-import config # type: ignore
+import config
 
 
 master = config.MASTER()

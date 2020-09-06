@@ -5,8 +5,9 @@ from random import choice, randint
 from datetime import datetime
 from nonebot import on_command, CommandSession
 
-import config # type: ignore
-from ATRI.modules.funcControl import checkNoob # type: ignore
+import config
+from ATRI.modules.error import errorBack
+from ATRI.modules.funcControl import checkNoob
 
 
 bot = nonebot.get_bot()
@@ -99,26 +100,9 @@ async def _(session: CommandSession):
     user = session.event.user_id
     group = session.event.group_id
     if checkNoob(user, group):
-        voice = Path('.') / 'ATRI' / 'data' / 'voice' / 'ysdd.amr'
-        voice = os.path.abspath(voice)
-        await session.send(f'[CQ:record,file=file:///{voice}]')
-
-@bot.on_message('group')
-async def _(context):
-    user = context["user_id"]
-    group = context["group_id"]
-    if checkNoob(user, group):
-        if 0 <= now_time() < 5.5:
-            pass
-        else:
-            if randint(1,20) == 4:
-                img = choice(
-                    [
-                        '11.jpg', '12.jpg', '23.jpg'
-                    ]
-                )
-                img = os.path.abspath(Path('.') / 'ATRI' / 'data' / 'emoji' / 'senren' / f'{img}')
-                await bot.send_msg(message = f'[CQ:image,file=file:///{img}]', auto_escape = False) # type: ignore
-            
-            else:
-                pass
+        try:
+            voice = Path('.') / 'ATRI' / 'data' / 'voice' / 'ysdd.amr'
+            voice = os.path.abspath(voice)
+            await session.send(f'[CQ:record,file=file:///{voice}]')
+        except:
+            session.finish(errorBack('读取音频时出错'))
