@@ -7,8 +7,8 @@ def checkSwitch(funcName: str, g: int):
     file = Path('.') / 'ATRI' / 'modules' / 'funcControl' / 'ALLswitch.json'
     with open(file, 'r') as f:
         data = json.load(f)
-    if data[funcName] == "on":
-        return True
+    if data[funcName] == "off":
+        return False
     else:
         file = Path('.') / 'ATRI' / 'data' / 'groupData' / f'{g}' / 'switch.json'
         with open(file, 'r') as f:
