@@ -10,7 +10,7 @@ import config
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
+master = config.SUPERUSERS
 
 
 @on_command('switch', aliases = ['on', 'off'], only_to_me = False, permission = GROUP_ADMIN)

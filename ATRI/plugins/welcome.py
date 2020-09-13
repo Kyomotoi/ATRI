@@ -6,7 +6,7 @@ import config
 from ATRI.modules.funcControl import checkNoob
 
 
-master = config.MASTER()
+master = config.SUPERUSERS
 
 
 @on_notice('group_increase')

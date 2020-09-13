@@ -10,7 +10,7 @@ import config
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
+master = config.SUPERUSERS
 
 
 @nonebot.scheduler.scheduled_job(

@@ -5,13 +5,11 @@ from random import choice, randint
 from datetime import datetime
 from nonebot import on_command, CommandSession
 
-import config
 from ATRI.modules.error import errorBack
 from ATRI.modules.funcControl import checkNoob
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
 
 
 def now_time():

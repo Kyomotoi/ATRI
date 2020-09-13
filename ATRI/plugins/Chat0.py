@@ -11,21 +11,16 @@ from nonebot import CommandSession
 from apscheduler.triggers.date import DateTrigger
 
 import config
+from ATRI.modules.favoIMP import AddFavoIMP, DelFavoIMP, GetFavoIMP
+from ATRI.modules.time import now_time
 from ATRI.modules.response import request_api
 from ATRI.modules.funcControl import checkNoob
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
+master = config.SUPERUSERS
 KC_URL = 'https://nmsl.shadiao.app/api.php?level=min&lang=zh_cn'
 
-
-def now_time():
-    now_ = datetime.now()
-    hour = now_.hour
-    minute = now_.minute
-    now = hour + minute / 60
-    return now
 
 def countX(lst, x):
     warnings.simplefilter('ignore', ResourceWarning)
@@ -225,7 +220,7 @@ async def az(session: CommandSession):
                 img = os.path.abspath(img)
                 await session.send(f'[CQ:image,file=file:///{img}]')
 
-@on_command('suki', patterns = [r"喜欢|爱你|爱|suki|daisuki|すき|好き|贴贴|老婆|[Mm][Uu][Aa]|亲一个"], only_to_me = True)
+@on_command('suki', patterns = [r"喜欢|爱你|爱|suki|daisuki|すき|好き|贴贴|老婆|[Mm][Uu][Aa]|亲一个"])
 async def az(session: CommandSession):
     user = session.event.user_id
     group = session.event.group_id
@@ -233,19 +228,7 @@ async def az(session: CommandSession):
         if 0 <= now_time() < 5.5:
             pass
         else:
-            res = randint(1,3)
-            if res == 1:
-                # res = random.randint(1,10)
-                img = choice(
-                    [
-                        'SUKI.jpg', 'SUKI1.jpg', 'SUKI2.png'
-                    ]
-                )
-                img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
-                img = os.path.abspath(img)
-                await session.send(f'[CQ:image,file=file:///{img}]')
-            
-            elif res == 2:
+            if 0 <= GetFavoIMP(user) < 250:
                 img = choice(
                     [
                         'TZ.jpg', 'TZ1.jpg', 'TZ2.jpg'
@@ -255,15 +238,27 @@ async def az(session: CommandSession):
                 img = os.path.abspath(img)
                 await session.send(f'[CQ:image,file=file:///{img}]')
             
-            elif res == 3:
-                voice = choice(
-                    [
-                        'suki1.amr', 'suki2.amr'
-                    ]
-                )
-                voice = Path('.') / 'ATRI' / 'data' / 'voice' / f'{voice}'
-                voice = os.path.abspath(voice)
-                await session.send(f'[CQ:record,file=file:///{voice}]')
+            elif 250 <= GetFavoIMP(user):
+                res = randint(1,2)
+                if res == 1:
+                    img = choice(
+                        [
+                            'SUKI.jpg', 'SUKI1.jpg', 'SUKI2.png'
+                        ]
+                    )
+                    img = Path('.') / 'ATRI' / 'data' / 'emoji' / f'{img}'
+                    img = os.path.abspath(img)
+                    await session.send(f'[CQ:image,file=file:///{img}]')
+            
+                elif res == 2:
+                    voice = choice(
+                        [
+                            'suki1.amr', 'suki2.amr'
+                        ]
+                    )
+                    voice = Path('.') / 'ATRI' / 'data' / 'voice' / f'{voice}'
+                    voice = os.path.abspath(voice)
+                    await session.send(f'[CQ:record,file=file:///{voice}]')
 
 @on_command('kouchou', patterns = [r"草你妈|操|你妈|脑瘫|废柴|fw|five|废物|战斗|爬|爪巴|sb|SB|啥[b批比逼]|傻b|给[爷👴]爬|嘴臭"])
 async def _(session: CommandSession):
@@ -274,6 +269,7 @@ async def _(session: CommandSession):
             pass
         else:
             if randint(1,2) == 1:
+                DelFavoIMP(u, 5, True)
                 res = randint(1,3)
                 if res == 1:
                     img = choice(
@@ -430,6 +426,7 @@ async def _(session: CommandSession):
             if re.findall(pat, msg):
                 pass
             else:
+                AddFavoIMP(user, 3, True)
                 msg = choice(
                     [
                        '当然，我是高性能的嘛~！',
@@ -503,6 +500,7 @@ async def _(session: CommandSession):
                     await session.send(f'[CQ:image,file=file:///{img}]')
                 
                 elif res == 3:
+                    AddFavoIMP(user, 1, False)
                     msg = choice(
                         [
                             '头发的柔顺度上升，我的高性能更上一层楼......',
@@ -531,6 +529,7 @@ async def _(session: CommandSession):
             pass
         else:
             if datetime.date.today().strftime('%y%m%d') == '200828':
+                AddFavoIMP(user, 50, True)
                 res = randint(1,3)
                 if res == 1:
                     msg = choice(
@@ -619,7 +618,8 @@ async def _(session: CommandSession):
                     pass
 
                 else:
-                    await session.send('是亚托莉......萝卜子可是对机器人的蔑称......\n这是第二次警告哦，接下来10分钟我不会再理你了！哼唧！')
+                    await session.send('是亚托莉......萝卜子可是对机器人的蔑称......\n这是第二次警告哦，接下来10分钟我不会再理你了！哼唧！\n（好感度-1）')
+                    DelFavoIMP(user, 1, False)
                     bL[f"{user}"] = f"{user}"
                     file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
                     f = open(file, 'w')
@@ -665,7 +665,8 @@ async def _(session: CommandSession):
                         pass
 
                     else:
-                        await session.send(f'[CQ:at,qq={user}]哼！接下来30分钟别想让我理你！')
+                        await session.send(f'[CQ:at,qq={user}]哼！接下来30分钟别想让我理你！\n（好感度-2）')
+                        DelFavoIMP(user, 2, False)
                         bL[f"{user}"] = f"{user}"
                         file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
                         f = open(file, 'w')

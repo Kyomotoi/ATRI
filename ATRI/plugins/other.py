@@ -1,28 +1,16 @@
-import os
-import json
 import random
 import nonebot
 import warnings
-from datetime import datetime
-from random import choice
-from pathlib import Path
 from nonebot import on_command, CommandSession
 from nonebot.helpers import render_expression
 
 import config
+from ATRI.modules.time import sleepTime
 from ATRI.modules.funcControl import checkNoob
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
-
-
-def now_time():
-    now_ = datetime.now()
-    hour = now_.hour
-    minute = now_.minute
-    now = hour + minute / 60
-    return now
+master = config.SUPERUSERS
 
 def countX(lst, x):
     warnings.simplefilter('ignore', ResourceWarning)
@@ -46,18 +34,8 @@ async def _(session: CommandSession):
     user = session.event.user_id
     group = session.event.group_id
     if checkNoob(user, group):
-        if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+        if sleepTime():
+            await session.send(sleepTime())
         else:
             await session.send(
                 str(
@@ -83,18 +61,8 @@ async def _(session: CommandSession):
     user = session.event.user_id
     group = session.event.group_id
     if checkNoob(user, group):
-        if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+        if sleepTime():
+            await session.send(sleepTime())
         else:
             await session.send(
                 str(
@@ -174,39 +142,4 @@ async def _():
     except:
         await bot.send_private_msg(user_id = master, message = f'红茶重置失败...请手动重启ATRI以重置红茶...') # type: ignore
         return
-    print('红茶重置成功！')
-
-
-@on_command('switchLoad', aliases=['开关初始化'])
-async def _(session: CommandSession):
-    if session.event.user_id in master:
-        group_list = await session.bot.get_group_list() # type: ignore
-        g_list = len(group_list)
-
-        az = []
-        for group in group_list:
-            g = group['group_id']
-            try:
-                try:
-                    os.mkdir(Path('.') / 'ATRI' / 'data' / 'groupData' / f'{g}')
-                except:
-                    pass
-                data = {}
-                data["pixiv_seach_img"] = "on"
-                data["pixiv_seach_author"] = "on"
-                data["pixiv_daily_rank"] = "on"
-                data["setu"] = "on"
-                data["setu_img"] = "on"
-                data["anime_search"] = "on"
-                data["change_face"] = "on"
-                data["chouYou"] = "on"
-                data["saucenao_search"] = "on"
-                with open(Path('.') / 'ATRI' / 'data' / 'groupData' / f'{g}' / 'switch.json', 'w') as f:
-                    f.write(json.dumps(data))
-                    f.close()
-                az.append(group)
-            except:
-                pass
-        az = len(az)
-        
-        await session.send(f'已初始化{az}个群，总共{g_list}个群')
+    await bot.send_private_msg(user_id = master, message = '红茶重置成功！') # type: ignore

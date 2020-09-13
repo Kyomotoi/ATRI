@@ -5,7 +5,7 @@ from nonebot import on_command, CommandSession
 import config
 
 
-master = config.MASTER()
+master = config.SUPERUSERS
 file = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobList.json'
 file1 = Path('.') / 'ATRI' / 'plugins' / 'noobList' / 'noobGroup.json'
 

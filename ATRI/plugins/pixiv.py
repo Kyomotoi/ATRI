@@ -5,13 +5,14 @@ from random import choice
 import nonebot
 from nonebot import on_command, CommandSession
 
+import config
 from ATRI.modules.response import request_api
 from ATRI.modules.error import errorBack
 from ATRI.modules.funcControl import checkSwitch, checkNoob
 
 
 bot = nonebot.get_bot()
-master = bot.config.SUPERUSERS
+master = config.SUPERUSERS
 __plugin_name__ = "pixiv"
 __plugin_name1__ = "pixiv_seach_img"
 __plugin_name2__ = "pixiv_seach_author"

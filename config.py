@@ -7,6 +7,9 @@ print("正在导入记忆模块ing...")
 with open('config.json', 'r', encoding='UTF-8') as f:
     data = json.load(f)
 
+# 如果您不是开发者不建议更改
+DEBUG = False
+
 # 加载监听的 IP 和 端口
 HOST = data["HOST"]
 PORT = data["PORT"]

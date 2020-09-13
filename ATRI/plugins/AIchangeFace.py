@@ -14,9 +14,9 @@ from ATRI.modules.funcControl import checkSwitch, checkNoob
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
-key = config.FACE_KEY()
-secret = config.FACE_SECRET()
+master = config.SUPERUSERS
+key = config.FaceplusAPI
+secret = config.FaceplusSECRET
 __plugin_name__ = "change_face"
 
 

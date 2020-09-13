@@ -2,11 +2,14 @@ import time
 import json
 from pathlib import Path
 import nonebot
+from nonebot.helpers import send_to_superusers
 from nonebot import on_command, CommandSession
+
+import config
 
 
 bot = nonebot.get_bot()
-master = bot.config.SUPERUSERS
+master = config.SUPERUSERS
 
 
 @on_command('send_all_group', aliases = ['公告', '群发', '推送'], only_to_me=False)
@@ -91,15 +94,12 @@ async def send_all_friend(session: CommandSession):
         friend_list = await session.bot.get_friend_list() # type: ignore
         print(friend_list)
         f_list = len(friend_list)
-
-        for friend in friend_list:
-
-            try:
-                await bot.send_private_msg(user_id = friend['user_id'], message = msg) # type: ignore
-            
-            except:
-                await bot.send_private_msg(user_id = master, message = f"列表用户[{friend['user_id']}]推送失败") # type: ignore
+        try:
+            await send_all_friend(user_id = friend['user_id'], message = msg) # type: ignore
         
+        except:
+            await send_to_superusers(bot, f"推送时部分失败了呢") # type: ignore
+    
         end = time.perf_counter()
 
         await session.send(f'已推送到[{f_list}]位用户\n耗时：{round(end - start, 3)}')

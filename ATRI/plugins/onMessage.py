@@ -6,8 +6,9 @@ from pathlib import Path
 from random import randint, choice
 
 from ATRI.modules.error import errorBack
+from ATRI.modules.time import sleepTime
 from ATRI.modules.funcControl import checkSwitch, checkNoob
-from ATRI.plugins.SauceNAO import API_KEY, now_time, SauceNAO
+from ATRI.plugins.SauceNAO import API_KEY, SauceNAO
 
 
 bot = nonebot.get_bot()
@@ -17,7 +18,7 @@ bot = nonebot.get_bot()
 async def _(context):
     group = context["group_id"]
     user = context["user_id"]
-    if 0 <= now_time() < 5.5:
+    if sleepTime():
         pass
     else:
         if checkNoob(user, group):
@@ -108,7 +109,7 @@ async def _(context):
     user = context["user_id"]
     group = context["group_id"]
     if checkNoob(user, group):
-        if 0 <= now_time() < 5.5:
+        if sleepTime():
             pass
         else:
             if randint(1,20) == 4:

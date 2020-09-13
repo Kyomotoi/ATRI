@@ -1,25 +1,17 @@
 import requests
 import json
 import re
-from datetime import datetime
-from random import choice
 from nonebot import on_command, CommandSession
 
 import config
 from ATRI.modules.error import errorBack
+from ATRI.modules.time import sleepTime
 from ATRI.modules.funcControl import checkSwitch, checkNoob
 
 
-API_KEY = config.SAUCENAO_KEY()
+API_KEY = config.SauceNaoKEY
 __plugin_name__ = "saucenao_search"
 
-
-def now_time():
-    now_ = datetime.now()
-    hour = now_.hour
-    minute = now_.minute
-    now = hour + minute / 60
-    return now
 
 class SauceNAO:
 
@@ -48,18 +40,8 @@ async def SaucenaoSearch(session: CommandSession):
     msg = session.current_arg.strip()
 
     if checkNoob(user, group):
-        if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+        if sleepTime():
+            await session.send(sleepTime())
         else:
             if checkSwitch(__plugin_name__, group):
                 if not msg:

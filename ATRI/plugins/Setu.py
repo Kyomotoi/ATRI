@@ -3,12 +3,13 @@ import re
 import time
 import json
 import sqlite3
-import requests
+import aiohttp
 from urllib.parse import urlencode
 from random import choice, randint
 from pathlib import Path
 from datetime import datetime
 from random import choice
+from aiohttp import client
 import nonebot
 from nonebot import on_command, CommandSession
 
@@ -20,11 +21,11 @@ from ATRI.modules.funcControl import checkSwitch, checkNoob
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
-apikey_LOLI = config.LOLICONAPI()
-APP_ID = config.BAIDU_APP_ID()
-API_KEY = config.BAIDU_API_KEY()
-SECRECT_KEY = config.BAIDU_SECRET()
+master = config.SUPERUSERS
+apikey_LOLI = config.LoliconAPI
+APP_ID = config.BaiduApiID
+API_KEY = config.BaiduApiKEY
+SECRECT_KEY = config.BaiduApiSECRET
 __plugin_name__ = "setu"
 __plugin_name1__ = "setu_img"
 
@@ -200,6 +201,7 @@ async def _(context):
 
                 try:
                     img = b64_str_img_url(img)
+                    print('转换图片至base64成功')
                 except:
                     return
 
@@ -213,13 +215,16 @@ async def _(context):
                     url = f'https://aip.baidubce.com/rest/2.0/ocr/v1/general?access_token={access_token}'
                     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
                     data = urlencode({'image': img})
-                    res = requests.post(url=url, headers=headers, data=data)
-                except:
-                    return
-                
-                try:
-                    words = json.loads(res.content)['words_result'][0]['words']
-                    print(words)
+                    # res = requests.post(url=url, headers=headers, data=data)
+
+                    async def func0(url, headers, data):
+                        async with aiohttp.ClientSession() as client:
+                            async with client.post(url, headers = headers, data = data) as req:
+                                res = await req.read()
+                        return res
+
+                    words = json.loads(str(func0(url, headers, data)))['words_result'][0]['words']
+                    print('BaiduAPI请求成功')
                 except:
                     return
 

@@ -1,20 +1,12 @@
 import json
-from datetime import datetime
-from random import choice
 from nonebot import on_command, on_natural_language, CommandSession
 from nonebot import NLPSession, NLPResult
 
 from ATRI.modules.response import request_api
 from ATRI.modules.error import errorBack
+from ATRI.modules.time import sleepTime
 from ATRI.modules.funcControl import checkNoob
 
-
-def now_time():
-    now_ = datetime.now()
-    hour = now_.hour
-    minute = now_.minute
-    now = hour + minute / 60
-    return now
 
 
 url = 'https://api.imjad.cn/hitokoto/?cat=a&charset=utf-8&length=50&encode=json&fun=sync&source='
@@ -25,18 +17,8 @@ async def hitokoto(session: CommandSession):
     user = session.event.user_id
     group = session.event.group_id
     if checkNoob(user, group):
-        if 0 <= now_time() < 5.5:
-            await session.send(
-                choice(
-                    [
-                        'zzzz......',
-                        'zzzzzzzz......',
-                        'zzz...好涩哦..zzz....',
-                        '别...不要..zzz..那..zzz..',
-                        '嘻嘻..zzz..呐~..zzzz..'
-                    ]
-                )
-            )
+        if sleepTime():
+            await session.send(sleepTime())
         else:
             try:
                 rep = request_api(url)

@@ -13,7 +13,7 @@ from ATRI.modules.response import request_api
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
+master = config.SUPERUSERS
 url = f'https://api.imjad.cn/pixiv/v1/?type=illust&id='
 
 

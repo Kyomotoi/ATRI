@@ -28,3 +28,6 @@ async def _(ctx):
             f.close()
     except:
         os.mkdir(Path('.') / 'ATRI' / 'data' / 'groupData' / f'{group}')
+        with open(Path('.') / 'ATRI' / 'data' / 'groupData' / f'{group}' / 'msgData.json', 'w') as f:
+            f.write(json.dumps(data))
+            f.close()

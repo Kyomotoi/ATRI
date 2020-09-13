@@ -10,7 +10,7 @@ from ATRI.modules.error import errorBack
 
 
 bot = nonebot.get_bot()
-master = config.MASTER()
+master = config.SUPERUSERS
 __plugin_name__ = "LearnRepo"
 
 def now_time():
@@ -21,7 +21,7 @@ def now_time():
     return now
 
 
-@on_command('add_word', aliases = ['增加词汇', '删除词汇'], only_to_me = False)
+@on_command('add_word', aliases = ['增加词汇', '删除词汇', '学习词汇'], only_to_me = False)
 async def _(session: CommandSession):
     if session.event.user_id == master:
         msg = session.event.raw_message.split(' ', 3)
@@ -33,7 +33,7 @@ async def _(session: CommandSession):
         except:
             data = {}
 
-        if w_tpye == '增加词汇':
+        if w_tpye == '增加词汇' or w_tpye == '学习词汇':
             repo = msg[2]
             prob = int(msg[3])
             if word in data.keys():
