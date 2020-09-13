@@ -9,9 +9,9 @@ from random import choice, randint
 from pathlib import Path
 from datetime import datetime
 from random import choice
-from aiohttp import client
 import nonebot
 from nonebot import on_command, CommandSession
+from nonebot.helpers import send_to_superusers
 
 import config
 from ATRI.modules.error import errorBack
@@ -99,8 +99,8 @@ async def setu(session: CommandSession):
                                     img = i[7]
                                     end = time.perf_counter()
                                     await session.send('我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆')
-                                    await bot.send_private_msg( # type: ignore
-                                        user_id = master,
+                                    await send_to_superusers(
+                                        bot,
                                         message = f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{img}\nComplete time: {round(end - start, 3)}"
                                     )
                         
@@ -135,8 +135,8 @@ async def setu(session: CommandSession):
                             elif res == 5:
                                 end = time.perf_counter()
                                 await session.send('我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆')
-                                await bot.send_private_msg( # type: ignore
-                                    user_id = master,
+                                await send_to_superusers(
+                                    bot,
                                     message = f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{setu}\nComplete time: {round(end - start, 3)}"
                                 )
                     elif res == 4:
@@ -261,8 +261,8 @@ async def _(context):
                                             img = i[7]
                                             end = time.perf_counter()
                                             await bot.send_group_msg(group_id = group, message = '我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆') # type: ignore
-                                            await bot.send_private_msg( # type: ignore
-                                                user_id = master,
+                                            await send_to_superusers(
+                                                bot,
                                                 message = f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{img}\nComplete time: {round(end - start, 3)}"
                                             )
                                 
@@ -296,8 +296,8 @@ async def _(context):
                                     elif res == 5:
                                         end = time.perf_counter()
                                         await bot.send_group_msg(group_id = group, message = '我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆') # type: ignore
-                                        await bot.send_private_msg( # type: ignore
-                                            user_id = master,
+                                        await send_to_superusers(
+                                            bot,
                                             message = f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{setu}\nComplete time: {round(end - start, 3)}"
                                         )
                             elif res == 5:
