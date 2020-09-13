@@ -4,13 +4,9 @@ import psutil
 import asyncio
 from datetime import datetime
 from random import randint, choice
-from pathlib import Path
-
-import config
-
+from nonebot.helpers import send_to_superusers
 
 bot = nonebot.get_bot()
-master = config.SUPERUSERS
 
 
 @nonebot.scheduler.scheduled_job(
@@ -21,7 +17,7 @@ master = config.SUPERUSERS
 async def _():
     """早安"""
     try:
-        await bot.send_private_msg(user_id = master, message = f'ATRI将在三秒后开始执行定时任务：早安') # type: ignore
+        await send_to_superusers(bot, f'ATRI将在三秒后开始执行定时任务：早安')
         asyncio.sleep(3)
         start = time.perf_counter()
         group_list = await bot.get_group_list() #type: ignore
@@ -45,12 +41,12 @@ async def _():
         try:
             for group in groups:
                 asyncio.sleep(randint(1,5))
-                await bot.send_group_msg(group_id = group, message = msg) #type: ignore
+                await (group_id = group, message = msg) #type: ignore
         except:
-            await bot.send_private_msg(user_id = master, message = f'在推送[早安]到某些群的时候貌似失败了呢') # type: ignore
+            await send_to_superusers(bot, f'在推送[早安]到某些群的时候貌似失败了呢')
 
         end = time.perf_counter()
-        await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
+        await send_to_superusers(bot, f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}')
 
     except:
         pass
@@ -63,7 +59,7 @@ async def _():
 async def _():
     """晚安"""
     try:
-        await bot.send_private_msg(user_id = master, message = f'ATRI将在三秒后开始执行定时任务：晚安') # type: ignore
+        await send_to_superusers(bot, f'ATRI将在三秒后开始执行定时任务：晚安')
         asyncio.sleep(3)
         start = time.perf_counter()
         group_list = await bot.get_group_list() #type: ignore
@@ -85,10 +81,10 @@ async def _():
                 asyncio.sleep(randint(1,5))
                 await bot.send_group_msg(group_id = group, message = msg) #type: ignore
         except:
-            await bot.send_private_msg(user_id = master, message = f'在推送[晚安]到某些群的时候貌似失败了呢') # type: ignore
+            await send_to_superusers(bot, f'在推送[晚安]到某些群的时候貌似失败了呢')
         
         end = time.perf_counter()
-        await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
+        await send_to_superusers(bot, f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}')
     
     except:
         pass
@@ -101,7 +97,7 @@ async def _():
 async def _():
     """到 点 了"""
     try:
-        await bot.send_private_msg(user_id = master, message = f'ATRI将在三秒后开始执行定时任务：网抑云') # type: ignore
+        await send_to_superusers(bot, f'ATRI将在三秒后开始执行定时任务：网抑云')
         asyncio.sleep(3)
         start = time.perf_counter()
         group_list = await bot.get_group_list() # type: ignore
@@ -114,10 +110,10 @@ async def _():
                 asyncio.sleep(randint(1,5))
                 await bot.send_group_msg(group_id = group, message = msg) #type: ignore
         except:
-            await bot.send_private_msg(user_id = master, message = f'在推送[网抑云]到某些群的时候貌似失败了呢') # type: ignore
+            await send_to_superusers(bot, f'在推送[网抑云]到某些群的时候貌似失败了呢')
         
         end = time.perf_counter()
-        await bot.send_private_msg(user_id = master, message = f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}') # type: ignore
+        await send_to_superusers(bot, f'已推送到[{g_list}]个群\n耗时：{round(end - start, 3)}')
 
     except:
         pass
@@ -135,22 +131,22 @@ async def _():
     today = datetime.now()
 
     if cpu > 80:
-        await bot.send_private_msg(
-            user_id = master,
-            message = f'ATRI感觉头有点晕...\n（cpu:{cpu}% mem:{memory}% disk:{disk}%）\n{today}'
-        ) # type: ignore
+        await send_to_superusers(
+            bot,
+            f'ATRI感觉头有点晕...\n（cpu:{cpu}% mem:{memory}% disk:{disk}%）\n{today}'
+        )
     
     elif memory > 80:
-        await bot.send_private_msg(
-            user_id = master,
-            message = f'ATRI感觉身体有点累...\n（cpu:{cpu}% mem:{memory}% disk:{disk}%）\n{today}'
-        ) # type: ignore
+        await send_to_superusers(
+            bot,
+            f'ATRI感觉身体有点累...\n（cpu:{cpu}% mem:{memory}% disk:{disk}%）\n{today}'
+        )
     
     elif disk > 80:
-        await bot.send_private_msg(
-            user_id = master,
-            message = f'ATRI感觉身体要被塞满了...\n（cpu:{cpu}% mem:{memory}% disk:{disk}%）\n{today}'
-        ) # type: ignore
+        await send_to_superusers(
+            bot,
+            f'ATRI感觉身体要被塞满了...\n（cpu:{cpu}% mem:{memory}% disk:{disk}%）\n{today}'
+        )
     
     else:
         print('ATRI运作正常！')
