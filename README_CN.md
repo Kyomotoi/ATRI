@@ -44,10 +44,11 @@
 [JetBrains](https://www.jetbrains.com/) 为本项目提供 [PyCharm](https://www.jetbrains.com/pycharm/) 等授权
 
 以及以下：
- - 50861735 三杯红茶
- - 1072324725 17r
- - 2862890179 func: 到 点 了
- - 爱发电用户_quGy 5r
+ - 50861735 11CNY
+ - 1072324725 17CNY
+ - 2862890179 func
+ - AfdianUser_quGy 5CNY
+ - 1752179928 45.14CNY
 
 ## 其他
 本项目已开启爱发电，如有意愿请作者几杯红茶那会将常非感谢！
