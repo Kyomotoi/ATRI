@@ -12,7 +12,7 @@ For Tencent QQ group add a lively ATRI is the goal of this project.
 
 The project leader, learn Python is still less than half a year, so i think the code of this project may increase your blood pressure. But i'll do it better!
 
-This project also serves as a good channel for me to learn Python. Thanks you [Richard Chien](https://github.com/richardchien) and the Python-SDK: [NoneBot](https://github.com/nonebot/nonebot), them provided great help to this project.
+This project also serves as a good channel for me to learn Python. Thanks [Richard Chien](https://github.com/richardchien) and the Python-SDK: [NoneBot](https://github.com/nonebot/nonebot), them provided great help to this project.
 
 ## ACHIEVE
 アトリ can run on all platforms.
@@ -48,6 +48,7 @@ And them:
  - 1072324725 17CNY
  - 2862890179 func
  - AfdianUser_quGy 5CNY
+ - 1752179928 45.14CNY
 
 ## OTHER
 This project has been activated by [Afdian](https://afdian.net/@Kyomotoi), welcome to sponsor.
