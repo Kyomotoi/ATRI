@@ -26,7 +26,7 @@ This project is completed by `go-CQHTTP + NoneBot` with `Python` as the main lan
 **May we meet in a more open parallel world**
 
 ## MORE INTRODUCTION
-This project is now formal edition, but the code is a shit.
+This project is now formal edition, but the code is a entire hunk of shit.
 
 If you want to experience, you can join my Tencent QQ group: 567297659
 
