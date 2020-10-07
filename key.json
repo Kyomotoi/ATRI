@@ -1,1 +1,12 @@
-{"LoliconAPI": "", "FaceplusAPI": "", "FaceplusSECRET": "", "SauceNaoKEY": ""}
+{
+    "API": {
+        "LoliconAPI": "",
+        "FaceplusAPI": "",
+        "FaceplusSECRET": "",
+        "SauceNaoKEY": ""
+    },
+
+    "config": {
+        "SUPERUSERS": [1234567890]
+    }
+}
