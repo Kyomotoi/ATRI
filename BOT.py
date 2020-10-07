@@ -1,27 +1,23 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import time
 COPYRIGHT = (
     r"""====================[ATRI | アトリ]====================
-* Mirai + NoneBot + Python
+* Mirai + NoneBot2 + Python
 * Copyright © 2018-2020 Kyomotoi,All Rights Reserved
 * Project: https://github.com/Kyomotoi/ATRI
 * Blog: blog.lolihub.icu
-======================================================="""
-)
+=======================================================""")
 print(COPYRIGHT)
 time.sleep(2)
 
-import config
-print("ATRI正在苏醒...")
-time.sleep(2)
+import nonebot
 
-from os import path
+nonebot.init()
+app = nonebot.get_asgi()
 
+nonebot.load_plugins("ATRI/plugins")
 
-if __name__ == '__main__':
-    import nonebot
-    nonebot.init(config)
-    nonebot.load_builtin_plugins()
-    nonebot.load_plugins(
-        path.join(path.dirname(__file__), 'ATRI', 'plugins'),
-    'ATRI.plugins')
-    nonebot.run()
+if __name__ == "__main__":
+    nonebot.run(app="bot:app")
