@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+'''
+@File    :   __init__.py
+@Time    :   2020/10/11 14:37:53
+@Author  :   Kyomotoi
+@Contact :   kyomotoiowo@gmail.com
+@Github  :   https://github.com/Kyomotoi
+@License :   Copyright © 2018-2020 Kyomotoi, All Rights Reserved.
+'''
+__author__ = 'kyomotoi'
 
 import re
 
@@ -36,14 +45,15 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
             msg0 += "└Service:\n"
             msg0 += "    ├anime-setu\n"
             msg0 += "    ├anime-pic-search\n"
-            msg0 += "    └anime-vid-search\n"
+            msg0 += "    ├anime-vid-search\n"
+            msg0 += "    ├ai-face\n"
+            msg0 += "    ├pixiv-pic-search\n"
+            msg0 += "    ├pixiv-author-search\n"
+            msg0 += "    └pixiv-rank"
 
             await switch.finish(msg0)
         
         funct = re.findall(r"[on|off]-(.*)", func)
-        print(func, funct)
-
-        print(type(master[0]), type(user))
         
         if "all-on" in func:
             if int(user) in master:

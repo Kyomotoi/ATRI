@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+'''
+@File    :   __init__.py
+@Time    :   2020/10/11 14:43:10
+@Author  :   Kyomotoi
+@Contact :   kyomotoiowo@gmail.com
+@Github  :   https://github.com/Kyomotoi
+@License :   Copyright © 2018-2020 Kyomotoi, All Rights Reserved.
+'''
+__author__ = 'kyomotoi'
 
 import json
 import string
@@ -8,8 +17,6 @@ from random import sample
 from typing import Optional
 from datetime import datetime
 from traceback import format_exc
-
-from nonebot.rule import keyword
 
 def errorRepo(repo_msg: Optional[str] = None) -> str:
     """
@@ -23,7 +30,7 @@ def errorRepo(repo_msg: Optional[str] = None) -> str:
     
     :返回:
 
-      错误信息
+      错误堆栈
     
     :用法:
     

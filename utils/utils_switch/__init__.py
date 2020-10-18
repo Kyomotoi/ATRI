@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+'''
+@File    :   __init__.py
+@Time    :   2020/10/11 14:44:06
+@Author  :   Kyomotoi
+@Contact :   kyomotoiowo@gmail.com
+@Github  :   https://github.com/Kyomotoi
+@License :   Copyright © 2018-2020 Kyomotoi, All Rights Reserved.
+'''
+__author__ = 'kyomotoi'
 
 import os
 import json
@@ -40,6 +49,9 @@ def checkSwitch(func_name: str, group: str) -> bool:
         data_switch_all["anime-pic-search"] = "True"
         data_switch_all["anime-vid-search"] = "True"
         data_switch_all["ai-face"] = "True"
+        data_switch_all["pixiv-pic-search"] = "True"
+        data_switch_all["pixiv-author-search"] = "True"
+        data_switch_all["pixiv-rank"] = "True"
 
         with open(file_switch_all, 'w') as f:
             f.write(json.dumps(data_switch_all))
@@ -59,6 +71,9 @@ def checkSwitch(func_name: str, group: str) -> bool:
         data_switch_alone["anime-pic-search"] = "True"
         data_switch_alone["anime-vid-search"] = "True"
         data_switch_alone["ai-face"] = "True"
+        data_switch_alone["pixiv-pic-search"] = "True"
+        data_switch_alone["pixiv-author-search"] = "True"
+        data_switch_alone["pixiv-rank"] = "True"
 
         with open(file_switch_alone, 'w') as f:
             f.write(json.dumps(data_switch_alone))

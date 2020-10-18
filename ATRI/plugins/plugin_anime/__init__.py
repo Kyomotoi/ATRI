@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+'''
+@File    :   __init__.py
+@Time    :   2020/10/11 14:38:14
+@Author  :   Kyomotoi
+@Contact :   kyomotoiowo@gmail.com
+@Github  :   https://github.com/Kyomotoi
+@License :   Copyright © 2018-2020 Kyomotoi, All Rights Reserved.
+'''
+__author__ = 'kyomotoi'
 
 import re
 import json
@@ -8,8 +17,9 @@ from pathlib import Path
 from random import randint
 
 from nonebot.log import logger
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot import scheduler
 from nonebot.permission import SUPERUSER
+from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.plugin import on_message, on_command, on_regex
 
 from utils.utils_banList import banList
@@ -17,6 +27,7 @@ from utils.utils_error import errorRepo
 from utils.utils_history import getMessage
 from utils.utils_switch import checkSwitch
 from utils.utils_request import aio_get_bytes, request_get
+from utils.utils_img import compress_image, aio_download_pics
 
 from .body import resultRepo
 import ATRI
@@ -229,18 +240,12 @@ setu_type = 1  # setu-type: 1(local), 2(url: https://api.lolicon.app/#/setu) def
 setu = on_regex(r"来[点丶张份副个幅][涩色瑟][图圖]|[涩色瑟][图圖]来|[涩色瑟][图圖][gkd|GKD|搞快点]|[gkd|GKD|搞快点][涩色瑟][图圖]")
 
 @setu.handle() # type: ignore
-async def _(bot: Bot, event: Event, state: dict) -> None:
+async def _setu(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     group = str(event.group_id)
 
     if banList(user, group):
         if checkSwitch(plugin_name_2, group):
-
-            await bot.send_msg(
-                user_id=int(user),
-                group_id=int(group),
-                message="别急！正在找图！"
-            )
 
             res = randint(1,5)
 
@@ -258,8 +263,8 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                     msg0 = f"setu info:\n"
                     msg0 += f"Title: {title}\n"
                     msg0 += f"Pid: {pid}\n"
-                    msg0 += f"{img}"
-
+                    msg0 += f"[CQ:image,file=file:///{compress_image(await aio_download_pics(img))}]"
+                    
                     if 1 <= res < 5:
                         await setu.finish(msg0)
 
@@ -270,9 +275,9 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                             message="我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆"
                         )
 
-                        await bot.send_msg(
+                        await bot.send_private_msg(
                             user_id=ATRI.config_SUPERUSERS,
-                            message=f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n{img}"
+                            message=f"主人，从群{group}来的涩图！热乎着！\nTitle: {title}\nPid: {pid}\n[CQ:image,file=file:///{compress_image(await aio_download_pics(img))}]"
                         )
             
             else:
@@ -282,18 +287,33 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                     "num": "1"
                 }
 
+                data = {}
+
                 try:
                     data = json.loads(request_get('https://api.lolicon.app/setu/', params))
                 except Exception:
                     await setu.finish(errorRepo("请求数据失败，也可能为接口调用次数达上限"))
                 
-                msg0 = f"setu info:"
-                msg0 += f'Title: {data["data"][0]["title"]}' # type: ignore
-                msg0 += f'Pid: {data["data"][0]["pid"]}' # type: ignore
-                msg0 += f'{data["data"][0]["url"]}' # type: ignore
+                msg0 = f"setu info:\n"
+                msg0 += f'Title: {data["data"][0]["title"]}\n'
+                msg0 += f'Pid: {data["data"][0]["pid"]}\n'
+                msg0 += f'[CQ:image,file=file:///{compress_image(await aio_download_pics(data["data"][0]["url"]))}]'
 
-                await setu.finish(msg0)
-        
+                if 1 <= res < 5:
+                    await setu.finish(msg0)
+                
+                elif res == 5:
+                    await bot.send_msg(
+                        user_id=int(user),
+                        group_id=int(group),
+                        message="我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆"
+                    )
+
+                    await bot.send_private_msg(
+                        user_id=ATRI.config_SUPERUSERS,
+                        message=f'主人，从群{group}来的涩图！热乎着！\nTitle: {data["data"][0]["title"]}\nPid: {data["data"][0]["pid"]}\n[CQ:image,file=file:///{compress_image(await aio_download_pics(data["data"][0]["url"]))}]'
+                    )
+            
         else:
             await setu.finish(f"Service-{plugin_name_2} has been closed.")
 
@@ -326,3 +346,59 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         await setuType.finish("请检查类型是否输入正确嗷！")
     
     await setuType.finish("Type conversion completed!")
+
+
+# @scheduler.scheduled_job(
+#     "cron",
+#     minute=45,
+#     bot=Bot,
+#     event=Event,
+#     state=dict
+#     )
+# async def _(bot: Bot, event: Event, state: dict) -> None:
+#     group = str(event.group_id)
+
+#     if banList(group=group):
+#         if checkSwitch(plugin_name_2, group):
+#             # group_list = await bot.get_group_list()
+#             # group = sample(group_list, 1)
+#             # group = group['group_id']
+
+#             if setu_type == 1:
+
+#                 con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' / 'nearR18.db')
+#                 cur = con.cursor()
+#                 msg = cur.execute('SELECT * FROM nearR18 ORDER BY RANDOM() limit 1;')
+
+#                 for i in msg:
+#                     pid = i[0]
+#                     title = i[1]
+#                     img = i[7]
+                    
+#                     msg0 = f"setu info:\n"
+#                     msg0 += f"Title: {title}\n"
+#                     msg0 += f"Pid: {pid}\n"
+#                     msg0 += f"[CQ:image,file=file:///{compress_image(await aio_download_pics(img))}]"
+                    
+#                     await setu.finish(msg0)
+            
+#             else:
+#                 params = {
+#                     "apikey": key_LoliconAPI,
+#                     "r18": "0",
+#                     "num": "1"
+#                 }
+
+#                 data = {}
+
+#                 try:
+#                     data = json.loads(request_get('https://api.lolicon.app/setu/', params))
+#                 except Exception:
+#                     await setu.finish(errorRepo("请求数据失败，也可能为接口调用次数达上限"))
+                
+#                 msg0 = f"setu info:\n"
+#                 msg0 += f'Title: {data["data"][0]["title"]}\n'
+#                 msg0 += f'Pid: {data["data"][0]["pid"]}\n'
+#                 msg0 += f'[CQ:image,file=file:///{compress_image(await aio_download_pics(data["data"][0]["url"]))}]'
+
+#                 await setu.finish(msg0)

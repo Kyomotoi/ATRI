@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
+'''
+@File    :   body.py
+@Time    :   2020/10/11 14:40:43
+@Author  :   Kyomotoi
+@Contact :   kyomotoiowo@gmail.com
+@Github  :   https://github.com/Kyomotoi
+@License :   Copyright © 2018-2020 Kyomotoi, All Rights Reserved.
+'''
+__author__ = 'kyomotoi'
 
 table='fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'
 tr={}
