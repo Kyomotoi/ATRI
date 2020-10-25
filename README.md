@@ -1,8 +1,6 @@
 # ATRI——一个厨力项目
 アトリは、高性能ですから！
 
-[ENG](README.md)
-
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/bef72993062f422f83e882c6d8e6f20e)](https://www.codacy.com/manual/Kyomotoi/ATRI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kyomotoi/ATRI&amp;utm_campaign=Badge_Grade)
 ## 关于
@@ -12,12 +10,14 @@
 
 项目拥有者，初接触 Python 仍未满半年，故此项目所写的东西可能会让您血压升高，我会加油在往后日子对其进行改进！
 
-此项目也作为我学习Python的一个很好的渠道，这里特别感谢 [Richard Chien](https://github.com/richardchien) 以及对此项目提供巨大帮助的 Python-SDK：[NoneBot](https://github.com/nonebot/nonebot)
+此项目也作为我学习Python的一个很好的渠道，这里特别感谢 [Richard Chien](https://github.com/richardchien) 以及对此项目提供巨大帮助的 Python-SDK：[NoneBot](https://github.com/nonebot/nonebot)（目前已更换至 [NoneBot2](https://github.com/nonebot/nonebot2)）
 
 ## 实现
 アトリ可以在任何平台下运行
 
-此项目实现方式是 `go-CQHTTP + NoneBot` 以 `Python` 为主语言的项目
+此项目实现方式是 `go-CQHTTP + NoneBot2` 以 `Python` 为主语言的项目
+
+并且在不断更新递代ing...经综合考虑后随缘打包，平时直接拉取默认分支即可！
 
 **前身框架 CoolQ，谨此纪念 CoolQ 的停运**
 
@@ -34,7 +34,7 @@
 
 以及
 
-~~满100star、30fork，👴直接在个人Blog介绍页贴女装照~~
+~~别催了别催了在安排了呜呜呜~~
 
 ## 特别感谢
 [Richard Chien](https://github.com/richardchien): [CQHTTP](https://github.com/richardchien/coolq-http-api) 和 [NoneBot](https://github.com/nonebot/nonebot)
