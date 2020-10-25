@@ -13,6 +13,7 @@ __author__ = 'kyomotoi'
 from random import choice
 
 from nonebot.log import logger
+from nonebot.permission import GROUP_ADMIN, GROUP_OWNER, SUPERUSER
 from nonebot.rule import to_me
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.plugin import on_command, on_message, on_notice
@@ -60,7 +61,6 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
             pass
 
 
-
 # 戳 一 戳
 pokehah = on_command("戳一戳", rule=to_me())
 
@@ -95,6 +95,7 @@ poke = on_notice(poke_, block=True)
 poke.handle()(_poke)
 
 
+# 处理进 / 退 裙事件
 groupEvent = on_notice()
 
 @groupEvent.handle() # type: ignore
@@ -109,3 +110,6 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
         elif event.raw_event["notice_type"] == "group_decrease":
             await groupEvent.finish(f'[{event.raw_event["operator_id"]}] 离开了我们...')
+
+
+# 舆情监听系统

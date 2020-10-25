@@ -35,9 +35,9 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
             pass
         else:
             msg0 = "States parameter:\n"
-            msg0 += "- info\n"
-            msg0 += "- sqlite\n"
-            msg0 += "DEMO: status info"
+            msg0 += "├info\n"
+            msg0 += "└sqlite\n"
+            msg0 += "* DEMO: status info"
 
             await status_info.finish(msg0)
 
@@ -89,18 +89,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
             data_r18 = len(cur.fetchall())
             con.close()
 
-            con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'cloudmusic' / 'cloudmusic.db') # cloudmusic
-            cur = con.cursor()
-            cur.execute("select * from cloudmusic")
-            data_cloudmusic = len(cur.fetchall())
-            con.close()
-
             msg0 = "ATRI status-sqlite:\n"
             msg0 += "Setu:\n"
-            msg0 += f"│ │ └ normal: {data_normal}\n"
-            msg0 += f"│ └ nearR18: {data_nearR18}\n"
-            msg0 += f"└ R18: {data_r18}\n"
-            msg0 += "CloudMusic:\n"
-            msg0 += f"└ Message: {data_cloudmusic}"
+            msg0 += f"├normal: {data_normal}\n"
+            msg0 += f"├nearR18: {data_nearR18}\n"
+            msg0 += f"└R18: {data_r18}"
 
             await status_info.finish(msg0)

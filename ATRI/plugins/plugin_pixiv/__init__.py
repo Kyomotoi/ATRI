@@ -52,11 +52,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     else:
         await pixivSearchIMG.reject("请发送纯阿拉伯数字的pid")
 
-    await bot.send_msg(
-        user_id=state["user"],
-        group_id=state["group"],
-        message="别急！在搜索了！"
-    )
+    await bot.send(event, "别急！在搜索了！")
 
     URL = f"https://api.imjad.cn/pixiv/v1/?type=illust&id={pid}"
     data = {}
@@ -110,11 +106,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     else:
         await pixivSearchAuthor.reject("请发送纯阿拉伯数字的画师id")
     
-    await bot.send_msg(
-        user_id=state["user"],
-        group_id=state["group"],
-        message=f"别急！在搜索了！\n将展示画师[{author_id}]的前三项作品"
-    )
+    await bot.send(event, f"别急！在搜索了！\n将展示画师[{author_id}]的前三项作品")
 
     URL = f"https://api.imjad.cn/pixiv/v1/?type=member_illust&id={author_id}"
     data = {}
@@ -160,11 +152,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     if banList(user, group):
         if checkSwitch(plugin_name_2, group):
 
-            await bot.send_msg(
-                user_id=int(user),
-                group_id=int(group),
-                message="正在获取P站每日排行榜前五作品"
-            )
+            await bot.send(event, "正在获取P站每日排行榜前五作品")
 
             URL = "https://api.imjad.cn/pixiv/v1/?type=rank"
             data = {}

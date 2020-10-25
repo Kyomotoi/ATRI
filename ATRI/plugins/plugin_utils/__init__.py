@@ -83,6 +83,6 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         msg0 += f"Sex: {'男' if id_card_sex == 1 else '女'}\n"
         msg0 += f"Name: {id_card_name} || Address: {id_card_area_name}\n"
         msg0 += "注: 1、以上信息根据国家公开标准生成，非真实信息。\n"
-        msg0 += "     2、不适用于网易和腾讯。"
+        msg0 += "      2、不适用于网易和腾讯。"
 
         await generateID.finish(msg0)
