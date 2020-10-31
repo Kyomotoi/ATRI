@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 '''
-@File    :   api.py
+@File    :   app.py
 @Time    :   2020/10/24 00:25:34
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
@@ -166,13 +166,13 @@ async def index(request: Request):
                                     'data_normal': data_normal,
                                     'data_nearR18': data_nearR18,
                                     'data_r18': data_r18,
-                                    'times_all': "完善中",
+                                    'times_all': 4,
                                     'date_now': localtime,
-                                    'times_now': "完善中",
-                                    'date_yesterday': "完善中",
-                                    'times_yesterday': "完善中",
-                                    'date_before_yesterday': "完善中",
-                                    'times_before_yesterday': "完善中",
+                                    'times_now': 6,
+                                    'date_yesterday': 7,
+                                    'times_yesterday': 8,
+                                    'date_before_yesterday': 9,
+                                    'times_before_yesterday': 10,
                                     'info_ip': query,
                                     'info_continent': info["continent"],
                                     'info_country': info["country"],
