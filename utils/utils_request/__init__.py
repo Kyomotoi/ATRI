@@ -38,6 +38,11 @@ def request_get(url: str, params: Optional[dict] = None) -> bytes:
     """
     return requests.get(url, params).content
 
+def request_api_text(url: str) -> str:
+    res = requests.request("GET", url)
+    html = res.text
+    return html
+
 async def aio_get_bytes(url: str, headers: Optional[dict] = None):
     """
       :说明:

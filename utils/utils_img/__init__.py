@@ -57,7 +57,7 @@ def compress_image(outfile: str, kb=400, quality=85, k=0.9) -> str:
     """
     :说明:
     
-      不改变图片尺寸压缩到指定大小，输出 base64 ，完成后自动删除文件
+      不改变图片尺寸压缩到指定大小
     
     :参数:
 
@@ -66,7 +66,7 @@ def compress_image(outfile: str, kb=400, quality=85, k=0.9) -> str:
 
     :返回:
 
-      base64
+      文件根目录
 
     :用法:
 
