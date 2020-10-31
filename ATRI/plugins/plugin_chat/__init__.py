@@ -10,16 +10,20 @@
 '''
 __author__ = 'kyomotoi'
 
+import json
+from pathlib import Path
 from random import choice
 
 from nonebot.log import logger
-from nonebot.permission import GROUP_ADMIN, GROUP_OWNER, SUPERUSER
 from nonebot.rule import to_me
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.plugin import on_command, on_message, on_notice
 
+from utils.utils_times import countX
+from utils.utils_error import errorRepo
 from utils.utils_banList import banList
 from utils.utils_history import saveMessage
+from utils.utils_request import request_api_text
 
 
 # 收集 bot 所在群的聊天记录
@@ -95,13 +99,12 @@ poke = on_notice(poke_, block=True)
 poke.handle()(_poke)
 
 
-# 处理进 / 退 裙事件
+# 处理 进 / 退 群事件
 groupEvent = on_notice()
 
 @groupEvent.handle() # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
     group = str(event.group_id)
-    print(event.raw_event)
 
     if banList(group):
         if event.raw_event["notice_type"] == "group_increase":
@@ -113,3 +116,72 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 # 舆情监听系统
+listenPublicOpinion = on_message()
+file_PO = Path('.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'public_opinion.json'
+
+@groupEvent.handle() # type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    with open(file_PO, 'r') as f:
+        data = json.load(f)
+
+
+# 口臭一下
+fxxkMe = on_command('口臭一下', aliases={'口臭', '骂我'}, rule=to_me())
+list_M = []
+
+@fxxkMe.handle() # type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    user = str(event.user_id)
+    group = str(event.group_id)
+    global list_M
+
+    if banList(user, group):
+        if countX(list_M, user) >= 3:
+            await fxxkMe.finish("不是？？你这么想被咱骂的嘛？？被咱骂就这么舒服的吗？！该......你该不会是.....M吧！")
+        
+        elif countX(list_M, user) >= 6:
+            await fxxkMe.finish("给我适可而止阿！？")
+            list_M = list(set(list_M))
+
+        else:
+            list_M.append(user)
+            URL = "https://nmsl.shadiao.app/api.php?level=min&lang=zh_cn"
+            msg = ""
+
+            try:
+                msg = request_api_text(URL)
+            except:
+                await fxxkMe.finish(errorRepo("请求错误"))
+            
+            await fxxkMe.finish(msg)
+
+
+# Hitokoto
+hitokoto = on_command('一言', aliases={'抑郁一下', '网抑云'}, rule=to_me())
+list_Y = []
+
+@hitokoto.handle() # type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    user = str(event.user_id)
+    group = str(event.group_id)
+    global list_Y
+
+    if banList(user, group):
+        if countX(list_Y, user) >= 3:
+            await hitokoto.finish("额......需要咱安慰一下嘛~？")
+        
+        elif countX(list_Y, user) >= 6:
+            await hitokoto.finish("如果心里感到难受就赶快去睡觉奥！别再憋自己了！")
+            list_Y = list(set(list_Y))
+        
+        else:
+            list_Y.append(user)
+            URL = "https://api.imjad.cn/hitokoto/?cat=a&charset=utf-8&length=50&encode=json&fun=sync&source="
+            info = {}
+
+            try:
+                info = json.loads(request_api_text(URL))
+            except:
+                await hitokoto.finish(errorRepo("请求错误"))
+            
+            await hitokoto.finish(info["hitokoto"])

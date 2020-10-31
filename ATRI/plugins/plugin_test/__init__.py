@@ -16,7 +16,7 @@ from pathlib import Path
 from random import sample
 
 import nonebot
-from nonebot.plugin import on_command
+from nonebot.plugin import on_command, on_message
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, Event
 
@@ -45,3 +45,10 @@ testBot = on_command('获取bot', permission=SUPERUSER)
 async def _(bot: Bot, event: Event, state: dict) -> None:
     test_bot = nonebot.get_bots()
     print(test_bot, type(test_bot.keys()))
+
+testPrivate = on_message()
+
+@testPrivate.handle() # type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    if event.user_id == "1172294279":
+        await bot.send(event, "123")

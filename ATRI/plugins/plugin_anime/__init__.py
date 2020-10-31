@@ -274,7 +274,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     if msg:
         pass
     else:
-        msg0 = "-==Setu Type Control System==-\n"
+        msg0 = "-==ATRI Setu Type Control System==-\n"
         msg0 += "**Tips: For SUPERUSERS**\n"
         msg0 += "┌Usage: setu-type {type}\n"
         msg0 += "└Type:\n"
