@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
+
 '''
 @File    :   __init__.py
 @Time    :   2020/10/11 14:37:53
@@ -92,8 +93,6 @@ data_PO = Path(
 
 @publicOpinion.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
-    user = str(event.user_id)
-    group = str(event.group_id)
     msg = str(event.message).strip().split(' ')
 
     if msg[0] == '':
@@ -179,7 +178,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     try:
         with open(data_PO, "r") as f:
             data = json.load(f)
-    except:
+    except FileNotFoundError:
         data = {}
 
     data[key_word] = [remind, punish, repo]
@@ -213,7 +212,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     try:
         with open(file_error, 'r') as f:
             data = json.load(f)
-    except:
+    except FileNotFoundError:
         await trackError.finish(errorRepo("读取文件时错误"))
 
     if track_id in data:
@@ -260,14 +259,13 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
             except:
                 await bot.send(event, f"在尝试推送到群[{group['group_id']}]时失败了呢...")
                 err_list.append(group['group_id'])
-                pass
 
     msg0 = ""
     for i in err_list:
         msg0 += f"  {i}\n"
 
     repo_msg = f"推送信息：\n{msg}"
-    repo_msg += f"\n————————\n"
+    repo_msg += "\n————————\n"
     repo_msg += f"总共：{len(group_list)}\n"
     repo_msg += f"成功推送：{len(sc_list)}\n"
     repo_msg += f"失败[{len(err_list)}]个：\n"
