@@ -45,7 +45,7 @@ def check_visitors(query: str):
                 Path('.') / 'ATRI' / 'data' / 'data_HTML' / 'api' / 'data' /
                 'banip' / 'banip.json', 'r') as f:
             data = json.load(f)
-    except:
+    except FileNotFoundError:
         data = {}
 
     if query in data:
@@ -147,7 +147,7 @@ async def index(request: Request):
                 Path('.') / 'ATRI' / 'data' / 'data_HTML' / 'api' / 'data' /
                 'times' / 'api_all.json', 'r') as f:
             data_all = json.load(f)
-    except:
+    except FileNotFoundError:
         data_all = {}
 
     try:
@@ -155,7 +155,7 @@ async def index(request: Request):
                 Path('.') / 'ATRI' / 'data' / 'data_HTML' / 'api' / 'data' /
                 'times' / 'api_index.json', 'r') as f:
             data_index = json.load(f)
-    except:
+    except FileNotFoundError:
         data_index = {}
 
     info = await get_ip_info(ip)
@@ -212,7 +212,7 @@ async def get_setu(s_type: str, request: Request):
                 Path('.') / 'ATRI' / 'data' / 'data_HTML' / 'api' / 'data' /
                 'times' / 'api_all.json', 'r') as f:
             data_all = json.load(f)
-    except:
+    except FileNotFoundError:
         data_all = {}
 
     try:
@@ -220,7 +220,7 @@ async def get_setu(s_type: str, request: Request):
                 Path('.') / 'ATRI' / 'data' / 'data_HTML' / 'api' / 'data' /
                 'times' / 'api_setu.json', 'r') as f:
             data_setu = json.load(f)
-    except:
+    except FileNotFoundError:
         data_setu = {}
 
     info = await get_ip_info(ip)

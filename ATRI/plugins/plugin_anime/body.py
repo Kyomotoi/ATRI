@@ -17,6 +17,7 @@ from utils.utils_request import request_get
 
 
 class SauceNAO:
+    """搜图请求主体"""
     def __init__(self,
                  api_key,
                  output_type=2,
@@ -54,7 +55,7 @@ def resultRepo(user: str, key: str, img_url: str):
     print(data)
 
     msg0 += f'[CQ:at,qq={user}]\n'
-    msg0 += f"SauceNAO INFO:\n"
+    msg0 += "SauceNAO INFO:\n"
     msg0 += f"[CQ:image,file={data['header'].get('thumbnail', None)}]\n"
     msg0 += f"Like：{data['header'].get('similarity', 0)}%\n"
     msg0 += f"Title：{data['data'].get('title', None)}\n"

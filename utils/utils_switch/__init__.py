@@ -31,7 +31,7 @@ def controlSwitch(func_name: str,
         try:
             with open(file_switch_group, 'r') as f:
                 data_switch_group = json.load(f)
-        except:
+        except FileNotFoundError:
             data_switch_group = {}
 
         if data_switch_group[f"{func_name}"]:
@@ -51,7 +51,7 @@ def controlSwitch(func_name: str,
     try:
         with open(file_switch_all, 'r') as f:
             data_switch_all = json.load(f)
-    except:
+    except FileNotFoundError:
         data_switch_all = {}
 
     if data_switch_all[f"{func_name}"]:

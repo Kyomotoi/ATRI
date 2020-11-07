@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 '''
 @File    :   __init__.py
-@Time    :   2020/10/11 14:38:14
+@Time    :   2020/11/07 14:36:53
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
 @Github  :   https://github.com/Kyomotoi
@@ -71,7 +71,8 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                                            img[0]))
 
 
-SaucenaoSearch_repo = on_message()
+SaucenaoSearch_repo = on_message(rule=check_banlist()
+                                 & check_switch(plugin_name_0))
 
 
 @SaucenaoSearch_repo.handle()  # type: ignore
@@ -88,7 +89,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                 repo_info = re.findall(r"CQ:reply,id=([0-9]\S+)]", msg)
                 msg_id = repo_info[0]
             except Exception:
-                logger.error(f"Get message_id ERROR!")
+                logger.error("Get message_id ERROR!")
                 await SaucenaoSearch_repo.finish(errorRepo('定位消息内容失败'))
                 return
 
@@ -218,7 +219,7 @@ async def _setu(bot: Bot, event: Event, state: dict) -> None:
             title = i[1]
             img = i[7]
 
-            msg0 = f"setu info:\n"
+            msg0 = "setu info:\n"
             msg0 += f"Title: {title}\n"
             msg0 += f"Pid: {pid}\n"
             msg0 += f"[CQ:image,file=file:///{compress_image(await aio_download_pics(img))}]"

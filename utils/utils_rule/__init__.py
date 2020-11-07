@@ -118,8 +118,6 @@ def check_switch(func_name: str) -> Rule:
             try:
                 os.mkdir(
                     Path('.') / 'ATRI' / 'data' / 'data_Group' / f'{group}')
-            except:
-                pass
 
             data_switch_alone["anime-setu"] = "True"
             data_switch_alone["anime-pic-search"] = "True"

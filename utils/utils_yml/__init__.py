@@ -17,9 +17,9 @@ from pathlib import Path
 def load_yaml(file: Path) -> dict:
     '''
     读取yaml文件
-    
+
     :return: dict
     '''
     with open(file, 'r', encoding='utf-8') as f:
-        data = yaml.load(f)
+        data = yaml.safe_load(f)
     return data

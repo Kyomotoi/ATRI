@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
+
 '''
 @File    :   __init__.py
-@Time    :   2020/10/11 14:40:17
+@Time    :   2020/11/07 14:17:37
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
 @Github  :   https://github.com/Kyomotoi
@@ -13,11 +14,10 @@ __author__ = 'kyomotoi'
 import os
 import string
 import aiohttp
-import PIL.Image as Image
 from pathlib import Path
 from random import sample
 
-from PIL import Image
+import PIL.Image as Image
 from PIL import ImageFile
 
 async def aio_download_pics(url) -> str:
@@ -30,9 +30,9 @@ async def aio_download_pics(url) -> str:
     path = os.path.abspath(path)
     img_key = ''.join(sample(string.ascii_letters + string.digits, 16))
     img = path + f'\\{img_key}.png'
-    async with aiohttp.ClientSession() as session:         
-        async with session.get(url) as response:                
-            pic = await response.read()    #以Bytes方式读入非文字                     
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:              
+            pic = await response.read()    #以Bytes方式读入非文字               
             with open(img, mode='wb') as f:# 写入文件
                 f.write(pic)
                 f.close()
@@ -47,7 +47,7 @@ def compress_image(outfile: str, kb=400, quality=85, k=0.9) -> str:
     o_size = os.path.getsize(outfile) // 1024
     if o_size <= kb:
         return outfile
-   
+
     ImageFile.LOAD_TRUNCATED_IMAGES = True # type: ignore
     while o_size > kb:
         im = Image.open(outfile)

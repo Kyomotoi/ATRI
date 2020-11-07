@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
+
 '''
 @File    :   __init__.py
-@Time    :   2020/10/17 21:16:59
+@Time    :   2020/11/07 14:20:08
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
 @Github  :   https://github.com/Kyomotoi
 @License :   Copyright © 2018-2020 Kyomotoi, All Rights Reserved.
-@Docs    :   Thanks for mnixry idea! fork from https://github.com/mnixry/coolQPythonBot
 '''
 __author__ = 'kyomotoi'
 

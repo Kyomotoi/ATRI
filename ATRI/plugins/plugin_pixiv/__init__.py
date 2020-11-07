@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 '''
 @File    :   __init__.py
-@Time    :   2020/10/11 14:38:49
+@Time    :   2020/11/07 14:31:30
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
 @Github  :   https://github.com/Kyomotoi
@@ -12,6 +12,7 @@ __author__ = 'kyomotoi'
 
 import re
 import json
+from requests import exceptions
 
 from nonebot.plugin import on_command
 from nonebot.adapters.cqhttp import Bot, Event
@@ -56,11 +57,11 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     try:
         data = json.loads(request_get(URL))
-    except:
+    except exceptions:
         await pixivSearchIMG.finish(errorRepo("请求数据失败"))
 
     msg0 = f'[CQ:at,qq={state["user"]}]\n'
-    msg0 += f"Search result:\n"
+    msg0 += "Search result:\n"
     msg0 += f"Pid: {pid}\n"
     msg0 += f'Title {data["response"][0]["title"]}\n'
     msg0 += f'W&H: {data["response"][0]["width"]}x{data["response"][0]["height"]}\n'
@@ -110,7 +111,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     try:
         data = json.loads(request_get(URL))
-    except:
+    except exceptions:
         await pixivSearchAuthor.finish(errorRepo("请求网络失败"))
 
     for i in range(0, 3):
@@ -126,7 +127,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     for i in result:
         t += 1
-        msg = f"\n---------------\n"
+        msg = "\n---------------\n"
         msg += f"({t})\n"
         msg += f"Pid: {i[1][0]}\n{i[1][1]}"
         msg0 += msg
@@ -150,7 +151,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     try:
         data = json.loads(request_get(URL))
-    except:
+    except exceptions:
         await pixivRank.finish(errorRepo("网络请求失败"))
 
     for i in range(0, 5):

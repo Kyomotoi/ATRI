@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 '''
 @File    :   __init__.py
-@Time    :   2020/10/11 14:38:38
+@Time    :   2020/11/07 14:24:57
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
 @Github  :   https://github.com/Kyomotoi
@@ -13,6 +13,7 @@ __author__ = 'kyomotoi'
 import json
 from pathlib import Path
 from random import choice
+from requests import exceptions 
 
 from nonebot.log import logger
 from nonebot.rule import to_me
@@ -104,7 +105,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         await groupEvent.finish(
             f'好欸！事新人[CQ:at,qq={event.raw_event["user_id"]}]'  # type: ignore
         )  # type: ignore
-        await groupEvent.finish(f"在下 ATRI，你可以叫我 亚托莉 或 アトリ ！~w")
+        await groupEvent.finish("在下 ATRI，你可以叫我 亚托莉 或 アトリ ！~w")
 
     elif event.raw_event[  # type: ignore
             "notice_type"] == "group_decrease":
@@ -113,16 +114,16 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         )
 
 
-# 舆情监听系统
-listenPublicOpinion = on_message()
-file_PO = Path(
-    '.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'public_opinion.json'
+# # 舆情监听系统
+# listenPublicOpinion = on_message()
+# file_PO = Path(
+#     '.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'public_opinion.json'
 
 
-@groupEvent.handle()  # type: ignore
-async def _(bot: Bot, event: Event, state: dict) -> None:
-    with open(file_PO, 'r') as f:
-        data = json.load(f)
+# @groupEvent.handle()  # type: ignore
+# async def _(bot: Bot, event: Event, state: dict) -> None:
+#     with open(file_PO, 'r') as f:
+#         data = json.load(f)
 
 
 # 口臭一下
@@ -151,7 +152,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
         try:
             msg = request_api_text(URL)
-        except:
+        except exceptions:
             await fxxkMe.finish(errorRepo("请求错误"))
 
         await fxxkMe.finish(msg)

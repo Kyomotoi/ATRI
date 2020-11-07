@@ -147,7 +147,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         try:
             with open(data_PO, "r") as f:
                 data = json.load(f)
-        except:
+        except FileNotFoundError:
             data = {}
 
         data[key_word] = [remind, punish, repo]

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 '''
-@File    :   main.py
-@Time    :   2020/11/07 09:58:19
+@File    :   check.py
+@Time    :   2020/11/07 14:30:34
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
 @Github  :   https://github.com/Kyomotoi
@@ -14,7 +14,6 @@ import sys
 import time
 from pathlib import Path
 from nonebot.log import logger
-from pydantic import BaseModel
 from rich.progress import Progress
 
 from utils.utils_yml import load_yaml
@@ -24,11 +23,11 @@ config = load_yaml(CONFIG_PATH)
 
 
 class checkATRI():
-    '''运行前检查必要条件'''
+    """运行前检查必要条件"""
     logger.info('Checking Config...')
 
     def __init__(self) -> None:
-        '''检查配置文件是否填写完整'''
+        """检查配置文件是否填写完整"""
         len_config = len(config) + len(config['bot']) + len(
             config['api']) + len(config['html'])
 
@@ -49,7 +48,8 @@ class checkATRI():
                             time.sleep(0.2)
                     else:
                         if not bot[key]:
-                            logger.warning(f"Can't load [{key}] from config.yml")
+                            logger.warning(
+                                f"Can't load [{key}] from config.yml")
                             sys.exit(0)
 
                         else:

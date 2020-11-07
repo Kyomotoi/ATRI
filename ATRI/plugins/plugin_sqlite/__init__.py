@@ -14,6 +14,7 @@ import os
 import json
 import sqlite3
 from pathlib import Path
+from aiohttp import client_exceptions
 from nonebot.plugin import on_command
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, Event
@@ -61,7 +62,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     try:
         info = json.loads(await aio_get_bytes(URL))
-    except:
+    except client_exceptions:
         await UploadSetu.finish(errorRepo("网络请求出错"))
 
     info = info["response"][0]
@@ -70,7 +71,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     account = info["user"]["account"]
     name = info["user"]["name"]
     u_id = info["user"]["id"]
-    user_link = f'https://www.pixiv.net/users/' + f'{u_id}'
+    user_link = f'https://www.pixiv.net/users/{u_id}'
     img = f'https://pixiv.cat/{pid}.jpg'
 
     data_setu = (f'{pid}', f'{title}', f'{tags}', f'{account}', f'{name}',
