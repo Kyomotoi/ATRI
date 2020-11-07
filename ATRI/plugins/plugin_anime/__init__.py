@@ -248,7 +248,7 @@ async def _setu(bot: Bot, event: Event, state: dict) -> None:
         except Exception:
             await setu.finish(errorRepo("请求数据失败，也可能为接口调用次数达上限"))
 
-        msg0 = f"setu info:\n"
+        msg0 = "setu info:\n"
         msg0 += f'Title: {data["data"][0]["title"]}\n'
         msg0 += f'Pid: {data["data"][0]["pid"]}\n'
         msg0 += f'[CQ:image,file=file:///{compress_image(await aio_download_pics(data["data"][0]["url"]))}]'
