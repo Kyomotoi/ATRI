@@ -115,5 +115,4 @@ def JsonAnalysis(JsonText) -> str:
     Account_Info += f'  - 普通：{data["data"]["stats"]["common_chest_number"]}个 精致：{data["data"]["stats"]["exquisite_chest_number"]}个\n'
     Account_Info += f'  - 珍贵：{data["data"]["stats"]["luxurious_chest_number"]}个 华丽：{data["data"]["stats"]["precious_chest_number"]}个'
 
-    print(Character_Info + "\r\n" + Account_Info)
     return Character_Info + "\r\n" + Account_Info
