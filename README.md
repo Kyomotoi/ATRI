@@ -3,7 +3,8 @@
 
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/bef72993062f422f83e882c6d8e6f20e)](https://www.codacy.com/manual/Kyomotoi/ATRI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kyomotoi/ATRI&amp;utm_campaign=Badge_Grade)
-![](https://img.shields.io/badge/QQ%20gorup-567297659-brightgreen)
+[![](https://img.shields.io/badge/QQ%20gorup-567297659-brightgreen)](https://jq.qq.com/?_wv=1027&k=a89kfKQE)
+[![](https://img.shields.io/badge/Author-Kyomotoi-important)](https://github.com/Kyomotoi)
 
 ## 关于
 本项目名称、灵感均来自 [ANIPLEX](https://aniplex-exe.com/) 发行的 [ATRI-My Dear Moments-](https://atri-mdm.com/)
