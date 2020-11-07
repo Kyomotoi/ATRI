@@ -20,35 +20,32 @@ from nonebot.plugin import on_command, on_message
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, Event
 
-
 # 此目录下均为功能测试！
-
 
 testRecord = on_command('测试语音', permission=SUPERUSER)
 
-@testRecord.handle() # type: ignore
+
+@testRecord.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
-    await testRecord.finish(f"[CQ:record,file=file:///{os.path.abspath(Path('.') / 'ATRI' / 'plugins' / 'plugin_test' / 'test.mp3')}]")
+    await testRecord.finish(
+        f"[CQ:record,file=file:///{os.path.abspath(Path('.') / 'ATRI' / 'plugins' / 'plugin_test' / 'test.mp3')}]"
+    )
 
 
 testGroupList = on_command('获取群列表', permission=SUPERUSER)
 
-@testGroupList.handle() # type: ignore
+
+@testGroupList.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
     group_list = await bot.get_group_list()
     group = sample(group_list, 1)
     print(group[0]['group_id'], type(group[0]['group_id']))
 
+
 testBot = on_command('获取bot', permission=SUPERUSER)
 
-@testBot.handle() # type: ignore
+
+@testBot.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
     test_bot = nonebot.get_bots()
     print(test_bot, type(test_bot.keys()))
-
-testPrivate = on_message()
-
-@testPrivate.handle() # type: ignore
-async def _(bot: Bot, event: Event, state: dict) -> None:
-    if event.user_id == "1172294279":
-        await bot.send(event, "123")

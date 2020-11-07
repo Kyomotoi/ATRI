@@ -20,27 +20,12 @@ from random import sample
 from PIL import Image
 from PIL import ImageFile
 
-async def aio_download_pics(url):
-    """
-    :说明:
-    
-      下载图片并重名文件
-    
-    :参数:
+async def aio_download_pics(url) -> str:
+    '''
+    下载图片并重命名
 
-      * ``URL: str``: 目标网址
-    
-    :返回:
-
-      文件根目录
-    
-    :用法:
-
-    .. code-block:: python
-
-        aio_download_pics(URL="https://www.demo.com/demo.jpg")
-
-    """
+    :return: img file
+    '''
     path = Path('.') / 'ATRI' / 'data' / 'data_Temp' / 'img'
     path = os.path.abspath(path)
     img_key = ''.join(sample(string.ascii_letters + string.digits, 16))
@@ -54,27 +39,11 @@ async def aio_download_pics(url):
     return img
 
 def compress_image(outfile: str, kb=400, quality=85, k=0.9) -> str:
-    """
-    :说明:
-    
-      不改变图片尺寸压缩到指定大小
-    
-    :参数:
+    '''
+    压缩图片
 
-      * ``outfile: str``: 文件目录
-      * ``kb=150``: 目标文件大小，单位：KB
-
-    :返回:
-
-      文件根目录
-
-    :用法:
-
-    .. code-block:: python
-
-        compress_image(outfile=C:/xxx)
-
-    """
+    :return: img file
+    '''
     o_size = os.path.getsize(outfile) // 1024
     if o_size <= kb:
         return outfile

@@ -12,10 +12,16 @@ __author__ = 'kyomotoi'
 
 import warnings
 
-def countX(lst, x):
+
+def countX(list: list, aim) -> int:
+    '''
+    检查某列表某元素出现次数
+
+    :return: int
+    '''
     warnings.simplefilter('ignore', ResourceWarning)
     count = 0
-    for ele in lst:
-        if (ele == x):
+    for ele in list:
+        if (ele == aim):
             count = count + 1
     return count

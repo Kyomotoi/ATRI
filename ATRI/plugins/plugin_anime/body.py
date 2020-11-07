@@ -15,9 +15,16 @@ import json
 from utils.utils_error import errorRepo
 from utils.utils_request import request_get
 
-class SauceNAO:
 
-    def __init__(self, api_key, output_type=2, testmode=0, dbmask=None, dbmaski=32768, db=5, numres=1):
+class SauceNAO:
+    def __init__(self,
+                 api_key,
+                 output_type=2,
+                 testmode=0,
+                 dbmask=None,
+                 dbmaski=32768,
+                 db=5,
+                 numres=1):
         api = 'https://saucenao.com/search.php'
         self.api = api
         params = dict()
@@ -33,6 +40,7 @@ class SauceNAO:
     def search(self, url):
         self.params['url'] = url
         return request_get(self.api, self.params)
+
 
 def resultRepo(user: str, key: str, img_url: str):
     try:
@@ -57,6 +65,6 @@ def resultRepo(user: str, key: str, img_url: str):
     msg0 += f"Pic URL: https://pixiv.cat/{data['data'].get('pixiv_id', None)}.jpg"
 
     if float(data['header'].get('similarity', 0)) < 65:
-        msg0 += '注：相似率小于65%不一定正确'
-    
+        msg0 += '\n注：相似率小于65%不一定正确'
+
     return msg0

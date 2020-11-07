@@ -11,22 +11,69 @@
 __author__ = 'kyomotoi'
 
 import time
-COPYRIGHT = (
-    r"""====================[ATRI | アトリ]====================
+import nonebot
+import datetime
+from pathlib import Path
+from utils.utils_yml import load_yaml
+from nonebot.log import default_format, logger
+
+from check import checkATRI
+
+# 版权说明
+COPYRIGHT = (r"""====================[ATRI | アトリ]====================
 * Mirai + NoneBot2 + Python
 * Copyright © 2018-2020 Kyomotoi,All Rights Reserved
 * Project: https://github.com/Kyomotoi/ATRI
 * Blog: blog.lolihub.icu
 =======================================================""")
 print(COPYRIGHT)
-time.sleep(2)
+time.sleep(1)
 
-import nonebot
+# 检查是否符合条件运行
+checkATRI()
+time.sleep(1)
 
-nonebot.init()
+# 读取配置
+CONFIG_PATH = Path('.') / 'config.yml'
+config = load_yaml(CONFIG_PATH)
+config = config['bot']
+
+print(config)
+
+# 初始化
+nonebot.init(DEBUG=config['debug'],
+             SUPERUSSERS=config['superusers'],
+             NICKNAME=config['nickname'],
+             COMMAND_START=config['command_start'],
+             COMMAND_SEP=config['command_sep'])
 app = nonebot.get_asgi()
 
-nonebot.load_plugins("ATRI/plugins")
+# 读取插件目录
+nonebot.load_plugins('ATRI/plugins')
 
-if __name__ == "__main__":
-    nonebot.run(app="bot:app")
+# 自定义 Logger
+LOGGER_INFO_PATH = Path(
+    '.'
+) / 'logs' / 'info' / f"{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}-INFO.log"
+LOGGER_ERROR_PATH = Path(
+    '.'
+) / 'logs' / 'error' / f"{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}-ERROR.log"
+
+# 记录正常日志
+logger.add(LOGGER_INFO_PATH,
+           rotation='10 MB',
+           diagnose=False,
+           level='INFO',
+           format=default_format)
+
+# 记录报错日志
+logger.add(LOGGER_ERROR_PATH,
+           rotation='10 MB',
+           diagnose=False,
+           level='ERROR',
+           format=default_format)
+
+if __name__ == '__main__':
+    nonebot.run(app='bot:app',
+                host=config['host'],
+                port=config['port'])

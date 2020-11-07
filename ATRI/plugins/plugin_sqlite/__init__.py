@@ -21,10 +21,10 @@ from nonebot.adapters.cqhttp import Bot, Event
 from utils.utils_error import errorRepo
 from utils.utils_request import aio_get_bytes
 
-
 SetuData = on_command('setu', permission=SUPERUSER)
 
-@SetuData.handle() # type: ignore
+
+@SetuData.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg0 = "-==ATRI Setu Data System==-\n"
     msg0 += "Upload:\n"
@@ -37,13 +37,12 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 UploadSetu = on_command('setu-upload', permission=SUPERUSER)
 
-@UploadSetu.handle() # type: ignore
+
+@UploadSetu.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.message).strip().split(' ')
 
-    if msg[0] and msg[1]:
-        pass
-    else:
+    if not msg[0] and msg[1]:
         msg0 = "请检查格式奥~！\n"
         msg0 += "setu-upload [type] [pid]\n"
         msg0 += "type: normal, nearR18, r18"
@@ -64,7 +63,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         info = json.loads(await aio_get_bytes(URL))
     except:
         await UploadSetu.finish(errorRepo("网络请求出错"))
-    
+
     info = info["response"][0]
     title = info["title"]
     tags = info["tags"]
@@ -74,7 +73,8 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     user_link = f'https://www.pixiv.net/users/' + f'{u_id}'
     img = f'https://pixiv.cat/{pid}.jpg'
 
-    data_setu = (f'{pid}', f'{title}', f'{tags}', f'{account}', f'{name}', f'{u_id}', f'{user_link}', f'{img}')
+    data_setu = (f'{pid}', f'{title}', f'{tags}', f'{account}', f'{name}',
+                 f'{u_id}', f'{user_link}', f'{img}')
 
     if s_type == "nearr18":
         s_type = "nearR18"
@@ -87,16 +87,23 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         print('数据文件存在！')
     else:
         await DeleteSetu.finish("数据库都不在添加🔨！？罢了我现创一个")
-        con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' / f'{s_type}.db')
+        con = sqlite3.connect(
+            Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' /
+            f'{s_type}.db')
         cur = con.cursor()
-        cur.execute(f'CREATE TABLE {s_type}(pid PID, title TITLE, tags TAGS, account ACCOUNT, name NAME, u_id UID, user_link USERLINK, img IMG, UNIQUE(pid, title, tags, account, name, u_id, user_link, img))')
+        cur.execute(
+            f'CREATE TABLE {s_type}(pid PID, title TITLE, tags TAGS, account ACCOUNT, name NAME, u_id UID, user_link USERLINK, img IMG, UNIQUE(pid, title, tags, account, name, u_id, user_link, img))'
+        )
         con.commit()
         cur.close()
         await bot.send(event, '完成')
 
-    con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' / f'{s_type}.db')
+    con = sqlite3.connect(
+        Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' / f'{s_type}.db')
     cur = con.cursor()
-    cur.execute(f'INSERT INTO {s_type}(pid, title, tags, account, name, u_id, user_link, img) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', data_setu)
+    cur.execute(
+        f'INSERT INTO {s_type}(pid, title, tags, account, name, u_id, user_link, img) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
+        data_setu)
     con.commit()
     cur.close()
 
@@ -105,13 +112,12 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 DeleteSetu = on_command('setu-delete', permission=SUPERUSER)
 
-@DeleteSetu.handle() # type: ignore
+
+@DeleteSetu.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.message).strip().split(' ')
-    
-    if msg[0] and msg[1]:
-        pass
-    else:
+
+    if not msg[0] and msg[1]:
         msg0 = "请检查格式奥~！\n"
         msg0 += "setu-delete [type] [pid]\n"
         msg0 += "type: normal, nearR18, r18"
@@ -136,8 +142,9 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         print('数据文件存在！')
     else:
         await DeleteSetu.finish("数据库都不在删🔨！？")
-    
-    con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' / f'{s_type}.db')
+
+    con = sqlite3.connect(
+        Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' / f'{s_type}.db')
     cur = con.cursor()
     cur.execute(f'DELETE FROM {s_type} WHERE pid = {pid}')
     con.commit()

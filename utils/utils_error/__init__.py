@@ -19,29 +19,11 @@ from datetime import datetime
 from traceback import format_exc
 
 def errorRepo(repo_msg: Optional[str] = None) -> str:
-    """
-    :说明:
+    '''
+    出错时返回错误堆栈
 
-      返回错误堆栈。
-    
-    :参数:
-
-      * ``repo_msg: Optional[str] = None``: 此错误发生时指定的错误信息，若不传入则返回 unknown
-    
-    :返回:
-
-      错误堆栈
-    
-    :用法:
-    
-    .. code-block:: python
-
-        try:
-            ...
-        except Exception:
-            print(errorRepo(repo_msg="message"))
-    
-    """
+    :return: str 
+    '''
     file_error = Path('.') / 'ATRI' / 'data' / 'data_Error' / 'error.json'
     try:
         with open(file_error, 'r') as f:
