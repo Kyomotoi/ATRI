@@ -23,7 +23,7 @@ def controlSwitch(func_name: str,
 
     :return: str
     '''
-    file_switch_all = Path('.') / 'utils' / 'utils_switch' / 'switch.json'
+    file_switch_all = Path('.') / 'utils' / 'utils_rule' / 'switch.json'
 
     if group:
         file_switch_group = Path(

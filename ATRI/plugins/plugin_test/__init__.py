@@ -16,7 +16,7 @@ from pathlib import Path
 from random import sample
 
 import nonebot
-from nonebot.plugin import on_command, on_message
+from nonebot.plugin import on_command
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, Event
 

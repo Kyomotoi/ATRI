@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
-
 '''
 @File    :   __init__.py
 @Time    :   2020/11/07 14:20:08
@@ -12,6 +11,7 @@
 __author__ = 'kyomotoi'
 
 import os
+import re
 import json
 import random
 from pathlib import Path
@@ -23,7 +23,11 @@ from datetime import datetime, timedelta
 from nonebot.plugin import on_command
 from nonebot.adapters.cqhttp import Bot, Event
 
+from utils.utils_error import errorRepo
 from utils.utils_rule import check_banlist, check_switch
+
+from .roll import roll_dice
+from .genshin import GetInfo, JsonAnalysis
 
 file = Path('.') / 'ATRI' / 'data' / 'data_IDcard' / 'main.bin'
 
@@ -61,9 +65,9 @@ def numberID(area: int, sex: int, birth: int) -> str:
     return fullCode
 
 
-plugin_name = "one-key-adult"
+plugin_name_0 = "one-key-adult"
 generateID = on_command("我要转大人，一天打25小时游戏",
-                        rule=check_banlist() & check_switch(plugin_name))
+                        rule=check_banlist() & check_switch(plugin_name_0))
 
 
 @generateID.handle()  # type: ignore
@@ -87,3 +91,60 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     msg0 += "      2、不适用于网易和腾讯。"
 
     await generateID.finish(msg0)
+
+
+rollD = on_command("roll", rule=check_banlist())
+
+
+@rollD.handle()  # type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    args = str(event.message).strip()
+
+    if args:
+        state['resu'] = args
+
+
+@rollD.got("resu",
+           prompt="roll 参数不能为空~！\ndemo：1d10 或 2d10+2d10")  # type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    resu = state['resu']
+    match = re.match(r'^([\dd+\s]+?)$', resu)
+
+    if not match:
+        await rollD.finish("请输入正确的参数！！\ndemo：1d10 或 2d10+2d10")
+
+    await rollD.finish(roll_dice(resu))
+
+
+plugin_name_1 = 'genshin-search'
+genshinInfo = on_command('genshin',
+                         rule=check_banlist() & check_switch(plugin_name_1))
+
+
+@genshinInfo.handle()  # type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    args = str(event.message).strip()
+
+    if args:
+        state['uid'] = args
+
+
+@genshinInfo.got('uid', prompt='请告诉咱需要查询的UID，暂时只支持国服嗷~（')  # type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    uid = str(state['uid'])
+
+    if (len(uid) == 9 and uid[0] == '1'):
+        await bot.send(event, '别急，在搜索了！')
+        uid_info = ''
+
+        try:
+            uid_info = JsonAnalysis(GetInfo(uid))
+        except:
+            await genshinInfo.finish(errorRepo("数据请求错误，原因可能为ID输入错误或不存在"))
+
+        msg0 = f'{uid} Genshin Info:\n'
+        msg0 += uid_info
+        await genshinInfo.finish(msg0)
+
+    else:
+        await genshinInfo.finish('UID检查未通过，请确保此ID为9位数或者是否为国服ID~！')

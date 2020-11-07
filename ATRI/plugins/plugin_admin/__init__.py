@@ -196,7 +196,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     await publicOpinion.finish(msg0)
 
 
-trackError = on_command('track', permission=SUPERUSER)
+trackError = on_command("track", permission=SUPERUSER)
 file_error = Path('.') / 'ATRI' / 'data' / 'data_Error' / 'error.json'
 
 
@@ -235,12 +235,12 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     args = str(event.message)
 
     if args:
-        state['args'] = args
+        state['msg'] = args
 
 
-@groupSendMessage.got('args', prompt='请告诉咱需要群发的内容~！')  # type: ignore
+@groupSendMessage.got('msg', prompt='请告诉咱需要群发的内容~！')  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
-    msg = state['args']
+    msg = state['msg']
     group_list = await bot.get_group_list()
     sc_list = []
     err_list = []

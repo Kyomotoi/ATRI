@@ -38,13 +38,10 @@ CONFIG_PATH = Path('.') / 'config.yml'
 config = load_yaml(CONFIG_PATH)
 config = config['bot']
 
-print(config)
-
 # 初始化
 nonebot.init(DEBUG=config['debug'],
              SUPERUSSERS=config['superusers'],
              NICKNAME=config['nickname'],
-             COMMAND_START=config['command_start'],
              COMMAND_SEP=config['command_sep'])
 app = nonebot.get_asgi()
 

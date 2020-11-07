@@ -106,6 +106,7 @@ def check_switch(func_name: str) -> Rule:
             data_switch_all["pixiv-author-search"] = "True"
             data_switch_all["pixiv-rank"] = "True"
             data_switch_all["one-key-adult"] = "True"
+            data_switch_all["genshin-search"] = "True"
 
             file = open(file_switch_all, 'w')
             file.write(json.dumps(data_switch_all))
@@ -118,6 +119,8 @@ def check_switch(func_name: str) -> Rule:
             try:
                 os.mkdir(
                     Path('.') / 'ATRI' / 'data' / 'data_Group' / f'{group}')
+            except:
+                pass
 
             data_switch_alone["anime-setu"] = "True"
             data_switch_alone["anime-pic-search"] = "True"
@@ -127,6 +130,7 @@ def check_switch(func_name: str) -> Rule:
             data_switch_alone["pixiv-author-search"] = "True"
             data_switch_alone["pixiv-rank"] = "True"
             data_switch_alone["one-key-adult"] = "True"
+            data_switch_alone["genshin-search"] = "True"
 
             file = open(file_switch_alone, 'w')
             file.write(json.dumps(data_switch_alone))

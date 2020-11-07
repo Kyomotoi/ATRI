@@ -195,12 +195,12 @@ plugin_name_2 = "anime-setu"
 key_LoliconAPI = config['api']['LoliconAPI']
 setu_type = 1  # setu-type: 1(local), 2(url: https://api.lolicon.app/#/setu) default: 1(local)
 
-setu = on_regex(
+setus = on_regex(
     r"来[点丶张份副个幅][涩色瑟][图圖]|[涩色瑟][图圖]来|[涩色瑟][图圖][gkd|GKD|搞快点]|[gkd|GKD|搞快点][涩色瑟][图圖]",
     rule=check_banlist() & check_switch(plugin_name_1))
 
 
-@setu.handle()  # type: ignore
+@setus.handle()  # type: ignore
 async def _setu(bot: Bot, event: Event, state: dict) -> None:
     group = str(event.group_id)
 
@@ -225,7 +225,7 @@ async def _setu(bot: Bot, event: Event, state: dict) -> None:
             msg0 += f"[CQ:image,file=file:///{compress_image(await aio_download_pics(img))}]"
 
             if 1 <= res < 5:
-                await setu.finish(msg0)
+                await setus.finish(msg0)
 
             elif res == 5:
                 await bot.send(event, "我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆")
@@ -246,7 +246,7 @@ async def _setu(bot: Bot, event: Event, state: dict) -> None:
             data = json.loads(
                 request_get('https://api.lolicon.app/setu/', params))
         except Exception:
-            await setu.finish(errorRepo("请求数据失败，也可能为接口调用次数达上限"))
+            await setus.finish(errorRepo("请求数据失败，也可能为接口调用次数达上限"))
 
         msg0 = "setu info:\n"
         msg0 += f'Title: {data["data"][0]["title"]}\n'
@@ -254,7 +254,7 @@ async def _setu(bot: Bot, event: Event, state: dict) -> None:
         msg0 += f'[CQ:image,file=file:///{compress_image(await aio_download_pics(data["data"][0]["url"]))}]'
 
         if 1 <= res < 5:
-            await setu.finish(msg0)
+            await setus.finish(msg0)
 
         elif res == 5:
             await bot.send(event, "我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆")

@@ -10,10 +10,11 @@
 '''
 __author__ = 'kyomotoi'
 
+import re
 import json
 from pathlib import Path
 from random import choice
-from requests import exceptions 
+from requests import exceptions
 
 from nonebot.log import logger
 from nonebot.rule import to_me
@@ -65,9 +66,6 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     elif "萝卜子" in msg:
         await bot.send(event, "萝卜子是对咱的蔑称！！")
 
-    else:
-        pass
-
 
 # 戳 一 戳
 pokehah = on_command("戳一戳", rule=to_me() & check_banlist())
@@ -86,31 +84,31 @@ async def _poke(bot: Bot, event: Event, state: dict) -> None:
 
 async def poke_(bot: Bot, event: Event, state: dict) -> bool:
     return (event.detail_type == "notify"
-            and event.raw_event["sub_type"] == "poke"  # type: ignore
+            and event.raw_event["sub_type"] == "poke"
             and event.sub_type == "notice" and int(
-                event.self_id) == event.raw_event["target_id"]  # type: ignore
+                event.self_id) == event.raw_event["target_id"]
             )
 
 
-poke = on_notice(poke_, block=True)
+poke = on_notice(rule=check_banlist() & poke_, block=True)
 poke.handle()(_poke)
 
 # 处理 进 / 退 群事件
-groupEvent = on_notice(rule=check_banlist())
+groupEvent = on_notice()
 
 
 @groupEvent.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
-    if event.raw_event["notice_type"] == "group_increase":  # type: ignore
+    if event.raw_event["notice_type"] == "group_increase":
         await groupEvent.finish(
-            f'好欸！事新人[CQ:at,qq={event.raw_event["user_id"]}]'  # type: ignore
-        )  # type: ignore
+            f'好欸！事新人[CQ:at,qq={event.raw_event["user_id"]}]'
+        )
         await groupEvent.finish("在下 ATRI，你可以叫我 亚托莉 或 アトリ ！~w")
 
-    elif event.raw_event[  # type: ignore
+    elif event.raw_event[
             "notice_type"] == "group_decrease":
         await groupEvent.finish(
-            f'[{event.raw_event["operator_id"]}] 离开了我们...'  # type: ignore
+            f'[{event.raw_event["operator_id"]}] 离开了我们...'
         )
 
 
@@ -119,12 +117,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 # file_PO = Path(
 #     '.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'public_opinion.json'
 
-
 # @groupEvent.handle()  # type: ignore
 # async def _(bot: Bot, event: Event, state: dict) -> None:
 #     with open(file_PO, 'r') as f:
 #         data = json.load(f)
-
 
 # 口臭一下
 fxxkMe = on_command('口臭一下',
