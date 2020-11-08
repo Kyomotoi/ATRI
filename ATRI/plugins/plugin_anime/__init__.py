@@ -197,7 +197,7 @@ setu_type = 1  # setu-type: 1(local), 2(url: https://api.lolicon.app/#/setu) def
 
 setus = on_regex(
     r"来[点丶张份副个幅][涩色瑟][图圖]|[涩色瑟][图圖]来|[涩色瑟][图圖][gkd|GKD|搞快点]|[gkd|GKD|搞快点][涩色瑟][图圖]",
-    rule=check_banlist() & check_switch(plugin_name_1))
+    rule=check_banlist() & check_switch(plugin_name_2))
 
 
 @setus.handle()  # type: ignore
