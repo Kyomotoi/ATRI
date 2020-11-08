@@ -31,7 +31,6 @@ time.sleep(1)
 
 # 检查是否符合条件运行
 checkATRI()
-time.sleep(1)
 
 # 读取配置
 CONFIG_PATH = Path('.') / 'config.yml'
@@ -39,10 +38,11 @@ config = load_yaml(CONFIG_PATH)
 config = config['bot']
 
 # 初始化
-nonebot.init(DEBUG=config['debug'],
-             SUPERUSSERS=config['superusers'],
-             NICKNAME=config['nickname'],
-             COMMAND_SEP=config['command_sep'])
+nonebot.init(debug=bool(config['debug']),
+             superusers=set(config['superusers']),
+             nickname=set(config['nickname']),
+             command_start=set(config['command_start']),
+             command_sep=set(config['command_sep']))
 app = nonebot.get_asgi()
 
 # 读取插件目录
@@ -71,6 +71,4 @@ logger.add(LOGGER_ERROR_PATH,
            format=default_format)
 
 if __name__ == '__main__':
-    nonebot.run(app='bot:app',
-                host=config['host'],
-                port=config['port'])
+    nonebot.run(app='bot:app', host=config['host'], port=config['port'])

@@ -42,8 +42,8 @@ class checkATRI():
                 bot = config['bot']
                 for key in bot:
                     if key == 'debug':
-                        if bot['debug'] != False:
-                            logger.warring('DEBUG open.')
+                        if bot['debug'] != 0:
+                            logger.warning('DEBUG open.')
                             progress.update(task, advance=1)
                             time.sleep(0.2)
                     else:
