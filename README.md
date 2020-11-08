@@ -31,9 +31,9 @@
 
 如需查看其运作效果，请添加示例群聊：567297659
 
-- 详细功能介绍请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/user)
+- 详细功能介绍请见此 >>> [撰写中]()
 
-- 详细部署教程请见此 >>> [传送门](https://blog.lolihub.icu/#/ATRI/install)
+- 详细部署教程请见此 >>> [撰写中]()
 
 以及
 
@@ -47,11 +47,14 @@
 [JetBrains](https://www.jetbrains.com/) 为本项目提供 [PyCharm](https://www.jetbrains.com/pycharm/) 等授权
 
 以及以下：
- - 50861735 11CNY
- - 1072324725 17CNY
+ - 50861735 11.0CNY
+ - 1072324725 17.0CNY
  - 2862890179 func
- - AfdianUser_quGy 5CNY
+ - AfdianUser_quGy 5.0CNY
  - 1752179928 45.14CNY
+ - Mikasa 66.0CNY
+ - SkipM4 11.0CNY
+ - Chunk7 33.0CNY
 
 ## 其他
 本项目已开启爱发电，如有意愿请作者几杯红茶那会将常非感谢！
