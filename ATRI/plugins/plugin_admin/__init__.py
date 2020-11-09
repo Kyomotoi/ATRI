@@ -13,14 +13,16 @@ __author__ = 'kyomotoi'
 
 import re
 import json
+import asyncio
 from pathlib import Path
-from utils.utils_error import errorRepo
+from random import randint
 
 from nonebot.plugin import on_command
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.permission import GROUP_ADMIN, GROUP_OWNER, SUPERUSER
 
 from utils.utils_yml import load_yaml
+from utils.utils_error import errorRepo
 from utils.utils_rule import check_banlist
 from utils.utils_switch import controlSwitch
 
@@ -249,7 +251,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     for group in group_list:
         if group['group_id'] not in ban_group_list:
-
+            asyncio.sleep(randint(1,5))
             try:
                 await bot.send_group_msg(group_id=group['group_id'],
                                          message=msg)
