@@ -39,9 +39,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     func = str(event.message).strip()
 
-    if func:
-        pass
-    else:
+    if not func:
         msg0 = "-==ATRI Switch Control System==-\n"
         msg0 += "┌Usage: switch on/off-{service}\n"
         msg0 += "├For SUPERUSER:\n"
@@ -232,7 +230,7 @@ groupSendMessage = on_command("群发", permission=SUPERUSER)
 
 @groupSendMessage.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
-    args = str(event.message)
+    args = str(event.message).strip()
 
     if args:
         state['msg'] = args

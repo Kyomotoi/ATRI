@@ -29,25 +29,25 @@ def check_banlist() -> Rule:
         group = str(event.group_id)
 
         # 名单目录
-        file_user = Path('.') / 'utils' / 'utils_rule' / 'ban_list_user.json'
-        file_group = Path('.') / 'utils' / 'utils_rule' / 'ban_list_group.json'
+        BAN_LIST_USER_PATH = Path(
+            '.') / 'utils' / 'utils_rule' / 'ban_list_user.json'
+        BAN_LIST_GROUP_PATH = Path(
+            '.') / 'utils' / 'utils_rule' / 'ban_list_group.json'
 
         # 检查文件是否存在，如不存在，自动创建并写入默认值
-        if not file_user.is_file():
-            file = open(file_user, 'w')
-            file.write(json.dumps({}))
-            file.close()
+        if not BAN_LIST_USER_PATH.is_file():
+            with open(BAN_LIST_USER_PATH, 'w') as f:
+                f.write(json.dumps({}))
 
-        if not file_group.is_file():
-            file = open(file_group, 'w')
-            file.write(json.dumps({}))
-            file.close()
+        if not BAN_LIST_GROUP_PATH.is_file():
+            with open(BAN_LIST_GROUP_PATH, 'w') as f:
+                f.write(json.dumps({}))
 
         # 读取文件
-        with open(file_user, 'r') as f:
+        with open(BAN_LIST_USER_PATH, 'r') as f:
             data_user = json.load(f)
 
-        with open(file_group, 'r') as f:
+        with open(BAN_LIST_GROUP_PATH, 'r') as f:
             data_group = json.load(f)
 
         # 判断目标
@@ -91,57 +91,44 @@ def check_switch(func_name: str) -> Rule:
         group = str(event.group_id)
 
         # 文件目录
-        file_switch_all = Path('.') / 'utils' / 'utils_rule' / 'switch.json'
-        file_switch_alone = Path(
+        SWITCH_ALL_PATH = Path('.') / 'utils' / 'utils_rule' / 'switch.json'
+        SWITCH_ALONE_PATH = Path(
             '.') / 'ATRI' / 'data' / 'data_Group' / f'{group}' / 'switch.json'
 
         # 检查文件是否存在，如不存在，自动创建并写入默认值
-        if not file_switch_all.is_file():
-            data_switch_all = {}
-            data_switch_all["anime-setu"] = "True"
-            data_switch_all["anime-pic-search"] = "True"
-            data_switch_all["anime-vid-search"] = "True"
-            data_switch_all["ai-face"] = "True"
-            data_switch_all["pixiv-pic-search"] = "True"
-            data_switch_all["pixiv-author-search"] = "True"
-            data_switch_all["pixiv-rank"] = "True"
-            data_switch_all["one-key-adult"] = "True"
-            data_switch_all["genshin-search"] = "True"
+        if not SWITCH_ALL_PATH.is_file():
+            with open(SWITCH_ALL_PATH, 'ws') as f:
+                f.write(json.dumps({}))
 
-            file = open(file_switch_all, 'w')
-            file.write(json.dumps(data_switch_all))
-            file.close()
-
-        if not file_switch_alone.is_file():
-            data_switch_alone = {}
-
-            # 检查目标文件夹是否存在，如不存在自动创建
+        if not SWITCH_ALONE_PATH.is_file():
             try:
                 os.mkdir(
                     Path('.') / 'ATRI' / 'data' / 'data_Group' / f'{group}')
             except:
                 pass
 
-            data_switch_alone["anime-setu"] = "True"
-            data_switch_alone["anime-pic-search"] = "True"
-            data_switch_alone["anime-vid-search"] = "True"
-            data_switch_alone["ai-face"] = "True"
-            data_switch_alone["pixiv-pic-search"] = "True"
-            data_switch_alone["pixiv-author-search"] = "True"
-            data_switch_alone["pixiv-rank"] = "True"
-            data_switch_alone["one-key-adult"] = "True"
-            data_switch_alone["genshin-search"] = "True"
-
-            file = open(file_switch_alone, 'w')
-            file.write(json.dumps(data_switch_alone))
-            file.close()
+            with open(SWITCH_ALONE_PATH, 'w') as f:
+                f.write(json.dumps({}))
 
         # 读取文件
-        with open(file_switch_all, 'r') as f:
+        with open(SWITCH_ALL_PATH, 'r') as f:
             data_all = json.load(f)
 
-        with open(file_switch_alone, 'r') as f:
+        with open(SWITCH_ALONE_PATH, 'r') as f:
             data_alone = json.load(f)
+
+        # 判断目标是否存在于将要读取的文件，如不存在，写入
+        # 此项举措是为了适应以后版本更新出现新插件的状况
+        # 不至于每次都需要修改
+        if func_name not in data_all:
+            data_all[func_name] = "True"
+            with open(SWITCH_ALL_PATH, 'w') as f:
+                f.write(json.dumps(data_all))
+
+        if func_name not in data_alone:
+            data_alone[func_name] = "True"
+            with open(SWITCH_ALONE_PATH, 'w') as f:
+                f.write(json.dumps(data_alone))
 
         # 判断目标
         if data_all[func_name] == "True":

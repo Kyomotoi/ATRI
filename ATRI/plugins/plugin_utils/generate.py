@@ -17,11 +17,11 @@ from pathlib import Path
 from zipfile import PyZipFile
 from typing import Tuple, Dict, List
 
-file = Path('.') / 'ATRI' / 'data' / 'data_IDcard' / 'main.bin'
+FILE = Path('.') / 'ATRI' / 'plguins' / 'plugin_utils' / 'main.bin'
 
 
 def infoID() -> Tuple[Dict[str, List[str]], Dict[str, str]]:
-    with PyZipFile(os.path.abspath(file), "r") as zipFile:
+    with PyZipFile(os.path.abspath(FILE), "r") as zipFile:
         with zipFile.open("name.json", "r") as f:
             name = json.loads(f.read().decode())
         with zipFile.open("area.json", "r") as f:

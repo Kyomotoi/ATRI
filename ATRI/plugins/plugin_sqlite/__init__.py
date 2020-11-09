@@ -43,7 +43,7 @@ UploadSetu = on_command('setu-upload', permission=SUPERUSER)
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.message).strip().split(' ')
 
-    if not msg[0] and msg[1]:
+    if not msg[0] and not msg[1]:
         msg0 = "请检查格式奥~！\n"
         msg0 += "setu-upload [type] [pid]\n"
         msg0 += "type: normal, nearR18, r18"
@@ -118,7 +118,7 @@ DeleteSetu = on_command('setu-delete', permission=SUPERUSER)
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.message).strip().split(' ')
 
-    if not msg[0] and msg[1]:
+    if not msg[0] and not msg[1]:
         msg0 = "请检查格式奥~！\n"
         msg0 += "setu-delete [type] [pid]\n"
         msg0 += "type: normal, nearR18, r18"
