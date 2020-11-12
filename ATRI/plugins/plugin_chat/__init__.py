@@ -228,6 +228,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     if countX(list_M, user) >= 3:
         await fxxkMe.finish("不是？？你这么想被咱骂的嘛？？被咱骂就这么舒服的吗？！该......你该不会是.....M吧！")
+        list_M = list(set(list_M))
 
     elif countX(list_M, user) >= 6:
         await fxxkMe.finish("给我适可而止阿！？")
