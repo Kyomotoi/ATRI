@@ -17,6 +17,8 @@
 
 此项目也作为我学习Python的一个很好的渠道，这里特别感谢 [Richard Chien](https://github.com/richardchien) 以及对此项目提供巨大帮助的 Python-SDK：[NoneBot](https://github.com/nonebot/nonebot)（目前已更换至 [NoneBot2](https://github.com/nonebot/nonebot2)）
 
+目前计划使用 Golang 重构此项目 >>> [传送门](https://github.com/Kyomotoi/go-ATRI)
+
 ## 实现
 アトリ可以在任何平台下运行
 
