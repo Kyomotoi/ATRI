@@ -32,7 +32,6 @@ from ATRI.utils.utils_history import saveMessage
 from ATRI.utils.utils_request import request_api_text
 from ATRI.utils.utils_rule import check_banlist, check_switch
 
-
 CONFIG_PATH = Path('.') / 'config.yml'
 config = load_yaml(CONFIG_PATH)['bot']
 
@@ -216,17 +215,17 @@ fxxkMe = on_command('口臭一下',
 list_M = []
 
 
-@fxxkMe.handle()
+@fxxkMe.handle()  # type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     global list_M
 
-    if countX(list_M, user) >= 3:
-        await fxxkMe.finish("不是？？你这么想被咱骂的嘛？？被咱骂就这么舒服的吗？！该......你该不会是.....M吧！")
-        list_M = list(set(list_M))
+    if countX(list_M, user) == 3:
+        await bot.send(event,
+                       "不是？？你这么想被咱骂的嘛？？被咱骂就这么舒服的吗？！该......你该不会是.....M吧！")
 
-    elif countX(list_M, user) >= 6:
-        await fxxkMe.finish("给我适可而止阿！？")
+    elif countX(list_M, user) == 6:
+        await bot.send(event, "给我适可而止阿！？")
         list_M = list(set(list_M))
 
     else:
@@ -254,11 +253,11 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     global list_Y
 
-    if countX(list_Y, user) >= 3:
-        await hitokoto.finish("额......需要咱安慰一下嘛~？")
+    if countX(list_Y, user) == 3:
+        await bot.send(event, "额......需要咱安慰一下嘛~？")
 
-    elif countX(list_Y, user) >= 6:
-        await hitokoto.finish("如果心里感到难受就赶快去睡觉奥！别再憋自己了！")
+    elif countX(list_Y, user) == 6:
+        await bot.send(event, "如果心里感到难受就赶快去睡觉奥！别再憋自己了！")
         list_Y = list(set(list_Y))
 
     else:
@@ -350,12 +349,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     num = randint(1, num)
     bottle = data[str(num)]
-    user = bottle[0]
-    group = bottle[1]
     msg = bottle[2]
 
     msg0 = f'[CQ:at,qq={event.user_id}]\n'
-    msg0 += f'漂流瓶[{num}]来自群[{group}][{user}]，内容如下\n'
+    msg0 += f'漂流瓶[{num}]内容如下：\n'
     msg0 += msg
 
     await getDriftingBottle.finish(msg0)
@@ -417,9 +414,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     global ban_temp_list
     msg = str(event.message)
     user = str(event.user_id)
-    
+
     # 检查是否满足条件
-    if countX(ban_temp_list, user) == Textcheck().get_times(str(Textcheck().check(msg))):
+    if countX(ban_temp_list,
+              user) == Textcheck().get_times(str(Textcheck().check(msg))):
         ban_temp_list = list(set(ban_temp_list))
         ban(user)
 

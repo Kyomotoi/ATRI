@@ -1,3 +1,5 @@
+![](https://socialify.git.ci/Kyomotoi/ATRI/image?description=1&descriptionEditable=A%20project%20for%20ATRI%2C%20Usage%20go-CQHTTP%20%2B%20NoneBot2.&forks=1&issues=1&language=1&logo=https%3A%2F%2Fi.loli.net%2F2020%2F11%2F12%2FYcINCkyp8vK2inD.png&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Light)
+
 # ATRI——一个厨力项目
 アトリは、高性能ですから！
 
@@ -14,6 +16,8 @@
 项目拥有者，初接触 Python 仍未满半年，故此项目所写的东西可能会让您血压升高，我会加油在往后日子对其进行改进！
 
 此项目也作为我学习Python的一个很好的渠道，这里特别感谢 [Richard Chien](https://github.com/richardchien) 以及对此项目提供巨大帮助的 Python-SDK：[NoneBot](https://github.com/nonebot/nonebot)（目前已更换至 [NoneBot2](https://github.com/nonebot/nonebot2)）
+
+目前计划使用 Golang 重构此项目 >>> [传送门](https://github.com/Kyomotoi/go-ATRI)
 
 ## 实现
 アトリ可以在任何平台下运行
@@ -37,7 +41,7 @@
 
 以及
 
-~~别催了别催了在安排了呜呜呜~~
+~~好！这波直接换头像，头像就是我本人就酱~~
 
 ## 特别感谢
 [Richard Chien](https://github.com/richardchien): [CQHTTP](https://github.com/richardchien/coolq-http-api) 和 [NoneBot](https://github.com/nonebot/nonebot)
