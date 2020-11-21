@@ -41,7 +41,7 @@
 
 以及
 
-~~别催了别催了在安排了呜呜呜~~
+~~好！这波直接换头像，头像就是我本人就酱~~
 
 ## 特别感谢
 [Richard Chien](https://github.com/richardchien): [CQHTTP](https://github.com/richardchien/coolq-http-api) 和 [NoneBot](https://github.com/nonebot/nonebot)
