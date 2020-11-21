@@ -5,25 +5,22 @@ bot:
   # 反向ws端口
   port: 8080
   # 非开发者无需理会
-  debug: false
+  debug: 0
   # 超级用户，填自己的QQ号，用“，”隔开
-  superusers: [""]
+  superusers: []
   # 机器人昵称，建议不动
-  nickname: ["ATRI", "Atri", "atri", "亚托莉", "アトリ"]
+  nickname: ['ATRI', 'Atri', 'atri', '亚托莉', 'アトリ']
   # 命令触发头，建议不动，除非你知道你在做什么
   command_start: ['', '/']
   # 命令分离，建议不动，除非你知道你在做什么
-  command_sep: ["."]
+  command_sep: ['.']
 
 # 接口相关配置
 api:
   # 涩图接口，URL：https://api.lolicon.app/#/setu
-  LoliconAPI: 
-  # 换脸接口，URL：https://www.faceplusplus.com.cn/
-  FaceplusAPI: 
-  FaceplusSECRET: 
+  LoliconAPI: xxx
   # 搜图接口，URL：https://saucenao.com/
-  SauceNaoKEY: 
+  SauceNaoKEY: xxx
 
 # 内置网页端
 html:

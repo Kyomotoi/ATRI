@@ -13,11 +13,12 @@ __author__ = 'kyomotoi'
 import os
 import json
 from pathlib import Path
+from typing import Optional
 from nonebot.rule import Rule
 from nonebot.typing import Bot, Event
 
 
-def check_banlist() -> Rule:
+def check_banlist(for_group: Optional[bool] = False) -> Rule:
     '''
     检查目标是否存在于封禁名单
 
@@ -30,9 +31,9 @@ def check_banlist() -> Rule:
 
         # 名单目录
         BAN_LIST_USER_PATH = Path(
-            '.') / 'utils' / 'utils_rule' / 'ban_list_user.json'
+            '.') / 'ATRI' / 'utils' / 'utils_rule' / 'ban_list_user.json'
         BAN_LIST_GROUP_PATH = Path(
-            '.') / 'utils' / 'utils_rule' / 'ban_list_group.json'
+            '.') / 'ATRI' / 'utils' / 'utils_rule' / 'ban_list_group.json'
 
         # 检查文件是否存在，如不存在，自动创建并写入默认值
         if not BAN_LIST_USER_PATH.is_file():
@@ -51,36 +52,42 @@ def check_banlist() -> Rule:
             data_group = json.load(f)
 
         # 判断目标
-        if user:
-            if user not in data_user:
-                if group:
-                    if group not in data_group:
-                        return True
+        if not for_group:
+            if user:
+                if user not in data_user:
+                    if group:
+                        if group not in data_group:
+                            return True
+                        else:
+                            return False
                     else:
-                        return False
+                        return True
                 else:
-                    return True
-            else:
-                return False
+                    return False
 
-        elif group:
-            if group not in data_group:
-                if user:
-                    if user not in data_user:
-                        return True
+            elif group:
+                if group not in data_group:
+                    if user:
+                        if user not in data_user:
+                            return True
+                        else:
+                            return False
                     else:
-                        return False
+                        return True
                 else:
-                    return True
+                    return False
             else:
                 return False
         else:
-            return False
+            if group not in data_group:
+                return True
+            else:
+                return False
 
     return Rule(_chech_banlist)
 
 
-def check_switch(func_name: str) -> Rule:
+def check_switch(func_name: str, notice: bool) -> Rule:
     '''
     检查目标功能是否开启
 
@@ -91,7 +98,7 @@ def check_switch(func_name: str) -> Rule:
         group = str(event.group_id)
 
         # 文件目录
-        SWITCH_ALL_PATH = Path('.') / 'utils' / 'utils_rule' / 'switch.json'
+        SWITCH_ALL_PATH = Path('.') / 'ATRI' / 'utils' / 'utils_rule' / 'switch.json'
         SWITCH_ALONE_PATH = Path(
             '.') / 'ATRI' / 'data' / 'data_Group' / f'{group}' / 'switch.json'
 
@@ -137,7 +144,8 @@ def check_switch(func_name: str) -> Rule:
             else:
                 return False
         else:
-            await bot.send(event, f"Service-{func_name} has been closed.")
+            if notice:
+                await bot.send(event, f"Service-{func_name} has been closed.")
             return False
 
     return Rule(_check_switch)

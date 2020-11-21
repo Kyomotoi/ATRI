@@ -15,13 +15,13 @@ import json
 import requests
 
 from nonebot.log import logger
+from nonebot.typing import Bot, Event
 from nonebot.plugin import on_message
-from nonebot.adapters.cqhttp import Bot, Event
 
-from utils.utils_times import countX
-from utils.utils_rule import check_banlist
-from utils.utils_request import request_get
-from .body import dec
+from ATRI.utils.utils_times import countX
+from ATRI.utils.utils_rule import check_banlist
+from ATRI.utils.utils_request import request_get
+from .data_source import dec
 
 BILI_REPORT_FORMAT = """[{aid}] Info:
 Title: {title}
@@ -36,7 +36,7 @@ bilibiliRich = on_message(rule=check_banlist())
 b_list = []
 
 
-@bilibiliRich.handle()  # type: ignore
+@bilibiliRich.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     global b_list
     user = event.user_id
@@ -101,7 +101,7 @@ cloudmusicRich = on_message(rule=check_banlist())
 c_list = []
 
 
-@cloudmusicRich.handle()  # type: ignore
+@cloudmusicRich.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     global c_list
     user = event.user_id

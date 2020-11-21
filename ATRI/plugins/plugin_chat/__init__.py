@@ -10,23 +10,28 @@
 '''
 __author__ = 'kyomotoi'
 
+import os
 import json
 from pathlib import Path
 from random import choice
-from nonebot.permission import SUPERUSER
+from random import randint
 from requests import exceptions
 
 from nonebot.log import logger
 from nonebot.rule import to_me
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.typing import Bot, Event
+from nonebot.permission import SUPERUSER
 from nonebot.plugin import on_command, on_message, on_notice, on_request
 
-from utils.utils_times import countX
-from utils.utils_yml import load_yaml
-from utils.utils_error import errorRepo
-from utils.utils_rule import check_banlist
-from utils.utils_history import saveMessage
-from utils.utils_request import request_api_text
+from ATRI.utils.utils_ban import ban
+from ATRI.utils.utils_times import countX
+from ATRI.utils.utils_yml import load_yaml
+from ATRI.utils.utils_error import errorRepo
+from ATRI.utils.utils_textcheck import Textcheck
+from ATRI.utils.utils_history import saveMessage
+from ATRI.utils.utils_request import request_api_text
+from ATRI.utils.utils_rule import check_banlist, check_switch
+
 
 CONFIG_PATH = Path('.') / 'config.yml'
 config = load_yaml(CONFIG_PATH)['bot']
@@ -37,7 +42,7 @@ master = config['superusers']
 MessageSave = on_message()
 
 
-@MessageSave.handle()  # type: ignore
+@MessageSave.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     group = str(event.group_id)
@@ -50,7 +55,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         saveMessage(message_id, message, user, group)
 
     logger.opt(colors=True).info(
-        f"[<yellow>{group}</yellow>]-U: (<blue>{user}</blue>) | Message: (<green>{message}</green>) Saved successfully"
+        f"GROUP[<yellow>{group}</yellow>]: USER(<blue>{user}</blue>) > Message: (<green>{message}</green>) Saved successfully"
     )
 
 
@@ -58,7 +63,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 callMe = on_message(rule=check_banlist())
 
 
-@callMe.handle()  # type: ignore
+@callMe.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.raw_event['raw_message']).strip()
 
@@ -73,7 +78,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 pokehah = on_command("戳一戳", rule=to_me() & check_banlist())
 
 
-@pokehah.handle()  # type: ignore
+@pokehah.handle()
 async def _poke(bot: Bot, event: Event, state: dict) -> None:
     msg = choice([
         "你再戳！", "？再戳试试？", "别戳了别戳了再戳就坏了555", "我爪巴爪巴，球球别再戳了", "你戳你🐎呢？！",
@@ -100,7 +105,7 @@ poke.handle()(_poke)
 groupEvent = on_notice()
 
 
-@groupEvent.handle()  # type: ignore
+@groupEvent.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     if event.raw_event['notice_type'] == 'group_increase':
         if event.user_id != int(event.self_id):
@@ -125,7 +130,7 @@ FRIEND_ADD = 0
 GROUP_INVITE = 0
 
 
-@selfEvent.handle()  # type: ignore
+@selfEvent.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     print(event.raw_event)
     flag = event.raw_event['flag']
@@ -175,7 +180,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 controlSelfEvent = on_command('selfevent', permission=SUPERUSER)
 
 
-@controlSelfEvent.handle()  # type: ignore
+@controlSelfEvent.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     args = str(event.message).strip()
     msg0 = ''
@@ -204,16 +209,6 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     await controlSelfEvent.finish('DONE!')
 
 
-# # 舆情监听系统
-# listenPublicOpinion = on_message()
-# file_PO = Path(
-#     '.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'public_opinion.json'
-
-# @groupEvent.handle()  # type: ignore
-# async def _(bot: Bot, event: Event, state: dict) -> None:
-#     with open(file_PO, 'r') as f:
-#         data = json.load(f)
-
 # 口臭一下
 fxxkMe = on_command('口臭一下',
                     aliases={'口臭', '骂我'},
@@ -221,13 +216,14 @@ fxxkMe = on_command('口臭一下',
 list_M = []
 
 
-@fxxkMe.handle()  # type: ignore
+@fxxkMe.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     global list_M
 
     if countX(list_M, user) >= 3:
         await fxxkMe.finish("不是？？你这么想被咱骂的嘛？？被咱骂就这么舒服的吗？！该......你该不会是.....M吧！")
+        list_M = list(set(list_M))
 
     elif countX(list_M, user) >= 6:
         await fxxkMe.finish("给我适可而止阿！？")
@@ -253,7 +249,7 @@ hitokoto = on_command('一言',
 list_Y = []
 
 
-@hitokoto.handle()  # type: ignore
+@hitokoto.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     global list_Y
@@ -293,3 +289,147 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 #     resu = choice(result)
 #     print(resu%name)
+
+# 扔漂流瓶
+plugin_name = 'drifting-bottle'
+DRIFTING_BOTTLE_PATH = Path(
+    '.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'drifting_bottle.json'
+driftingBottle = on_command('扔漂流瓶',
+                            rule=to_me() & check_banlist()
+                            & check_switch(plugin_name, True))
+
+
+@driftingBottle.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    args = str(event.message).strip()
+
+    if args:
+        state['args'] = args
+
+
+@driftingBottle.got('args', prompt='请告诉咱瓶中内容~！')
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    args = state['args']
+    user = event.user_id
+    group = event.group_id
+
+    if not DRIFTING_BOTTLE_PATH.is_file():
+        with open(DRIFTING_BOTTLE_PATH, 'w') as f:
+            f.write(json.dumps({}))
+
+    with open(DRIFTING_BOTTLE_PATH, 'r') as f:
+        data = json.load(f)
+
+    num = len(data)
+    data[num + 1] = [user, group, args]
+
+    with open(DRIFTING_BOTTLE_PATH, 'w') as f:
+        f.write(json.dumps(data))
+
+    await driftingBottle.finish('漂流瓶已飘向远方...')
+
+
+# 捡漂流瓶
+getDriftingBottle = on_command('捞漂流瓶',
+                               rule=to_me() & check_banlist()
+                               & check_switch(plugin_name, True))
+
+
+@getDriftingBottle.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    if not DRIFTING_BOTTLE_PATH.is_file():
+        with open(DRIFTING_BOTTLE_PATH, 'w') as f:
+            f.write(json.dumps({}))
+
+    with open(DRIFTING_BOTTLE_PATH, 'r') as f:
+        data = json.load(f)
+
+    num = len(data)
+    if not num:
+        await getDriftingBottle.finish('暂无漂流瓶可供打捞呢~（')
+
+    num = randint(1, num)
+    bottle = data[str(num)]
+    user = bottle[0]
+    group = bottle[1]
+    msg = bottle[2]
+
+    msg0 = f'[CQ:at,qq={event.user_id}]\n'
+    msg0 += f'漂流瓶[{num}]来自群[{group}][{user}]，内容如下\n'
+    msg0 += msg
+
+    await getDriftingBottle.finish(msg0)
+
+
+# 清除漂流瓶
+delDriftingBottle = on_command('清除漂流瓶',
+                               rule=check_banlist(),
+                               permission=SUPERUSER)
+
+
+@delDriftingBottle.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    args = str(event.message).strip()
+
+    if not args:
+        msg0 = 'Drifting Bottle:\n'
+        msg0 += '*For SUPERUSERS'
+        msg0 += '- delall\n'
+        msg0 += '- del [num]\n'
+        msg0 += 'eg: 清除漂流瓶 del 123'
+
+        await delDriftingBottle.finish(msg0)
+
+    if not DRIFTING_BOTTLE_PATH.is_file():
+        with open(DRIFTING_BOTTLE_PATH, 'w') as f:
+            f.write(json.dumps({}))
+
+        await delDriftingBottle.finish('清除了个寂寞...')
+
+    with open(DRIFTING_BOTTLE_PATH, 'r') as f:
+        data = json.load(f)
+
+    if args[0] == 'delall':
+        os.remove(os.path.abspath(DRIFTING_BOTTLE_PATH))
+
+    elif args[0] == 'del':
+        try:
+            del data[args[1]]
+        except:
+            await delDriftingBottle.finish(errorRepo('清除失败了...'))
+
+    with open(DRIFTING_BOTTLE_PATH, 'w') as f:
+        f.write(json.dumps(data))
+        f.close()
+
+    result = args[1] if args[0] == 'del' else "ALL"
+    await delDriftingBottle.finish(
+        f'完成啦！成功清除漂流瓶[{result}]，目前还剩余[{len(data)}]个~')
+
+
+# 舆情监听
+publicOpinion = on_message(rule=check_banlist(True))
+ban_temp_list = []
+
+
+@publicOpinion.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    global ban_temp_list
+    msg = str(event.message)
+    user = str(event.user_id)
+    
+    # 检查是否满足条件
+    if countX(ban_temp_list, user) == Textcheck().get_times(str(Textcheck().check(msg))):
+        ban_temp_list = list(set(ban_temp_list))
+        ban(user)
+
+    if Textcheck().check(msg) == "False":
+        return
+
+    if Textcheck().check(msg):
+        if user in master:
+            await publicOpinion.finish("主人你给我注意点阿？！你这可是在死亡边缘试探呢！！")
+
+        ban_temp_list.append(int(user))
+
+        await publicOpinion.finish(Textcheck().check(msg))

@@ -15,21 +15,25 @@ import json
 import sqlite3
 from pathlib import Path
 from random import randint
+from datetime import datetime, timedelta
+from apscheduler.triggers.date import DateTrigger
 
 from nonebot.log import logger
+from nonebot.sched import scheduler
+from nonebot.typing import Bot, Event
 from nonebot.permission import SUPERUSER
-from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.plugin import on_message, on_command, on_regex
 
-from utils.utils_yml import load_yaml
-from utils.utils_error import errorRepo
-from utils.utils_history import getMessage
-from utils.utils_translate import toSimpleString
-from utils.utils_rule import check_banlist, check_switch
-from utils.utils_request import aio_get_bytes, request_get
-from utils.utils_img import compress_image, aio_download_pics
+from ATRI.utils.utils_times import countX
+from ATRI.utils.utils_yml import load_yaml
+from ATRI.utils.utils_error import errorRepo
+from ATRI.utils.utils_history import getMessage
+from ATRI.utils.utils_translate import toSimpleString
+from ATRI.utils.utils_rule import check_banlist, check_switch
+from ATRI.utils.utils_request import aio_get_bytes, request_get
+from ATRI.utils.utils_img import compress_image, aio_download_pics
 
-from .body import resultRepo
+from .data_source import resultRepo
 
 CONFIG_PATH = Path('.') / 'config.yml'
 config = load_yaml(CONFIG_PATH)
@@ -38,10 +42,11 @@ plugin_name_0 = "anime-pic-search"
 key_SauceNAO = config['api']['SauceNaoKEY']
 
 SaucenaoSearch = on_command('以图搜图',
-                            rule=check_banlist() & check_switch(plugin_name_0))
+                            rule=check_banlist()
+                            & check_switch(plugin_name_0, True))
 
 
-@SaucenaoSearch.handle()  # type: ignore
+@SaucenaoSearch.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     group = str(event.group_id)
@@ -55,7 +60,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         state["img_url"] = img
 
 
-@SaucenaoSearch.got("img_url", prompt="请发送一张目标图片")  # type: ignore
+@SaucenaoSearch.got("img_url", prompt="请发送一张目标图片")
 async def _(bot: Bot, event: Event, state: dict) -> None:
     img = state["img_url"]
     img = re.findall(r"(http://.*?)]", img)
@@ -72,10 +77,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 SaucenaoSearch_repo = on_message(rule=check_banlist()
-                                 & check_switch(plugin_name_0))
+                                 & check_switch(plugin_name_0, True))
 
 
-@SaucenaoSearch_repo.handle()  # type: ignore
+@SaucenaoSearch_repo.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     group = str(event.group_id)
     msg = str(event.message)
@@ -109,10 +114,11 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 plugin_name_1 = "anime-vid-search"
 AnimeSearch = on_command('以图搜番',
-                         rule=check_banlist() & check_switch(plugin_name_1))
+                         rule=check_banlist()
+                         & check_switch(plugin_name_1, True))
 
 
-@AnimeSearch.handle()  # type: ignore
+@AnimeSearch.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     group = str(event.group_id)
@@ -126,7 +132,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         state["img_url"] = img
 
 
-@AnimeSearch.got("img_url", prompt="请发送一张目标图片")  # type: ignore
+@AnimeSearch.got("img_url", prompt="请发送一张目标图片")
 async def _(bot: Bot, event: Event, state: dict) -> None:
     img = state["img_url"]
     img = re.findall(r"(http://.*?)]", img)
@@ -194,17 +200,52 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 plugin_name_2 = "anime-setu"
 key_LoliconAPI = config['api']['LoliconAPI']
 setu_type = 1  # setu-type: 1(local), 2(url: https://api.lolicon.app/#/setu) default: 1(local)
+SP_temp_list = []
+SP_list = []
+SEPI_PATH = Path('.') / 'ATRI' / 'plugins' / 'plugin_anime' / 'sepi_list.json'
 
-setus = on_regex(
+
+async def check_sepi(bot: Bot, event: Event, state: dict) -> bool:
+    """检查目标是否是涩批"""
+    if event.user_id in SP_list:
+        await bot.send(event, "你可少冲点吧！涩批！哼唧")
+        return False
+    else:
+        return True
+
+def add_sepi(user: int) -> None:
+    """将目标移入涩批名单"""
+    global SP_list
+    SP_list.append(user)
+
+def del_sepi(user: int) -> None:
+    """将目标移出涩批名单"""
+    global SP_list
+    SP_list.remove(user)
+
+
+setu = on_regex(
     r"来[点丶张份副个幅][涩色瑟][图圖]|[涩色瑟][图圖]来|[涩色瑟][图圖][gkd|GKD|搞快点]|[gkd|GKD|搞快点][涩色瑟][图圖]",
-    rule=check_banlist() & check_switch(plugin_name_2))
+    rule=check_banlist() & check_switch(plugin_name_2, False) & check_sepi)
 
 
-@setus.handle()  # type: ignore
-async def _setu(bot: Bot, event: Event, state: dict) -> None:
-    group = str(event.group_id)
-
+@setu.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    global SP_temp_list
+    user = event.user_id
+    group = event.group_id
     res = randint(1, 5)
+
+    if countX(SP_temp_list, user) == 5:
+        add_sepi(user) # type: ignore
+        SP_temp_list = list(set(SP_temp_list))
+        delta = timedelta(hours=1)
+        trigger = DateTrigger(run_date=datetime.now() + delta)
+        scheduler.add_job(func=del_sepi,
+                          trigger=trigger,
+                          args=(user, ),
+                          misfire_grace_time=60)
+        return
 
     if setu_type == 1:
 
@@ -225,7 +266,8 @@ async def _setu(bot: Bot, event: Event, state: dict) -> None:
             msg0 += f"[CQ:image,file=file:///{compress_image(await aio_download_pics(img))}]"
 
             if 1 <= res < 5:
-                await setus.finish(msg0)
+                SP_temp_list.append(user)
+                await setu.finish(msg0)
 
             elif res == 5:
                 await bot.send(event, "我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆")
@@ -246,7 +288,7 @@ async def _setu(bot: Bot, event: Event, state: dict) -> None:
             data = json.loads(
                 request_get('https://api.lolicon.app/setu/', params))
         except Exception:
-            await setus.finish(errorRepo("请求数据失败，也可能为接口调用次数达上限"))
+            await setu.finish(errorRepo("请求数据失败，也可能为接口调用次数达上限"))
 
         msg0 = "setu info:\n"
         msg0 += f'Title: {data["data"][0]["title"]}\n'
@@ -254,7 +296,8 @@ async def _setu(bot: Bot, event: Event, state: dict) -> None:
         msg0 += f'[CQ:image,file=file:///{compress_image(await aio_download_pics(data["data"][0]["url"]))}]'
 
         if 1 <= res < 5:
-            await setus.finish(msg0)
+            SP_temp_list.append(user)
+            await setu.finish(msg0)
 
         elif res == 5:
             await bot.send(event, "我找到涩图了！但我发给主人了\nο(=•ω＜=)ρ⌒☆")
@@ -297,59 +340,3 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         await setuType.finish("请检查类型是否输入正确嗷！")
 
     await setuType.finish("Type conversion completed!")
-
-
-# @scheduler.scheduled_job(
-#     "cron",
-#     minute=45,
-#     bot=Bot,
-#     event=Event,
-#     state=dict
-#     )
-# async def _(bot: Bot, event: Event, state: dict) -> None:
-#     group = str(event.group_id)
-
-#     if banList(group=group):
-#         if checkSwitch(plugin_name_2, group):
-#             # group_list = await bot.get_group_list()
-#             # group = sample(group_list, 1)
-#             # group = group['group_id']
-
-#             if setu_type == 1:
-
-#                 con = sqlite3.connect(Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' / 'nearR18.db')
-#                 cur = con.cursor()
-#                 msg = cur.execute('SELECT * FROM nearR18 ORDER BY RANDOM() limit 1;')
-
-#                 for i in msg:
-#                     pid = i[0]
-#                     title = i[1]
-#                     img = i[7]
-
-#                     msg0 = f"setu info:\n"
-#                     msg0 += f"Title: {title}\n"
-#                     msg0 += f"Pid: {pid}\n"
-#                     msg0 += f"[CQ:image,file=file:///{compress_image(await aio_download_pics(img))}]"
-
-#                     await setu.finish(msg0)
-
-#             else:
-#                 params = {
-#                     "apikey": key_LoliconAPI,
-#                     "r18": "0",
-#                     "num": "1"
-#                 }
-
-#                 data = {}
-
-#                 try:
-#                     data = json.loads(request_get('https://api.lolicon.app/setu/', params))
-#                 except Exception:
-#                     await setu.finish(errorRepo("请求数据失败，也可能为接口调用次数达上限"))
-
-#                 msg0 = f"setu info:\n"
-#                 msg0 += f'Title: {data["data"][0]["title"]}\n'
-#                 msg0 += f'Pid: {data["data"][0]["pid"]}\n'
-#                 msg0 += f'[CQ:image,file=file:///{compress_image(await aio_download_pics(data["data"][0]["url"]))}]'
-
-#                 await setu.finish(msg0)

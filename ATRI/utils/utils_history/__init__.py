@@ -31,19 +31,16 @@ def saveMessage(message_id: str,
 
     # 检查目标文件目录
     if not GROUP_PATH.is_file():
-        try:
-            os.mkdir(Path('.') / 'ATRI' / 'data' / 'data_Group' / f'{group}')
-        except:
-            pass
+        os.makedirs(Path('.') / 'ATRI' / 'data' / 'data_Group', exist_ok=True)
+        os.makedirs(Path('.') / 'ATRI' / 'data' / 'data_Group' / f'{group}',
+                    exist_ok=True)
 
         with open(GROUP_PATH, 'w') as f:
             f.write(json.dumps({}))
 
     if not PRIVATE_PATH.is_file():
-        try:
-            os.mkdir(Path('.') / 'ATRI' / 'data' / 'data_Private_Message')
-        except:
-            pass
+        os.makedirs(Path('.') / 'ATRI' / 'data' / 'data_Private_Message',
+                    exist_ok=True)
 
         with open(PRIVATE_PATH, 'w') as f:
             f.write(json.dumps({}))

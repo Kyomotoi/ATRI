@@ -16,23 +16,22 @@ from time import strftime
 from datetime import datetime, timedelta
 
 from nonebot.plugin import on_command
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.typing import Bot, Event
 
-from utils.utils_error import errorRepo
-from utils.utils_rule import check_banlist, check_switch
-
-from .roll import roll_dice
-from .generate import infoID, numberID
-from .genshin import GetInfo, JsonAnalysis
+from ATRI.utils.utils_error import errorRepo
+from ATRI.utils.utils_rule import check_banlist, check_switch
+from .data_source import Generate, Genshin, Roll
 
 plugin_name_0 = "one-key-adult"
 generateID = on_command("我要转大人，一天打25小时游戏",
-                        rule=check_banlist() & check_switch(plugin_name_0))
+                        aliases={'虚拟身份', '一键成年'},
+                        rule=check_banlist()
+                        & check_switch(plugin_name_0, True))
 
 
-@generateID.handle()  # type: ignore
+@generateID.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
-    NAME, AREA = infoID()
+    NAME, AREA = Generate().infoID()
 
     BIRTH_BEGIN = datetime(*[1980, 10, 10])  # type: ignore
     BIRTH_END = datetime(*[2002, 10, 10])  # type: ignore
@@ -45,7 +44,8 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                                  (BIRTH_BEGIN + id_card_year_old).timetuple())
     id_card_sex = random.choice([0, 1])
     id_card_name = random.choice(NAME[{0: "female", 1: "male"}[id_card_sex]])
-    id_card_id = numberID(id_card_area, id_card_sex, id_card_birth_day) # type: ignore
+    id_card_id = Generate().numberID(id_card_area, id_card_sex,
+                                     id_card_birth_day)  # type: ignore
 
     msg0 = "恭喜，你已经成大人了！\n"
     msg0 += "这是你一天25h游戏的通行证：\n"
@@ -61,7 +61,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 rollD = on_command("roll", rule=check_banlist())
 
 
-@rollD.handle()  # type: ignore
+@rollD.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     args = str(event.message).strip()
 
@@ -69,8 +69,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         state['resu'] = args
 
 
-@rollD.got("resu",
-           prompt="roll 参数不能为空~！\ndemo：1d10 或 2d10+2d10")  # type: ignore
+@rollD.got("resu", prompt="roll 参数不能为空~！\ndemo：1d10 或 2d10+2d10")
 async def _(bot: Bot, event: Event, state: dict) -> None:
     resu = state['resu']
     match = re.match(r'^([\dd+\s]+?)$', resu)
@@ -78,15 +77,16 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     if not match:
         await rollD.finish("请输入正确的参数！！\ndemo：1d10 或 2d10+2d10")
 
-    await rollD.finish(roll_dice(resu))
+    await rollD.finish(Roll().roll_dice(resu))
 
 
 plugin_name_1 = 'genshin-search'
 genshinInfo = on_command('genshin',
-                         rule=check_banlist() & check_switch(plugin_name_1))
+                         rule=check_banlist()
+                         & check_switch(plugin_name_1, True))
 
 
-@genshinInfo.handle()  # type: ignore
+@genshinInfo.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     args = str(event.message).strip()
 
@@ -94,7 +94,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         state['uid'] = args
 
 
-@genshinInfo.got('uid', prompt='请告诉咱需要查询的UID，暂时只支持国服嗷~（')  # type: ignore
+@genshinInfo.got('uid', prompt='请告诉咱需要查询的UID，暂时只支持国服嗷~（')
 async def _(bot: Bot, event: Event, state: dict) -> None:
     uid = str(state['uid'])
 
@@ -103,12 +103,14 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         uid_info = ''
 
         try:
-            uid_info = JsonAnalysis(GetInfo(uid))
+            uid_info = Genshin().JsonAnalysis(Genshin().GetInfo(uid))
         except:
-            await genshinInfo.finish(errorRepo("数据请求错误，原因可能为ID输入错误或不存在\n暂时只支持国服查询（"))
+            await genshinInfo.finish(
+                errorRepo("数据请求错误，原因可能为ID输入错误或不存在\n暂时只支持国服查询（"))
 
         msg0 = f'{uid} Genshin Info:\n'
         msg0 += uid_info
+        print(uid_info)
         await genshinInfo.finish(msg0)
 
     else:

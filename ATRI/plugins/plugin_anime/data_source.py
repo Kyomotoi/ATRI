@@ -12,8 +12,8 @@ __author__ = 'kyomotoi'
 
 import json
 
-from utils.utils_error import errorRepo
-from utils.utils_request import request_get
+from ATRI.utils.utils_error import errorRepo
+from ATRI.utils.utils_request import request_get
 
 
 class SauceNAO:

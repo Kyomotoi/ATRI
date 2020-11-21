@@ -23,7 +23,7 @@ def controlSwitch(func_name: str,
 
     :return: str
     '''
-    file_switch_all = Path('.') / 'utils' / 'utils_rule' / 'switch.json'
+    file_switch_all = Path('.') / 'ATRI' / 'utils' / 'utils_rule' / 'switch.json'
 
     if group:
         file_switch_group = Path(
@@ -48,15 +48,14 @@ def controlSwitch(func_name: str,
     else:
         pass
 
-    try:
-        with open(file_switch_all, 'r') as f:
-            data_switch_all = json.load(f)
-    except FileNotFoundError:
-        data_switch_all = {}
 
-    if data_switch_all[f"{func_name}"]:
-        pass
-    else:
+    with open(file_switch_all, 'r') as f:
+        try:
+            data_switch_all = json.load(f)
+        except:
+            data_switch_all = {}
+
+    if not data_switch_all[f"{func_name}"]:
         return f"Can't find func({func_name})"
 
     data_switch_all[f"{func_name}"] = f"{control}"

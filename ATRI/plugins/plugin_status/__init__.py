@@ -15,15 +15,15 @@ import sqlite3
 from pathlib import Path
 
 from nonebot.plugin import on_command
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.typing import Bot, Event
 
-from utils.utils_error import errorRepo
-from utils.utils_rule import check_banlist
+from ATRI.utils.utils_error import errorRepo
+from ATRI.utils.utils_rule import check_banlist
 
 status_info = on_command('status', rule=check_banlist())
 
 
-@status_info.handle()  # type: ignore
+@status_info.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.message).strip()
 

@@ -15,18 +15,18 @@ import json
 from requests import exceptions
 
 from nonebot.plugin import on_command
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.typing import Bot, Event
 
-from utils.utils_error import errorRepo
-from utils.utils_request import request_get
-from utils.utils_rule import check_banlist, check_switch
+from ATRI.utils.utils_error import errorRepo
+from ATRI.utils.utils_img import aio_download_pics
+from ATRI.utils.utils_rule import check_banlist, check_switch
 
 plugin_name_0 = "pixiv-pic-search"
 pixivSearchIMG = on_command('p站搜图',
-                            rule=check_banlist() & check_switch(plugin_name_0))
+                            rule=check_banlist() & check_switch(plugin_name_0, True))
 
 
-@pixivSearchIMG.handle()  # type: ignore
+@pixivSearchIMG.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     group = str(event.group_id)
@@ -40,7 +40,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         state["pid"] = pid
 
 
-@pixivSearchIMG.got("pid", prompt="请发送目标PID码")  # type: ignore
+@pixivSearchIMG.got("pid", prompt="请发送目标PID码")
 async def _(bot: Bot, event: Event, state: dict) -> None:
     pid = state["pid"]
     pid = re.findall(r"\d+", pid)
@@ -52,24 +52,27 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     await bot.send(event, "别急！在搜索了！")
 
-    URL = f"https://api.imjad.cn/pixiv/v1/?type=illust&id={pid}"
+    URL = f"https://api.imjad.cn/pixiv/v1/?type=illust&id={pid[0]}"
     data = {}
 
     try:
-        data = json.loads(request_get(URL))
+        data = json.loads(await aio_download_pics(URL))
     except exceptions:
         await pixivSearchIMG.finish(errorRepo("请求数据失败"))
 
+    IMG = data["response"][0]["image_urls"]["large"]
+    IMG = IMG.replace("i.pximg.net", "i.pixiv.cat")
+
     msg0 = f'[CQ:at,qq={state["user"]}]\n'
     msg0 += "Search result:\n"
-    msg0 += f"Pid: {pid}\n"
+    msg0 += f"Pid: {pid[0]}\n"
     msg0 += f'Title {data["response"][0]["title"]}\n'
     msg0 += f'W&H: {data["response"][0]["width"]}x{data["response"][0]["height"]}\n'
     msg0 += f'Tags: {data["response"][0]["tags"]}\n'
     msg0 += f'Account Name: {data["response"][0]["user"]["account"]}\n'
     msg0 += f'Author Name: {data["response"][0]["user"]["name"]}\n'
     msg0 += f'Link: https://www.pixiv.net/users/{data["response"][0]["user"]["id"]}\n'
-    msg0 += f'IMG: https://pixiv.cat/{pid}.jpg'
+    msg0 += IMG
 
     await pixivSearchIMG.finish(msg0)
 
@@ -77,10 +80,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 plugin_name_1 = "pixiv-author-search"
 pixivSearchAuthor = on_command("p站画师",
                                rule=check_banlist()
-                               & check_switch(plugin_name_1))
+                               & check_switch(plugin_name_1, True))
 
 
-@pixivSearchAuthor.handle()  # type: ignore
+@pixivSearchAuthor.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
     group = str(event.group_id)
@@ -94,7 +97,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         state["author_id"] = author_id
 
 
-@pixivSearchAuthor.got("author_id", prompt="请发送目标画师id")  # type: ignore
+@pixivSearchAuthor.got("author_id", prompt="请发送目标画师id")
 async def _(bot: Bot, event: Event, state: dict) -> None:
     author_id = state["author_id"]
     author_id = re.findall(r"\d+", author_id)
@@ -104,43 +107,48 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     else:
         await pixivSearchAuthor.reject("请发送纯阿拉伯数字的画师id")
 
-    await bot.send(event, f"别急！在搜索了！\n将展示画师[{author_id}]的前三项作品")
+    await bot.send(event, f"别急！在搜索了！\n将展示画师[{author_id[0]}]的前三项作品")
 
-    URL = f"https://api.imjad.cn/pixiv/v1/?type=member_illust&id={author_id}"
+    URL = f"https://api.imjad.cn/pixiv/v1/?type=member_illust&id={author_id[0]}"
     data = {}
 
     try:
-        data = json.loads(request_get(URL))
+        data = json.loads(await aio_download_pics(URL))
     except exceptions:
         await pixivSearchAuthor.finish(errorRepo("请求网络失败"))
 
+    d = {}
+
     for i in range(0, 3):
         pid = data["response"][i]["id"]
-        IMG = f"https://pixiv.cat/{author_id}.jpg"
-        data[i] = [f"{pid}", f"{IMG}"]
+        title = data["response"][i]["title"]
+        IMG = data["response"][i]["image_urls"]["large"]
+        IMG = IMG.replace("i.pximg.net", "i.pixiv.cat")
+        d[i] = [f"{pid}", f"{title}", f"{IMG}"]
 
-    msg0 = f'[CQ:at,qq={state["user"]}]\n'
+    msg = f'[CQ:at,qq={state["user"]}]'
 
-    result = sorted(data.items(), key=lambda x: x[1], reverse=True)
+    result = sorted(d.items(), key=lambda x: x[1], reverse=True)
 
     t = 0
 
     for i in result:
         t += 1
-        msg = "\n---------------\n"
+        msg += "\n————————————\n"
         msg += f"({t})\n"
-        msg += f"Pid: {i[1][0]}\n{i[1][1]}"
-        msg0 += msg
+        msg += f"Title: {i[1][1]}\n"
+        msg += f"Pid: {i[1][0]}\n"
+        msg += f"{i[1][2]}"
 
-    await pixivSearchAuthor.finish(msg0)
+    await pixivSearchAuthor.finish(msg)
 
 
 plugin_name_2 = "pixiv-rank"
 pixivRank = on_command("p站排行榜",
-                       rule=check_banlist() & check_switch(plugin_name_2))
+                       rule=check_banlist() & check_switch(plugin_name_2, True))
 
 
-@pixivRank.handle()  # type: ignore
+@pixivRank.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
 
@@ -150,27 +158,31 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     data = {}
 
     try:
-        data = json.loads(request_get(URL))
+        data = json.loads(await aio_download_pics(URL))
     except exceptions:
         await pixivRank.finish(errorRepo("网络请求失败"))
 
+    d = {}
+
     for i in range(0, 5):
         pid = data["response"][0]["works"][i]["work"]["id"]
-        IMG = f"https://pixiv.cat/{pid}.jpg"
-        data[i] = [f"{pid}", f"{IMG}"]
+        title = data["response"][0]["works"][i]["work"]["title"]
+        IMG = data["response"][i]["works"]["image_urls"]["large"]
+        IMG = IMG.replace("i.pximg.net", "i.pixiv.cat")
+        d[i] = [f"{pid}", f"{title}", f"{IMG}"]
 
-    msg0 = f"[CQ:at,qq={user}]"
+    msg = f"[CQ:at,qq={user}]"
 
-    result = sorted(data.items(), key=lambda x: x[1], reverse=True)
+    result = sorted(d.items(), key=lambda x: x[1], reverse=True)
 
     t = 0
 
     for i in result:
         t += 1
-        msg = "\n---------------\n"
+        msg += "\n————————————\n"
         msg += f"({t})\n"
+        msg += f"Title: {i[1][1]}"
         msg += f"Pid: {i[1][0]}"
-        msg += f"{i[1][1]}"
-        msg0 += msg
+        msg += f"{i[1][2]}"
 
-    await pixivRank.finish(msg0)
+    await pixivRank.finish(msg)

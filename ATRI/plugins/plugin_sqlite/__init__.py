@@ -14,18 +14,18 @@ import os
 import json
 import sqlite3
 from pathlib import Path
+from nonebot.typing import Bot, Event
 from aiohttp import client_exceptions
 from nonebot.plugin import on_command
 from nonebot.permission import SUPERUSER
-from nonebot.adapters.cqhttp import Bot, Event
 
-from utils.utils_error import errorRepo
-from utils.utils_request import aio_get_bytes
+from ATRI.utils.utils_error import errorRepo
+from ATRI.utils.utils_request import aio_get_bytes
 
 SetuData = on_command('setu', permission=SUPERUSER)
 
 
-@SetuData.handle()  # type: ignore
+@SetuData.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg0 = "-==ATRI Setu Data System==-\n"
     msg0 += "Upload:\n"
@@ -39,7 +39,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 UploadSetu = on_command('setu-upload', permission=SUPERUSER)
 
 
-@UploadSetu.handle()  # type: ignore
+@UploadSetu.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.message).strip().split(' ')
 
@@ -72,10 +72,11 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     name = info["user"]["name"]
     u_id = info["user"]["id"]
     user_link = f'https://www.pixiv.net/users/{u_id}'
-    img = f'https://pixiv.cat/{pid}.jpg'
+    IMG = info["iamge_urls"]["large"]
+    IMG = IMG.replace("i.pximg.net", "i.pixiv.cat")
 
     data_setu = (f'{pid}', f'{title}', f'{tags}', f'{account}', f'{name}',
-                 f'{u_id}', f'{user_link}', f'{img}')
+                 f'{u_id}', f'{user_link}', f'{IMG}')
 
     if s_type == "nearr18":
         s_type = "nearR18"
@@ -83,6 +84,8 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         s_type = "r18"
     else:
         pass
+
+    os.makedirs('ATRI/data/data_Sqlite/setu', exist_ok=True)
 
     if os.path.exists(f'ATRI/data/data_Sqlite/setu/{s_type}.db'):
         print('数据文件存在！')
@@ -114,7 +117,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 DeleteSetu = on_command('setu-delete', permission=SUPERUSER)
 
 
-@DeleteSetu.handle()  # type: ignore
+@DeleteSetu.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.message).strip().split(' ')
 
