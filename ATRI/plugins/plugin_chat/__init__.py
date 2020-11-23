@@ -405,29 +405,29 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 # 舆情监听
-publicOpinion = on_message(rule=check_banlist(True))
-ban_temp_list = []
+#publicOpinion = on_message(rule=check_banlist(True))
+#ban_temp_list = []
 
 
-@publicOpinion.handle()
-async def _(bot: Bot, event: Event, state: dict) -> None:
-    global ban_temp_list
-    msg = str(event.message)
-    user = str(event.user_id)
+#@publicOpinion.handle()
+#async def _(bot: Bot, event: Event, state: dict) -> None:
+    #global ban_temp_list
+    #msg = str(event.message)
+    #user = str(event.user_id)
 
     # 检查是否满足条件
-    if countX(ban_temp_list,
-              user) == Textcheck().get_times(str(Textcheck().check(msg))):
-        ban_temp_list = list(set(ban_temp_list))
-        ban(user)
+    #if countX(ban_temp_list,
+              #user) == Textcheck().get_times(str(Textcheck().check(msg))):
+        #ban_temp_list = list(set(ban_temp_list))
+        #ban(user)
 
-    if Textcheck().check(msg) == "False":
-        return
+    #if Textcheck().check(msg) == "False":
+        #return
 
-    if Textcheck().check(msg):
-        if user in master:
-            await publicOpinion.finish("主人你给我注意点阿？！你这可是在死亡边缘试探呢！！")
+    #if Textcheck().check(msg):
+        #if user in master:
+            #await publicOpinion.finish("主人你给我注意点阿？！你这可是在死亡边缘试探呢！！")
 
-        ban_temp_list.append(int(user))
+        #ban_temp_list.append(int(user))
 
-        await publicOpinion.finish(Textcheck().check(msg))
+        #await publicOpinion.finish(Textcheck().check(msg))
