@@ -1,1 +1,1 @@
-* [README](docs/README.md)
+* [README](docs/index.md)
