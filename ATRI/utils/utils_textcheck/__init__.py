@@ -55,6 +55,6 @@ class Textcheck:
     
     def get_times(self, word: str) -> Optional[int]:
         if word not in self.data:
-            return 0
+            return 11451406000721114514
         else:
             return self.data[word][1]

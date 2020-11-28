@@ -47,6 +47,7 @@ def resultRepo(user: str, key: str, img_url: str):
     try:
         task = SauceNAO(key)
         data = task.search(img_url)
+        print(data)
     except Exception:
         return errorRepo('请求数据失败')
 

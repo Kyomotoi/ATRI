@@ -18,6 +18,7 @@ from random import randint
 from datetime import datetime, timedelta
 from apscheduler.triggers.date import DateTrigger
 
+from nonebot.rule import Rule
 from nonebot.log import logger
 from nonebot.sched import scheduler
 from nonebot.typing import Bot, Event
@@ -199,19 +200,20 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 plugin_name_2 = "anime-setu"
 key_LoliconAPI = config['api']['LoliconAPI']
-setu_type = 1  # setu-type: 1(local), 2(url: https://api.lolicon.app/#/setu) default: 1(local)
+setu_type = 2  # setu-type: 1(local), 2(url: https://api.lolicon.app/#/setu)
 SP_temp_list = []
 SP_list = []
-SEPI_PATH = Path('.') / 'ATRI' / 'plugins' / 'plugin_anime' / 'sepi_list.json'
 
 
-async def check_sepi(bot: Bot, event: Event, state: dict) -> bool:
+def check_sepi() -> Rule:
     """检查目标是否是涩批"""
-    if event.user_id in SP_list:
-        await bot.send(event, "你可少冲点吧！涩批！哼唧")
-        return False
-    else:
-        return True
+    async def _check_sepi(bot: Bot, event: Event, state: dict) -> bool:
+        if event.user_id in SP_list:
+            await bot.send(event, "你可少冲点吧！涩批！哼唧")
+            return False
+        else:
+            return True
+    return Rule(_check_sepi)
 
 def add_sepi(user: int) -> None:
     """将目标移入涩批名单"""
@@ -226,7 +228,7 @@ def del_sepi(user: int) -> None:
 
 setu = on_regex(
     r"来[点丶张份副个幅][涩色瑟][图圖]|[涩色瑟][图圖]来|[涩色瑟][图圖][gkd|GKD|搞快点]|[gkd|GKD|搞快点][涩色瑟][图圖]",
-    rule=check_banlist() & check_switch(plugin_name_2, False) & check_sepi)
+    rule=check_banlist() & check_switch(plugin_name_2, False) & check_sepi())
 
 
 @setu.handle()
@@ -235,6 +237,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     user = event.user_id
     group = event.group_id
     res = randint(1, 5)
+    print(1)
 
     if countX(SP_temp_list, user) == 5:
         add_sepi(user) # type: ignore
@@ -249,9 +252,12 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     if setu_type == 1:
 
-        con = sqlite3.connect(
-            Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' /
-            'nearR18.db')
+        DATA_PATH = Path('.') / 'ATRI' / 'data' / 'data_Sqlite' / 'setu' / 'nearR18.db'
+        
+        if not DATA_PATH.is_file():
+            await setu.finish("数据库...她是空的！！！")
+        
+        con = sqlite3.connect(DATA_PATH)
         cur = con.cursor()
         msg = cur.execute('SELECT * FROM nearR18 ORDER BY RANDOM() limit 1;')
 

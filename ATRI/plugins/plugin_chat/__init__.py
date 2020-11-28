@@ -82,7 +82,7 @@ async def _poke(bot: Bot, event: Event, state: dict) -> None:
     msg = choice([
         "你再戳！", "？再戳试试？", "别戳了别戳了再戳就坏了555", "我爪巴爪巴，球球别再戳了", "你戳你🐎呢？！",
         "那...那里...那里不能戳...绝对...", "(。´・ω・)ん?", "有事恁叫我，别天天一个劲戳戳戳！", "欸很烦欸！你戳🔨呢",
-        "?"
+        "?", "差不多得了😅", "欺负咱这好吗？这不好", "我希望你耗子尾汁"
     ])
 
     await pokehah.finish(msg)
@@ -273,21 +273,21 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         await hitokoto.finish(info["hitokoto"])
 
 
-# laughFunny = on_command('来句笑话', rule=check_banlist())
+laughFunny = on_command('来句笑话', rule=check_banlist())
 
-# @laughFunny.handle()  #type: ignore
-# async def _(bot: Bot, event: Event, state: dict) -> None:
-#     name = event.sender['nickname']
-#     result = []
+@laughFunny.handle()  #type: ignore
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    name = event.sender['nickname']
+    result = []
 
-#     LAUGH_FILE = Path('.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'laugh.txt'
+    LAUGH_FILE = Path('.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'laugh.txt'
 
-#     with open(LAUGH_FILE, 'r', encoding='utf-8') as f:
-#         for line in f:
-#             result.append(line.strip('\n'))
+    with open(LAUGH_FILE, 'r', encoding='utf-8') as f:
+        for line in f:
+            result.append(line.strip('\n'))
 
-#     resu = choice(result)
-#     print(resu%name)
+    resu = choice(result)
+    await laughFunny.finish(resu.replace("%name", name))
 
 # 扔漂流瓶
 plugin_name = 'drifting-bottle'
@@ -405,7 +405,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 # 舆情监听
-publicOpinion = on_message(rule=check_banlist(True))
+publicOpinion = on_message(rule=check_banlist())
 ban_temp_list = []
 
 
@@ -420,6 +420,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
               user) == Textcheck().get_times(str(Textcheck().check(msg))):
         ban_temp_list = list(set(ban_temp_list))
         ban(user)
+        await publicOpinion.finish(Textcheck().check(msg))
 
     if Textcheck().check(msg) == "False":
         return

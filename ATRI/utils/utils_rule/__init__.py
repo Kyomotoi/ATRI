@@ -13,12 +13,11 @@ __author__ = 'kyomotoi'
 import os
 import json
 from pathlib import Path
-from typing import Optional
 from nonebot.rule import Rule
 from nonebot.typing import Bot, Event
 
 
-def check_banlist(for_group: Optional[bool] = False) -> Rule:
+def check_banlist() -> Rule:
     '''
     检查目标是否存在于封禁名单
 
@@ -27,62 +26,21 @@ def check_banlist(for_group: Optional[bool] = False) -> Rule:
     async def _chech_banlist(bot: Bot, event: Event, state: dict) -> bool:
         # 获取目标信息
         user = str(event.user_id)
-        group = str(event.group_id)
 
         # 名单目录
         BAN_LIST_USER_PATH = Path(
             '.') / 'ATRI' / 'utils' / 'utils_rule' / 'ban_list_user.json'
-        BAN_LIST_GROUP_PATH = Path(
-            '.') / 'ATRI' / 'utils' / 'utils_rule' / 'ban_list_group.json'
 
         # 检查文件是否存在，如不存在，自动创建并写入默认值
         if not BAN_LIST_USER_PATH.is_file():
             with open(BAN_LIST_USER_PATH, 'w') as f:
                 f.write(json.dumps({}))
 
-        if not BAN_LIST_GROUP_PATH.is_file():
-            with open(BAN_LIST_GROUP_PATH, 'w') as f:
-                f.write(json.dumps({}))
-
         # 读取文件
         with open(BAN_LIST_USER_PATH, 'r') as f:
             data_user = json.load(f)
 
-        with open(BAN_LIST_GROUP_PATH, 'r') as f:
-            data_group = json.load(f)
-
-        # 判断目标
-        if not for_group:
-            if user:
-                if user not in data_user:
-                    if group:
-                        if group not in data_group:
-                            return True
-                        else:
-                            return False
-                    else:
-                        return True
-                else:
-                    return False
-
-            elif group:
-                if group not in data_group:
-                    if user:
-                        if user not in data_user:
-                            return True
-                        else:
-                            return False
-                    else:
-                        return True
-                else:
-                    return False
-            else:
-                return False
-        else:
-            if group not in data_group:
-                return True
-            else:
-                return False
+        return user not in data_user
 
     return Rule(_chech_banlist)
 

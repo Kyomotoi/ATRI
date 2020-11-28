@@ -23,15 +23,15 @@ for rely in need_rely_list:
 
 from pathlib import Path
 from rich.progress import Progress
-from .utils.utils_yml import load_yaml
+from ATRI.utils.utils_yml import load_yaml
 
 CONFIG_PATH = Path('.') / 'config.yml'
 config = load_yaml(CONFIG_PATH)
 
 
-class checkATRI():
+class CheckATRI():
     """运行前检查必要条件"""
-    def chechConfig(self) -> None:
+    def checkConfig(self) -> None:
         """检查配置文件是否填写完整"""
         len_config = len(config) + len(config['bot']) + len(
             config['api']) + len(config['html'])
