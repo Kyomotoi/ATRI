@@ -23,3 +23,8 @@ def ban(user: str) -> None:
     data[user] = user
     with open(BAN_LIST_PATH, 'w') as f:
         f.write(json.dumps(data))
+
+def unban(user: str) -> None:
+    del data[user]
+    with open(BAN_LIST_PATH, 'w') as f:
+        f.write(json.dumps(data))

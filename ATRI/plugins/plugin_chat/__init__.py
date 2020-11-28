@@ -16,16 +16,19 @@ from pathlib import Path
 from random import choice
 from random import randint
 from requests import exceptions
+from datetime import timedelta, datetime
+from apscheduler.triggers.date import DateTrigger
 
 from nonebot.log import logger
 from nonebot.rule import to_me
+from nonebot.sched import scheduler
 from nonebot.typing import Bot, Event
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import on_command, on_message, on_notice, on_request
 
-from ATRI.utils.utils_ban import ban
 from ATRI.utils.utils_times import countX
 from ATRI.utils.utils_yml import load_yaml
+from ATRI.utils.utils_ban import ban, unban
 from ATRI.utils.utils_error import errorRepo
 from ATRI.utils.utils_textcheck import Textcheck
 from ATRI.utils.utils_history import saveMessage
@@ -275,6 +278,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 laughFunny = on_command('来句笑话', rule=check_banlist())
 
+
 @laughFunny.handle()  #type: ignore
 async def _(bot: Bot, event: Event, state: dict) -> None:
     name = event.sender['nickname']
@@ -288,6 +292,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     resu = choice(result)
     await laughFunny.finish(resu.replace("%name", name))
+
 
 # 扔漂流瓶
 plugin_name = 'drifting-bottle'
@@ -420,6 +425,14 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
               user) == Textcheck().get_times(str(Textcheck().check(msg))):
         ban_temp_list = list(set(ban_temp_list))
         ban(user)
+
+        delta = timedelta(minutes=Textcheck().get_ban_time(msg))
+        trigger = DateTrigger(run_date=datetime.now() + delta)
+        scheduler.add_job(func=unban,
+                          trigger=trigger,
+                          args=(user, ),
+                          misfire_grace_time=60)
+
         await publicOpinion.finish(Textcheck().check(msg))
 
     if Textcheck().check(msg) == "False":
