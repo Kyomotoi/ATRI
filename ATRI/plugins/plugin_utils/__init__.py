@@ -24,7 +24,7 @@ from .data_source import Generate, Genshin, Roll
 
 plugin_name_0 = "one-key-adult"
 generateID = on_command("我要转大人，一天打25小时游戏",
-                        aliases={'虚拟身份', '一键成年'},
+                        aliases={'虚拟身份', '一键成年', '登dua郎'},
                         rule=check_banlist()
                         & check_switch(plugin_name_0, True))
 
@@ -48,7 +48,6 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                                      id_card_birth_day)  # type: ignore
 
     msg0 = "恭喜，你已经成大人了！\n"
-    msg0 += "这是你一天25h游戏的通行证：\n"
     msg0 += f"NumberID: {id_card_id}\n"
     msg0 += f"Sex: {'男' if id_card_sex == 1 else '女'}\n"
     msg0 += f"Name: {id_card_name} || Address: {id_card_area_name}\n"
@@ -58,7 +57,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     await generateID.finish(msg0)
 
 
-rollD = on_command("roll", rule=check_banlist())
+rollD = on_command("/roll", rule=check_banlist())
 
 
 @rollD.handle()
@@ -81,7 +80,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 plugin_name_1 = 'genshin-search'
-genshinInfo = on_command('genshin',
+genshinInfo = on_command('/genshin',
                          rule=check_banlist()
                          & check_switch(plugin_name_1, True))
 

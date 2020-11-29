@@ -11,7 +11,9 @@
 __author__ = 'kyomotoi'
 
 import os
+import re
 import json
+import time
 from pathlib import Path
 from random import choice
 from random import randint
@@ -24,7 +26,7 @@ from nonebot.rule import to_me
 from nonebot.sched import scheduler
 from nonebot.typing import Bot, Event
 from nonebot.permission import SUPERUSER
-from nonebot.plugin import on_command, on_message, on_notice, on_request
+from nonebot.plugin import on_command, on_message, on_notice, on_request, on_regex
 
 from ATRI.utils.utils_times import countX
 from ATRI.utils.utils_yml import load_yaml
@@ -61,6 +63,90 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     )
 
 
+# ======================================================================
+#  · 关键词回复，使用 json 存储，包含人设固定回复，以及咱添加的亿小部分
+#  · 添加关键词位于此处，审核位于 plugin_admin 文件下。
+# Usage:
+#  - /learnrepo [key] [repo] [proba]
+# For SUPERUSER:
+#  - 关键词审核
+#  - /learnrepo del [key]
+# Tips:
+#  - 普通用户添加需等维护者审核
+#  - 参数类型:
+#     * key: 关键词(for匹配)
+#     * repo: 回复
+#     * proba: 机率(x>=1)(int)
+# ======================================================================
+KEY_PATH = Path('.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'key_repo.json'
+KEY_WAITING_PATH = Path(
+    '.') / 'ATRI' / 'plugins' / 'plugin_admin' / 'key_repo_waiting.json'
+with open(KEY_PATH, 'r', encoding='utf-8') as f:
+    data = json.load(f)
+with open(KEY_WAITING_PATH, 'r', encoding='utf-8') as f:
+    data_rev = json.load(f)
+
+keyRepo = on_message(rule=check_banlist())
+
+
+@keyRepo.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    for key in data.keys():
+        proba = randint(1, data[key][1])
+        if proba == 1:
+            await keyRepo.finish(data.get(key, None))
+
+
+keyRepoADD = on_command('/learnrepo', rule=check_banlist())
+
+
+@keyRepoADD.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    user = event.user_id
+    group = event.group_id
+    msg = str(event.message).strip(' ')
+
+    if not msg:
+        await keyRepoADD.finish("请查看文档获取帮助（")
+
+    if not msg[0] or not msg[1] or not msg[2]:
+        await keyRepoADD.finish("ごんめなさい...请检查格式嗷...")
+
+    if not re.findall(r"/^\d{1,}$/", msg[2]):
+        await keyRepoADD.finish("非法字符！咱不接受除int以外的类型！！")
+
+    if msg[0] in data or msg[0] in data_rev:
+        await keyRepoADD.finish("相关关键词咱已经学习过了呢...")
+
+    msg0 = f"Key: {msg[0]}\n"
+    msg0 += f"Repo: {msg[1]}\n"
+    msg0 += f"Proba: {msg[2]}\n"
+
+    if user in master:
+        data[msg[0]] = [
+            msg[1], msg[2], user, group,
+            time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        ]
+
+        with open(KEY_PATH, 'w') as f:
+            f.write(json.dumps(data))
+        msg0 = "学習しました~！"
+
+    else:
+        data_rev[msg[0]] = [
+            msg[1], msg[2], user, group,
+            time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        ]
+
+        with open(KEY_WAITING_PATH, 'w') as f:
+            f.write(json.dumps(data_rev))
+        msg0 += "请等待咱主人审核嗷~"
+
+    await keyRepoADD.finish(msg0)
+
+
+# ========================[结束关键词回复部分]==========================
+
 # Call bot
 callMe = on_message(rule=check_banlist())
 
@@ -70,9 +156,12 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.raw_event['raw_message']).strip()
 
     if "萝卜子" in msg:
-        await bot.send(event, "萝卜子是对咱的蔑称！！")
+        rep = choice(["萝卜子是对咱的蔑称！！", "差不多得了😅", "这好吗？这不好！", "吃咱一发火箭拳——！"])
+        await callMe.finish("萝卜子是对咱的蔑称！！")
 
     elif msg in config['nickname']:
+        if event.user_id in master:
+            rep = choice(["w", "~~", ""])
         await callMe.finish("叫咱有啥事吗w")
 
 
@@ -179,25 +268,22 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 # 控制 加好友 / 拉群 认证，默认关闭
-controlSelfEvent = on_command('selfevent', permission=SUPERUSER)
+# Tips:
+#   - For SUPERUSERS
+#   - Normal all false
+# Usage:
+#  - selfevent group-true/false
+#  - selfevent friend-true/false
+controlSelfEvent = on_command('/selfevent', permission=SUPERUSER)
 
 
 @controlSelfEvent.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     args = str(event.message).strip()
-    msg0 = ''
     global FRIEND_ADD, GROUP_INVITE
 
     if not args:
-        msg0 = '-==ATRI INVITE Control System==-\n'
-        msg0 += 'Tips:\n'
-        msg0 += '  - For SUPERUSERS\n'
-        msg0 += '  - Normal all false\n'
-        msg0 += 'Usage:\n'
-        msg0 += ' - selfevent group-true/false\n'
-        msg0 += ' - selfevent friend-true/false\n'
-
-        await controlSelfEvent.finish(msg0)
+        await controlSelfEvent.finish("请查看文档获取帮助（")
 
     if 'group-' in args:
         if 'true' in args:
@@ -206,7 +292,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         if 'true' in args:
             FRIEND_ADD = 1
     else:
-        await controlSelfEvent.finish(msg0)
+        await controlSelfEvent.finish("请查看文档获取帮助（")
 
     await controlSelfEvent.finish('DONE!')
 
@@ -364,6 +450,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 # 清除漂流瓶
+# *For SUPERUSERS
+# - delall
+# - del [num]
+# eg: 清除漂流瓶 del 123
 delDriftingBottle = on_command('清除漂流瓶',
                                rule=check_banlist(),
                                permission=SUPERUSER)
@@ -374,13 +464,8 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     args = str(event.message).strip()
 
     if not args:
-        msg0 = 'Drifting Bottle:\n'
-        msg0 += '*For SUPERUSERS'
-        msg0 += '- delall\n'
-        msg0 += '- del [num]\n'
-        msg0 += 'eg: 清除漂流瓶 del 123'
 
-        await delDriftingBottle.finish(msg0)
+        await delDriftingBottle.finish("请查看文档获取帮助（")
 
     if not DRIFTING_BOTTLE_PATH.is_file():
         with open(DRIFTING_BOTTLE_PATH, 'w') as f:

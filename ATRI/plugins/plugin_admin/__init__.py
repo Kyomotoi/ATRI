@@ -14,7 +14,7 @@ import re
 import json
 import asyncio
 from pathlib import Path
-from random import randint
+from random import randint, sample
 
 from nonebot.plugin import on_command
 from nonebot.typing import Bot, Event
@@ -29,7 +29,7 @@ from ATRI.utils.utils_switch import controlSwitch
 CONFIG_PATH = Path('.') / 'config.yml'
 master = load_yaml(CONFIG_PATH)['bot']['superusers']
 
-switch = on_command('switch',
+switch = on_command('/switch',
                     rule=check_banlist(),
                     permission=(SUPERUSER | GROUP_OWNER | GROUP_ADMIN))
 
@@ -46,9 +46,9 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     if not func:
         msg0 = "-==ATRI Switch Control System==-\n"
-        msg0 += "Usage: switch on/off-{service}\n"
+        msg0 += "Usage: /switch on/off-{service}\n"
         msg0 += "* For SUPERUSER:\n"
-        msg0 += "  - Usage: switch all-on/off-{service}\n"
+        msg0 += "  - Usage: /switch all-on/off-{service}\n"
         msg0 += "Service:\n"
 
         for i in data.keys():
@@ -83,7 +83,9 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 # 舆情监控系统
-publicOpinion = on_command("舆情", rule=check_banlist(), permission=SUPERUSER)
+publicOpinion = on_command("/pubopin",
+                           rule=check_banlist(),
+                           permission=SUPERUSER)
 
 
 @publicOpinion.handle()
@@ -96,12 +98,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     if msg[0] == '':
         msg0 = "---=====ATRI POM System=====---\n"
         msg0 += "Usage:\n"
-        msg0 += "  - 舆情 [key] [repo] [times] [ban time(bot)]\n"
-        msg0 += "  - 舆情 del [key]\n"
-        msg0 += "  - 舆情 list\n"
+        msg0 += "  - /pubopin [key] [repo] [times] [ban time(bot)]\n"
+        msg0 += "  - /pubopin del [key]\n"
+        msg0 += "  - /pubopin list\n"
         msg0 += "Tips:\n"
-        msg0 += " - 非 SUPERU 只能设置本群\n"
-        msg0 += " - SUPERU 需在后跟随 -a 以启用全局效果\n"
         msg0 += " - 参数类型:\n"
         msg0 += "    * key: 关键词(将使用正则匹配)\n"
         msg0 += "    * repo: 触发后的关键词(可选)，如为图片，键入 img\n"
@@ -118,39 +118,21 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         for w in data.keys():
             msg0 += f'   {w}\n'
 
-    if msg[0] and msg[1] and msg[2] and msg[3]:
-        pass
-    else:
-        msg0 = "请检查格式奥~！\n"
-        msg0 += "舆情 [key] [repo] [times] [ban time(bot)]\n"
-        msg0 += " * key: 关键词(将使用正则匹配)\n"
-        msg0 += " * repo: 触发后的关键词(可选)，如为图片，键入 img\n"
-        msg0 += " * times: 容忍次数(n>0, int)\n"
-        msg0 += " * ban time: bot对其失效时间(min, int)"
-        await publicOpinion.finish(msg0)
+    if not msg[0] or not msg[1] or not msg[2] or not msg[3]:
+        await publicOpinion.finish("ごんめなさい...请检查格式嗷...")
 
-    key = msg[0]
-    repo = msg[1]
-    max_times = msg[2]
-    ban_time = msg[3]
+    if not re.findall(r"/^\d{1,}$/", msg[2]) or not re.findall(
+            r"/^\d{1,}$/", msg[3]):
+        await publicOpinion.finish("非法字符！咱不接受除int以外的类型！！")
 
-    if key and repo and max_times and ban_time:
-        if not re.findall(r"/^\d{1,}$/", max_times) and re.findall(
-                r"/^\d{1,}$/", ban_time):
-            await publicOpinion.finish("非法字符！请注意(times, ban time)类型为int(阿拉伯数字)"
-                                       )
-
-    else:
-        await publicOpinion.finish("请键入完整信息！\n如需帮助，请键入：舆情")
-
-    if repo == "img":
-        state["key"] = key
-        state["max_times"] = max_times
-        state["ban_time"] = ban_time
+    if msg[1] == "img":
+        state["key"] = msg[0]
+        state["max_times"] = msg[2]
+        state["ban_time"] = msg[3]
 
     else:
         await publicOpinion.finish(Textcheck().add_word(
-            key, repo, int(max_times), int(ban_time)))
+            msg[0], msg[1], int(msg[2]), int(msg[3])))
 
 
 @publicOpinion.got("repo", prompt="检测到 repo 类型为 img，请发送一张图片")
@@ -167,7 +149,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                                                     int(ban_time)))
 
 
-trackError = on_command("track", permission=SUPERUSER)
+trackError = on_command("/track", permission=SUPERUSER)
 file_error = Path('.') / 'ATRI' / 'data' / 'data_Error' / 'error.json'
 
 
@@ -203,7 +185,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         await trackError.finish("未发现该ID")
 
 
-groupSendMessage = on_command("群发", permission=SUPERUSER)
+groupSendMessage = on_command("/groupsend", permission=SUPERUSER)
 
 
 @groupSendMessage.handle()
@@ -248,3 +230,39 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     repo_msg += msg0
 
     await groupSendMessage.finish(repo_msg)
+
+
+# keyRepoAddReview = on_command('关键词审核', permission=SUPERUSER)
+# KEY_PATH = Path('.') / 'ATRI' / 'plugins' / 'plugin_chat' / 'key_repo.json'
+# KEY_WAITING_PATH = Path(
+#     '.') / 'ATRI' / 'plugins' / 'plugin_admin' / 'key_repo_waiting.json'
+# with open(KEY_PATH, 'r', encoding='utf-8') as f:
+#     data = json.load(f)
+# with open(KEY_WAITING_PATH, 'r', encoding='utf-8') as f:
+#     data_rev = json.load(f)
+
+
+# @keyRepoAddReview.got('rev')
+# @keyRepoAddReview.args_parser
+# async def _(bot: Bot, event: Event, state: dict) -> None:
+#     rev = state['rev']
+#     key = sample(data_rev.keys(), 1)
+#     await bot.send(
+#         event,
+#         f'Key: {data_rev[key]}\nRepo: {data_rev[key][0]}\nProba: {data_rev[key][1]}\nSender: {data_rev[key][2]}\nGroup: {data_rev[key][3]}\nTime: {data_rev[key][4]}'
+#     )
+
+#     if rev == '歇了':
+#         await keyRepoAddReview.finish("むー……ご苦労様でしたよ。")
+#     else:
+#         if rev == '通过' or rev == '过' or rev == '好' or rev == 'y':
+#             await bot.send(event, '好！')
+#             data[data_rev[key]] = [
+#                 data_rev[key][0], data_rev[key][1], data_rev[key][2],
+#                 data_rev[key][3], data_rev[key][4]
+#             ]
+#             with open(KEY_PATH, 'w') as f:
+#                 f.write(data)
+#         elif rev == '不行' or rev == '不' or rev == 'n':
+#             del data_rev[key]
+#             await bot.send(event, '好8')
