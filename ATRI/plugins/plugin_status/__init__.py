@@ -13,29 +13,28 @@ __author__ = 'kyomotoi'
 import psutil
 import sqlite3
 from pathlib import Path
+from random import choice
 
 from nonebot.plugin import on_command
 from nonebot.typing import Bot, Event
+from nonebot.permission import SUPERUSER
 
 from ATRI.utils.utils_error import errorRepo
 from ATRI.utils.utils_rule import check_banlist
 
-status_info = on_command('status', rule=check_banlist())
+# States parameter:
+# ├info
+# └sqlite
+# * DEMO: status info
+status_info = on_command('/status', rule=check_banlist())
 
 
 @status_info.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.message).strip()
 
-    if msg:
-        pass
-    else:
-        msg0 = "States parameter:\n"
-        msg0 += "├info\n"
-        msg0 += "└sqlite\n"
-        msg0 += "* DEMO: status info"
-
-        await status_info.finish(msg0)
+    if not msg:
+        await status_info.finish("请查看文档获取帮助（")
 
     if msg == "info":
         try:
@@ -98,3 +97,11 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         msg0 += f"└R18: {data_r18}"
 
         await status_info.finish(msg0)
+
+
+ping = on_command('/ping', permission=SUPERUSER)
+
+
+@ping.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    await ping.finish(choice(["I'm fine.", "啪！"]))

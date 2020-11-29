@@ -14,7 +14,7 @@ import re
 import json
 import asyncio
 from pathlib import Path
-from random import randint, sample
+from random import choice, randint, sample
 
 from nonebot.plugin import on_command
 from nonebot.typing import Bot, Event
@@ -83,6 +83,16 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
 
 # 舆情监控系统
+# Usage:
+#   - /pubopin [key] [repo] [times] [ban time(bot)]
+#   - /pubopin del [key]
+#   - /pubopin list
+# Tips:
+#  - 参数类型:
+#     * key: 关键词(将使用正则匹配)
+#     * repo: 触发后的关键词(可选)，如为图片，键入 img
+#     * times: 容忍次数(n>0, int)
+#     * ban time: bot对其失效时间(min, int)
 publicOpinion = on_command("/pubopin",
                            rule=check_banlist(),
                            permission=SUPERUSER)
@@ -96,19 +106,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         data = json.load(f)
 
     if msg[0] == '':
-        msg0 = "---=====ATRI POM System=====---\n"
-        msg0 += "Usage:\n"
-        msg0 += "  - /pubopin [key] [repo] [times] [ban time(bot)]\n"
-        msg0 += "  - /pubopin del [key]\n"
-        msg0 += "  - /pubopin list\n"
-        msg0 += "Tips:\n"
-        msg0 += " - 参数类型:\n"
-        msg0 += "    * key: 关键词(将使用正则匹配)\n"
-        msg0 += "    * repo: 触发后的关键词(可选)，如为图片，键入 img\n"
-        msg0 += "    * times: 容忍次数(n>0, int)\n"
-        msg0 += "    * ban time: bot对其失效时间(min, int)"
-
-        await publicOpinion.finish(msg0)
+        await publicOpinion.finish("请查看文档获取帮助（")
 
     if msg[0] == 'del':
         await publicOpinion.finish(Textcheck().del_word(msg[1]))
