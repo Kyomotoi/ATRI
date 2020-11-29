@@ -1,8 +1,4 @@
-<!-- ![](https://socialify.git.ci/Kyomotoi/ATRI/image?description=1&descriptionEditable=A%20project%20for%20ATRI%2C%20Usage%20go-CQHTTP%20%2B%20NoneBot2.&forks=1&issues=1&language=1&logo=https%3A%2F%2Fi.loli.net%2F2020%2F11%2F12%2FYcINCkyp8vK2inD.png&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Light) -->
-
-<center>
-  <img src="https://socialify.git.ci/Kyomotoi/ATRI/image?description=1&descriptionEditable=A%20project%20for%20ATRI%2C%20Usage%20go-CQHTTP%20%2B%20NoneBot2.&forks=1&issues=1&language=1&logo=https%3A%2F%2Fi.loli.net%2F2020%2F11%2F12%2FYcINCkyp8vK2inD.png&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Light" width="60%" height="400px" />
-</center>
+![](https://socialify.git.ci/Kyomotoi/ATRI/image?description=1&descriptionEditable=A%20project%20for%20ATRI%2C%20Usage%20go-CQHTTP%20%2B%20NoneBot2.&forks=1&issues=1&language=1&logo=https%3A%2F%2Fi.loli.net%2F2020%2F11%2F12%2FYcINCkyp8vK2inD.png&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Light)
 <h2>
   <center>ATRI 使用文档</center>
 </h2>
