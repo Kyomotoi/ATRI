@@ -175,7 +175,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         info_error = data[track_id]
 
         msg0 = f"trackID: {track_id}\n"
-        msg0 = +info_error
+        msg0 =+ info_error
 
         await trackError.finish(msg0)
 
