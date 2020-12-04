@@ -201,20 +201,15 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     sc_list = []
     err_list = []
 
-    with open(Path('.') / 'utils' / 'utils_rule' / 'ban_list_group.json',
-              'r') as f:
-        ban_group_list = json.load(f)
-
     for group in group_list:
-        if group['group_id'] not in ban_group_list:
-            asyncio.sleep(randint(1, 5))
-            try:
-                await bot.send_group_msg(group_id=group['group_id'],
-                                         message=msg)
-                sc_list.append(group['group_id'])
-            except:
-                await bot.send(event, f"在尝试推送到群[{group['group_id']}]时失败了呢...")
-                err_list.append(group['group_id'])
+        asyncio.sleep(randint(1, 5))
+        try:
+            await bot.send_group_msg(group_id=group['group_id'],
+                                     message=msg)
+            sc_list.append(group['group_id'])
+        except:
+            await bot.send(event, f"在尝试推送到群[{group['group_id']}]时失败了呢...")
+            err_list.append(group['group_id'])
 
     msg0 = ""
     for i in err_list:
