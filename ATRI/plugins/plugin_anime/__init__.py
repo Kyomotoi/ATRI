@@ -235,7 +235,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     res = randint(1, 5)
     
     if check_sepi(user):
-        await setu.finish("你可少冲点吧！涩批！哼唧“)
+        await setu.finish("你可少冲点吧！涩批！哼唧")
 
     if countX(SP_temp_list, user) == 5:
         add_sepi(user) # type: ignore
