@@ -20,9 +20,9 @@ from apscheduler.triggers.date import DateTrigger
 
 from nonebot.rule import Rule
 from nonebot.log import logger
-from nonebot.sched import scheduler
 from nonebot.typing import Bot, Event
 from nonebot.permission import SUPERUSER
+from nonebot_plugin_apscheduler import scheduler
 from nonebot.plugin import on_message, on_command, on_regex
 
 from ATRI.utils.utils_times import countX
@@ -141,7 +141,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     if len(img):
         pass
     else:
-        await SaucenaoSearch.reject("请发送一张目标图片，而非文字或其他非图片成分( -'`-; )")
+        await SaucenaoSearch.reject("请发送一张目标图片，而非文字或其他非图片成分（")
 
     await bot.send(event, "别急！正在搜索！")
     req = None
@@ -152,11 +152,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     except:
         await AnimeSearch.finish(errorRepo("请求数据失败"))
 
+    d = {}
     data = json.loads(req.decode())
 
     try:
-        d = {}
-
         for i in range(len(data['docs'])):
             if data['docs'][i]['title_chinese'] in d:
                 d[data['docs'][i]
@@ -180,12 +179,12 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         await AnimeSearch.finish(errorRepo("处理数据失败"))
 
     result = sorted(
-        d.items(),  # type: ignore
+        d.items(),
         key=lambda x: x[1],
         reverse=True)
 
     t = 0
-    msg0 = f'[CQ:at,qq={state["user"]}]\n根据所提供的图片按照相似度找到{len(d)}个结果:'  # type: ignore
+    msg0 = f'[CQ:at,qq={state["user"]}]\n根据所提供的图片按照相似度找到{len(d)}个结果:'
 
     for i in result:
         t += 1
@@ -205,11 +204,15 @@ SP_temp_list = []
 SP_list = []
 
 
-def check_sepi(user) -> bool:
-    if user in SP_list:
-        return True
-    else:
-        return False
+def check_sepi() -> Rule:
+    """检查目标是否是涩批"""
+    async def _check_sepi(bot: Bot, event: Event, state: dict) -> bool:
+        if event.user_id in SP_list:
+            await bot.send(event, "你可少冲点吧！涩批！哼唧")
+            return False
+        else:
+            return True
+    return Rule(_check_sepi)
 
 def add_sepi(user: int) -> None:
     """将目标移入涩批名单"""
@@ -224,7 +227,7 @@ def del_sepi(user: int) -> None:
 
 setu = on_regex(
     r"来[点丶张份副个幅][涩色瑟][图圖]|[涩色瑟][图圖]来|[涩色瑟][图圖][gkd|GKD|搞快点]|[gkd|GKD|搞快点][涩色瑟][图圖]",
-    rule=check_banlist() & check_switch(plugin_name_2, False))
+    rule=check_banlist() & check_switch(plugin_name_2, False) & check_sepi())
 
 
 @setu.handle()
@@ -233,9 +236,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     user = event.user_id
     group = event.group_id
     res = randint(1, 5)
-    
-    if check_sepi(user):
-        await setu.finish("你可少冲点吧！涩批！哼唧")
+    print(1)
 
     if countX(SP_temp_list, user) == 5:
         add_sepi(user) # type: ignore
@@ -317,22 +318,13 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 setuType = on_command("setu-type", permission=SUPERUSER)
 
 
-@setuType.handle()  # type: ignore
+@setuType.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     global setu_type
     msg = str(event.message).strip()
 
-    if msg:
-        pass
-    else:
-        msg0 = "-==ATRI Setu Type Control System==-\n"
-        msg0 += "**Tips: For SUPERUSERS**\n"
-        msg0 += "┌Usage: setu-type {type}\n"
-        msg0 += "└Type:\n"
-        msg0 += "  ├local\n"
-        msg0 += "  └url"
-
-        await setuType.finish(msg0)
+    if not msg:
+        await setuType.finish("请查看文档获取帮助（")
 
     if msg == "local":
         setu_type = 1

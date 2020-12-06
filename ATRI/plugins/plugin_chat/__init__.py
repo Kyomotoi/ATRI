@@ -23,9 +23,9 @@ from apscheduler.triggers.date import DateTrigger
 
 from nonebot.log import logger
 from nonebot.rule import to_me
-from nonebot.sched import scheduler
 from nonebot.typing import Bot, Event
 from nonebot.permission import SUPERUSER
+from nonebot_plugin_apscheduler import scheduler
 from nonebot.plugin import on_command, on_message, on_notice, on_request, on_regex
 
 from ATRI.utils.utils_times import countX

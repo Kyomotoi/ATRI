@@ -11,6 +11,7 @@
 '''
 __author__ = 'kyomotoi'
 
+import inspect
 import os
 from pathlib import Path
 from random import sample
@@ -40,3 +41,12 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     group_list = await bot.get_group_list()
     group = sample(group_list, 1)
     print(group[0]['group_id'], type(group[0]['group_id']))
+
+
+testSendFormat = on_command('测试发送', permission=SUPERUSER)
+
+
+@testSendFormat.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    msg = ("test0\n" "test1\n" "test2")
+    await bot.send(event, msg)

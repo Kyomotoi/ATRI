@@ -12,13 +12,13 @@ __author__ = 'kyomotoi'
 
 import re
 import json
-from requests import exceptions
 
 from nonebot.plugin import on_command
 from nonebot.typing import Bot, Event
 
 from ATRI.utils.utils_error import errorRepo
 from ATRI.utils.utils_img import aio_download_pics
+from ATRI.utils.utils_request import aio_get_bytes
 from ATRI.utils.utils_rule import check_banlist, check_switch
 
 plugin_name_0 = "pixiv-pic-search"
@@ -56,8 +56,8 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     data = {}
 
     try:
-        data = json.loads(await aio_download_pics(URL))
-    except exceptions:
+        data = json.loads(await aio_get_bytes(URL))
+    except:
         await pixivSearchIMG.finish(errorRepo("请求数据失败"))
 
     IMG = data["response"][0]["image_urls"]["large"]
@@ -72,7 +72,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     msg0 += f'Account Name: {data["response"][0]["user"]["account"]}\n'
     msg0 += f'Author Name: {data["response"][0]["user"]["name"]}\n'
     msg0 += f'Link: https://www.pixiv.net/users/{data["response"][0]["user"]["id"]}\n'
-    msg0 += IMG
+    msg0 += IMG.replace('https://', '')
 
     await pixivSearchIMG.finish(msg0)
 
@@ -113,8 +113,8 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     data = {}
 
     try:
-        data = json.loads(await aio_download_pics(URL))
-    except exceptions:
+        data = json.loads(await aio_get_bytes(URL))
+    except:
         await pixivSearchAuthor.finish(errorRepo("请求网络失败"))
 
     d = {}
@@ -138,7 +138,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         msg += f"({t})\n"
         msg += f"Title: {i[1][1]}\n"
         msg += f"Pid: {i[1][0]}\n"
-        msg += f"{i[1][2]}"
+        msg += f"{i[1][2].replace('https://', '')}"
 
     await pixivSearchAuthor.finish(msg)
 
@@ -152,22 +152,21 @@ pixivRank = on_command("p站排行榜",
 async def _(bot: Bot, event: Event, state: dict) -> None:
     user = str(event.user_id)
 
-    await bot.send(event, "正在获取P站每日排行榜前五作品")
+    await bot.send(event, "正在获取P站每日排行榜前三作品")
 
     URL = "https://api.imjad.cn/pixiv/v1/?type=rank"
     data = {}
 
     try:
-        data = json.loads(await aio_download_pics(URL))
-    except exceptions:
+        data = json.loads(await aio_get_bytes(URL))
+    except:
         await pixivRank.finish(errorRepo("网络请求失败"))
 
     d = {}
-
-    for i in range(0, 5):
+    for i in range(0, 3):
         pid = data["response"][0]["works"][i]["work"]["id"]
         title = data["response"][0]["works"][i]["work"]["title"]
-        IMG = data["response"][i]["works"]["image_urls"]["large"]
+        IMG = data["response"][0]["works"][i]["work"]["image_urls"]["large"]
         IMG = IMG.replace("i.pximg.net", "i.pixiv.cat")
         d[i] = [f"{pid}", f"{title}", f"{IMG}"]
 
@@ -181,8 +180,9 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         t += 1
         msg += "\n————————————\n"
         msg += f"({t})\n"
-        msg += f"Title: {i[1][1]}"
-        msg += f"Pid: {i[1][0]}"
-        msg += f"{i[1][2]}"
+        msg += f"Title: {i[1][1]}\n"
+        msg += f"Pid: {i[1][0]}\n"
+        msg += f"{i[1][2].replace('https://', '')}"
 
+    print(msg)
     await pixivRank.finish(msg)

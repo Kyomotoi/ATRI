@@ -45,16 +45,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         data = json.load(f)
 
     if not func:
-        msg0 = "-==ATRI Switch Control System==-\n"
-        msg0 += "Usage: /switch on/off-{service}\n"
-        msg0 += "* For SUPERUSER:\n"
-        msg0 += "  - Usage: /switch all-on/off-{service}\n"
-        msg0 += "Service:\n"
-
-        for i in data.keys():
-            msg0 += f"    {i}\n"
-
-        await switch.finish(msg0)
+        await switch.finish('请查看文档获取帮助（')
 
     funct = re.findall(r"[on|off]-(.*)", func)
 
@@ -202,10 +193,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     err_list = []
 
     for group in group_list:
-        asyncio.sleep(randint(1, 5))
+        asyncio.sleep(randint(2, 10))
         try:
             await bot.send_group_msg(group_id=group['group_id'],
-                                     message=msg)
+                                        message=msg)
             sc_list.append(group['group_id'])
         except:
             await bot.send(event, f"在尝试推送到群[{group['group_id']}]时失败了呢...")

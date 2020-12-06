@@ -20,7 +20,7 @@ from nonebot.typing import Bot, Event
 
 from ATRI.utils.utils_error import errorRepo
 from ATRI.utils.utils_rule import check_banlist, check_switch
-from .data_source import Generate, Genshin, Roll
+from .data_source import Generate, Genshin, Roll, RCNB
 
 plugin_name_0 = "one-key-adult"
 generateID = on_command("我要转大人，一天打25小时游戏",
@@ -114,3 +114,43 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     else:
         await genshinInfo.finish('UID检查未通过，请确保此ID为9位数或者是否为国服ID~！')
+
+
+rcnb = RCNB()
+
+rcnbEncode = on_command('RC一下',
+                        aliases={'rc一下', '啊西一下', '阿西一下'},
+                        rule=check_banlist())
+
+
+@rcnbEncode.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    msg = str(event.message).strip()
+
+    if msg:
+        state['msg'] = msg
+
+
+@rcnbEncode.got('msg', prompt='请告诉咱需要RC一下的字符~！')
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    msg = state['msg']
+    await rcnbEncode.finish(rcnb._encode(msg))
+
+
+rcnbDecode = on_command('一下RC',
+                        aliases={'一下rc', '一下啊西', '一下阿西'},
+                        rule=check_banlist())
+
+
+@rcnbDecode.handle()
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    msg = str(event.message).strip()
+
+    if msg:
+        state['msg'] = msg
+
+
+@rcnbDecode.got('msg', prompt='请告诉咱需要一下RC的字符~！')
+async def _(bot: Bot, event: Event, state: dict) -> None:
+    msg = state['msg']
+    await rcnbDecode.finish(rcnb._decode(msg))
