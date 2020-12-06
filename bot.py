@@ -21,6 +21,7 @@ import datetime
 from pathlib import Path
 from ATRI.utils.utils_yml import load_yaml
 from nonebot.log import default_format, logger
+from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
 COPYRIGHT = (r"""====================[ATRI | アトリ]====================
 * Mirai + NoneBot2 + Python
@@ -48,6 +49,9 @@ nonebot.init(debug=bool(config['debug']),
              command_start=set(config['command_start']),
              command_sep=set(config['command_sep']))
 app = nonebot.get_asgi()
+
+driver = nonebot.get_driver()
+driver.register_adapter("cqhttp", CQHTTPBot)
 
 nonebot.load_plugins('ATRI/plugins')
 

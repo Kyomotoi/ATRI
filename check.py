@@ -88,7 +88,7 @@ class CheckATRI():
         别吐槽 暴 力
         '''
         rely_list = [
-            'nonebot2', 'nonebot2[scheduler]', 'nonebot2[test]', 'nltk',
+            'nonebot2', 'nonebot2[scheduler]', 'nonebot_plugin_apscheduler', 'nltk',
             'requests', 'pillow', 'psutil'
         ]
         rely_len = len(rely_list)
