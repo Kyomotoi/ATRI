@@ -208,7 +208,7 @@ def check_sepi() -> Rule:
     """检查目标是否是涩批"""
     async def _check_sepi(bot: Bot, event: Event, state: dict) -> bool:
         if event.user_id in SP_list:
-            await bot.send(event, "你可少冲点吧！涩批！哼唧")
+
             return False
         else:
             return True
@@ -239,6 +239,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     print(1)
 
     if countX(SP_temp_list, user) == 5:
+        await bot.send(event, "你可少冲点吧！涩批！哼唧")
         add_sepi(user) # type: ignore
         SP_temp_list = list(set(SP_temp_list))
         delta = timedelta(hours=1)

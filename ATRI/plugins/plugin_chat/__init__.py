@@ -157,12 +157,12 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     if "萝卜子" in msg:
         rep = choice(["萝卜子是对咱的蔑称！！", "差不多得了😅", "这好吗？这不好！", "吃咱一发火箭拳——！"])
-        await callMe.finish("萝卜子是对咱的蔑称！！")
+        await callMe.finish(rep)
 
     elif msg in config['nickname']:
         if event.user_id in master:
             rep = choice(["w", "~~", ""])
-        await callMe.finish("叫咱有啥事吗w")
+        await callMe.finish(f"叫咱有啥事吗{rep}")
 
 
 # 戳 一 戳
@@ -310,6 +310,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     global list_M
 
     if countX(list_M, user) == 3:
+        list_M.append(user)
         await bot.send(event,
                        "不是？？你这么想被咱骂的嘛？？被咱骂就这么舒服的吗？！该......你该不会是.....M吧！")
 
@@ -343,6 +344,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     global list_Y
 
     if countX(list_Y, user) == 3:
+        list_Y.append(user)
         await bot.send(event, "额......需要咱安慰一下嘛~？")
 
     elif countX(list_Y, user) == 6:
