@@ -154,6 +154,7 @@ callMe = on_message(rule=check_banlist())
 @callMe.handle()
 async def _(bot: Bot, event: Event, state: dict) -> None:
     msg = str(event.raw_event['raw_message']).strip()
+    rep = ""
 
     if "萝卜子" in msg:
         rep = choice(["萝卜子是对咱的蔑称！！", "差不多得了😅", "这好吗？这不好！", "吃咱一发火箭拳——！"])
@@ -161,7 +162,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
 
     elif msg in config['nickname']:
         if event.user_id in master:
-            rep = choice(["w", "~~", ""])
+            rep = choice(["w", "~~"])
         await callMe.finish(f"叫咱有啥事吗{rep}")
 
 
