@@ -49,7 +49,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         msg0 += "type: normal, nearR18, r18"
         await UploadSetu.finish(msg0)
 
-    if msg[0] not in ["noraml", "nearR18", "nearr18", "r18", "R18"]:
+    if msg[0] not in ["normal", "nearR18", "nearr18", "r18", "R18"]:
         msg0 = "请检查类型~！\n"
         msg0 += "type: normal, nearR18, r18"
         await UploadSetu.finish(msg0)
@@ -127,7 +127,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
         msg0 += "type: normal, nearR18, r18"
         await DeleteSetu.finish(msg0)
 
-    if msg[0] not in ["noraml", "nearR18", "nearr18", "r18", "R18"]:
+    if msg[0] not in ["normal", "nearR18", "nearr18", "r18", "R18"]:
         msg0 = "请检查类型~！\n"
         msg0 += "type: normal, nearR18, r18"
         await UploadSetu.finish(msg0)
