@@ -208,7 +208,7 @@ def check_sepi() -> Rule:
     """检查目标是否是涩批"""
     async def _check_sepi(bot: Bot, event: Event, state: dict) -> bool:
         if event.user_id in SP_list:
-
+            await bot.send(event, "你可少冲点吧！涩批！哼唧")
             return False
         else:
             return True
@@ -227,7 +227,7 @@ def del_sepi(user: int) -> None:
 
 setu = on_regex(
     r"来[点丶张份副个幅][涩色瑟][图圖]|[涩色瑟][图圖]来|[涩色瑟][图圖][gkd|GKD|搞快点]|[gkd|GKD|搞快点][涩色瑟][图圖]",
-    rule=check_banlist() & check_switch(plugin_name_2, False) & check_sepi())
+    rule=check_banlist() & check_switch(plugin_name_2, False))
 
 
 @setu.handle()
@@ -236,10 +236,10 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
     user = event.user_id
     group = event.group_id
     res = randint(1, 5)
-    print(1)
+    
+    check_sepi()
 
     if countX(SP_temp_list, user) == 5:
-        await bot.send(event, "你可少冲点吧！涩批！哼唧")
         add_sepi(user) # type: ignore
         SP_temp_list = list(set(SP_temp_list))
         delta = timedelta(hours=1)
