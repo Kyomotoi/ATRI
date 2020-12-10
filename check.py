@@ -87,7 +87,7 @@ class CheckATRI():
         如不完整自动安装
         别吐槽 暴 力
         '''
-        rely_list = [
+        need_rely_list = [
             'nonebot2', 'nonebot2[scheduler]', 'nonebot_plugin_apscheduler', 'nltk',
             'requests', 'pillow', 'psutil'
         ]
@@ -97,13 +97,13 @@ class CheckATRI():
             task = progress.add_task("[cyan]Checking Rely...", total=rely_len)
 
             while not progress.finished:
-                for rely in rely_list:
+                for rely in need_rely_list:
                     if rely not in rely_list:
                         try:
                             os.system(f'pip3 install {rely}')
                         except:
                             print(
-                                "Can't install package {rely}. Please use Google/Bing search error repo and fix it by yourself."
+                                f"Can't install package {rely}. Please use Google/Bing search error repo and fix it by yourself."
                             )
                             time.sleep(5)
                             sys.exit(0)
