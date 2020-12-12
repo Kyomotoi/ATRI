@@ -13,4 +13,6 @@
 
 ### • [一切的开始](start.md)
 
+### • [部署](install.md)
+
 ### • [插件列表](modules/index.md)
