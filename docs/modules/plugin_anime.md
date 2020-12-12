@@ -34,6 +34,6 @@
 /setu-type [type]  # Normal: 2
 ```
 
-Type:
-    - 1  本地数据库
+Type:<br>
+    - 1  本地数据库<br>
     - 2  loliconAPI（每天限制300次）
