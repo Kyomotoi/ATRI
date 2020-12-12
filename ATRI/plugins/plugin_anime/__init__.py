@@ -316,7 +316,7 @@ async def _(bot: Bot, event: Event, state: dict) -> None:
                 )
 
 
-setuType = on_command("setu-type", permission=SUPERUSER)
+setuType = on_command("/setu-type", permission=SUPERUSER)
 
 
 @setuType.handle()
