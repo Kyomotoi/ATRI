@@ -102,8 +102,6 @@ def check_switch(func_name: str, notice: bool) -> Rule:
             else:
                 return False
         else:
-            if notice:
-                await bot.send(event, f"Service-{func_name} has been closed.")
             return False
 
     return Rule(_check_switch)
