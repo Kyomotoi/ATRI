@@ -13,7 +13,6 @@ __author__ = 'kyomotoi'
 import os
 import sys
 import time
-import pkg_resources
 from pathlib import Path
 from rich.progress import Progress
 from ATRI.utils.utils_yml import load_yaml
