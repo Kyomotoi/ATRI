@@ -14,13 +14,6 @@ import os
 import sys
 import time
 import pkg_resources
-
-rely_list = ''.join(f'{rely}' for rely in pkg_resources.working_set)
-need_rely_list = ['pathlib', 'pyyaml', 'rich']
-for rely in need_rely_list:
-    if rely not in rely_list:
-        os.system(f'pip3 install {rely}')
-
 from pathlib import Path
 from rich.progress import Progress
 from ATRI.utils.utils_yml import load_yaml
@@ -80,32 +73,3 @@ class CheckATRI():
                     else:
                         progress.update(task, advance=1)
                         time.sleep(0.1)
-
-    def checkRely(self) -> None:
-        '''
-        检查依赖是否完整
-        如不完整自动安装
-        别吐槽 暴 力
-        '''
-        need_rely_list = [
-            'nonebot2', 'nonebot2[scheduler]', 'nonebot_plugin_apscheduler', 'nltk',
-            'requests', 'pillow', 'psutil'
-        ]
-        rely_len = len(rely_list)
-
-        with Progress() as progress:
-            task = progress.add_task("[cyan]Checking Rely...", total=rely_len)
-
-            while not progress.finished:
-                for rely in need_rely_list:
-                    if rely not in rely_list:
-                        try:
-                            os.system(f'pip3 install {rely}')
-                        except:
-                            print(
-                                f"Can't install package {rely}. Please use Google/Bing search error repo and fix it by yourself."
-                            )
-                            time.sleep(5)
-                            sys.exit(0)
-                    progress.update(task, advance=1)
-                    time.sleep(0.1)
