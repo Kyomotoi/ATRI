@@ -1,0 +1,4 @@
+genshin:
+  command: ['genshin', '原神战绩']
+  mhyVersion: '2.2.1'
+  url: 'https://api-takumi.mihoyo.com/game_record/genshin/api/index?server='

@@ -1,0 +1,32 @@
+# ATRI 基本配置
+bot:
+  # 反向ws地址，建议127.0.0.1
+  host: 127.0.0.1
+  # 反向ws端口
+  port: 8080
+  # 非开发者无需理会
+  debug: 0
+  # 超级用户，填自己的QQ号，用“，”隔开
+  superusers: [123456789]
+  # 机器人昵称，建议不动
+  nickname: ['ATRI', 'Atri', 'atri', '亚托莉', 'アトリ']
+  # 命令触发头，建议不动，除非你知道你在做什么
+  command_start: ['', '/']
+  # 命令分离，建议不动，除非你知道你在做什么
+  command_sep: ['.']
+  # 会话失效时间，单位：分钟
+  session_expire_timeout: 2
+
+# 接口相关配置
+api:
+  # 涩图接口，URL：https://api.lolicon.app/#/setu
+  LoliconAPI: xxx
+  # 搜图接口，URL：https://saucenao.com/
+  SauceNaoKEY: xxx
+
+# # 内置网页端
+# html:
+#   # 对外地址，建议0.0.0.0
+#   host: 0.0.0.0
+#   # 对外端口，请检查防火墙是否开启
+#   port: 80
