@@ -1,5 +1,8 @@
 ![](https://socialify.git.ci/Kyomotoi/ATRI/image?description=1&descriptionEditable=A%20project%20for%20ATRI%2C%20Usage%20go-CQHTTP%20%2B%20NoneBot2.&forks=1&issues=1&language=1&logo=https%3A%2F%2Fi.loli.net%2F2020%2F11%2F12%2FYcINCkyp8vK2inD.png&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Light)
 
+# 目前正在重构，此分支仅供参考！能跑但是会有很多bug！详细关注分支：dev
+# 以后优先更新dev分支，没有问题才会合并到主分支
+
 # ATRI——一个厨力项目
 アトリは、高性能ですから！
 
