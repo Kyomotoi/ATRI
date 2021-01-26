@@ -1,0 +1,13 @@
+utils:
+  roll:
+    command: ['/roll']
+    too_big:
+      repo: ['阿..好大...', '太大了太大...唔...', '喔好...大..']
+    too_long:
+      repo: ['这..太长了点，不展示了', '太长了不展示', '太长了不展示就酱w', 'TOO LONG']
+  
+  rcnb:
+    encode:
+      command: ['rc一下', 'RC一下']
+    decode:
+      command: ['一下rc', '一下RC']

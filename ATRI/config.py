@@ -2,20 +2,20 @@ import sys
 import time
 from pathlib import Path
 from datetime import timedelta
-from nonebot.log import logger
 from ipaddress import IPv4Address
 from rich.progress import Progress
 
-from ATRI.utils import loadYaml
+from .log import logger
+from .utils import load_yaml
 
 CONFIG_PATH = Path('.') / 'ATRI' / 'config' / 'main.config.yml'
-config = loadYaml(CONFIG_PATH)
+config = load_yaml(CONFIG_PATH)
 
 
-def CheckConfig():
-    logger.info('Please stand by, now in checking.')
+def check_config() -> None:
+    logger.info('Please stand by, now in checking type.')
 
-    len_config = len(config) + len(config['bot']) + len(config['api'])
+    len_config = len(config) + len(config['bot'])
 
     with Progress() as progress:
         task_c = progress.add_task("[cyan]Checking config...",
@@ -34,37 +34,49 @@ def CheckConfig():
                         print(f"Can't load [{key}] from config.yml")
                         time.sleep(5)
                         sys.exit(0)
-
                     else:
                         progress.update(task_c, advance=1)
                         time.sleep(0.1)
+    
 
-            api = config['api']
-            for key in api:
-                if not api[key]:
-                    print(f"Can't load [{key}] from config.yml")
-                    time.sleep(5)
-                    sys.exit(0)
-                else:
-                    progress.update(task_c, advance=1)
-                    time.sleep(0.1)
+COPYRIGHT = """
+ █████     ████████     ██████       ██
+██   ██       ██        ██   ██      ██
+███████       ██        ██████       ██
+██   ██       ██        ██   ██      ██
+██   ██       ██        ██   ██      ██
+=========================================
+Copyright © 2021 Kyomotoi, All Rights Reserved.
+Project: https://github.com/Kyomotoi/ATRI
+"""
 
+VERSION = config['version']
 
-NONEBOT_CONFIG: dict = {
-    'host': IPv4Address(config['bot']['host']),
-    'port': int(config['bot']['port']),
-    'debug': bool(config['bot']['debug']),
-    'superusers': config['bot']['superusers'],
-    'nickname': set(config['bot']['nickname']),
-    'command_start': set(config['bot']['command_start']),
-    'command_sep': set(config['bot']['command_sep']),
-    'session_expire_timeout':
-    timedelta(config['bot']['session_expire_timeout'])
-}
+RUNTIME_CONFIG: dict = {
+        'host': IPv4Address(config['bot'].get('host', '127.0.0.1')),
+        'port': int(config['bot'].get('port', 8080)),
+        'debug': bool(config['bot'].get('debug', False)),
+        'superusers': config['bot'].get('superusers', [1234567890]),
+        'nickname': set(
+            config['bot'].get(
+                'nickname', ['ATRI', 'Atri', 'atri', '亚托莉', 'アトリ'])),
+        'command_start': set(config['bot'].get('command_start', ['', '/'])),
+        'command_sep': set(config['bot'].get('command_sep', ['.'])),
+        'session_expire_timeout': timedelta(
+            config['bot'].get('session_expire_timeout', 2))
+    }
 
+PLUGIN_BOT_CONFIG = Path('.') / 'ATRI' / 'config' / 'character.plugin.yml'
+BOT_CONFIG: dict = load_yaml(PLUGIN_BOT_CONFIG)
 
-PLUGIN_BOT_CONFIG = Path('.') / 'ATRI' / 'config' / 'bot.plugin.yml'
-BOT_CONFIG: dict = loadYaml(PLUGIN_BOT_CONFIG)
+PLUGIN_HITOKOTO_CONFIG = Path('.') / 'ATRI' / 'config' / 'hitokoto.plugin.yml'
+HITOKOTO_CONFIG: dict = load_yaml(PLUGIN_HITOKOTO_CONFIG)
 
-PLUGIN_GENSHIN_CONFIG = Path('.') / 'ATRI' / 'config' / 'genshin.plugin.yml'
-GENSHIN_CONFIG: dict = loadYaml(PLUGIN_GENSHIN_CONFIG)
+PLUGIN_UTILS_CONFIG = Path('.') / 'ATRI' / 'config' / 'utils.plugin.yml'
+UTILS_CONFIG: dict = load_yaml(PLUGIN_UTILS_CONFIG)
+
+PLUGIN_CURSE_CONFIG = Path('.') / 'ATRI' / 'config' / 'curse.plugin.yml'
+CURSE_CONFIG: dict = load_yaml(PLUGIN_CURSE_CONFIG)
+
+PLUGIN_SETU_CONFIG = Path('.') / 'ATRI' / 'config' / 'setu.plguin.yml'
+SETU_CONFIG: dict = load_yaml(PLUGIN_SETU_CONFIG)

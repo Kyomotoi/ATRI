@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
+
 '''
 @File    :   main.py
-@Time    :   2020/12/18 18:07:07
+@Time    :   2021/01/23 12:49:54
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
 @Github  :   https://github.com/Kyomotoi
@@ -10,30 +11,29 @@
 '''
 __author__ = 'kyomotoi'
 
+from time import sleep
+from os import get_terminal_size
+
 import nonebot
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
-from ATRI.log import logger
-from ATRI.config import NONEBOT_CONFIG, CheckConfig
+from nonebot.log import logger
+from ATRI.config import COPYRIGHT, RUNTIME_CONFIG, VERSION
 
-copyright = ("""
-====================[ATRI | アトリ]====================
-* Mirai + NoneBot2 + Python
-* Copyright © 2018-2020 Kyomotoi,All Rights Reserved
-* Project: https://github.com/Kyomotoi/ATRI
-* Docs: https://kyomotoi.github.io/ATRI/#
-* Version: YHN-00A-001 
-=======================================================""")
 
-CheckConfig()
+try:
+    width, height = get_terminal_size()
+except OSError:
+    width, height = 0, 0
 
-nonebot.init(**NONEBOT_CONFIG)
+nonebot.init(**RUNTIME_CONFIG)
 app = nonebot.get_asgi()
 driver = nonebot.get_driver()
-driver.register_adapter("cqhttp", CQHTTPBot) # type: ignore
+driver.register_adapter("cqhttp", CQHTTPBot)
 nonebot.load_plugins('ATRI/plugins')
 
 if __name__ == "__main__":
-    logger.info(copyright)
-    logger.info('Running ATRI...')
+    logger.warning("\n".join(i.center(width) for i in COPYRIGHT.splitlines()))
+    logger.info(f"Now running: {VERSION}")
+    sleep(3)
     nonebot.run(app='main:app')
