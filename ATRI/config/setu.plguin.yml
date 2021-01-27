@@ -10,3 +10,6 @@ setu:
     r18: 'r18'
   repo:
     waiting: '别急，在找了！'
+
+admin:
+  command: ['/setu', '.setu']

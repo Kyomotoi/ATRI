@@ -51,11 +51,12 @@ def now_time() -> float:
     now = hour + minute / 60
     return now
 
-def compress_image(out_file: str, kb=500, quality=85, k=0.9) -> str:
+def compress_image(out_file, kb=500, quality=85, k=0.9) -> str:
     '''
     压缩图片
     :return: img file
     '''
+    print(1)
     o_size = os.path.getsize(out_file) // 1024
     if o_size <= kb:
         return out_file
@@ -69,6 +70,5 @@ def compress_image(out_file: str, kb=500, quality=85, k=0.9) -> str:
             out.save(out_file, quality=quality)
         except InvalidWriteText:
             raise InvalidWriteText('Writing file failed!')
-            break
         o_size = os.path.getsize(out_file) // 1024
     return out_file

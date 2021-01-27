@@ -3,11 +3,11 @@
 
 '''
 @File    :   main.py
-@Time    :   2021/01/23 12:49:54
+@Time    :   2021/01/27 15:57:26
 @Author  :   Kyomotoi
 @Contact :   kyomotoiowo@gmail.com
 @Github  :   https://github.com/Kyomotoi
-@License :   Copyright © 2018-2020 Kyomotoi, All Rights Reserved.
+@License :   Copyright © 2021 Kyomotoi, All Rights Reserved.
 '''
 __author__ = 'kyomotoi'
 

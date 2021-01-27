@@ -13,7 +13,7 @@ LOGGER_WARNING_PATH = Path(
 ) / 'ATRI' / 'logs' / 'warning' / f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-WARNING.log"
 LOGGER_DEBUG_PATH = Path(
     '.'
-) / 'ATRI' / 'logs' / 'warning' / f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-DEBUG.log"
+) / 'ATRI' / 'logs' / 'debug' / f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-DEBUG.log"
 
 logger.add(LOGGER_INFO_PATH,
            rotation='10 MB',

@@ -1,62 +1,112 @@
-from ATRI.config import RUNTIME_CONFIG
+'''
+获取更多帮助 >> https://github.com/howmanybots/onebot/blob/master/v11/specs/api/public.md
+'''
+import json
+from typing import Optional, Union, Dict, Any
+
+from ATRI.log import logger
+from ATRI.config import config
+from ATRI.request import Request
 
 
 URL = (
-    f"http://{RUNTIME_CONFIG['http_post']['host']}"
-    f"{RUNTIME_CONFIG['http_post']['port']}"
+    f"http://{config['http_post']['host']}:"
+    f"{config['http_post']['port']}/"
 )
 
 class HttpPost:
+
     @classmethod
-    def send_private_msg(cls):
+    async def send_private_msg(cls,
+                               user_id: int,
+                               message: str,
+                               auto_escape: bool = False): # -> Dict[str, Any]
+        url = URL + "send_private_msg?"
+        params = {
+            "user_id": user_id,
+            "message": message,
+            "auto_escape": f"{auto_escape}"
+        }
+        result = json.loads(await Request.post_bytes(url, params))
+        logger.debug(result)
+        return result
+    
+    @classmethod
+    def send_group_msg(cls,
+                       group_id: int,
+                       message: Union[str],
+                       auto_escape: Optional[bool] = ...) -> Dict[str, Any]:
         ...
     
     @classmethod
-    def send_group_msg(cls):
+    def send_msg(cls,
+                 message_type: Optional[str] = ...,
+                 user_id: Optional[int] = ...,
+                 group_id: Optional[int] = ...,
+                 message = Union[str],
+                 auto_escape: bool = ...) -> Dict[str, Any]:
         ...
     
     @classmethod
-    def send_msg(cls):
+    def delete_msg(cls,
+                   message_id: int):
         ...
     
     @classmethod
-    def delete_msg(cls):
+    def get_msg(cls,
+                message_id: int) -> Dict[str, Any]:
         ...
     
     @classmethod
-    def get_msg(cls):
+    def get_forward_msg(cls,
+                        id: int):
         ...
     
     @classmethod
-    def get_forward_msg(cls):
+    def send_like(cls,
+                  user_id: int,
+                  times: int = ...):
         ...
     
     @classmethod
-    def send_like(cls):
+    def set_group_kick(cls,
+                       group_id: int,
+                       user_id: int,
+                       reject_add_request: bool = ...):
         ...
     
     @classmethod
-    def set_group_kick(cls):
+    def set_group_ban(cls,
+                      group_id: int,
+                      user_id: int,
+                      duration: int = ...):
         ...
     
     @classmethod
-    def set_group_ban(cls):
+    def set_group_anonymous_ban(cls,
+                                group_id: int,
+                                anonymous: Optional[Dict[str, Any]] = ...,
+                                flag: Optional[str] = ...,
+                                duration: int = ...):
         ...
     
     @classmethod
-    def set_group_anonymous_ban(cls):
+    def set_group_whole_ban(cls,
+                            group_id: int,
+                            enable: bool = ...):
         ...
     
     @classmethod
-    def set_group_whole_ban(cls):
+    def set_group_admin(cls,
+                        group_id: int,
+                        user_id: int,
+                        enable: bool = ...):
         ...
     
     @classmethod
-    def set_group_admin(cls):
-        ...
-    
-    @classmethod
-    def set_group_anonymous(cls):
+    def set_group_anonymous(cls,
+                            group_id: int,
+                            enable: bool = ...):
         ...
     
     @classmethod

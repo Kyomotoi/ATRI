@@ -37,21 +37,24 @@ class Request:
         return result
 
     @classmethod
-    async def get_image(cls, url: str) -> Path:
+    async def get_image(cls, url: str, params: Optional[dict] = None) -> str:
         '''
         异步方式下载图片
         :return: img file
         '''
         file_path = TEMP_PATH / 'img'
+        os.makedirs(file_path, exist_ok=True)
         file_name = ''.join(sample(string.ascii_letters + string.digits, 16))
-        img_path = file_path / f'{file_name}.png'
-        image = await cls.get_bytes(url)
-        try:
-            async with aiofiles.open(image, 'wb') as f:
-                await f.write(image)
-        except InvalidWriteText:
-            raise InvalidWriteText('Writing file failed!')
-        return img_path
+        path = os.path.abspath(file_path)
+        path = path + f'\\{file_name}.png'
+        async with ClientSession() as session:
+            async with session.get(url) as res:
+                try:
+                    async with aiofiles.open(path, 'wb') as f:
+                        await f.write(await res.read())
+                except InvalidWriteText:
+                    raise InvalidWriteText('Writing file failed!')
+        return path
 
     @staticmethod
     async def post_bytes(url: str, params: Optional[dict] = None) -> bytes:
