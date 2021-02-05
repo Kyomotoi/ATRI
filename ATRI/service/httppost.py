@@ -2,17 +2,23 @@
 获取更多帮助 >> https://github.com/howmanybots/onebot/blob/master/v11/specs/api/public.md
 '''
 import json
-from typing import Optional, Union, Dict, Any
+from typing import (
+    Optional,
+    Union,
+    Dict,
+    Any
+)
 
 from ATRI.log import logger
 from ATRI.config import config
-from ATRI.request import Request
+from ATRI.utils.request import post_bytes
 
 
 URL = (
-    f"http://{config['http_post']['host']}:"
-    f"{config['http_post']['port']}/"
+    f"http://{config['HttpPost']['host']}:"
+    f"{config['HttpPost']['port']}/"
 )
+
 
 class HttpPost:
 
@@ -27,17 +33,17 @@ class HttpPost:
             "message": message,
             "auto_escape": f"{auto_escape}"
         }
-        result = json.loads(await Request.post_bytes(url, params))
+        result = json.loads(await post_bytes(url, params))
         logger.debug(result)
         return result
-    
+
     @classmethod
     def send_group_msg(cls,
                        group_id: int,
                        message: Union[str],
                        auto_escape: Optional[bool] = ...) -> Dict[str, Any]:
         ...
-    
+
     @classmethod
     def send_msg(cls,
                  message_type: Optional[str] = ...,
@@ -46,42 +52,42 @@ class HttpPost:
                  message = Union[str],
                  auto_escape: bool = ...) -> Dict[str, Any]:
         ...
-    
+
     @classmethod
     def delete_msg(cls,
                    message_id: int):
         ...
-    
+
     @classmethod
     def get_msg(cls,
                 message_id: int) -> Dict[str, Any]:
         ...
-    
+
     @classmethod
     def get_forward_msg(cls,
                         id: int):
         ...
-    
+
     @classmethod
     def send_like(cls,
                   user_id: int,
                   times: int = ...):
         ...
-    
+
     @classmethod
     def set_group_kick(cls,
                        group_id: int,
                        user_id: int,
                        reject_add_request: bool = ...):
         ...
-    
+
     @classmethod
     def set_group_ban(cls,
                       group_id: int,
                       user_id: int,
                       duration: int = ...):
         ...
-    
+
     @classmethod
     def set_group_anonymous_ban(cls,
                                 group_id: int,
@@ -89,20 +95,20 @@ class HttpPost:
                                 flag: Optional[str] = ...,
                                 duration: int = ...):
         ...
-    
+
     @classmethod
     def set_group_whole_ban(cls,
                             group_id: int,
                             enable: bool = ...):
         ...
-    
+
     @classmethod
     def set_group_admin(cls,
                         group_id: int,
                         user_id: int,
                         enable: bool = ...):
         ...
-    
+
     @classmethod
     def set_group_anonymous(cls,
                             group_id: int,
@@ -208,4 +214,3 @@ class HttpPost:
     @classmethod
     def clean_cache(cls):
         ...
-    

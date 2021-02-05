@@ -1,7 +1,6 @@
 # Fork from: https://github.com/nonebot/plugin-apscheduler
 
 import logging
-from pydantic import Field
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from nonebot import get_driver, export

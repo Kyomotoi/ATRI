@@ -1,9 +1,0 @@
-curse:
-  command: ['骂我', '口臭一下', '口臭']
-  url: 'https://nmsl.shadiao.app/api.php?level=min&lang=zh_cn'
-  times:
-    3:
-      repo: ['不是？？你这么想被咱骂的嘛？？被咱骂就这么舒服的吗？！该......你该不会是.....M吧！']
-    
-    4:
-      repo: ['给我适可而止阿！？']
