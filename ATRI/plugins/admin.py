@@ -23,14 +23,16 @@ chat_monitor = on_message()
 @chat_monitor.handle()
 async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
     now_time = datetime.now().strftime('%Y-%m-%d')
-    file_name = f"{now_time}-chat.json"
-    path = ADMIN_DIR / f"{event.group_id}" / file_name
-    path.parent.mkdir(exist_ok=True, parents=True)
-    path.parent.touch(exist_ok=True)
+    
+    GROUP_DIR = ADMIN_DIR / f"{event.group_id}"
+    path = GROUP_DIR / f"{now_time}.chat.json"
+    
+    if not GROUP_DIR.exists():
+        GROUP_DIR.mkdir()
     
     try:
         data = json.loads(path.read_bytes())
-    except FileExistsError:
+    except:
         data = {}
     data[event.message_id] = {
         "post_type": event.post_type,
@@ -38,10 +40,20 @@ async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
         "user_id": event.user_id,
         "group_id": event.group_id,
         "message_type": event.message_type,
-        "message": event.message,
+        "message": event.message.__str__(),
         "raw_message": event.raw_message,
         "font": event.font,
-        "sender": event.sender,
+        "sender": {
+            "user_id": event.sender.user_id,
+            "nickname": event.sender.nickname,
+            "sex": event.sender.sex,
+            "age": event.sender.age,
+            "card": event.sender.card,
+            "area": event.sender.area,
+            "level": event.sender.level,
+            "role": event.sender.role,
+            "title": event.sender.title
+        },
         "to_me": event.to_me
     }
     try:
@@ -54,7 +66,8 @@ async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
         logger.debug(f"写入消息成功，id: {event.message_id}")
     except WriteError:
         logger.error("消息记录失败，可能是缺少文件的原因！")
-    
+    else:
+        pass
 
 ESSENTIAL_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'essential'
 
@@ -71,7 +84,7 @@ async def _request_friend(bot: Bot, event: MessageEvent) -> None:
     path = ESSENTIAL_DIR / "request_friend.json"
     try:
         data = json.loads(path.read_bytes())
-    except FileExistsError:
+    except:
         await request_friend.finish("读取数据失败，可能并没有请求...")
     
     if key == "list":
@@ -144,3 +157,12 @@ async def _request_group(bot: Bot, event: MessageEvent) -> None:
     
     else:
         await request_friend.finish("阿...请检查输入——！")
+
+
+getcookies = on_command(
+    "获取cookies",
+    permission=SUPERUSER)
+
+@getcookies.handle()
+async def _get(bot: Bot, event: MessageEvent) -> None:
+    print(await bot.get_cookies())
