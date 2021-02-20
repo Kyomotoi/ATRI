@@ -5,9 +5,18 @@ from aiohttp.client import ClientSession
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 from nonebot.plugin import on_message
 
-from ATRI.rule import is_in_banlist, is_in_dormant
 from ATRI.utils.request import get_bytes
+from ATRI.utils.list import count_list, del_list_aim
+from ATRI.rule import (
+    is_in_banlist,
+    is_in_dormant,
+)
+
 from .data_source import dec
+
+
+waiting_list = []
+
 
 bilibili_rich = on_message(
     rule=is_in_banlist() & is_in_dormant()
@@ -15,8 +24,16 @@ bilibili_rich = on_message(
 
 @bilibili_rich.handle()
 async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
+    global waiting_list
     msg = str(event.raw_message)
+    user = event.user_id
     bv = False
+    
+    if count_list(waiting_list, user) == 5:
+        waiting_list = del_list_aim(waiting_list, user)
+        return
+
+    waiting_list.append(user)
     
     if "qqdocurl" not in msg:
         if "av" in msg:
@@ -58,4 +75,3 @@ async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
         "にまねげぴのTencent rich!"
     )
     await bilibili_rich.finish(repo)
-    

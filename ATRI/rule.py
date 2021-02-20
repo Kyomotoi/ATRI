@@ -47,7 +47,7 @@ exciting_repo = [
     "请稍等！您冲得太快了！"
 ]
 
-def is_too_exciting(times: int) -> Rule:
+def is_too_exciting(times: int, repo: bool) -> Rule:
     def del_list(user: str) -> None:
         global exciting_user
         exciting_user = del_list_aim(exciting_user, user)
@@ -57,10 +57,11 @@ def is_too_exciting(times: int) -> Rule:
         user = event.get_user_id()
         
         if user in exciting_user:
-            await bot.send(
-                event,
-                choice(exciting_repo)
-            )
+            if repo:
+                await bot.send(
+                    event,
+                    choice(exciting_repo)
+                )
             return False
         else:
             if count_list(exciting_user, user) == times:
@@ -76,10 +77,11 @@ def is_too_exciting(times: int) -> Rule:
                     misfire_grace_time=1,
                 )
                 
-                await bot.send(
-                    event,
-                    choice(exciting_repo)
-                )
+                if repo:
+                    await bot.send(
+                        event,
+                        choice(exciting_repo)
+                    )
                 return False
             else:
                 exciting_user.append(user)

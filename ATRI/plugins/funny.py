@@ -41,8 +41,7 @@ me_to_you = on_message(
 
 @me_to_you.handle()
 async def _me_to_you(bot: Bot, event: MessageEvent) -> None:
-    rd = randint(0, 5)
-    if rd == 1:
+    if randint(0, 5) == 5:
         msg = str(event.message)
-        if "我" in msg:
-            await me_to_you.finish(msg.replace('我', '你'))
+        if "我" in msg and "CQ" not in msg:
+            await me_to_you.finish(msg.replace("我", "你"))

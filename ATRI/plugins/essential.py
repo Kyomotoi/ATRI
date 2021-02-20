@@ -87,7 +87,7 @@ async def _request_friend_event(bot, event: FriendRequestEvent) -> None:
     
     try:
         data = json.loads(path.read_bytes())
-    except FileExistsError:
+    except:
         data = {}
     data[event.flag] = {
         "user_id": event.user_id,
@@ -127,7 +127,7 @@ async def _request_group_event(bot, event: GroupRequestEvent) -> None:
     
     try:
         data = json.loads(path.read_bytes())
-    except FileExistsError:
+    except:
         data = {}
     data[event.flag] = {
         "user_id": event.user_id,
@@ -243,7 +243,8 @@ async def _lucky_read_bag_event(bot, event: LuckyKingNotifyEvent) -> None:
 group_file_upload_event = on_notice()
 
 @group_file_upload_event.handle()
-async def _group_file_upload_event(bot, event: GroupUploadNoticeEvent) -> None:
+async def _group_file_upload_event(bot,
+                                   event: GroupUploadNoticeEvent) -> None:
     await group_file_upload_event.finish("让我康康传了啥好东西")
 
 
@@ -268,6 +269,7 @@ async def _recall_event(bot: Bot, event) -> None:
             f"{repo}"
         )
 
+        await bot.send(event, "咱看到惹~！")
         for superuser in nonebot_config["superusers"]:
             await HttpPost.send_private_msg(
                 user_id=int(superuser),

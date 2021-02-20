@@ -86,6 +86,10 @@ class RequestTimeOut(BaseBotException):
     prompt = "网页/接口请求超时"
 
 
+class GetStatusError(BaseBotException):
+    prompt = "获取状态失败"
+
+
 @run_postprocessor  # type: ignore
 async def _(matcher: Matcher, exception: Optional[Exception],
             event: MessageEvent, state: dict) -> None:

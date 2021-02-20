@@ -1,7 +1,7 @@
 BotSelfConfig:
   host: "127.0.0.1"
-  port: 8080
-  debug: true
+  port: 25565
+  debug: false
   superusers: ["1234567890"]
   nickname: ["ATRI", "Atri", "atri", "亚托莉", "アトリ"]
   command_start: ["", "/"]
@@ -11,4 +11,4 @@ BotSelfConfig:
 
 HttpPost:
   host: "127.0.0.1"
-  port: 8081
+  port: 23333

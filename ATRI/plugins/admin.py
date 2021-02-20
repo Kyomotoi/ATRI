@@ -1,17 +1,24 @@
 import json
+import time
 from pathlib import Path
 from datetime import datetime
 
 from nonebot.permission import SUPERUSER
-from nonebot.plugin import on_command, on_message
+from nonebot.plugin import on_command, on_message, CommandGroup
 from nonebot.adapters.cqhttp import (
     Bot,
     MessageEvent,
     GroupMessageEvent
 )
+from nonebot.typing import T_State
 
-from ATRI.exceptions import WriteError
-from ATRI.log import logger
+from ATRI.exceptions import WriteError, read_error
+from ATRI.utils.file import open_file
+from ATRI.log import (
+    logger,
+    LOGGER_DIR,
+    NOW_TIME
+)
 
 
 ADMIN_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'admin'
@@ -22,10 +29,10 @@ chat_monitor = on_message()
 
 @chat_monitor.handle()
 async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
-    now_time = datetime.now().strftime('%Y-%m-%d')
-    
+    now_time = datetime.now().strftime('%Y-%m-%d')    
     GROUP_DIR = ADMIN_DIR / f"{event.group_id}"
     path = GROUP_DIR / f"{now_time}.chat.json"
+    now_time = datetime.now().strftime('%Y%m%d-%H%M%S')
     
     if not GROUP_DIR.exists():
         GROUP_DIR.mkdir()
@@ -35,6 +42,8 @@ async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
     except:
         data = {}
     data[event.message_id] = {
+        "date": now_time,
+        "time": time.time(),
         "post_type": event.post_type,
         "sub_type": event.sub_type,
         "user_id": event.user_id,
@@ -159,10 +168,124 @@ async def _request_group(bot: Bot, event: MessageEvent) -> None:
         await request_friend.finish("阿...请检查输入——！")
 
 
-getcookies = on_command(
-    "获取cookies",
-    permission=SUPERUSER)
+broadcast = on_command(
+    "/broadcast",
+    permission=SUPERUSER
+)
 
-@getcookies.handle()
-async def _get(bot: Bot, event: MessageEvent) -> None:
-    print(await bot.get_cookies())
+@broadcast.handle()
+async def _broadcast(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    msg = str(event.message).strip()
+    if msg:
+        state["msg"] = msg
+    
+@broadcast.got("msg", prompt="请告诉咱需要群发的内容~！")
+async def _bd(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    msg = state["msg"]
+    group_list = await bot.get_group_list()
+    succ_list = []
+    err_list = []
+    
+    for group in group_list:
+        try:
+            await bot.send_group_msg(group_id=group["group_id"],
+                                     message=msg)
+        except:
+            err_list.append(group["group_id"])
+    
+    msg0 = ""
+    for i in err_list:
+        msg0 += f"    {i}\n"
+    
+    repo_msg = (
+        f"推送消息：\n{msg}\n"
+        "————————\n"
+        f"总共：{len(group_list)}\n"
+        f"成功推送：{len(succ_list)}\n"
+        f"失败[{len(err_list)}]个：\n"
+    ) + msg0
+
+    await broadcast.finish(repo_msg)
+
+
+track_error = on_command(
+    "/track",
+    permission=SUPERUSER
+)
+
+@track_error.handle()
+async def _track_error(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    msg = str(event.message).strip()
+    if msg:
+        state["msg"] = msg
+
+@track_error.got("msg", prompt="请告诉咱追踪ID！")
+async def _(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    track_id = state["msg"]
+    data = {}
+    
+    try:
+        data = read_error(track_id)
+    except:
+        await track_error.finish("Ignore track ID!")
+    
+    msg0 = (
+        f"ID: {track_id}\n"
+        f"Time: {data['time']}\n"
+        f"Prompt: {data['prompt']}\n"
+        f"{data['error_content']}"
+    )
+    
+    await track_error.finish(msg0)
+
+
+get_log = on_command(
+    "/getlog",
+    permission=SUPERUSER
+)
+
+@get_log.handle()
+async def _get_log(bot: Bot, event: MessageEvent) -> None:
+    msg = str(event.message).split(" ")
+    try:
+        rows = msg[1]
+    except:
+        await get_log.finish("格式/getlog level rows")
+    
+    if msg[0] == "info":
+        level = "info"
+    elif msg[0] == "warning":
+        level = "warning"
+    elif msg[0] == "error":
+        level = "error"
+    elif msg[0] == "debug":
+        level = "debug"
+    else:
+        await get_log.finish("格式/getlog level rows")
+    
+    path = LOGGER_DIR / level / f"{NOW_TIME}-INFO.log"  # type: ignore
+    logs = await open_file(path, "readlines")
+    
+    try:
+        content = logs[int(rows):]  # type: ignore
+    except IndexError:
+        await get_log.finish(f"行数错误...max: {len(logs)}")  # type: ignore
+    
+    await get_log.finish("\n".join(content).replace("[36mATRI[0m", "ATRI"))  # type: ignore
+
+
+shutdown = on_command("/shutdown", permission=SUPERUSER)
+
+@shutdown.handle()
+async def _shutdown(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    msg = str(event.message).strip()
+    if msg:
+        state["msg"] = msg
+
+@shutdown.got("msg", prompt="WARNING，此项操作将强行终止bot运行，是否继续(y/n)")
+async def __shutdown(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    if state["msg"] == "y":
+        await bot.send(event, "咱还会醒来的，一定")
+        exit(0)
+    else:
+        await shutdown.finish("再考虑下先吧 ;w;")

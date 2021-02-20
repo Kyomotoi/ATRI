@@ -1,54 +1,39 @@
 import json
-import aiofiles
+from pathlib import Path
+from typing import Optional
 
-from ATRI.exceptions import WriteError
+from ATRI.utils.file import write_file
 from . import SERVICE_DIR
 
 
 class Limit:
-    
-    file_name = "limit.service.json"
-    path = SERVICE_DIR / file_name
-    path.parent.mkdir(exist_ok=True, parents=True)
-    try:
-        data = json.loads(path.read_bytes())
-    except:
-        data = {}
-    
-    @classmethod
-    def _filling_service(cls, service, group: int = None):
-        # Determine whether the service exists in global variables.
-        if service not in cls.data["global"]:
-            cls.data["global"][service] = True
-        # Similary, for group.
-        if service not in cls.data[group]:
-            cls.data[group][service] = True
+    @staticmethod
+    def _get_file(group: Optional[int] = None) -> Path:
+        file_name = f"{group}.service.json"
+        LIMIT_DIR = SERVICE_DIR / "limit"
+        path = LIMIT_DIR / file_name
         
+        if not LIMIT_DIR.exists():
+            LIMIT_DIR.mkdir()
+        return path
     
     @classmethod
-    def get_service(cls) -> dict:
-        return cls.data
-    
-    @classmethod
-    async def auth_service(
-        cls, service: str, group: int = None) -> bool:
-        cls.data.setdefault("global", {})
-        cls.data.setdefault(group, {})
-        cls._filling_service(service, group)
-        
+    def _read_file(cls, group: Optional[int] = None) -> dict:
         try:
-            async with aiofiles.open(
-                cls.path, 'w', encoding='utf-8') as target:
-                await target.write(
-                    json.dumps(
-                        cls.data
-                    )
-                )
-        except WriteError:
-            raise WriteError("Writing file failed!")
+            data = json.loads(cls._get_file(group).read_bytes())
+        except:
+            data = {}
+        return data
+
+    @classmethod
+    async def auth_service(cls, service: str, group: Optional[int] = None) -> bool:
+        data = cls._read_file(group)
+        if service not in data:
+            data[service] = True
+            await write_file(cls._get_file(group), json.dumps(data))
         
-        if cls.data["global"][service]:
-            return True if cls.data[group][service] else False
+        if data[service]:
+            return True
         else:
             return False
     
@@ -57,22 +42,12 @@ class Limit:
         cls,
         service: str,
         status: bool,
-        group: int = None
+        group: Optional[int] = None
     ) -> None:
-        cls._filling_service(service, group)
+        data = cls._read_file(group)
+        if service not in data:
+            data[service] = True
+            await write_file(cls._get_file(group), json.dumps(data))
         
-        if group:
-            cls.data[group][service] = status
-        else:
-            cls.data["global"][service] = status
-        
-        try:
-            async with aiofiles.open(
-                cls.path, 'w', encoding='utf-8') as target:
-                await target.write(
-                    json.dumps(
-                        cls.data
-                    )
-                )
-        except WriteError:
-            raise WriteError("Writing file failed!")
+        data[service] = status
+        await write_file(cls._get_file(group), json.dumps(data))
