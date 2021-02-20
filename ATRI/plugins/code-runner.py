@@ -49,7 +49,8 @@ async def _code_runner(bot: Bot, event: MessageEvent) -> None:
     if laug not in SUPPORTED_LANGUAGES:
         await code_runner.finish("该语言暂不支持...")
     
-    code = msg[1]
+    del msg[0]
+    code = "\n".join(map(str, msg))
     try:
         req = await post_bytes(
             RUN_API_URL_FORMAT.format(laug),
