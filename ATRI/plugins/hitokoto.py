@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+'''
+File: hitokoto.py
+Created Date: 2021-02-04 17:40:21
+Author: Kyomotoi
+Email: Kyomotoiowo@gmail.com
+License: GPLv3
+Project: https://github.com/Kyomotoi/ATRI
+--------
+Last Modified: Sunday, 7th March 2021 3:11:44 pm
+Modified By: Kyomotoi (kyomotoiowo@gmail.com)
+--------
+Copyright (c) 2021 Kyomotoi
+'''
+
 import os
 import json
 from pathlib import Path

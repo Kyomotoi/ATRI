@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+'''
+File: anti-rubbish.py
+Created Date: 2021-02-15 12:39:24
+Author: Kyomotoi
+Email: Kyomotoiowo@gmail.com
+License: GPLv3
+Project: https://github.com/Kyomotoi/ATRI
+--------
+Last Modified: Sunday, 7th March 2021 3:13:51 pm
+Modified By: Kyomotoi (kyomotoiowo@gmail.com)
+--------
+Copyright (c) 2021 Kyomotoi
+'''
+
 import json
 from pathlib import Path
 from datetime import datetime
@@ -64,7 +80,7 @@ async def _rubbish(bot: Bot, event: GroupMessageEvent) -> None:
                 f"吃过厕所自助餐的有：\n"
             ) + noob_list
             await rubbish.finish(msg)
-    
+
     elif cmd[0] == "read":
         try:
             user = cmd[1]

@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+'''
+File: __init__.py
+Created Date: 2021-02-19 22:16:34
+Author: Kyomotoi
+Email: Kyomotoiowo@gmail.com
+License: GPLv3
+Project: https://github.com/Kyomotoi/ATRI
+--------
+Last Modified: Sunday, 7th March 2021 3:18:10 pm
+Modified By: Kyomotoi (kyomotoiowo@gmail.com)
+--------
+Copyright (c) 2021 Kyomotoi
+'''
+
 import re
 import json
 

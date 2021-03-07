@@ -1,44 +1,23 @@
 #!/usr/bin/env python3
-# -*- encoding: utf-8 -*-
-
+# -*- coding:utf-8 -*-
 '''
-@File    :   main.py
-@Time    :   2021/02/02 15:51:44
-@Author  :   Kyomotoi
-@Contact :   kyomotoiowo@gmail.com
-@Github  :   https://github.com/Kyomotoi
-@License :   Copyright © 2018-2021 Kyomotoi, All Rights Reserved.
+File: main.py
+Created Date: 2021-02-02 15:51:30
+Author: Kyomotoi
+Email: Kyomotoiowo@gmail.com
+License: GPLv3
+Project: https://github.com/Kyomotoi/ATRI
+--------
+Last Modified: Sunday, 7th March 2021 12:25:07 pm
+Modified By: Kyomotoi (kyomotoiowo@gmail.com)
+--------
+Copyright (c) 2021 Kyomotoi
 '''
-__author__ = 'kyomotoi'
 
-from time import sleep
-from os import get_terminal_size
+import ATRI
 
-import nonebot
-from nonebot.adapters.cqhttp import Bot as CQHTTPBot
+ATRI.init()
+app = ATRI.asgi()
 
-from ATRI.log import logger
-from ATRI.config import RUNTIME_CONFIG, COPYRIGHT, VERSION
-
-
-try:
-    width, height = get_terminal_size()
-except OSError:
-    width, height = 0, 0
-
-nonebot.init(**RUNTIME_CONFIG)
-app = nonebot.get_asgi()
-driver = nonebot.get_driver()
-driver.register_adapter("cqhttp", CQHTTPBot)
-nonebot.load_plugins('ATRI/plugins')
-
-
-if __name__ == "__main__":
-    logger.warning(
-        '\n'.join(
-            i.center(width) for i in COPYRIGHT.splitlines()
-        )
-    )
-    logger.info(f"Now running: {VERSION}")
-    sleep(3)
-    nonebot.run(app='main:app')
+if __name__ == '__main__':
+    ATRI.run('main:app')

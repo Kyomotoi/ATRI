@@ -1,9 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+'''
+File: essential.py
+Created Date: 2021-02-04 12:53:00
+Author: Kyomotoi
+Email: Kyomotoiowo@gmail.com
+License: GPLv3
+Project: https://github.com/Kyomotoi/ATRI
+--------
+Last Modified: Sunday, 7th March 2021 3:13:09 pm
+Modified By: Kyomotoi (kyomotoiowo@gmail.com)
+--------
+Copyright (c) 2021 Kyomotoi
+'''
+
 import time
 import json
 import shutil
 from pathlib import Path
 from random import choice
 
+import nonebot
 from nonebot.adapters import Bot
 from nonebot.plugin import on_notice, on_request
 from nonebot.adapters.cqhttp.message import Message
@@ -24,11 +41,13 @@ from ATRI.log import logger
 from ATRI.exceptions import WriteError
 from ATRI.config import nonebot_config
 from ATRI.rule import is_in_banlist
-from ATRI.service.httppost import HttpPost
-from main import driver
+from ATRI.service import Service as sv
 
 
 PLUGIN_INFO_DIR = Path('.') / 'ATRI' / 'data' / 'service' / 'plugins'
+
+
+driver = nonebot.get_driver()
 
 @driver.on_startup
 async def startup() -> None:
@@ -56,7 +75,7 @@ async def shutdown() -> None:
 @driver.on_bot_connect
 async def connect(bot) -> None:
     for superuser in nonebot_config["superusers"]:
-        await HttpPost.send_private_msg(
+        await sv.NetworkPost.send_private_msg(
             int(superuser),
             "WebSocket 成功连接，数据开始传输。"
         )
@@ -66,7 +85,7 @@ async def connect(bot) -> None:
 async def disconnect(bot) -> None:
     for superuser in nonebot_config["superusers"]:
         try:
-            await HttpPost.send_private_msg(
+            await sv.NetworkPost.send_private_msg(
                 int(superuser),
                 "WebSocket 貌似断开了呢..."
             )
@@ -110,7 +129,7 @@ async def _request_friend_event(bot, event: FriendRequestEvent) -> None:
             f"申请信息：{event.comment}\n"
             f"申请码：{event.flag}"
         )
-        await HttpPost.send_private_msg(
+        await sv.NetworkPost.send_private_msg(
             user_id=int(superuser),
             message=msg
         )
@@ -152,7 +171,7 @@ async def _request_group_event(bot, event: GroupRequestEvent) -> None:
             f"申请信息：{event.comment}\n"
             f"申请码：{event.flag}"
         )
-        await HttpPost.send_private_msg(
+        await sv.NetworkPost.send_private_msg(
             user_id=int(superuser),
             message=msg
         )
@@ -177,7 +196,7 @@ async def _group_member_event(bot: Bot, event) -> None:
                 f"咱被群 {event.group_id} 里的 {event.operator_id} 扔出来了..."
             )
             for superuser in nonebot_config["superusers"]:
-                await HttpPost.send_private_msg(
+                await sv.NetworkPost.send_private_msg(
                     user_id=int(superuser),
                     message=msg
                 )
@@ -192,7 +211,7 @@ group_admin_event = on_notice()
 async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent) -> None:
     if event.is_tome():
         for superuser in nonebot_config["superusers"]:
-            await HttpPost.send_private_msg(
+            await sv.NetworkPost.send_private_msg(
                 user_id=int(superuser),
                 message=f"好欸！主人！我在群 {event.group_id} 成为了管理！！"
             )
@@ -211,7 +230,7 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent) -> None:
                 f"时长...是 {event.duration} 秒"
             )
             for superuser in nonebot_config["superusers"]:
-                await HttpPost.send_private_msg(
+                await sv.NetworkPost.send_private_msg(
                     user_id=int(superuser),
                     message=msg
                 )
@@ -221,7 +240,7 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent) -> None:
                 f"咱在群 {event.group_id} 被 {event.operator_id} 上的口球解除了！"
             )
             for superuser in nonebot_config["superusers"]:
-                await HttpPost.send_private_msg(
+                await sv.NetworkPost.send_private_msg(
                     user_id=int(superuser),
                     message=msg
                 )
@@ -271,7 +290,7 @@ async def _recall_event(bot: Bot, event) -> None:
 
         await bot.send(event, "咱看到惹~！")
         for superuser in nonebot_config["superusers"]:
-            await HttpPost.send_private_msg(
+            await sv.NetworkPost.send_private_msg(
                 user_id=int(superuser),
                 message=msg
             )
@@ -293,7 +312,7 @@ async def _recall_event(bot: Bot, event) -> None:
         )
 
         for superuser in nonebot_config["superusers"]:
-            await HttpPost.send_private_msg(
+            await sv.NetworkPost.send_private_msg(
                 user_id=int(superuser),
                 message=msg
             )

@@ -1,10 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+'''
+File: call-owner.py
+Created Date: 2021-02-19 23:02:45
+Author: Kyomotoi
+Email: Kyomotoiowo@gmail.com
+License: GPLv3
+Project: https://github.com/Kyomotoi/ATRI
+--------
+Last Modified: Sunday, 7th March 2021 3:13:40 pm
+Modified By: Kyomotoi (kyomotoiowo@gmail.com)
+--------
+Copyright (c) 2021 Kyomotoi
+'''
+
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import on_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import (
     Bot,
-    MessageEvent,
-    GroupMessageEvent
+    MessageEvent
 )
 
 from ATRI.rule import is_in_banlist

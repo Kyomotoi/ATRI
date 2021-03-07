@@ -1,3 +1,8 @@
+/*
+ * File: config.yml
+ * Project: https://github.com/Kyomotoi/ATRI
+ */
+
 BotSelfConfig:
   host: "127.0.0.1"
   port: 25565
@@ -9,6 +14,10 @@ BotSelfConfig:
   session_expire_timeout: 3
   session_exciting_time: 3
 
-HttpPost:
+NetworkPost:
   host: "127.0.0.1"
   port: 23333
+
+AdminPage:
+  host: "127.0.0.1"
+  port: 11451

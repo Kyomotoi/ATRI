@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+'''
+File: config.py
+Created Date: 2021-02-02 16:43:54
+Author: Kyomotoi
+Email: Kyomotoiowo@gmail.com
+License: GPLv3
+Project: https://github.com/Kyomotoi/ATRI
+--------
+Last Modified: Sunday, 7th March 2021 2:31:06 pm
+Modified By: Kyomotoi (kyomotoiowo@gmail.com)
+--------
+Copyright (c) 2021 Kyomotoi
+'''
+
 from pathlib import Path
 from datetime import timedelta
 from ipaddress import IPv4Address
@@ -9,19 +25,6 @@ CONFIG_PATH = Path('.') / 'config.yml'
 config = load_yml(CONFIG_PATH)
 nonebot_config = config['BotSelfConfig']
 
-
-COPYRIGHT = """
- █████     ████████     ██████       ██
-██   ██       ██        ██   ██      ██
-███████       ██        ██████       ██
-██   ██       ██        ██   ██      ██
-██   ██       ██        ██   ██      ██
-=========================================
-Copyright © 2021 Kyomotoi, All Rights Reserved.
-Project: https://github.com/Kyomotoi/ATRI
-"""
-
-VERSION = "YHN-001-A01"
 
 RUNTIME_CONFIG = {
     "host": IPv4Address(nonebot_config.get('host', '127.0.0.1')),

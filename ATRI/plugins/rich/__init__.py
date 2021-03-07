@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+'''
+File: __init__.py
+Created Date: 2021-02-07 09:34:23
+Author: Kyomotoi
+Email: Kyomotoiowo@gmail.com
+License: GPLv3
+Project: https://github.com/Kyomotoi/ATRI
+--------
+Last Modified: Sunday, 7th March 2021 3:14:28 pm
+Modified By: Kyomotoi (kyomotoiowo@gmail.com)
+--------
+Copyright (c) 2021 Kyomotoi
+'''
+
 import re
 import json
 from aiohttp.client import ClientSession
@@ -25,7 +41,7 @@ bilibili_rich = on_message(
 @bilibili_rich.handle()
 async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
     global waiting_list
-    msg = str(event.raw_message)
+    msg = str(event.raw_message).replace("\\", "")
     user = event.user_id
     bv = False
     
@@ -45,9 +61,9 @@ async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
             except:
                 return
     else:
-        bv_url = re.findall(r"(..........b23...\S+\=)", msg)
-        bv_url = bv_url[0].replace("\\", "")
-        print(bv_url)
+        patt = r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-&?=%.]+"
+        bv_url = re.findall(patt, msg)
+        bv_url = bv_url[3]
         async with ClientSession() as session:
             async with session.get(
                 url=bv_url) as r:

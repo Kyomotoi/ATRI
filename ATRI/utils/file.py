@@ -1,7 +1,10 @@
 import aiofiles
+import urllib
 from pathlib import Path
 
-from ATRI.exceptions import WriteError
+from ATRI.exceptions import RequestTimeOut, WriteError
+
+from .request import get_content
 
 
 async def write_file(path: Path, text, encoding='utf-8') -> None:
