@@ -1,26 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: admin.py
-Created Date: 2021-02-04 21:17:12
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:14:01 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
+import os
 import json
 import time
 from pathlib import Path
 from datetime import datetime
 
 from nonebot.permission import SUPERUSER
-from nonebot.plugin import on_command, on_message, CommandGroup
 from nonebot.adapters.cqhttp import (
     Bot,
     MessageEvent,
@@ -28,7 +12,8 @@ from nonebot.adapters.cqhttp import (
 )
 from nonebot.typing import T_State
 
-from ATRI.exceptions import WriteError, read_error
+from ATRI.service import Service as sv
+from ATRI.exceptions import WriteError, load_error
 from ATRI.utils.file import open_file
 from ATRI.log import (
     logger,
@@ -38,10 +23,11 @@ from ATRI.log import (
 
 
 ADMIN_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'admin'
+os.makedirs(ADMIN_DIR, exist_ok=True)
 
 
 # 收集bot所在的群聊聊天记录
-chat_monitor = on_message()
+chat_monitor = sv.on_message()
 
 @chat_monitor.handle()
 async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
@@ -96,8 +82,9 @@ async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
 
 ESSENTIAL_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'essential'
 
-request_friend = on_command(
-    "好友申请",
+request_friend = sv.on_command(
+    name="好友申请处理",
+    cmd="好友申请",
     permission=SUPERUSER
 )
 
@@ -135,8 +122,9 @@ async def _request_friend(bot: Bot, event: MessageEvent) -> None:
         await request_friend.finish("阿...请检查输入——！")
 
 
-request_group = on_command(
-    "群聊申请",
+request_group = sv.on_command(
+    name="群聊申请处理",
+    cmd="群聊申请",
     permission=SUPERUSER
 )
 
@@ -184,8 +172,9 @@ async def _request_group(bot: Bot, event: MessageEvent) -> None:
         await request_friend.finish("阿...请检查输入——！")
 
 
-broadcast = on_command(
-    "/broadcast",
+broadcast = sv.on_command(
+    name="广播",
+    cmd="/broadcast",
     permission=SUPERUSER
 )
 
@@ -224,8 +213,9 @@ async def _bd(bot: Bot, event: MessageEvent, state: T_State) -> None:
     await broadcast.finish(repo_msg)
 
 
-track_error = on_command(
-    "/track",
+track_error = sv.on_command(
+    name="错误堆栈查看",
+    cmd="/track",
     permission=SUPERUSER
 )
 
@@ -241,7 +231,7 @@ async def _(bot: Bot, event: MessageEvent, state: T_State) -> None:
     data = {}
     
     try:
-        data = read_error(track_id)
+        data = load_error(track_id)
     except:
         await track_error.finish("Ignore track ID!")
     
@@ -249,14 +239,15 @@ async def _(bot: Bot, event: MessageEvent, state: T_State) -> None:
         f"ID: {track_id}\n"
         f"Time: {data['time']}\n"
         f"Prompt: {data['prompt']}\n"
-        f"{data['error_content']}"
+        f"{data['content']}"
     )
     
     await track_error.finish(msg0)
 
 
-get_log = on_command(
-    "/getlog",
+get_log = sv.on_command(
+    name="获取控制台信息",
+    cmd="/getlog",
     permission=SUPERUSER
 )
 
@@ -290,7 +281,11 @@ async def _get_log(bot: Bot, event: MessageEvent) -> None:
     await get_log.finish("\n".join(content).replace("[36mATRI[0m", "ATRI"))  # type: ignore
 
 
-shutdown = on_command("/shutdown", permission=SUPERUSER)
+shutdown = sv.on_command(
+    name="紧急停机",
+    cmd="/shutdown",
+    permission=SUPERUSER
+)
 
 @shutdown.handle()
 async def _shutdown(bot: Bot, event: MessageEvent, state: T_State) -> None:

@@ -1,29 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: __init__.py
-Created Date: 2021-02-19 22:16:34
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:18:10 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
 import re
 import json
 
 from nonebot.adapters.cqhttp.message import MessageSegment
-from nonebot.plugin import on_command
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 from nonebot.adapters.cqhttp.message import Message
 from nonebot.typing import T_State
 
-from ATRI.rule import is_in_banlist, is_in_dormant
+from ATRI.service import Service as sv
+from ATRI.rule import is_block, is_in_dormant
 from ATRI.exceptions import RequestTimeOut
 from ATRI.utils.request import get_bytes
 
@@ -33,9 +17,10 @@ from .data_source import to_simple_string
 URL = "https://trace.moe/api/search?url="
 
 
-anime_search = on_command(
-    "/anime",
-    rule=is_in_banlist() & is_in_dormant()
+anime_search = sv.on_command(
+    name="以图搜番",
+    cmd="/anime",
+    rule=is_block() & is_in_dormant()
 )
 
 @anime_search.handle()

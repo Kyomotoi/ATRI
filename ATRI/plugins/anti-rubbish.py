@@ -1,19 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: anti-rubbish.py
-Created Date: 2021-02-15 12:39:24
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:13:51 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
 import json
 from pathlib import Path
 from datetime import datetime
@@ -23,7 +7,7 @@ from nonebot.plugin import on_command, on_message
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 
 from ATRI.log import logger
-from ATRI.rule import is_in_banlist
+from ATRI.rule import is_block
 from ATRI.config import nonebot_config
 from ATRI.utils.file import write_file
 from ATRI.utils.apscheduler import scheduler
@@ -58,7 +42,7 @@ async def _anti_rubbish(bot: Bot, event: GroupMessageEvent) -> None:
                 f"GET 吃屎人 {user}[@群{group}] 第{noob_data[user][key]}次: {msg}")
 
 
-rubbish = on_command("/rubbish", rule=is_in_banlist())
+rubbish = on_command("/rubbish", rule=is_block())
 
 @rubbish.handle()
 async def _rubbish(bot: Bot, event: GroupMessageEvent) -> None:

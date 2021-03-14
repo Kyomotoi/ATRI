@@ -1,8 +1,3 @@
-/*
- * File: config.yml
- * Project: https://github.com/Kyomotoi/ATRI
- */
-
 BotSelfConfig:
   host: "127.0.0.1"
   port: 25565
@@ -11,7 +6,7 @@ BotSelfConfig:
   nickname: ["ATRI", "Atri", "atri", "亚托莉", "アトリ"]
   command_start: ["", "/"]
   command_sep: ["."]
-  session_expire_timeout: 3
+  session_expire_timeout: 120
   session_exciting_time: 3
 
 NetworkPost:

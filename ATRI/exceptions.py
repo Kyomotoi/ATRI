@@ -1,19 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: exceptions.py
-Created Date: 2021-02-02 18:24:59
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:00:35 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
+import os
 import time
 import json
 import string
@@ -23,63 +8,45 @@ from typing import Optional
 from traceback import format_exc
 from pydantic.main import BaseModel
 
-from nonebot.adapters.cqhttp import MessageEvent
+from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.matcher import Matcher
+from nonebot.typing import T_State
 from nonebot.message import run_postprocessor
 
 from .log import logger
 
 
-ERROR_FILE = Path('.') / 'ATRI' / 'data' / 'errors'
-ERROR_FILE.parent.mkdir(exist_ok=True, parents=True)
+ERROR_DIR = Path('.') / 'ATRI' / 'data' / 'errors'
+os.makedirs(ERROR_DIR, exist_ok=True)
 
 
-class ExceptionInfo(BaseModel):
-    error_id: str
-    prompt: str
-    time: str
-    error_content: str
+def _save_error(prompt: str, content: str) -> str:
+    track_id = ''.join(sample(string.ascii_letters + string.digits, 16))
+    data = {
+        "track_id": track_id,
+        "prompt": prompt,
+        "time": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
+        "content": content
+    }
+    path = ERROR_DIR / f'{track_id}.json'
+    with open(path, 'w', encoding='utf-8') as r:
+        r.write(json.dumps(data, indent=4))
+    return track_id
 
 
-def store_error(error_id: str, prompt, error_content: str) -> None:
-    data = ExceptionInfo(
-        error_id=error_id,
-        prompt=prompt,
-        time=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
-        error_content=error_content
-    )
-
-    path = ERROR_FILE / f"{error_id}.json"
-    path.parent.mkdir(exist_ok=True, parents=True)
-    with open(path, 'w', encoding='utf-8') as target:
-        target.write(
-            json.dumps(
-                data.dict(), indent=4
-            )
-        )
-
-
-def read_error(error_id: str) -> dict:
-    path = ERROR_FILE / f"{error_id}.json"
-    try:
-        with open(path, 'r', encoding='utf-8') as target:
-            data = target.read()
-        return json.loads(data)
-    except FileNotFoundError:
-        raise FileNotFoundError
+def load_error(track_id: str) -> dict:
+    path = ERROR_DIR / f'{track_id}.json'
+    return json.loads(path.read_bytes())
 
 
 class BaseBotException(BaseException):
     prompt: Optional[str] = 'ignore'
 
     def __init__(self, prompt: Optional[str]) -> None:
-        super().__init__(self)
         self.prompt = prompt or self.__class__.prompt \
             or self.__class__.__name__
-        self.error_content = format_exc()
-        self.error_id = ''.join(
-            sample(string.ascii_letters + string.digits, 16)
-        )
+        self.track_id = _save_error(self.prompt, format_exc())
+        super().__init__(self.prompt)
 
 
 class NotConfigured(BaseBotException):
@@ -107,31 +74,29 @@ class GetStatusError(BaseBotException):
 
 
 @run_postprocessor  # type: ignore
-async def _track_error(matcher: Matcher, exception: Optional[Exception],
-            event: MessageEvent, state: dict) -> None:
-    """检测Bot运行中的报错，并进行提醒"""
-    if not exception:
+async def _track_error(matcher: Matcher,
+                       exception: Optional[Exception],
+                       bot: Bot,
+                       event: Event,
+                       state: T_State) -> None:
+    if exception is None:
         return
     
     try:
         raise exception
     except BaseBotException as Error:
         prompt = Error.prompt or Error.__class__.__name__
-        error_id = Error.error_id
-        # error_content = format_exc()
+        track_id = Error.track_id
     except Exception as Error:
-        prompt = "Unknown ERROR" + Error.__class__.__name__
-        error_id = ''.join(
-            sample(string.ascii_letters + string.digits, 16)
-        )
-        store_error(error_id, prompt, format_exc())
+        prompt = "Unknown ERROR-" + Error.__class__.__name__
+        track_id = _save_error(prompt, format_exc())
 
-    logger.debug(f"A bug has been cumming, trace ID: {error_id}")
+    logger.debug(f"A bug has been cumming, trace ID: {track_id}")
     msg = (
-        "[WARNING] 这是一个错误...\n"
-        f"Track ID: {error_id}\n"
-        f"Reason: {prompt}\n"
-        "ごんめなさい... ;w;"
+        "[WARNING] 这是一个错误... ;w;\n"
+        f"追踪ID: {track_id}\n"
+        f"触发原因: {prompt}\n"
+        "键入 来杯红茶 以联系维护者"
     )
     
-    await matcher.finish(msg)
+    await bot.send(event, msg)

@@ -1,27 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: funny.py
-Created Date: 2021-02-04 21:17:21
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:13:19 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
 from pathlib import Path
 from random import choice, randint
 
 from nonebot.adapters.cqhttp import Bot, MessageEvent
-from nonebot.plugin import on_command, on_message
 
+from ATRI.service import Service as sv
 from ATRI.rule import (
-    is_in_banlist,
+    is_block,
     is_in_dormant,
     is_in_service
 )
@@ -29,9 +13,10 @@ from ATRI.rule import (
 
 __plugin_name__ = "laugh"
 
-get_laugh = on_command(
-    "来句笑话",
-    rule=is_in_banlist() & is_in_dormant()
+get_laugh = sv.on_command(
+    name="看不懂的笑话",
+    cmd="来句笑话",
+    rule=is_block() & is_in_dormant()
     & is_in_service(__plugin_name__)
 )
 
@@ -51,9 +36,10 @@ async def _get_laugh(bot: Bot, event: MessageEvent) -> None:
 
 __plugin_name__ = "wty"
 
-me_to_you = on_message(
-    rule=is_in_banlist() & is_in_dormant() & is_in_service(__plugin_name__)
+me_to_you = sv.on_message(
+    rule=is_block() & is_in_dormant() & is_in_service(__plugin_name__)
 )
+sv.manual_reg_service("你又彳亍了")
 
 @me_to_you.handle()
 async def _me_to_you(bot: Bot, event: MessageEvent) -> None:

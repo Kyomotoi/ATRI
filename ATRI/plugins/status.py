@@ -1,36 +1,30 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: status.py
-Created Date: 2021-02-19 21:52:56
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:11:30 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
 import psutil
-
-from nonebot.plugin import on_command
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
-from ATRI.rule import is_in_banlist
+from ATRI.log import logger as log
+from ATRI.service import Service as sv
+from ATRI.rule import is_block
 from ATRI.exceptions import GetStatusError
+from ATRI.utils.apscheduler import scheduler
+from ATRI.config import nonebot_config
 
 
-ping = on_command("/ping", rule=is_in_banlist())
+ping = sv.on_command(
+    name="测试机器人",
+    cmd="/ping",
+    rule=is_block()
+)
 
 @ping.handle()
 async def _ping(bot: Bot, event: MessageEvent) -> None:
     await ping.finish("I'm fine.")
 
 
-status = on_command("/status", rule=is_in_banlist())
+status = sv.on_command(
+    name="检查机器人状态",
+    cmd="/status",
+    rule=is_block()
+)
 
 @status.handle()
 async def _status(bot: Bot, event: MessageEvent) -> None:
@@ -64,3 +58,48 @@ async def _status(bot: Bot, event: MessageEvent) -> None:
     ) + msg
     
     await status.finish(msg0)
+
+
+@scheduler.scheduled_job(
+    'interval',
+    minutes=5,
+    misfire_grace_time=10
+)
+async def _():
+    log.info("开始自检")
+    try:
+        cpu = psutil.cpu_percent(interval=1)
+        mem = psutil.virtual_memory().percent
+        disk = psutil.disk_usage("/").percent
+        inteSENT = psutil.net_io_counters().bytes_sent / 1000000 # type: ignore
+        inteRECV = psutil.net_io_counters().bytes_sent / 1000000 # type: ignore
+    except GetStatusError:
+        raise GetStatusError("Failed to get status.")
+    
+    msg = ""
+    if cpu > 80:  # type: ignore
+        msg = "咱感觉有些头晕..."
+        if mem > 80:
+            msg = "咱感觉有点头晕并且有点累..."
+    elif mem > 80:
+        msg = "咱感觉有点累..."
+    elif disk > 80:
+        msg = "咱感觉身体要被塞满了..."
+    else:
+        log.info("运作正常")
+        return
+    
+    msg0 = (
+        "Self status:\n"
+        f"* CPU: {cpu}%\n"
+        f"* MEM: {mem}%\n"
+        f"* DISK: {disk}%\n"
+        f"* netSENT: {inteSENT}MB\n"
+        f"* netRECV: {inteRECV}MB\n"
+    ) + msg
+    
+    for sup in nonebot_config["superusers"]:
+        await sv.NetworkPost.send_private_msg(
+            user_id=sup,
+            message=msg0
+        )

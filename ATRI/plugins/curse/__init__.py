@@ -1,24 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: __init__.py
-Created Date: 2021-02-04 17:58:27
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:14:41 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
-from nonebot.plugin import on_command
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
+from ATRI.service import Service as sv
 from ATRI.rule import (
-    is_in_banlist,
+    is_block,
     is_in_dormant,
     is_in_service
 )
@@ -33,10 +17,11 @@ sick_list = []
 
 __plugin_name__ = 'curse'
 
-curse = on_command(
-    "口臭一下",
+curse = sv.on_command(
+    name="口臭",
+    cmd="口臭一下",
     aliases={"口臭", "骂我"},
-    rule=is_in_banlist() & is_in_dormant()
+    rule=is_block() & is_in_dormant()
     & is_in_service(__plugin_name__)
 )
 

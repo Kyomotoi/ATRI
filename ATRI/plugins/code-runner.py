@@ -1,27 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: code-runner.py
-Created Date: 2021-02-20 07:43:44
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:13:28 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
 """
 Idea from: https://github.com/cczu-osa/aki
 """
 import json
-from nonebot.plugin import on_command
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
-from ATRI.rule import is_in_banlist, is_in_dormant
+from ATRI.service import Service as sv
+from ATRI.rule import is_block, is_in_dormant
 from ATRI.utils.request import post_bytes
 from ATRI.exceptions import RequestTimeOut
 
@@ -56,7 +40,11 @@ SUPPORTED_LANGUAGES = {
 }
 
 
-code_runner = on_command("/code", rule=is_in_banlist() & is_in_dormant())
+code_runner = sv.on_command(
+    name="运行代码",
+    cmd="/code",
+    rule=is_block() & is_in_dormant()
+)
 
 @code_runner.handle()
 async def _code_runner(bot: Bot, event: MessageEvent) -> None:

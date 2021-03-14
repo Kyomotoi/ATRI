@@ -1,30 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: __init__.py
-Created Date: 2021-02-07 09:34:23
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 3:14:28 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
 import re
 import json
 from aiohttp.client import ClientSession
-
 from nonebot.adapters.cqhttp import Bot, MessageEvent
-from nonebot.plugin import on_message
 
+from ATRI.service import Service as sv
 from ATRI.utils.request import get_bytes
 from ATRI.utils.list import count_list, del_list_aim
 from ATRI.rule import (
-    is_in_banlist,
+    is_block,
     is_in_dormant,
 )
 
@@ -34,9 +17,10 @@ from .data_source import dec
 waiting_list = []
 
 
-bilibili_rich = on_message(
-    rule=is_in_banlist() & is_in_dormant()
+bilibili_rich = sv.on_message(
+    rule=is_block() & is_in_dormant()
 )
+sv.manual_reg_service("监听b站小程序")
 
 @bilibili_rich.handle()
 async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:

@@ -1,24 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: rule.py
-Created Date: 2021-02-03 15:33:57
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 2:58:18 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
 import datetime
 from random import choice
 
 from nonebot.rule import Rule
-from nonebot.adapters.cqhttp.event import Event
 from nonebot.adapters.cqhttp import GroupMessageEvent, PokeNotifyEvent
 
 from .config import config
@@ -37,7 +20,7 @@ def is_in_service(service: str) -> Rule:
     return Rule(_is_in_service)
 
 
-def is_in_banlist() -> Rule:
+def is_block() -> Rule:
     async def _is_in_banlist(bot, event, state) -> bool:
         return sv.BlockSystem.auth_user(int(event.get_user_id()))
     

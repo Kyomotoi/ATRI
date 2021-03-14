@@ -1,19 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding:utf-8 -*-
-'''
-File: service.py
-Created Date: 2021-02-27 11:01:39
-Author: Kyomotoi
-Email: Kyomotoiowo@gmail.com
-License: GPLv3
-Project: https://github.com/Kyomotoi/ATRI
---------
-Last Modified: Sunday, 7th March 2021 2:56:28 pm
-Modified By: Kyomotoi (kyomotoiowo@gmail.com)
---------
-Copyright (c) 2021 Kyomotoi
-'''
-
 import os
 import json
 from pathlib import Path
@@ -43,23 +27,48 @@ if TYPE_CHECKING:
 
 
 SERVICE_DIR = Path('.') / 'ATRI' / 'data' / 'service'
+SERVICES_DIR = SERVICE_DIR / 'services'
 os.makedirs(SERVICE_DIR, exist_ok=True)
+os.makedirs(SERVICES_DIR, exist_ok=True)
 
 
 matcher_list: list = []
 is_sleep: bool = False
 
 
+def _load_block_list() -> dict:
+    file_name = "ban.json"
+    file = SERVICE_DIR / file_name
+    try:
+        data = json.loads(file.read_bytes())
+    except:
+        data = {
+            "user": [],
+            "group": []
+        }
+        with open(file, "w") as r:
+            r.write(json.dumps(data, indent=4))
+    return data
+
+
+def _save_block_list(data: dict) -> None:
+    file_name = "ban.json"
+    file = SERVICE_DIR / file_name
+    with open(file, "w") as r:
+        r.write(json.dumps(data, indent=4))
+
+
 def _load_service_config(service: str, docs: str = None) -> dict:
     file_name = service + ".json"
-    file = SERVICE_DIR / file_name
+    file = SERVICES_DIR / file_name
     try:
         data = json.loads(file.read_bytes())
     except:
         service_info = {
             "name": service,
             "docs": docs,
-            "disable_group": []
+            "disable_user": _load_block_list()['user'],
+            "disable_group": _load_block_list()['group']
         }
         with open(file, "w") as r:
             r.write(json.dumps(service_info, indent=4))
@@ -69,7 +78,7 @@ def _load_service_config(service: str, docs: str = None) -> dict:
 
 def _save_service_config(service: str, data: dict) -> None:
     file_name = service + ".json"
-    file = SERVICE_DIR / file_name
+    file = SERVICES_DIR / file_name
     with open(file, "w") as r:
         r.write(json.dumps(data, indent=4))
 
@@ -82,11 +91,12 @@ class Service:
     @staticmethod
     def manual_reg_service(service: str):
         file_name = service + ".json"
-        file = SERVICE_DIR / file_name
+        file = SERVICES_DIR / file_name
         service_info = {
             "name": service,
             "docs": None,
-            "disable_group": []
+            "disable_user": _load_block_list()['user'],
+            "disable_group": _load_block_list()['group']
         }
         with open(file, "w") as r:
             r.write(json.dumps(service_info, indent=4))
@@ -130,7 +140,7 @@ class Service:
 
     @staticmethod
     def on_notice(name: str,
-                  docs: str,
+                  docs: Optional[str] = None,
                   rule: Optional[Union[Rule, T_RuleChecker]] = None,
                   *,
                   handlers: Optional[List[T_Handler]] = None,
@@ -152,7 +162,7 @@ class Service:
 
     @staticmethod
     def on_request(name: str,
-                   docs: str,
+                   docs: Optional[str] = None,
                    rule: Optional[Union[Rule, T_RuleChecker]] = None,
                    *,
                    handlers: Optional[List[T_Handler]] = None,
@@ -175,8 +185,8 @@ class Service:
     @classmethod
     def on_command(cls,
                    name: str,
-                   docs: str,
                    cmd: Union[str, Tuple[str, ...]],
+                   docs: Optional[str] = None,
                    rule: Optional[Union[Rule, T_RuleChecker]] = None,
                    aliases: Optional[Set[Union[str, Tuple[str, ...]]]] = None,
                    **kwargs) -> Type[Matcher]:
@@ -201,8 +211,8 @@ class Service:
     @classmethod
     def on_keyword(cls,
                    name: str,
-                   docs: str,
                    keywords: Set[str],
+                   docs: Optional[str] = None,
                    rule: Optional[Union[Rule, T_RuleChecker]] = None,
                    **kwargs) -> Type[Matcher]:
         _load_service_config(name, docs)
@@ -429,27 +439,33 @@ class Service:
         path = SERVICE_DIR / file_name
         
         @classmethod
-        def get_list(cls) -> dict:
-            try:
-                return json.loads(cls.path.read_bytes())
-            except:
-                with open(cls.path, "w") as r:
-                    json.dump("{}", r)
-                return {}
-        
-        @classmethod
         def auth_user(cls, user: int) -> bool:
-            return False if user in cls.get_list() else True
+            return False if user in _load_block_list()['user'] else True
+        
+        @staticmethod
+        def auth_group(group: int) -> bool:
+            return False if group in _load_block_list()['group'] else True
         
         @classmethod
-        def control_list(cls, user: int, is_enable: bool) -> None:
-            data = cls.get_list()
-            if is_enable:
-                data[user] = datetime.now().__str__
-                log.info(f"New blocked user: {user} | Time: {datetime.now()}")
-            else:
-                del data[user]
-                log.info(f"User {user} has been unblock.")
-
+        def control_list(cls,
+                         is_enable: bool,
+                         user: Optional[int] = None,
+                         group: Optional[int] = None) -> None:
+            data = _load_block_list()
+            if user:
+                if is_enable:
+                    data['user'][user] = datetime.now().__str__
+                    log.info(f"New blocked user: {user} | Time: {datetime.now()}")
+                else:
+                    del data[user]
+                    log.info(f"User {user} has been unblock.")
+            elif group:
+                if is_enable:
+                    data['group'][group] = datetime.now().__str__
+                    log.info(f"New blocked group: {group} | Time: {datetime.now()}")
+                else:
+                    del data[user]
+                    log.info(f"Group {group} has been unblock.")
+            
             with open(cls.path, "w") as r:
                 json.dump(data, r)
