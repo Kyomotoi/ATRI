@@ -46,25 +46,22 @@ def controlSwitch(func_name: str,
             f.close()
 
     else:
-        pass
+        with open(file_switch_all, 'r') as f:
+            try:
+                data_switch_all = json.load(f)
+            except:
+                data_switch_all = {}
 
+        if not data_switch_all[f"{func_name}"]:
+            return f"Can't find func({func_name})"
 
-    with open(file_switch_all, 'r') as f:
-        try:
-            data_switch_all = json.load(f)
-        except:
-            data_switch_all = {}
+        data_switch_all[f"{func_name}"] = f"{control}"
 
-    if not data_switch_all[f"{func_name}"]:
-        return f"Can't find func({func_name})"
+        with open(file_switch_all, 'w') as f:
+            f.write(json.dumps(data_switch_all))
+            f.close()
 
-    data_switch_all[f"{func_name}"] = f"{control}"
-
-    with open(file_switch_all, 'w') as f:
-        f.write(json.dumps(data_switch_all))
-        f.close()
-
-    if control == True:
+    if control:
         if group:
             msg = f"({func_name}) has been opened for group ({group})!"
         else:
