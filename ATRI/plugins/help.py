@@ -30,7 +30,7 @@ help = sv.on_command(
 @help.handle()
 async def _help(bot: Bot, event: MessageEvent) -> None:
     msg = str(event.message).split(' ')
-    if not msg:
+    if not msg[0]:
         msg = (
             "呀？找不到路了？\n"
             "/h list 查看可用命令列表\n"
