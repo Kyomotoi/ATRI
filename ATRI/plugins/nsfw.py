@@ -29,8 +29,8 @@ async def _nsfw_checking(bot: Bot, event: GroupMessageEvent) -> None:
         group = event.group_id
         check = await coolq_code_check(msg, user, group)
         if check:
-            url = nsfw_url + re.findall(r"url=(.*?)]", msg)[0]
             try:
+                url = nsfw_url + re.findall(r"url=(.*?)]", msg)[0]
                 data = json.loads(await get_bytes(url))
             except:
                 log.warning('检测涩图失败，请查阅文档以获取帮助')
