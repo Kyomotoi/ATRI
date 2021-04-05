@@ -19,14 +19,23 @@ HITOKOTO_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'hitokoto'
 sick_list = []
 
 
-__plugin_name__ = 'hitokoto'
+__doc__ = """
+抑郁一下
+权限组：所有人
+用法：
+  @一言
+  抑郁一下
+  网抑云
+补充：
+  @：at Bot
+"""
 
 hitokoto = sv.on_command(
-    name="Hitokoto",
     cmd="一言",
+    docs=__doc__,
     aliases={"抑郁一下", "网抑云"},
     rule=is_block() & is_in_dormant()
-    & is_in_service(__plugin_name__) & to_bot()
+    & is_in_service('一言') & to_bot()
 )
 
 @hitokoto.handle()

@@ -6,12 +6,12 @@ from ATRI.service import Service as sv
 from ATRI.rule import is_block
 from ATRI.exceptions import GetStatusError
 from ATRI.utils.apscheduler import scheduler
-from ATRI.config import nonebot_config
+from ATRI.config import Config
 
 
 ping = sv.on_command(
-    name="测试机器人",
     cmd="/ping",
+    docs="测试机器人",
     rule=is_block()
 )
 
@@ -21,8 +21,8 @@ async def _ping(bot: Bot, event: MessageEvent) -> None:
 
 
 status = sv.on_command(
-    name="检查机器人状态",
     cmd="/status",
+    docs="检查机器人状态",
     rule=is_block()
 )
 
@@ -98,7 +98,7 @@ async def _():
         f"* netRECV: {inteRECV}MB\n"
     ) + msg
     
-    for sup in nonebot_config["superusers"]:
+    for sup in Config.BotSelfConfig.superusers:
         await sv.NetworkPost.send_private_msg(
             user_id=sup,
             message=msg0

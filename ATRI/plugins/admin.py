@@ -12,6 +12,7 @@ from nonebot.adapters.cqhttp import (
 )
 from nonebot.typing import T_State
 
+from ATRI.config import Config
 from ATRI.service import Service as sv
 from ATRI.exceptions import WriteError, load_error
 from ATRI.utils.file import open_file
@@ -80,11 +81,12 @@ async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
     else:
         pass
 
+
 ESSENTIAL_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'essential'
 
 request_friend = sv.on_command(
-    name="好友申请处理",
     cmd="好友申请",
+    docs="好友申请处理",
     permission=SUPERUSER
 )
 
@@ -123,8 +125,8 @@ async def _request_friend(bot: Bot, event: MessageEvent) -> None:
 
 
 request_group = sv.on_command(
-    name="群聊申请处理",
     cmd="群聊申请",
+    docs="群聊申请处理",
     permission=SUPERUSER
 )
 
@@ -173,8 +175,8 @@ async def _request_group(bot: Bot, event: MessageEvent) -> None:
 
 
 broadcast = sv.on_command(
-    name="广播",
-    cmd="/broadcast",
+    cmd="/bc",
+    docs="广播\n用法：/bc 广播内容",
     permission=SUPERUSER
 )
 
@@ -214,8 +216,8 @@ async def _bd(bot: Bot, event: MessageEvent, state: T_State) -> None:
 
 
 track_error = sv.on_command(
-    name="错误堆栈查看",
     cmd="/track",
+    docs="报错堆栈查看\n用法：/track 追踪ID",
     permission=SUPERUSER
 )
 
@@ -246,8 +248,8 @@ async def _(bot: Bot, event: MessageEvent, state: T_State) -> None:
 
 
 get_log = sv.on_command(
-    name="获取控制台信息",
     cmd="/getlog",
+    docs="获取控制台信息\n用法：/getlog 等级：info,warning,debug 行数：比如-20即最近20行",
     permission=SUPERUSER
 )
 
@@ -282,8 +284,8 @@ async def _get_log(bot: Bot, event: MessageEvent) -> None:
 
 
 shutdown = sv.on_command(
-    name="紧急停机",
-    cmd="/shutdown",
+    cmd="/st",
+    docs="紧急停机",
     permission=SUPERUSER
 )
 
@@ -300,3 +302,101 @@ async def __shutdown(bot: Bot, event: MessageEvent, state: T_State) -> None:
         exit(0)
     else:
         await shutdown.finish("再考虑下先吧 ;w;")
+
+
+__doc__ = """
+懒得和你废话，block了
+权限组：维护者
+用法：
+  /b user,group 0,1
+补充：
+  user：QQ号
+  group：QQ群号
+  0,1：对应布尔值False, True
+  范围为全局
+"""
+
+block = sv.on_command(
+    cmd="/b",
+    docs="懒得和你废话，block了\n用法：/b u,g 0,1",
+    permission=SUPERUSER
+)
+
+@block.handle()
+async def _block(bot: Bot, event: MessageEvent) -> None:
+    msg = str(event.message).split(' ')
+    _type = msg[0]
+    arg = int(msg[1])
+    is_enabled = bool(int(msg[2]))
+    b_type = ""
+    
+    status = "封禁" if is_enabled else "解封"
+    
+    if _type == "g":
+        sv.BlockSystem.control_list(is_enabled=is_enabled, group=arg)
+        b_type = "Group"
+    elif _type == "u":
+        sv.BlockSystem.control_list(is_enabled, user=arg)
+        b_type = "User"
+    else:
+        await block.finish("请检查输入...")
+
+    await block.finish(f"已成功将[{b_type}@{arg}]{status}")
+
+
+__doc__ = """
+功能开关控制
+权限组：维护者，群管理
+用法：
+  对于维护者：
+    /s 目标指令 u+int,g+int,global 0,1
+  对于群管理：
+    /s 目标指令 0,1
+补充：
+  user：QQ号
+  group：QQ群号
+  global：全局
+  0,1：对应布尔值False, True
+示例：
+  对于维护者：
+    /s /status u123456789 0
+  对于群管理：
+    /s /status 0
+"""
+
+service_control = sv.on_command(
+    cmd="/s",
+    docs=__doc__,
+    permission=SUPERUSER
+)
+
+@service_control.handle()
+async def _service_control(bot: Bot, event: MessageEvent) -> None:
+    msg = str(event.message).split(' ')
+    user = event.user_id
+    cmd = msg[0]
+    _type = msg[1]
+    is_enabled = bool(msg[2])
+    
+    status = "封禁" if is_enabled else "解封"
+    
+    if user in Config.BotSelfConfig.superusers:
+        if _type == "global":
+            sv.control_service(cmd, True, is_enabled)
+        else:
+            if "u" in _type:
+                qq = _type.replace('u', '')
+                sv.control_service(cmd, False, is_enabled, user=int(qq))
+            elif "g" in _type:
+                group = _type.replace('g', '')
+                sv.control_service(cmd, False, is_enabled, group=int(group))
+            else:
+                await service_control.finish("请检查输入~！")
+    else:
+        if isinstance(event, GroupMessageEvent):
+            group = event.group_id
+            sv.control_service(cmd, False, bool(_type), group=group)
+        else:
+            await service_control.finish("此功能仅在群聊中触发")
+    
+    await service_control.finish(f"{cmd}已针对[{_type}]实行[{status}]")

@@ -14,7 +14,7 @@ from ATRI.rule import (
 from .data_source import dec
 
 
-waiting_list = []
+temp_list = []
 
 
 bilibili_rich = sv.on_message(
@@ -24,16 +24,9 @@ sv.manual_reg_service("监听b站小程序")
 
 @bilibili_rich.handle()
 async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
-    global waiting_list
+    global temp_list
     msg = str(event.raw_message).replace("\\", "")
-    user = event.user_id
     bv = False
-    
-    if count_list(waiting_list, user) == 5:
-        waiting_list = del_list_aim(waiting_list, user)
-        return
-
-    waiting_list.append(user)
     
     if "qqdocurl" not in msg:
         if "av" in msg:
@@ -59,6 +52,13 @@ async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
             av = re.findall(r"(av\d+)", msg)[0].replace('av', '')
         else:
             return
+    
+    if count_list(temp_list, av) == 4:
+        await bot.send(event, "你是怕别人看不到么发这么多次？")
+        temp_list = del_list_aim(temp_list, av)
+        return
+    
+    temp_list.append(av)
     
     try:
         URL = f"https://api.kyomotoi.moe/api/bilibili/v2/?aid={av}"

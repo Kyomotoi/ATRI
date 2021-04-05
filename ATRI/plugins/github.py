@@ -12,7 +12,6 @@ URL = "https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}"
 
 
 github_issues = sv.on_message(rule=is_block() & is_in_dormant())
-sv.manual_reg_service("GitHubIssue速览")
 
 @github_issues.handle()
 async def _github_issues(bot: Bot, event: MessageEvent) -> None:

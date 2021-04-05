@@ -23,9 +23,10 @@ from nonebot.adapters.cqhttp import (
 import ATRI
 from ATRI.log import logger
 from ATRI.exceptions import WriteError
-from ATRI.config import nonebot_config
+from ATRI.config import Config
 from ATRI.rule import is_block
 from ATRI.service import Service as sv
+from ATRI.utils.cqcode import coolq_code_check
 
 
 PLUGIN_INFO_DIR = Path('.') / 'ATRI' / 'data' / 'service' / 'services'
@@ -59,7 +60,7 @@ async def shutdown() -> None:
 
 @driver.on_bot_connect
 async def connect(bot) -> None:
-    for superuser in nonebot_config["superusers"]:
+    for superuser in Config.BotSelfConfig.superusers:
         await sv.NetworkPost.send_private_msg(
             int(superuser),
             "WebSocket 成功连接，数据开始传输。"
@@ -68,7 +69,7 @@ async def connect(bot) -> None:
 
 @driver.on_bot_disconnect
 async def disconnect(bot) -> None:
-    for superuser in nonebot_config["superusers"]:
+    for superuser in Config.BotSelfConfig.superusers:
         try:
             await sv.NetworkPost.send_private_msg(
                 int(superuser),
@@ -82,7 +83,7 @@ ESSENTIAL_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'essential'
 os.makedirs(ESSENTIAL_DIR, exist_ok=True)
 
 # 处理：好友请求
-request_friend_event = sv.on_request("Friends request", rule=is_block())
+request_friend_event = sv.on_request(rule=is_block())
 
 @request_friend_event.handle()
 async def _request_friend_event(bot, event: FriendRequestEvent) -> None:
@@ -108,7 +109,7 @@ async def _request_friend_event(bot, event: FriendRequestEvent) -> None:
     except WriteError:
         raise WriteError("Writing file failed!")
     
-    for superuser in nonebot_config["superusers"]:
+    for superuser in Config.BotSelfConfig.superusers:
         msg = (
             "主人，收到一条好友请求：\n"
             f"请求人：{event.get_user_id()}\n"
@@ -122,7 +123,7 @@ async def _request_friend_event(bot, event: FriendRequestEvent) -> None:
 
 
 # 处理：邀请入群，如身为管理，还附有入群请求
-request_group_event = sv.on_request("Group request",rule=is_block())
+request_group_event = sv.on_request(rule=is_block())
 
 @request_group_event.handle()
 async def _request_group_event(bot, event: GroupRequestEvent) -> None:
@@ -150,7 +151,7 @@ async def _request_group_event(bot, event: GroupRequestEvent) -> None:
     except WriteError:
         raise WriteError("Writing file failed!")
     
-    for superuser in nonebot_config["superusers"]:
+    for superuser in Config.BotSelfConfig.superusers:
         msg = (
             "主人，收到一条入群请求：\n"
             f"请求人：{event.get_user_id()}\n"
@@ -164,39 +165,39 @@ async def _request_group_event(bot, event: GroupRequestEvent) -> None:
         
 
 # 处理群成员变动
-group_member_event = sv.on_notice("Group member change")
+group_member_event = sv.on_notice()
 
 @group_member_event.handle()
-async def _group_member_event(bot: Bot, event) -> None:
-    if isinstance(event, GroupIncreaseNoticeEvent):
-        msg = (
-            "好欸！事新人！\n"
-            f"在下 {choice(list(nonebot_config['nickname']))} 哒!w!"
-        )
-        await group_member_event.finish(msg)
+async def _group_member_event(bot: Bot, event: GroupIncreaseNoticeEvent) -> None:
+    msg = (
+        "好欸！事新人！\n"
+        f"在下 {choice(list(Config.BotSelfConfig.nickname))} 哒!w!"
+    )
+    await group_member_event.finish(msg)
 
-    elif isinstance(event, GroupDecreaseNoticeEvent):
-        if event.is_tome():
-            msg = (
-                "呜呜呜，主人"
-                f"咱被群 {event.group_id} 里的 {event.operator_id} 扔出来了..."
+@group_member_event.handle()
+async def _gro(bot: Bot, event: GroupDecreaseNoticeEvent) -> None:
+    if event.is_tome():
+        msg = (
+            "呜呜呜，主人"
+            f"咱被群 {event.group_id} 里的 {event.operator_id} 扔出来了..."
+        )
+        for superuser in Config.BotSelfConfig.superusers:
+            await sv.NetworkPost.send_private_msg(
+                user_id=int(superuser),
+                message=msg
             )
-            for superuser in nonebot_config["superusers"]:
-                await sv.NetworkPost.send_private_msg(
-                    user_id=int(superuser),
-                    message=msg
-                )
-        else:
-            await group_member_event.finish(f"{event.user_id} 离开了我们...")
+    else:
+        await group_member_event.finish(f"{event.user_id} 离开了我们...")
 
 
 # 处理群管理事件
-group_admin_event = sv.on_notice("Group admin change")
+group_admin_event = sv.on_notice()
 
 @group_admin_event.handle()
 async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent) -> None:
     if event.is_tome():
-        for superuser in nonebot_config["superusers"]:
+        for superuser in Config.BotSelfConfig.superusers:
             await sv.NetworkPost.send_private_msg(
                 user_id=int(superuser),
                 message=f"好欸！主人！我在群 {event.group_id} 成为了管理！！"
@@ -204,7 +205,7 @@ async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent) -> None:
 
 
 # 处理群禁言事件
-group_ban_event = sv.on_notice("Group ban change")
+group_ban_event = sv.on_notice()
 
 @group_ban_event.handle()
 async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent) -> None:
@@ -215,7 +216,7 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent) -> None:
                 f"咱在群 {event.group_id} 被 {event.operator_id} 塞上了口球...\n"
                 f"时长...是 {event.duration} 秒"
             )
-            for superuser in nonebot_config["superusers"]:
+            for superuser in Config.BotSelfConfig.superusers:
                 await sv.NetworkPost.send_private_msg(
                     user_id=int(superuser),
                     message=msg
@@ -225,7 +226,7 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent) -> None:
                 "好欸！主人\n"
                 f"咱在群 {event.group_id} 被 {event.operator_id} 上的口球解除了！"
             )
-            for superuser in nonebot_config["superusers"]:
+            for superuser in Config.BotSelfConfig.superusers:
                 await sv.NetworkPost.send_private_msg(
                     user_id=int(superuser),
                     message=msg
@@ -233,7 +234,7 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent) -> None:
 
 
 # 处理群红包运气王事件
-lucky_read_bag_event = sv.on_notice("Group read bag winner")
+lucky_read_bag_event = sv.on_notice()
 
 @lucky_read_bag_event.handle()
 async def _lucky_read_bag_event(bot, event: LuckyKingNotifyEvent) -> None:
@@ -245,7 +246,7 @@ async def _lucky_read_bag_event(bot, event: LuckyKingNotifyEvent) -> None:
 
 
 # 处理群文件上传事件
-group_file_upload_event = sv.on_notice("Group file change")
+group_file_upload_event = sv.on_notice()
 
 @group_file_upload_event.handle()
 async def _group_file_upload_event(bot,
@@ -254,51 +255,56 @@ async def _group_file_upload_event(bot,
 
 
 # 处理撤回事件
-recall_event = sv.on_notice("Group member recall")
+recall_event = sv.on_notice()
 
 @recall_event.handle()
-async def _recall_event(bot: Bot, event) -> None:
-    if isinstance(event, GroupRecallNoticeEvent):
-        repo = await bot.call_api(
-            "get_msg",
-            message_id=event.message_id
-        )
-        repo = str(repo["message"])
-        if "CQ" in repo:
-            repo = repo.replace("CQ", "QC")
+async def _recall_event(bot: Bot, event: GroupRecallNoticeEvent) -> None:
+    group = event.group_id
+    repo = await bot.call_api(
+        "get_msg",
+        message_id=event.message_id
+    )
+    repo = str(repo["message"])
+    check = await coolq_code_check(repo, group=group)
+    if not check:
+        repo = repo.replace("CQ", "QC")
 
-        msg = (
-            "主人，咱拿到了一条撤回信息！\n"
-            f"{event.user_id}@[群:{event.group_id}]\n"
-            "撤回了\n"
-            f"{repo}"
-        )
+    msg = (
+        "主人，咱拿到了一条撤回信息！\n"
+        f"{event.user_id}@[群:{event.group_id}]\n"
+        "撤回了\n"
+        f"{repo}"
+    )
 
-        await bot.send(event, "咱看到惹~！")
-        for superuser in nonebot_config["superusers"]:
-            await sv.NetworkPost.send_private_msg(
-                user_id=int(superuser),
-                message=msg
-            )
-
-    elif isinstance(event, FriendRecallNoticeEvent):
-        repo = await bot.call_api(
-            "get_msg",
-            message_id=event.message_id
-        )
-        repo = str(repo["message"])
-        if "CQ" in repo:
-            repo = repo.replace("CQ", "QC")
-
-        msg = (
-            "主人，咱拿到了一条撤回信息！\n"
-            f"{event.user_id}@[私聊]"
-            "撤回了\n"
-            f"{repo}"
+    await bot.send(event, "咱看到惹~！")
+    for superuser in Config.BotSelfConfig.superusers:
+        await sv.NetworkPost.send_private_msg(
+            user_id=int(superuser),
+            message=msg
         )
 
-        for superuser in nonebot_config["superusers"]:
-            await sv.NetworkPost.send_private_msg(
-                user_id=int(superuser),
-                message=msg
-            )
+@recall_event.handle()
+async def _rec(bot: Bot, event: FriendRecallNoticeEvent) -> None:
+    user = event.user_id
+    repo = await bot.call_api(
+        "get_msg",
+        message_id=event.message_id
+    )
+    repo = str(repo["message"])
+    check = await coolq_code_check(repo, user)
+    if not check:
+        repo = repo.replace("CQ", "QC")
+
+    msg = (
+        "主人，咱拿到了一条撤回信息！\n"
+        f"{event.user_id}@[私聊]"
+        "撤回了\n"
+        f"{repo}"
+    )
+
+    await bot.send(event, "咱看到惹~！")
+    for superuser in Config.BotSelfConfig.superusers:
+        await sv.NetworkPost.send_private_msg(
+            user_id=int(superuser),
+            message=msg
+        )

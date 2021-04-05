@@ -18,8 +18,8 @@ URL = "https://trace.moe/api/search?url="
 
 
 anime_search = sv.on_command(
-    name="以图搜番",
     cmd="/anime",
+    docs="以图搜番",
     rule=is_block() & is_in_dormant()
 )
 
@@ -31,7 +31,7 @@ async def _anime_search(bot: Bot,
     if msg:
         state["msg"] = msg
 
-@anime_search.got("msg", prompt="请发送咱一张图片~！")
+@anime_search.got("msg", prompt="请告诉咱目标图片~！")
 async def _(bot: Bot,
             event: MessageEvent,
             state: T_State) -> None:

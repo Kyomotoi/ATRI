@@ -1,171 +1,185 @@
-import os
-import json
-import time
-from random import choice
-from pathlib import Path
+import string
+from datetime import datetime
+from random import choice, sample
 
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, MessageEvent
+from nonebot.adapters.cqhttp import Bot, MessageEvent, GroupMessageEvent
 
-from ATRI.config import nonebot_config
+from ATRI.config import Config
 from ATRI.service import Service as sv
+from ATRI.utils.request import get_bytes
 from ATRI.rule import is_block, is_in_dormant, is_in_service, to_bot
 
+from .data_source import (
+    add_history,
+    add_key_temp,
+    load_key_data,
+    add_key,
+    load_key_history,
+    load_key_temp_data,
+    del_key_temp
+)
 
-# 此功能未完善
 
+# 此功能暂未完善：未添加关键词删除
 
-KEYREPO_DIV = Path('.') / 'ATRI' / 'data' / 'database' / 'KeyRepo'
-os.makedirs(KEYREPO_DIV, exist_ok=True)
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#     ！屎山注意！屎山注意！屎山注意！屎山注意！
+#          ！请自备降压药！请自备降压药！
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-__plugin_name__ = "KeyRepo"
 
 keyrepo = sv.on_message(rule=is_block()
                         & is_in_dormant()
-                        & is_in_service(__plugin_name__)
+                        & is_in_service('keyrepo')
                         & to_bot())
 
 @keyrepo.handle()
 async def _keyrepo(bot: Bot, event: MessageEvent) -> None:
     msg = str(event.get_message())
-
-    file_name = "data.json"
-    path = KEYREPO_DIV / file_name
-    try:
-        data = json.loads(path.read_bytes())
-    except:
-        with open(path, 'w') as r:
-            r.write(json.dumps({}))
-        data = {}
+    data = load_key_data()
 
     for key in data.keys():
         if key in msg:
             await keyrepo.finish(choice(data[key]))
 
 
+__doc__ = """
+关键词申请/审核
+权限组：所有人
+用法：
+    /train add (key) (repo)
+    对于维护者：
+      /train list
+      /train info (key)
+      /train r (code) (0,1)
+补充：
+  key: 关键词
+  repo: 回复
+  0,1: 对应布尔值False/True
+  code: 唯一识别码
+示例：
+  /train add hso 好涩哦
+"""
+
 train = sv.on_command(
-    name="调教",
     cmd="/train",
+    docs=__doc__,
     rule=is_block()
 )
 
-@train.got("key", prompt="哦哦哦要开始学习了！请告诉咱知识点")
-async def _train(bot: Bot, event: MessageEvent, state: T_State) -> None:
-    if "[CQ" in state["key"]:
-        await train.reject("仅支持纯文本呢...")
-
-@train.got("repo", prompt="咱该如何回答呢？")
-async def _trainR(bot: Bot, event: MessageEvent, state: T_State) -> None:
-    if "[CQ" in state["repo"]:
-        await train.reject("仅支持纯文本呢...")
-        
-    if state["key"] == "-d":
-        file_name = "review.json"
-        path = KEYREPO_DIV / file_name
-        try:
-            data = json.loads(path.read_bytes())
-        except:
-            data = {}
-
-        key = state["repo"]
-        if key not in data:
-            await train.finish("未发现该待审核的知识点呢...")
-        else:
-            msg = (
-                f"Key: {key}\n"
-                f"Repo: {data[key]['repo']}\n"
-                "已经从咱的审核列表移除！"
-            )
-            del data[key]
-            with open(path, 'w') as r:
-                r.write(json.dumps(data))
-            await train.finish(msg)
-    elif state["key"] == "-i":
-        file_name = "review.json"
-        path = KEYREPO_DIV / file_name
-        try:
-            data = json.loads(path.read_bytes())
-        except:
-            data = {}
-        if state["repo"] not in data:
-            await train.finish("未发现该知识点呢")
-        key = data[state["repo"]]
-        
-        msg = (
-            f"用户: {key['user']}\n"
-            f"知识点: {state['repo']}"
-            f"回复: {key['repo']}"
-            f"时间: {key['time']}"
-            "/train -r 知识点 y/n"
-        )
-        await train.finish(msg)
-    elif state["key"] == "-ls":
-        file_name = "review.json"
-        path = KEYREPO_DIV / file_name
-        try:
-            data = json.loads(path.read_bytes())
-        except:
-            data = {}
-        keys = "，".join(data.keys())
-        msg = f"目前等待审核的有如下：\n{keys}"
-        await train.finish(msg)
-    elif state["key"] == "-r":
-        file_name = "review.json"
-        path = KEYREPO_DIV / file_name
-        try:
-            data = json.loads(path.read_bytes())
-        except:
-            data = {}
-        
+@train.handle()
+async def _train(bot: Bot, event: GroupMessageEvent) -> None:
+    user = event.user_id
+    group = event.group_id
     
-    key = state["key"]
-    repo = state["repo"]
-    user = event.get_user_id()
-    if user not in nonebot_config["superusers"]:
-        file_name = "review.json"
-        path = KEYREPO_DIV / file_name
-        try:
-            data = json.loads(path.read_bytes())
-        except:
-            data = {}
-        
-        if key in data:
-            msg = "欸欸欸，该词还在等待咱的审核，请先等先来的审核完再提交吧..."
+    msg = str(event.message).split(' ')
+    _type = msg[0]
+    code = "".join(sample(string.ascii_letters + string.digits, 10))
+    
+    if _type == "add":
+        key = msg[1]
+        args = msg[2]
+        if user in Config.BotSelfConfig.superusers:
+            add_key(key, args)
+            msg = (
+                "好欸学到了新的知识！\n"
+                f"关键词：{key}\n"
+                f"回复：{args}"
+            )
+            data = {
+                "user": user,
+                "group": group,
+                "time": str(datetime.now()),
+                "pass": True,
+                "key": key,
+                "repo": args,
+                "feature": code
+            }
+            add_history(data)
             await train.finish(msg)
         else:
-            data[key] = {
+            data = {
                 "user": user,
-                "repo": repo,
-                "time": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+                "group": group,
+                "time": str(datetime.now()),
+                "pass": False,
+                "key": key,
+                "repo": args,
+                "feature": code
             }
-            with open(path, 'r') as r:
-                r.write(json.dumps(data, indent=4))
-
+            add_key_temp(data)
             msg = (
-            "欸欸欸这不错欸！不过，还是先等待咱审核审核，"
-            "如想撤销本次学习，请发送 /train -d 知识点"
+                "感谢你的提交w，所提交的关键词将由维护者进行审核\n"
+                f"识别码：{code}，你可以使用/train info 识别码\n"
+                "以查询是否通过"
             )
             await train.finish(msg)
-        
-    else:
-        file_name = "data.json"
-        path = KEYREPO_DIV / file_name
-        try:
-            data = json.loads(path.read_bytes())
-        except:
-            data = {}
-        
-        if key in data:
-            repo_list: list = data[key]
-            repo_list.append(repo)
-            data[key] = repo_list
-            msg = f"哦哦哦，{key}原来还有这样的回复，学到了~！"
-            await bot.send(event, msg)
+    elif _type == "list":
+        data = load_key_temp_data()
+        node = []
+        for i in data:
+            dic = {
+                "type": "node",
+                "data": {
+                    "name": "idk",
+                    "uin": i['user'],
+                    "content": f"Key: {i['key']}\nRepo: {i['repo']}\nTime: {i['time']}"
+                }
+            }
+            node.append(dic)
+        if not node:
+            node = [{
+                "type": "node",
+                "data": {
+                    "name": "null",
+                    "uin": str(user),
+                    "content": "这里什么也没有呢..."
+                }
+            }]
+        await bot.send_group_forward_msg(group_id=group, messages=node)
+    elif _type == "info":
+        key = msg[1]
+        data = load_key_history()
+        for i in data:
+            if i['key'] == key:
+                msg = (
+                    f"{key} 审核信息:\n"
+                    f"是否通过：{i['pass']}"
+                    f"结果: K: {i['key']} | R: {i['repo']}\n"
+                    f"来自：{i['user']}@[群:{i['group']}]\n"
+                    f"申请时间：{i['time']}"
+                )
+                await train.finish(msg)
+            else:
+                await train.finish('未找到相关信息...')
+    elif _type == "r":
+        key = msg[1]
+        args = int(msg[2])
+        data = load_key_temp_data()
+        if user in Config.BotSelfConfig.superusers:
+            if args not in [0, 1]:
+                await train.finish('请检查输入...')
+            else:
+                for i in data:
+                    if bool(args):
+                        if i['key'] == key:
+                            msg = (
+                                "好欸学到了新的知识！\n"
+                                f"关键词：{i['key']}\n"
+                                f"回复：{i['repo']}"
+                            )
+                            add_key(i['key'], i['repo'])
+                            add_history(i)
+                            await train.finish(msg)
+                        else:
+                            await train.finish('未找到相关信息...')
+                    else:
+                        add_history(i, False)
+                        if del_key_temp(i):
+                            await train.finish('已标记为不通过')
+                        else:
+                            await train.finish('未找到相关信息')
         else:
-            data[key] = [repo]
-            msg = "好欸，咱学到了新的知识点！"
-            await bot.send(event, msg)
-        
-        with open(path, 'w') as r:
-            r.write(json.dumps(data))
+            await train.finish('不行哦~你的权限使得你没法这样做！')
+    else:
+        await train.finish('请检查输入...')

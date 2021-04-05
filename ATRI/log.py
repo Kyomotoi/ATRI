@@ -4,7 +4,7 @@ from datetime import datetime
 
 from nonebot.log import logger, default_format
 
-from .config import nonebot_config
+from .config import Config
 
 
 LOGGER_DIR = Path('.') / 'ATRI' / 'data' / 'logs'
@@ -24,7 +24,7 @@ log_format = (
 logger.remove()
 logger.add(
     sys.stdout,
-    level="DEBUG" if nonebot_config["debug"] else "INFO",
+    level="DEBUG" if Config.BotSelfConfig.debug else "INFO",
     colorize=True,
     format=log_format
 )

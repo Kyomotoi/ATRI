@@ -22,6 +22,8 @@ def init():
     nb.init(**RUNTIME_CONFIG)
     driver().register_adapter("cqhttp", ATRIBot)
     nb.load_plugins('ATRI/plugins')
+    if RUNTIME_CONFIG["debug"]:
+        nb.load_plugin("nonebot_plugin_test")
     logger.info(f"Now running: {__version__}")
     sleep(3)
 

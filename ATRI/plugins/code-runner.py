@@ -41,8 +41,8 @@ SUPPORTED_LANGUAGES = {
 
 
 code_runner = sv.on_command(
-    name="运行代码",
     cmd="/code",
+    docs="在线运行代码",
     rule=is_block() & is_in_dormant()
 )
 

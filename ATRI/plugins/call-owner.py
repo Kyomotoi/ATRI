@@ -7,7 +7,7 @@ from nonebot.adapters.cqhttp import (
 
 from ATRI.service import Service as sv
 from ATRI.rule import is_block
-from ATRI.config import nonebot_config
+from ATRI.config import Config
 from ATRI.utils.apscheduler import scheduler
 from ATRI.utils.list import count_list
 
@@ -16,8 +16,8 @@ repo_list = []
 
 
 repo = sv.on_command(
-    name="给维护者留言",
     cmd="来杯红茶",
+    docs="给维护者留言",
     rule=is_block()
 )
 
@@ -38,7 +38,7 @@ async def _repo_(bot: Bot, event: MessageEvent, state: T_State) -> None:
     
     repo_list.append(user)
 
-    for sup in nonebot_config["superusers"]:
+    for sup in Config.BotSelfConfig.superusers:
         await bot.send_private_msg(
             user_id=sup,
             message=f"来自用户[{user}]反馈：\n{msg}"
@@ -58,8 +58,8 @@ async def _() -> None:
 
 
 reset_repo = sv.on_command(
-    name="重置给维护者留言次数",
     cmd="重置红茶",
+    docs="重置给维护者的留言次数",
     permission=SUPERUSER
 )
 

@@ -18,8 +18,8 @@ sick_list = []
 __plugin_name__ = 'curse'
 
 curse = sv.on_command(
-    name="口臭",
     cmd="口臭一下",
+    docs="口臭",
     aliases={"口臭", "骂我"},
     rule=is_block() & is_in_dormant()
     & is_in_service(__plugin_name__)
