@@ -7,6 +7,7 @@
 
 ![](https://img.shields.io/github/license/Kyomotoi/ATRI?style=for-the-badge)
 ![https://jq.qq.com/?_wv=1027&k=a89kfKQE](https://img.shields.io/badge/Chat-567297659-blue?style=for-the-badge)
+![](https://img.shields.io/badge/DOCS-ATRI--docs-important?style=for-the-badge)
 
 ### 关于
 本项目名称、灵感均来自 [ANIPLEX](https://aniplex-exe.com/) 发行的 [ATRI-My Dear Moments-](https://atri-mdm.com/)
