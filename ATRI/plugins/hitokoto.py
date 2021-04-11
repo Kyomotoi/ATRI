@@ -19,23 +19,24 @@ __doc__ = """
 权限组：所有人
 用法：
   @一言
-  抑郁一下
-  网抑云
+  @抑郁一下
+  @网抑云
 补充：
   @：at Bot
 """
 
-hitokoto = sv.on_command(
-    cmd="一言",
-    docs=__doc__,
-    aliases={"抑郁一下", "网抑云"},
-    rule=is_in_service('一言') & to_bot()
-)
+hitokoto = sv.on_message(rule=is_in_service('一言') & to_bot())
+sv.manual_reg_service('一言', __doc__)
 
 @hitokoto.handle()
 async def _hitokoto(bot: Bot, event: MessageEvent) -> None:
     global sick_list
+    msg = str(event.message)
     user = event.get_user_id()
+    hito_key = ['一言', '抑郁一下', '网抑云']
+    
+    if msg not in hito_key:
+        return
 
     if count_list(sick_list, user) == 3:
         sick_list.append(user)
