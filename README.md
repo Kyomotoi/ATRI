@@ -40,7 +40,7 @@
 
 以及以下朋友们：
   <details markdown='1'><summary>*/ω＼*(</summary>
-    *排名不分现后*<br>
+    *排名不分先后*<br>
     · 50861735 11.0CNY<br>
     · 1072324725 17.0CNY<br>
     · AfdianUser_quGy 5.0CNY<br>
