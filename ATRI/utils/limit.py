@@ -1,7 +1,6 @@
 import datetime
 from random import choice
 
-from ATRI.config import config
 from ATRI.service import Service as sv
 from .list import count_list, del_list_aim
 from .apscheduler import scheduler, DateTrigger
@@ -36,8 +35,7 @@ async def is_too_exciting(user: int, group: int,
         return False
     else:
         if count_list(exciting_user_temp, user) == times:
-            delta = datetime.timedelta(
-                seconds=config["BotSelfConfig"]["session_exciting_time"])
+            delta = datetime.timedelta(seconds=60)
             trigger = DateTrigger(
                 run_date=datetime.datetime.now() + delta)
             
