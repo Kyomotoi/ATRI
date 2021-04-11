@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "ATRI"
+version = "0.0.1a01"
+description = "适用于QQ群中的二刺螈BOT"
+authors = ["Kyomotoi <kyomotoiowo@gmail.com>"]
+license = "GPLv3"
+readme = "README.md"
+homepage = "https://atri.0w0.ink/"
+repository = "https://github.com/Kyomotoi/ATRI"
+documentation = "https://atri.0w0.ink/"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+nonebot2 = "^2.0.0a13.post1"
+nonebot-plugin-test = "^0.2.0"
+nonebot-adapter-cqhttp = "^2.0.0a12"
+pyyaml = "^5.3.1"
+pathlib = "^1.0.1"
+psutil = "^5.7.2"
+aiohttp = "^3.6.2"
+APScheduler = "^3.7.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

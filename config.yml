@@ -1,10 +1,10 @@
 BotSelfConfig:
   host: "127.0.0.1"
-  port: 13141
+  port: 55555
   debug: false
   superusers: ["1234567890"]
   nickname: ["ATRI", "Atri", "atri", "亚托莉", "アトリ"]
-  command_start: ["", "/"]
+  command_start: ["/"]
   command_sep: ["."]
   session_expire_timeout: 120
 
@@ -17,6 +17,7 @@ AdminPage:  # 待定，无用
   port: 8082
 
 NsfwCheck:  # 详细请查看文档以获取帮助
-  enabled: True
+  enabled: false
+  passing_rate: 0.8
   host: "127.0.0.1"
   port: 8080

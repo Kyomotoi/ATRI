@@ -1,92 +1,40 @@
-import os
 import json
-import time
+import asyncio
+from random import randint
 from pathlib import Path
-from datetime import datetime
 
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import (
     Bot,
     MessageEvent,
-    GroupMessageEvent
+    GroupMessageEvent,
+    PrivateMessageEvent
 )
 from nonebot.typing import T_State
 
 from ATRI.config import Config
 from ATRI.service import Service as sv
-from ATRI.exceptions import WriteError, load_error
+from ATRI.exceptions import load_error
 from ATRI.utils.file import open_file
-from ATRI.log import (
-    logger,
-    LOGGER_DIR,
-    NOW_TIME
-)
-
-
-ADMIN_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'admin'
-os.makedirs(ADMIN_DIR, exist_ok=True)
-
-
-# 收集bot所在的群聊聊天记录
-chat_monitor = sv.on_message()
-
-@chat_monitor.handle()
-async def _chat_monitor(bot: Bot, event: GroupMessageEvent) -> None:
-    now_time = datetime.now().strftime('%Y-%m-%d')    
-    GROUP_DIR = ADMIN_DIR / f"{event.group_id}"
-    path = GROUP_DIR / f"{now_time}.chat.json"
-    now_time = datetime.now().strftime('%Y%m%d-%H%M%S')
-    
-    if not GROUP_DIR.exists():
-        GROUP_DIR.mkdir()
-    
-    try:
-        data = json.loads(path.read_bytes())
-    except:
-        data = {}
-    data[event.message_id] = {
-        "date": now_time,
-        "time": time.time(),
-        "post_type": event.post_type,
-        "sub_type": event.sub_type,
-        "user_id": event.user_id,
-        "group_id": event.group_id,
-        "message_type": event.message_type,
-        "message": event.message.__str__(),
-        "raw_message": event.raw_message,
-        "font": event.font,
-        "sender": {
-            "user_id": event.sender.user_id,
-            "nickname": event.sender.nickname,
-            "sex": event.sender.sex,
-            "age": event.sender.age,
-            "card": event.sender.card,
-            "area": event.sender.area,
-            "level": event.sender.level,
-            "role": event.sender.role,
-            "title": event.sender.title
-        },
-        "to_me": event.to_me
-    }
-    try:
-        with open(path, 'w', encoding='utf-8') as r:
-            r.write(
-                json.dumps(
-                    data, indent=4
-                )
-            )
-        logger.debug(f"写入消息成功，id: {event.message_id}")
-    except WriteError:
-        logger.error("消息记录失败，可能是缺少文件的原因！")
-    else:
-        pass
 
 
 ESSENTIAL_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'essential'
 
+
+__doc__ = """
+好友申请处理
+权限组：维护者
+用法：
+  /fr list
+  /fr (y/n) reqid
+补充:
+  reqid: 申请码
+"""
+
 request_friend = sv.on_command(
-    cmd="好友申请",
-    docs="好友申请处理",
+    cmd="friendreq",
+    aliases={'fr'},
+    docs=__doc__,
     permission=SUPERUSER
 )
 
@@ -124,9 +72,20 @@ async def _request_friend(bot: Bot, event: MessageEvent) -> None:
         await request_friend.finish("阿...请检查输入——！")
 
 
+__doc__ = """
+群聊申请处理
+权限组：维护者
+用法：
+  /gr list
+  /gr (y/n) reqid
+补充：
+  reqid: 申请码
+"""
+
 request_group = sv.on_command(
-    cmd="群聊申请",
-    docs="群聊申请处理",
+    cmd="groupreq",
+    aliases={'gr'},
+    docs=__doc__,
     permission=SUPERUSER
 )
 
@@ -174,9 +133,17 @@ async def _request_group(bot: Bot, event: MessageEvent) -> None:
         await request_friend.finish("阿...请检查输入——！")
 
 
+__doc__ = """
+广播
+权限组：维护者
+用法：
+  /bc 内容
+"""
+
 broadcast = sv.on_command(
-    cmd="/bc",
-    docs="广播\n用法：/bc 广播内容",
+    cmd="boradcast",
+    aliases={'bc'},
+    docs=__doc__,
     permission=SUPERUSER
 )
 
@@ -194,6 +161,7 @@ async def _bd(bot: Bot, event: MessageEvent, state: T_State) -> None:
     err_list = []
     
     for group in group_list:
+        await asyncio.sleep(randint(0, 2))
         try:
             await bot.send_group_msg(group_id=group["group_id"],
                                      message=msg)
@@ -215,9 +183,16 @@ async def _bd(bot: Bot, event: MessageEvent, state: T_State) -> None:
     await broadcast.finish(repo_msg)
 
 
+__doc__ = """
+错误堆栈查看
+权限组：维护者
+用法：
+  /track 追踪ID
+"""
+
 track_error = sv.on_command(
-    cmd="/track",
-    docs="报错堆栈查看\n用法：/track 追踪ID",
+    cmd="track",
+    docs=__doc__,
     permission=SUPERUSER
 )
 
@@ -247,19 +222,33 @@ async def _(bot: Bot, event: MessageEvent, state: T_State) -> None:
     await track_error.finish(msg0)
 
 
+__doc__ = """
+获取控制台信息
+权限组：维护者
+用法：
+  /gl level line
+补充：
+  level: 等级(info, warning, error, debug)
+  line: 行数(最近20行：-20)
+"""
+
 get_log = sv.on_command(
-    cmd="/getlog",
-    docs="获取控制台信息\n用法：/getlog 等级：info,warning,debug 行数：比如-20即最近20行",
+    cmd="getlog",
+    aliases={'gl'},
+    docs=__doc__,
     permission=SUPERUSER
 )
 
 @get_log.handle()
-async def _get_log(bot: Bot, event: MessageEvent) -> None:
+async def _get_log(bot: Bot, event: GroupMessageEvent) -> None:
+    user = str(event.user_id)
+    group = event.group_id
+    node = []
     msg = str(event.message).split(" ")
     try:
         rows = msg[1]
     except:
-        await get_log.finish("格式/getlog level rows")
+        await get_log.finish("格式/gl level rows")
     
     if msg[0] == "info":
         level = "info"
@@ -270,22 +259,35 @@ async def _get_log(bot: Bot, event: MessageEvent) -> None:
     elif msg[0] == "debug":
         level = "debug"
     else:
-        await get_log.finish("格式/getlog level rows")
+        await get_log.finish("格式/gl level rows")
     
     path = LOGGER_DIR / level / f"{NOW_TIME}-INFO.log"  # type: ignore
     logs = await open_file(path, "readlines")
     
     try:
         content = logs[int(rows):]  # type: ignore
+        repo = "\n".join(content).replace("[36mATRI[0m", "ATRI")
+        node = [{
+            "type": "node",
+            "data": {"name": "ERROR REPO", "uin": user, "content": repo}
+        }]
     except IndexError:
         await get_log.finish(f"行数错误...max: {len(logs)}")  # type: ignore
     
-    await get_log.finish("\n".join(content).replace("[36mATRI[0m", "ATRI"))  # type: ignore
+    await bot.send_group_forward_msg(group_id=group, messages=node)
 
+
+__doc__ = """
+紧急停机
+权限组：维护者
+用法：
+  /st
+"""
 
 shutdown = sv.on_command(
-    cmd="/st",
-    docs="紧急停机",
+    cmd="shutdown",
+    aliases={'st'},
+    docs=__doc__,
     permission=SUPERUSER
 )
 
@@ -308,16 +310,20 @@ __doc__ = """
 懒得和你废话，block了
 权限组：维护者
 用法：
-  /b user,group 0,1
+  /b u+uid,g+gid 0,1
 补充：
-  user：QQ号
-  group：QQ群号
+  uid：QQ号
+  gid：QQ群号
   0,1：对应布尔值False, True
   范围为全局
+示例：
+  /b u114514 1
+  执行对QQ号为114514的封禁
 """
 
 block = sv.on_command(
-    cmd="/b",
+    cmd="block",
+    aliases={'b'},
     docs="懒得和你废话，block了\n用法：/b u,g 0,1",
     permission=SUPERUSER
 )
@@ -326,7 +332,7 @@ block = sv.on_command(
 async def _block(bot: Bot, event: MessageEvent) -> None:
     msg = str(event.message).split(' ')
     _type = msg[0]
-    arg = int(msg[1])
+    arg = msg[1]
     is_enabled = bool(int(msg[2]))
     b_type = ""
     
@@ -349,7 +355,7 @@ __doc__ = """
 权限组：维护者，群管理
 用法：
   对于维护者：
-    /s 目标指令 u+int,g+int,global 0,1
+    /s 目标指令 u+uid,g+gid,global 0,1
   对于群管理：
     /s 目标指令 0,1
 补充：
@@ -359,44 +365,53 @@ __doc__ = """
   0,1：对应布尔值False, True
 示例：
   对于维护者：
-    /s /status u123456789 0
+    /s /status u123456789 1
   对于群管理：
-    /s /status 0
+    /s /status 1
 """
 
 service_control = sv.on_command(
-    cmd="/s",
+    cmd='service',
+    aliases={'s'},
     docs=__doc__,
     permission=SUPERUSER
 )
 
 @service_control.handle()
-async def _service_control(bot: Bot, event: MessageEvent) -> None:
+async def _service_control(bot: Bot, event: GroupMessageEvent) -> None:
     msg = str(event.message).split(' ')
-    user = event.user_id
+    user = str(event.user_id)
     cmd = msg[0]
     _type = msg[1]
-    is_enabled = bool(msg[2])
     
-    status = "封禁" if is_enabled else "解封"
+    if msg[0] == "":
+        await service_control.finish('请检查输入~！')
     
     if user in Config.BotSelfConfig.superusers:
+        is_enabled = int(msg[2])
+        status = "启用" if bool(is_enabled) else "禁用"
+        
         if _type == "global":
             sv.control_service(cmd, True, is_enabled)
+            await service_control.finish(f"{cmd}已针对[{_type}]实行[{status}]")
         else:
+            print(_type)
             if "u" in _type:
                 qq = _type.replace('u', '')
-                sv.control_service(cmd, False, is_enabled, user=int(qq))
+                sv.control_service(cmd, False, is_enabled, user=qq)
             elif "g" in _type:
                 group = _type.replace('g', '')
-                sv.control_service(cmd, False, is_enabled, group=int(group))
+                sv.control_service(cmd, False, is_enabled, group=group)
             else:
                 await service_control.finish("请检查输入~！")
+            await service_control.finish(f"{cmd}已针对[{_type}]实行[{status}]")
     else:
-        if isinstance(event, GroupMessageEvent):
-            group = event.group_id
-            sv.control_service(cmd, False, bool(_type), group=group)
-        else:
-            await service_control.finish("此功能仅在群聊中触发")
-    
-    await service_control.finish(f"{cmd}已针对[{_type}]实行[{status}]")
+        group = str(event.group_id)
+        is_enabled = int(_type)
+        sv.control_service(cmd, False, is_enabled, group=group)
+        status = "启用" if bool(is_enabled) else "禁用"
+        await service_control.finish(f"{cmd}已针对[{_type}]实行[{status}]")
+
+@service_control.handle()
+async def _serv(bot: Bot, event: PrivateMessageEvent) -> None:
+    await service_control.finish("此功能仅在群聊中触发")

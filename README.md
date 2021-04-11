@@ -4,66 +4,67 @@
 アトリは、高性能ですから！
 
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/bef72993062f422f83e882c6d8e6f20e)](https://www.codacy.com/manual/Kyomotoi/ATRI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kyomotoi/ATRI&amp;utm_campaign=Badge_Grade)
-[![](https://img.shields.io/badge/QQ%20gorup-567297659-brightgreen)](https://jq.qq.com/?_wv=1027&k=a89kfKQE)
-[![](https://img.shields.io/badge/Author-Kyomotoi-important)](https://github.com/Kyomotoi)
 
-## 关于
+![](https://img.shields.io/github/license/Kyomotoi/ATRI?style=for-the-badge)
+![https://jq.qq.com/?_wv=1027&k=a89kfKQE](https://img.shields.io/badge/Chat-567297659-blue?style=for-the-badge)
+
+### 关于
 本项目名称、灵感均来自 [ANIPLEX](https://aniplex-exe.com/) 发行的 [ATRI-My Dear Moments-](https://atri-mdm.com/)
 
-为QQ群中复现一个活灵活现的 ATRI 是这个项目的目标
+本项目中所使用的任何有关 ATRI 的图标、LOGO，解释权、著作权均归 [ANIPLEX](https://aniplex-exe.com/)。你可以[在此](https://aniplex-exe.com/guidelines/)查看相关内容
 
-项目拥有者，初接触 Python 仍未满半年，故此项目所写的东西可能会让您血压升高，我会加油在往后日子对其进行改进！
+为QQ群中复现一个功能性机器人是本项目的目标
 
-此项目也作为我学习Python的一个很好的渠道，这里特别感谢 [Richard Chien](https://github.com/richardchien) 以及对此项目提供巨大帮助的 Python-SDK：[NoneBot](https://github.com/nonebot/nonebot)（目前已更换至 [NoneBot2](https://github.com/nonebot/nonebot2)）
+### 声明
+**一切开发旨在学习，请勿用于非法用途**
 
-目前计划使用 Golang 重构此项目 >>> [传送门](https://github.com/Kyomotoi/go-ATRI)
+### 实现
+本项目可以在**任何平台**下运行，只要你具备基本的 `Python >= 3.8` 环境和一根接入互联网的网线
 
-## 实现
-アトリ可以在任何平台下运行
+实现方式为 `go-cqhttp 或其它遵守Onebot标准的协议` + `NoneBot2`。
 
-此项目实现方式是 `go-CQHTTP + NoneBot2` 以 `Python` 为主语言的项目
+由于项目特殊性，会随机进行更新，通常推荐`clone main`分支，如急需体验新的功能/~~BUG~~，你可以选择`clone dev`
 
-并且在不断更新递代ing...经综合考虑后随缘打包，平时直接拉取默认分支即可！
+**请注意：分支`dev`存在不确定因素，包括`造成机器卡顿、饥饿行为以及其它未知魔法`**
 
-**前身框架 CoolQ，谨此纪念 CoolQ 的停运**
+### 特别感谢
+[Richard Chien](https://github.com/richardchien): [Onebot标准](https://github.com/howmanybots/onebot)
 
-**“愿我们能在更开放的平行世界里相遇”**
+[Mrs4s](https://github.com/Mrs4s): [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 
-## 附加的一些介绍
-现在已处于正式版，功能均可正常使用，但源码就是一屎山，就目前水平“能 跑 就 行”。
+[NoneBot](https://github.com/nonebot): [NoneBot2](https://github.com/nonebot/nonebot2)
 
-如需查看其运作效果，请添加示例群聊：567297659
+[JetBrains](https://www.jetbrains.com/?from=ATRI) 为本项目提供 [PyCharm](https://www.jetbrains.com/pycharm/?from=ATRI) 等 IDE 的授权<br>
+[<img src="https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/noting/jetbrains-variant-3.png" width="200"/>](https://www.jetbrains.com/?from=ATRI)
 
-- 详细功能介绍请见此 >>> [撰写中]()
+以及以下朋友们：
+  <details markdown='1'><summary>*/ω＼*(</summary>
+    *排名不分现后*<br>
+    · 50861735 11.0CNY<br>
+    · 1072324725 17.0CNY<br>
+    · AfdianUser_quGy 5.0CNY<br>
+    · 1752179928 56.14CNY<br>
+    · Mikasa 66.0CNY<br>
+    · SkipM4 27.0CNY<br>
+    · Chunk7 33.0CNY<br>
+    · Wwwwwwalnut 10.0CNY<br>
+    · 演变 5.0CNY
+ </details>
 
-- 详细部署教程请见此 >>> [撰写中]()
+### 其它
+本项目已启用爱发电，你的支持就是对开发者的最大鼓励！
 
-以及
+并会将你的ID写在项目**特别感谢**一栏。
 
-~~好！这波直接换头像，头像就是我本人就酱~~
+-> https://afdian.net/@Kyomotoi
 
-## 特别感谢
-[Richard Chien](https://github.com/richardchien): [CQHTTP](https://github.com/richardchien/coolq-http-api) 和 [NoneBot](https://github.com/nonebot/nonebot)
+### 贡献
+如果你在运行本项目中发现任何问题，你可以：
+- [提交 issue](https://github.com/Kyomotoi/ATRI/issues)
+- [提交 Pull request](https://github.com/Kyomotoi/ATRI/pulls)
+- [在反馈群内进行反馈](https://jq.qq.com/?_wv=1027&k=WoAAYXbJ)
 
-[mnixry](https://github.com/mnixry): 给予建议
+提交 `Pull request` 你可以参考这篇[指南](docs/dev.md)
 
-[JetBrains](https://www.jetbrains.com/) 为本项目提供 [PyCharm](https://www.jetbrains.com/pycharm/) 等授权
-
-以及以下：
- - 50861735 11.0CNY
- - 1072324725 17.0CNY
- - 2862890179 func
- - AfdianUser_quGy 5.0CNY
- - 1752179928 45.14CNY
- - Mikasa 66.0CNY
- - SkipM4 11.0CNY
- - Chunk7 33.0CNY
-
-## 其他
-本项目已开启爱发电，如有意愿请作者几杯红茶那会将常非感谢！
-
-并且将会您的ID写在特别感谢一栏！ --> <https://afdian.net/@Kyomotoi>
-
-## 关于开源
-本项目使用 [GPLv3](https://github.com/Kyomotoi/Aya/blob/master/LICENSE) 开源协议，这意味着你可以使用本项目运行你的机器人，并向你的用户提供服务，但如果你需要对项目的源码进行修改，则必须将你修改后的版本对你的用户开源。
+### 协议
+本项目使用[GPLv3](https://github.com/Kyomotoi/Aya/blob/master/LICENSE)，意味着你可以运行本项目，并向你的用户提供服务，但出现对项目源码进行修改，则需要将你修改后的版本对你的用户开源。出现的一切责任，请自行处理。

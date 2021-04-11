@@ -4,12 +4,7 @@ from pathlib import Path
 from random import choice, randint
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
-from ATRI.rule import (
-    is_block,
-    is_in_dormant,
-    is_in_service,
-    to_bot
-)
+from ATRI.rule import is_in_service, to_bot
 from ATRI.service import Service as sv
 from ATRI.exceptions import LoadingError
 from ATRI.utils.list import count_list, del_list_aim
@@ -34,8 +29,7 @@ hitokoto = sv.on_command(
     cmd="一言",
     docs=__doc__,
     aliases={"抑郁一下", "网抑云"},
-    rule=is_block() & is_in_dormant()
-    & is_in_service('一言') & to_bot()
+    rule=is_in_service('一言') & to_bot()
 )
 
 @hitokoto.handle()

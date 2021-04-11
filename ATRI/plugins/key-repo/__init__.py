@@ -7,7 +7,7 @@ from nonebot.adapters.cqhttp import Bot, MessageEvent, GroupMessageEvent
 from ATRI.config import Config
 from ATRI.service import Service as sv
 from ATRI.utils.request import get_bytes
-from ATRI.rule import is_block, is_in_dormant, is_in_service, to_bot
+from ATRI.rule import is_in_service, to_bot
 
 from .data_source import (
     add_history,
@@ -28,10 +28,17 @@ from .data_source import (
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-keyrepo = sv.on_message(rule=is_block()
-                        & is_in_dormant()
-                        & is_in_service('keyrepo')
-                        & to_bot())
+__doc__ = """
+涩涩的聊天（？
+权限组：所有人
+用法：
+  @ (msg)
+补充：
+  @: at机器人
+"""
+
+keyrepo = sv.on_message(rule=is_in_service('keyrepo') & to_bot(), priority=5)
+sv.manual_reg_service('keyrepo')
 
 @keyrepo.handle()
 async def _keyrepo(bot: Bot, event: MessageEvent) -> None:
@@ -45,6 +52,7 @@ async def _keyrepo(bot: Bot, event: MessageEvent) -> None:
 
 __doc__ = """
 关键词申请/审核
+（此功能未完善）
 权限组：所有人
 用法：
     /train add (key) (repo)
@@ -62,9 +70,8 @@ __doc__ = """
 """
 
 train = sv.on_command(
-    cmd="/train",
-    docs=__doc__,
-    rule=is_block()
+    cmd="train",
+    docs=__doc__
 )
 
 @train.handle()

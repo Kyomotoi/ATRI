@@ -1,32 +1,18 @@
 from nonebot.rule import Rule
 from nonebot.adapters.cqhttp import GroupMessageEvent, PokeNotifyEvent
 
-from .config import config
 from .service import Service as sv
 
 
 def is_in_service(service: str) -> Rule:
     async def _is_in_service(bot, event, state) -> bool:
+        user = str(event.user_id)
         if isinstance(event, GroupMessageEvent):
-            return sv.auth_service(service, event.group_id)
+            return sv.auth_service(service, user, str(event.group_id))
         else:
-            return sv.auth_service(service, None)
+            return sv.auth_service(service, user, None)
     
     return Rule(_is_in_service)
-
-
-def is_block() -> Rule:
-    async def _is_in_banlist(bot, event, state) -> bool:
-        return sv.BlockSystem.auth_user(int(event.get_user_id()))
-    
-    return Rule(_is_in_banlist)
-
-
-def is_in_dormant() -> Rule:
-    async def _is_in_dormant(bot, event, state) -> bool:
-        return sv.Dormant.is_dormant()
-    
-    return Rule(_is_in_dormant)
 
 
 def to_bot() -> Rule:

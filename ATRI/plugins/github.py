@@ -3,7 +3,6 @@ import json
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
 from ATRI.service import Service as sv
-from ATRI.rule import is_block, is_in_dormant
 from ATRI.utils.request import get_bytes
 from ATRI.exceptions import RequestTimeOut
 
@@ -11,7 +10,7 @@ from ATRI.exceptions import RequestTimeOut
 URL = "https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}"
 
 
-github_issues = sv.on_message(rule=is_block() & is_in_dormant())
+github_issues = sv.on_message()
 
 @github_issues.handle()
 async def _github_issues(bot: Bot, event: MessageEvent) -> None:

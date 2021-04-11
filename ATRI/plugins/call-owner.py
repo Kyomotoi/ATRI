@@ -6,20 +6,20 @@ from nonebot.adapters.cqhttp import (
 )
 
 from ATRI.service import Service as sv
-from ATRI.rule import is_block
 from ATRI.config import Config
 from ATRI.utils.apscheduler import scheduler
 from ATRI.utils.list import count_list
 
 
 repo_list = []
+__doc__ = """
+给维护者留言
+权限组：所有人
+用法：
+  /来杯红茶 (msg)
+"""
 
-
-repo = sv.on_command(
-    cmd="来杯红茶",
-    docs="给维护者留言",
-    rule=is_block()
-)
+repo = sv.on_command(cmd="来杯红茶", docs=__doc__)
 
 @repo.handle()
 async def _repo(bot: Bot, event: MessageEvent, state: T_State) -> None:
@@ -54,17 +54,24 @@ async def _repo_(bot: Bot, event: MessageEvent, state: T_State) -> None:
 )
 async def _() -> None:
     global repo_list
-    repo_list = []
+    repo_list.clear()
 
+
+__doc__ = """
+重置给维护者的留言次数
+权限组：维护者
+用法：
+  /重置红茶
+"""
 
 reset_repo = sv.on_command(
     cmd="重置红茶",
-    docs="重置给维护者的留言次数",
+    docs=__doc__,
     permission=SUPERUSER
 )
 
 @reset_repo.handle()
 async def _reset_repo(bot: Bot, event: MessageEvent) -> None:
     global repo_list
-    repo_list = []
+    repo_list.clear()
     await reset_repo.finish("红茶重置完成~！")

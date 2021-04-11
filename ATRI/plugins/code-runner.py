@@ -4,8 +4,8 @@ Idea from: https://github.com/cczu-osa/aki
 import json
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
+from ATRI.rule import is_in_service
 from ATRI.service import Service as sv
-from ATRI.rule import is_block, is_in_dormant
 from ATRI.utils.request import post_bytes
 from ATRI.exceptions import RequestTimeOut
 
@@ -40,10 +40,20 @@ SUPPORTED_LANGUAGES = {
 }
 
 
+__doc__ = """
+在线运行代码
+权限组：所有人
+用法：
+  /code (lang) (code)
+示例：
+  /code python
+  print('Hello world!')
+"""
+
 code_runner = sv.on_command(
-    cmd="/code",
-    docs="在线运行代码",
-    rule=is_block() & is_in_dormant()
+    cmd="code",
+    docs=__doc__,
+    rule=is_in_service('code')
 )
 
 @code_runner.handle()

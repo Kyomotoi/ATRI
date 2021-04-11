@@ -95,7 +95,7 @@ async def _track_error(matcher: Matcher,
         "[WARNING] 这是一个错误... ;w;\n"
         f"追踪ID: {track_id}\n"
         f"触发原因: {prompt}\n"
-        "键入 来杯红茶 以联系维护者"
+        "键入 /来杯红茶 以联系维护者"
     )
     
     await bot.send(event, msg)

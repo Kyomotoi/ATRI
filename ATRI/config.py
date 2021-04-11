@@ -42,6 +42,7 @@ class Config(BaseConfig):
         config: dict = config['NsfwCheck']
         
         enabled: bool = bool(config.get('enabled', False))
+        passing_rate: float = float(config.get('passing_rate', 0.8))
         host: str = config.get('host', '127.0.0.1')
         port: int = int(config.get('port', 5000))
 

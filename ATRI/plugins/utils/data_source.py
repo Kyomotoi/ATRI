@@ -55,7 +55,7 @@ class Encrypt():
 
     def _encodeByte(self, i) -> Union[str, None]:
         if i > 0xFF:
-            raise ValueError('ERROR! rc/nb overflow')
+            raise ValueError('ERROR! at/ri overflow')
 
         if i > 0x7F:
             i = i & 0x7F
@@ -65,7 +65,7 @@ class Encrypt():
 
     def _encodeShort(self, i) -> str:
         if i > 0xFFFF:
-            raise ValueError('ERROR! rcnb overflow')
+            raise ValueError('ERROR! atri overflow')
 
         reverse = False
         if i > 0x7FFF:
@@ -93,11 +93,12 @@ class Encrypt():
         if idx[0] < 0 or idx[1] < 0:
             idx = [self.cn.index(c[0]), self.cb.index(c[1])]
             nb = True
-            raise ValueError('ERROR! rc/nb overflow')
+            raise ValueError('ERROR! at/ri overflow')
 
-        result = idx[0] * self.sb + idx[1] if nb else idx[0] * self.sc + idx[1]
+        result = idx[0] * self.sb + idx[1] \
+            if nb else idx[0] * self.sc + idx[1]
         if result > 0x7F:
-            raise ValueError('ERROR! rc/nb overflow')
+            raise ValueError('ERROR! at/ri overflow')
 
         return result | 0x80 if nb else 0
 
@@ -119,12 +120,12 @@ class Encrypt():
             ]
 
         if idx[0] < 0 or idx[1] < 0 or idx[2] < 0 or idx[3] < 0:
-            raise ValueError('ERROR! not rcnb')
+            raise ValueError('ERROR! not atri')
 
         result = idx[0] * self.scnb + idx[1] * self.snb + idx[
             2] * self.sb + idx[3]
         if result > 0x7FFF:
-            raise ValueError('ERROR! rcnb overflow')
+            raise ValueError('ERROR! atri overflow')
 
         result |= 0x8000 if reverse else 0
         return result
@@ -155,8 +156,8 @@ class Encrypt():
         result = []
         for i in range(0, (len(s) >> 2)):
             result.append(bytes([self._decodeShort(s[i * 4:i * 4 + 4]) >> 8]))
-            result.append(bytes([self._decodeShort(s[i * 4:i * 4 + 4]) & 0xFF
-                                 ]))
+            result.append(bytes([
+                self._decodeShort(s[i * 4:i * 4 + 4]) & 0xFF]))
 
         if (len(s) & 2) == 2:
             result.append(bytes([self._decodeByte(s[-2:])]))

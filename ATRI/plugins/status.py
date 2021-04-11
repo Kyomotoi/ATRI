@@ -3,27 +3,37 @@ from nonebot.adapters.cqhttp import Bot, MessageEvent
 
 from ATRI.log import logger as log
 from ATRI.service import Service as sv
-from ATRI.rule import is_block
+from ATRI.rule import is_in_service
 from ATRI.exceptions import GetStatusError
 from ATRI.utils.apscheduler import scheduler
 from ATRI.config import Config
 
 
+__doc__ = """
+测试机器人状态
+"""
+
 ping = sv.on_command(
-    cmd="/ping",
+    cmd="ping",
     docs="测试机器人",
-    rule=is_block()
-)
+    rule=is_in_service('ping'))
 
 @ping.handle()
 async def _ping(bot: Bot, event: MessageEvent) -> None:
     await ping.finish("I'm fine.")
 
 
+__doc__ = """
+检查机器人性能
+权限组：所有人
+用法：
+  /status
+"""
+
 status = sv.on_command(
-    cmd="/status",
-    docs="检查机器人状态",
-    rule=is_block()
+    cmd="status",
+    docs=__doc__,
+    rule=is_in_service('status')
 )
 
 @status.handle()

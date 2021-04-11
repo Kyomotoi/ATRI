@@ -90,12 +90,12 @@ class Service:
     计划搭配前端使用
     """
     @staticmethod
-    def manual_reg_service(service: str):
+    def manual_reg_service(service: str, docs: str = None):
         file_name = service.replace('/', '') + ".json"
         file = SERVICES_DIR / file_name
         service_info = {
-            "name": service,
-            "docs": None,
+            "command": service,
+            "docs": docs,
             "enabled": True,
             "disable_user": {},
             "disable_group": {}
@@ -104,41 +104,50 @@ class Service:
             r.write(json.dumps(service_info, indent=4))
     
     @staticmethod
-    def auth_service(service: str, group: Optional[int] = None) -> bool:
+    def auth_service(service: str, user: str, group: str = None) -> bool:
         data = _load_service_config(service)
-        return False if group in data["disable_group"] else True
+        if user in data["disable_user"]:
+            return False
+        else:
+            if group in data["disable_group"]:
+                return False
+            else:
+                return True
     
     @staticmethod
     def control_service(service: str,
                         is_global: bool,
-                        is_enabled: bool,
-                        user: Optional[int] = None,
-                        group: Optional[int] = None) -> None:
+                        is_enabled: int,
+                        user: str = None,
+                        group: str = None) -> None:
         data = _load_service_config(service)
-
+        is_enabled = bool(is_enabled)
+        
         if is_global:
             status = "disabled" if is_enabled else "enabled"
-            data['enbaled'] = is_enabled
-            log.info(f"Service: {service} has been {status}.")
+            data['enabled'] = is_enabled
+            log.info(f"\033[33mService: {service} has been {status}.\033[33m")
         else:
             if user:
-                if is_enabled:
+                if not is_enabled:
                     data['disable_user'][user] = str(datetime.now())
-                    log.info(f"New service blocked user: {user}"
-                             f" | Service: {service} | Time: {datetime.now()}")
+                    log.info(f"\033[33mNew service blocked user: {user}\033[33m"
+                             f"\033[33m | Service: {service} | Time: {datetime.now()}\033[33m")
                 else:
-                    del data['disable_user'][user]
-                    log.info(f"User: {user} has been unblock"
-                             f" | Service: {service} | Time: {datetime.now()}")
+                    if user in data['disable_user']:
+                        del data['disable_user'][user]
+                        log.info(f"\033[33mUser: {user} has been unblock\033[33m"
+                                f"\033[33m | Service: {service} | Time: {datetime.now()}\033[33m")
             else:
-                if is_enabled:
+                if not is_enabled:
                     data['disable_group'][group] = str(datetime.now())
-                    log.info(f"New service blocked group: {group}"
-                             f" | Service: {service} | Time: {datetime.now()}")
+                    log.info(f"\033[33mNew service blocked group: {group}\033[33m"
+                             f"\033[33m | Service: {service} | Time: {datetime.now()}\033[33m")
                 else:
-                    del data['disable_group'][group]
-                    log.info(f"Group: {group} has been unblock"
-                             f" | Service: {service} | Time: {datetime.now()}")
+                    if group in data['disable_group']:
+                        del data['disable_group'][group]
+                        log.info(f"\033[33mGroup: {group} has been unblock\033[33m"
+                                f"\033[33m | Service: {service} | Time: {datetime.now()}\033[33m")
         _save_service_config(service, data)
     
     @staticmethod
@@ -458,32 +467,31 @@ class Service:
         file_name = "ban.json"
         path = SERVICE_DIR / file_name
         
-        @classmethod
-        def auth_user(cls, user: int) -> bool:
+        @staticmethod
+        def auth_user(user: str) -> bool:
             return False if user in _load_block_list()['user'] else True
         
         @staticmethod
-        def auth_group(group: int) -> bool:
+        def auth_group(group: str) -> bool:
             return False if group in _load_block_list()['group'] else True
         
-        @classmethod
-        def control_list(cls,
-                         is_enabled: bool,
-                         user: Optional[int] = None,
-                         group: Optional[int] = None) -> None:
+        @staticmethod
+        def control_list(is_enabled: bool,
+                         user: str = None,
+                         group: str = None) -> None:
             data = _load_block_list()
             if user:
                 if is_enabled:
                     data['user'][user] = str(datetime.now())
-                    log.info(f"New blocked user: {user} | Time: {datetime.now()}")
+                    log.info(f"\033[33mNew blocked user: {user} | Time: {datetime.now()}\033[33m")
                 else:
                     del data['user'][str(user)]
-                    log.info(f"User {user} has been unblock.")
+                    log.info(f"\033[33mUser {user} has been unblock.\033[33m")
             elif group:
                 if is_enabled:
                     data['group'][group] = str(datetime.now())
-                    log.info(f"New blocked group: {group} | Time: {datetime.now()}")
+                    log.info(f"\033[33mNew blocked group: {group} | Time: {datetime.now()}\033[33m")
                 else:
                     del data['group'][str(group)]
-                    log.info(f"Group {group} has been unblock.")
+                    log.info(f"\033[33mGroup {group} has been unblock.\033[33m")
             _save_block_list(data)

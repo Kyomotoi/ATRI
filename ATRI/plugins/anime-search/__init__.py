@@ -7,7 +7,7 @@ from nonebot.adapters.cqhttp.message import Message
 from nonebot.typing import T_State
 
 from ATRI.service import Service as sv
-from ATRI.rule import is_block, is_in_dormant
+from ATRI.rule import is_in_service
 from ATRI.exceptions import RequestTimeOut
 from ATRI.utils.request import get_bytes
 
@@ -17,10 +17,17 @@ from .data_source import to_simple_string
 URL = "https://trace.moe/api/search?url="
 
 
+__doc__ = """
+以图搜番
+权限组：所有人
+用法：
+  /anime
+"""
+
 anime_search = sv.on_command(
-    cmd="/anime",
-    docs="以图搜番",
-    rule=is_block() & is_in_dormant()
+    cmd="anime",
+    docs=__doc__,
+    rule=is_in_service('anime')
 )
 
 @anime_search.handle()
@@ -31,7 +38,7 @@ async def _anime_search(bot: Bot,
     if msg:
         state["msg"] = msg
 
-@anime_search.got("msg", prompt="请告诉咱目标图片~！")
+@anime_search.got("msg", prompt="图呢？")
 async def _(bot: Bot,
             event: MessageEvent,
             state: T_State) -> None:

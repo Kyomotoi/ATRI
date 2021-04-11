@@ -6,10 +6,6 @@ from nonebot.adapters.cqhttp import Bot, MessageEvent
 from ATRI.service import Service as sv
 from ATRI.utils.request import get_bytes
 from ATRI.utils.list import count_list, del_list_aim
-from ATRI.rule import (
-    is_block,
-    is_in_dormant,
-)
 
 from .data_source import dec
 
@@ -17,10 +13,7 @@ from .data_source import dec
 temp_list = []
 
 
-bilibili_rich = sv.on_message(
-    rule=is_block() & is_in_dormant()
-)
-sv.manual_reg_service("监听b站小程序")
+bilibili_rich = sv.on_message()
 
 @bilibili_rich.handle()
 async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
@@ -30,7 +23,10 @@ async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
     
     if "qqdocurl" not in msg:
         if "av" in msg:
-            av = re.findall(r"(av\d+)", msg)[0].replace('av', '')
+            try:
+                av = re.findall(r"(av\d+)", msg)[0].replace('av', '')
+            except:
+                return
         else:
             try:
                 bv = re.findall(r"(BV\w+)", msg)
@@ -49,7 +45,10 @@ async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
     
     if not bv:
         if "av" in msg:
-            av = re.findall(r"(av\d+)", msg)[0].replace('av', '')
+            try:
+                av = re.findall(r"(av\d+)", msg)[0].replace('av', '')
+            except:
+                return
         else:
             return
     

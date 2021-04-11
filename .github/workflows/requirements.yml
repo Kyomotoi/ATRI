@@ -1,0 +1,41 @@
+name: Generate Requirements
+
+on:
+  workflow_dispatch:
+  
+  push:
+    paths:
+      - poetry.lock
+      - pyproject.toml
+      - requirements.txt
+
+jobs:
+  generate:
+    name: Requirements
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      
+      - uses: Gr1N/setup-poetry@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: ${{ runner.os }}-poetry-
+      
+      - name: Generate dependencies
+        run: |
+          poetry export -f requirements.txt -o requirements.txt
+      
+      - name: Push to repository
+        run: |
+          [[ -z "$(git status -s)" ]] && exit
+          git config user.name github-action
+          git config user.email noreply@github.com
+          git add requirements.txt
+          git commit -am ":pushpin: Update requirements.txt"
+          git push

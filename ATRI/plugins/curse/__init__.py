@@ -1,11 +1,7 @@
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
 from ATRI.service import Service as sv
-from ATRI.rule import (
-    is_block,
-    is_in_dormant,
-    is_in_service
-)
+from ATRI.rule import is_in_service
 from ATRI.utils.list import count_list, del_list_aim
 from ATRI.utils.request import get_text
 from ATRI.exceptions import RequestTimeOut
@@ -15,20 +11,25 @@ URL = "https://zuanbot.com/api.php?level=min&lang=zh_cn"
 sick_list = []
 
 
-__plugin_name__ = 'curse'
+__doc__ = """
+口臭一下
+权限组：所有人
+用法：
+  口臭，口臭一下，骂我
+"""
 
-curse = sv.on_command(
-    cmd="口臭一下",
-    docs="口臭",
-    aliases={"口臭", "骂我"},
-    rule=is_block() & is_in_dormant()
-    & is_in_service(__plugin_name__)
-)
+curse = sv.on_message(rule=is_in_service('口臭'))
+sv.manual_reg_service('口臭', __doc__)
 
 @curse.handle()
 async def _curse(bot: Bot, event: MessageEvent) -> None:
     global sick_list
+    msg = str(event.message)
     user = event.get_user_id()
+    curse_key = ['口臭', '口臭一下', '骂我']
+    
+    if msg not in curse_key:
+        return 
     
     if count_list(sick_list, user) == 3:
         sick_list.append(user)

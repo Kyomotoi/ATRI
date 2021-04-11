@@ -3,15 +3,10 @@ from pathlib import Path
 from random import choice, randint
 
 from nonebot.adapters.cqhttp import Bot, MessageEvent, GroupMessageEvent
-from nonebot.adapters.cqhttp.message import Message
 
 from ATRI.service import Service as sv
 from ATRI.utils.limit import is_too_exciting
-from ATRI.rule import (
-    is_block,
-    is_in_dormant,
-    is_in_service
-)
+from ATRI.rule import is_in_service
 
 
 __doc__ = """
@@ -21,17 +16,17 @@ __doc__ = """
   来句笑话
 """
 
-get_laugh = sv.on_command(
-    cmd="来句笑话",
-    docs=__doc__,
-    rule=is_block() & is_in_dormant()
-    & is_in_service('来句笑话')
-)
+get_laugh = sv.on_message(rule=is_in_service('来句笑话'))
+sv.manual_reg_service('来句笑话', __doc__)
 
 @get_laugh.handle()
 async def _get_laugh(bot: Bot, event: MessageEvent) -> None:
     user_name = event.sender.nickname
+    msg = str(event.message)
     laugh_list = []
+    
+    if msg != "来句笑话":
+        return
     
     FILE = Path('.') / 'ATRI' / 'data' / 'database' / 'funny' / 'laugh.txt'
     with open(FILE, 'r', encoding='utf-8') as r:
@@ -42,14 +37,19 @@ async def _get_laugh(bot: Bot, event: MessageEvent) -> None:
     await get_laugh.finish(result.replace("%name", user_name))
 
 
-me_to_you = sv.on_message(
-    rule=is_block() & is_in_dormant() & is_in_service('你又行了')
-)
-sv.manual_reg_service('你又行了')
+__doc__ = """
+你又行了
+权限组：所有人
+用法：
+  (被动触发)
+"""
+
+me_to_you = sv.on_message(rule=is_in_service('你又行了'))
+sv.manual_reg_service('你又行了', __doc__)
 
 @me_to_you.handle()
 async def _me_to_you(bot: Bot, event: MessageEvent) -> None:
-    if randint(0, 5) == 5:
+    if randint(0, 15) == 5:
         msg = str(event.message)
         if "我" in msg and "CQ" not in msg:
             await me_to_you.finish(msg.replace("我", "你"))
@@ -62,16 +62,18 @@ __doc__ = """
   抽老婆
 """
 
-roll_wife = sv.on_command(
-    cmd="抽老婆",
-    docs=__doc__,
-    rule=is_block() & is_in_dormant() & is_in_service('抽老婆')
-)
+roll_wife = sv.on_message(rule=is_in_service('抽老婆'))
+sv.manual_reg_service('抽老婆', __doc__)
 
 @roll_wife.handle()
 async def _roll_wife(bot: Bot, event: GroupMessageEvent) -> None:
     user = event.user_id
     group = event.group_id
+    msg = str(event.message)
+    
+    if msg != "抽老婆":
+        return
+    
     user_name = await bot.get_group_member_info(group_id=group,
                                                 user_id=user)
     user_name = user_name['nickname']
@@ -110,9 +112,10 @@ __doc__ = """
 """
 
 fake_msg = sv.on_command(
-    cmd="/fm",
+    cmd="fakemsg",
+    aliases={'fm'},
     docs=__doc__,
-    rule=is_block() & is_in_service('/fm') & is_in_dormant()
+    rule=is_in_service('fakemsg')
 )
 
 @fake_msg.handle()
@@ -121,7 +124,7 @@ async def _fake_msg(bot: Bot, event: GroupMessageEvent) -> None:
     user = event.user_id
     group = event.group_id
     node = []
-    check = await is_too_exciting(user, group, 2, True)
+    check = await is_too_exciting(user, group, 1, True)
     
     if check:
         for i in msg:

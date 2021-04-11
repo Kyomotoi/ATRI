@@ -2,11 +2,7 @@ import re
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
 from ATRI.service import Service as sv
-from ATRI.rule import (
-    is_block,
-    is_in_dormant,
-    is_in_service
-)
+from ATRI.rule import is_in_service
 from .data_source import roll_dice, Encrypt
 
 
@@ -22,10 +18,9 @@ roll一下
 """
 
 roll = sv.on_command(
-    cmd="/roll",
+    cmd="roll",
     docs=__doc__,
-    rule=is_block() & is_in_dormant()
-    & is_in_service('/roll')
+    rule=is_in_service('roll')
 )
 
 @roll.handle()
@@ -46,7 +41,7 @@ async def _(bot: Bot, event: MessageEvent, state: dict) -> None:
 
 
 __doc__ = """
-加密你的信息！
+加密传输（bushi
 权限组：所有人
 用法：
   /enc e,d msg
@@ -58,9 +53,9 @@ __doc__ = """
 """
 
 encrypt = sv.on_command(
-    cmd="/enc",
+    cmd="enc",
     docs=__doc__,
-    rule=is_block() & is_in_service('/enc') & is_in_dormant()
+    rule=is_in_service('enc')
 )
 
 @encrypt.handle()

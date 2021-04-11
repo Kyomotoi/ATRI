@@ -8,7 +8,7 @@ from ATRI.log import logger as log
 from ATRI.config import Config
 from ATRI.service import Service as sv
 from ATRI.exceptions import RequestTimeOut
-from ATRI.rule import is_block, is_in_dormant, is_in_service
+from ATRI.rule import is_in_service
 from ATRI.utils.request import get_bytes
 from ATRI.utils.cqcode import coolq_code_check
 
@@ -28,14 +28,18 @@ async def _nsfw_checking(bot: Bot, event: GroupMessageEvent) -> None:
         user = event.user_id
         group = event.group_id
         check = await coolq_code_check(msg, user, group)
+        
         if check:
+            if "image" not in msg:
+                return
+            
+            url = nsfw_url + re.findall(r"url=(.*?)]", msg)[0]
             try:
-                url = nsfw_url + re.findall(r"url=(.*?)]", msg)[0]
                 data = json.loads(await get_bytes(url))
             except:
                 log.warning('检测涩图失败，请查阅文档以获取帮助')
                 return
-            if round(data['score'], 4) > 0.6:
+            if round(data['score'], 4) > Config.NsfwCheck.passing_rate:
                 score = "{:.2%}".format(round(data['score'], 4))
                 log.debug(f'截获涩图，得分：{score}')
                 await bot.send(event, f'好涩哦！涩值：{score}\n不行了咱要发给主人看！')
@@ -57,9 +61,9 @@ __doc__ = """
 """
 
 nsfw_reading = sv.on_command(
-    cmd="/nsfw",
+    cmd="nsfw",
     docs=__doc__,
-    rule=is_block() & is_in_service('/nsfw') & is_in_dormant()
+    rule=is_in_service('nsfw')
 )
 
 @nsfw_reading.handle()
@@ -73,7 +77,7 @@ async def _nsfw_r(bot: Bot,
     if check and msg:
         state['pic'] = msg
 
-@nsfw_reading.got('pic', prompt='请提供一张图片')
+@nsfw_reading.got('pic', prompt='图呢？')
 async def _nsfw_reading(bot: Bot,
                         event: GroupMessageEvent,
                         state: T_State) -> None:

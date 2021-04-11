@@ -5,7 +5,6 @@ from nonebot.adapters.cqhttp import Bot, MessageEvent
 
 from ATRI.service import SERVICE_DIR
 from ATRI.service import Service as sv
-from ATRI.rule import is_block
 
 
 SERVICE_DIR = SERVICE_DIR / 'services'
@@ -21,16 +20,15 @@ __doc__ = """
 """
 
 help = sv.on_command(
-    cmd="/h",
+    cmd="help",
+    aliases={'h', '?', '？'},
     docs=__doc__,
-    aliases={'/help', '.help'},
-    rule=is_block()
 )
 
 @help.handle()
 async def _help(bot: Bot, event: MessageEvent) -> None:
     msg = str(event.message).split(' ')
-    if not msg[0]:
+    if msg[0] == "":
         msg = (
             "呀？找不到路了？\n"
             "/h list 查看可用命令列表\n"
@@ -44,9 +42,9 @@ async def _help(bot: Bot, event: MessageEvent) -> None:
         for _, _, i in os.walk(SERVICE_DIR):
             for a in i:
                 files.append(a.replace('.json', ''))
-        cmds = " ".join(map(str, files))
+        cmds = " | ".join(map(str, files))
         msg = "咱能做很多事！比如：\n" + cmds
-        msg0 = msg + "\n具体用法呢，/(cmd) 就好！"
+        msg0 = msg + "\n具体用法呢，/(cmd) 就好！\n没反应可能是没权限..."
         await help.finish(msg0)
     elif msg[0] == "info":
         cmd = msg[1]
