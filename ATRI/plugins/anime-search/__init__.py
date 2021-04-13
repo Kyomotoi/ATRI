@@ -30,6 +30,17 @@ anime_search = sv.on_command(
     rule=is_in_service('anime')
 )
 
+@anime_search.args_parser  # type: ignore
+async def _nsfw(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    msg = str(event.message)
+    if msg == "算了":
+        await anime_search.finish('好吧')
+    
+    if not msg:
+        await anime_search.reject('图呢？')
+    else:
+        state['msg'] = msg
+
 @anime_search.handle()
 async def _anime_search(bot: Bot,
                         event: MessageEvent,

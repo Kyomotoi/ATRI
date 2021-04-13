@@ -89,7 +89,7 @@ async def disconnect(bot) -> None:
 
 
 @run_preprocessor  # type: ignore
-async def _idk(matcher: Matcher,
+async def _check_block(matcher: Matcher,
                bot: Bot,
                event: MessageEvent,
                state: T_State) -> None:
@@ -104,6 +104,7 @@ async def _idk(matcher: Matcher,
         group = str(event.group_id)
         if not sv.BlockSystem.auth_group(group):
             raise IgnoredException(f'Block group: {group}')
+
 
 @run_preprocessor  # type: ignore
 async def _store_message(matcher: Matcher,
@@ -123,8 +124,8 @@ async def _store_message(matcher: Matcher,
             try:
                 data = json.loads(path.read_bytes())
             except:
-                data = {}
-            data[event.message_id] = {
+                data = dict()
+            data[str(event.message_id)] = {
                 "date": now_time,
                 "time": str(time.time()),
                 "post_type": str(event.post_type),
@@ -146,7 +147,7 @@ async def _store_message(matcher: Matcher,
                     "role": event.sender.role,
                     "title": event.sender.title
                 },
-                "to_me": event.to_me
+                "to_me": str(event.to_me)
             }
             try:
                 with open(path, 'w', encoding='utf-8') as r:
@@ -160,7 +161,7 @@ async def _store_message(matcher: Matcher,
             pass
         
         if sv.BlockSystem.auth_group(group):
-            return
+            raise IgnoredException(f'Block group: {group}')
     else:
         pass
     
@@ -178,7 +179,7 @@ async def _request_friend_event(bot, event: FriendRequestEvent) -> None:
     try:
         data = json.loads(path.read_bytes())
     except:
-        data = {}
+        data = dict()
     data[event.flag] = {
         "user_id": event.user_id,
         "comment": event.comment
@@ -218,7 +219,7 @@ async def _request_group_event(bot, event: GroupRequestEvent) -> None:
     try:
         data = json.loads(path.read_bytes())
     except:
-        data = {}
+        data = dict()
     data[event.flag] = {
         "user_id": event.user_id,
         "group_id": event.group_id,
@@ -361,7 +362,6 @@ async def _recall_event(bot: Bot, event: GroupRecallNoticeEvent) -> None:
         f"{repo}"
     )
 
-    await bot.send(event, "咱看到惹~！")
     for superuser in Config.BotSelfConfig.superusers:
         await sv.NetworkPost.send_private_msg(
             user_id=int(superuser),

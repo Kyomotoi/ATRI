@@ -25,6 +25,7 @@ class Config(BaseConfig):
         command_sep: set = set(config.get('command_sep', ['.']))
         session_expire_timeout: timedelta = timedelta(
             config.get('session_expire_timeout', 2))
+        session_exciting_time: int = int(config.get('session_exciting_time', 60))
     
     class NetworkPost:
         config: dict = config['NetworkPost']
@@ -45,6 +46,11 @@ class Config(BaseConfig):
         passing_rate: float = float(config.get('passing_rate', 0.8))
         host: str = config.get('host', '127.0.0.1')
         port: int = int(config.get('port', 5000))
+    
+    class SauceNAO:
+        config: dict = config['SauceNAO']
+        
+        key: str = config.get('key', '')
 
 
 RUNTIME_CONFIG = {

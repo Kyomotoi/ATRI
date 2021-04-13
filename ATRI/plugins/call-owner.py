@@ -21,6 +21,17 @@ __doc__ = """
 
 repo = sv.on_command(cmd="来杯红茶", docs=__doc__)
 
+@repo.args_parser  # type: ignore
+async def _nsfw(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    msg = str(event.message)
+    if msg == "算了":
+        await repo.finish('好吧')
+    
+    if not msg:
+        await repo.reject('话呢？')
+    else:
+        state['pic'] = msg
+
 @repo.handle()
 async def _repo(bot: Bot, event: MessageEvent, state: T_State) -> None:
     msg = str(event.message).strip()

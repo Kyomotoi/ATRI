@@ -2,6 +2,7 @@ import re
 import json
 
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
+from nonebot.adapters.cqhttp.event import MessageEvent
 from nonebot.typing import T_State
 
 from ATRI.log import logger as log
@@ -65,6 +66,17 @@ nsfw_reading = sv.on_command(
     docs=__doc__,
     rule=is_in_service('nsfw')
 )
+
+@nsfw_reading.args_parser  # type: ignore
+async def _nsfw(bot: Bot, event: MessageEvent, state: T_State) -> None:
+    msg = str(event.message)
+    if msg == "算了":
+        await nsfw_reading.finish('好吧')
+    
+    if not msg:
+        await nsfw_reading.reject('图呢？')
+    else:
+        state['pic'] = msg
 
 @nsfw_reading.handle()
 async def _nsfw_r(bot: Bot,
