@@ -4,6 +4,7 @@
 アトリは、高性能ですから！
 
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/06e164beddd84e2c90a8f0e84e00c467)](https://www.codacy.com/gh/Kyomotoi/ATRI/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kyomotoi/ATRI&amp;utm_campaign=Badge_Grade)
 
 [![](https://img.shields.io/github/license/Kyomotoi/ATRI?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![](https://img.shields.io/badge/Chat-567297659-blue?style=for-the-badge)](https://jq.qq.com/?_wv=1027&k=a89kfKQE)
