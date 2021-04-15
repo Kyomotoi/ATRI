@@ -90,9 +90,9 @@ async def disconnect(bot) -> None:
 
 @run_preprocessor  # type: ignore
 async def _check_block(matcher: Matcher,
-               bot: Bot,
-               event: MessageEvent,
-               state: T_State) -> None:
+                       bot: Bot,
+                       event: MessageEvent,
+                       state: T_State) -> None:
     user = str(event.user_id)
     if not sv.BlockSystem.auth_user(user):
         raise IgnoredException(f'Block user: {user}')
@@ -112,8 +112,6 @@ async def _store_message(matcher: Matcher,
                          event,
                          state: T_State) -> None:
     if isinstance(event, GroupMessageEvent):
-        group = str(event.group_id)
-        
         if event.sub_type == "normal":
             now_time = datetime.now().strftime('%Y-%m-%d') 
             GROUP_DIR = ESSENTIAL_DIR / 'chat_history' / f'{event.group_id}'
@@ -159,12 +157,8 @@ async def _store_message(matcher: Matcher,
                 pass
         else:
             pass
-        
-        if sv.BlockSystem.auth_group(group):
-            raise IgnoredException(f'Block group: {group}')
     else:
         pass
-    
 
 
 # 处理：好友请求

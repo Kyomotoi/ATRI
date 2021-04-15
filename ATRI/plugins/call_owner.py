@@ -22,7 +22,7 @@ __doc__ = """
 repo = sv.on_command(cmd="来杯红茶", docs=__doc__)
 
 @repo.args_parser  # type: ignore
-async def _nsfw(bot: Bot, event: MessageEvent, state: T_State) -> None:
+async def _repo_load(bot: Bot, event: MessageEvent, state: T_State) -> None:
     msg = str(event.message)
     if msg == "算了":
         await repo.finish('好吧')
@@ -30,18 +30,18 @@ async def _nsfw(bot: Bot, event: MessageEvent, state: T_State) -> None:
     if not msg:
         await repo.reject('话呢？')
     else:
-        state['pic'] = msg
+        state['msg_repo'] = msg
 
 @repo.handle()
 async def _repo(bot: Bot, event: MessageEvent, state: T_State) -> None:
     msg = str(event.message).strip()
     if msg:
-        state["msg"] = msg
+        state['msg_repo'] = msg
 
-@repo.got("msg", prompt="请告诉咱需要反馈的内容~！")
-async def _repo_(bot: Bot, event: MessageEvent, state: T_State) -> None:
+@repo.got('msg_repo', prompt="请告诉咱需要反馈的内容~！")
+async def _repo_deal(bot: Bot, event: MessageEvent, state: T_State) -> None:
     global repo_list
-    msg = state["msg"]
+    msg = state['msg_repo']
     user = event.user_id
     
     if count_list(repo_list, user) == 5:

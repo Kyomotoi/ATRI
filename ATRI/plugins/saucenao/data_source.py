@@ -8,16 +8,14 @@ class SauceNao:
     def __init__(self,
                  api_key: str,
                  output_type=2,
-                 testmode=0,
-                 dbmask=None,
+                 testmode=1,
                  dbmaski=32768,
                  db=5,
-                 numres=1) -> None:
+                 numres=5) -> None:
         params = dict()
         params['api_key'] = api_key
         params['output_type'] = output_type
         params['testmode'] = testmode
-        params['dbmask'] = dbmask
         params['dbmaski'] = dbmaski
         params['db'] = db
         params['numres'] = numres

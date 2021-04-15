@@ -129,7 +129,6 @@ async def _fake_msg(bot: Bot, event: GroupMessageEvent) -> None:
     if check:
         for i in msg:
             args = i.split('*')
-            print(args)
             qq = args[0]
             name = args[1].replace('&#91;', '[')
             name = name.replace('&#93;', ']')
@@ -145,3 +144,13 @@ async def _fake_msg(bot: Bot, event: GroupMessageEvent) -> None:
             }
             node.append(dic)
     await bot.send_group_forward_msg(group_id=group, messages=node)
+
+
+__doc__ = """
+不知道吃什么？
+权限组：所有人
+用法：
+  今天{时段}吃什么
+示例：
+  今天中午吃什么
+"""

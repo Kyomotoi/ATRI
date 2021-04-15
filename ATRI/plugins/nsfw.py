@@ -2,7 +2,6 @@ import re
 import json
 
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
-from nonebot.adapters.cqhttp.event import MessageEvent
 from nonebot.typing import T_State
 
 from ATRI.log import logger as log
@@ -68,15 +67,16 @@ nsfw_reading = sv.on_command(
 )
 
 @nsfw_reading.args_parser  # type: ignore
-async def _nsfw(bot: Bot, event: MessageEvent, state: T_State) -> None:
+async def _nsfw(bot: Bot, event: GroupMessageEvent, state: T_State) -> None:
     msg = str(event.message)
-    if msg == "算了":
+    quit_list = ['算了', '罢了', '不搜了']
+    if msg in quit_list:
         await nsfw_reading.finish('好吧')
     
     if not msg:
         await nsfw_reading.reject('图呢？')
     else:
-        state['pic'] = msg
+        state['pic_nsfw'] = msg
 
 @nsfw_reading.handle()
 async def _nsfw_r(bot: Bot,
@@ -87,13 +87,13 @@ async def _nsfw_r(bot: Bot,
     msg = str(event.message).strip()
     check = await coolq_code_check(msg, user, group)
     if check and msg:
-        state['pic'] = msg
+        state['pic_nsfw'] = msg
 
-@nsfw_reading.got('pic', prompt='图呢？')
+@nsfw_reading.got('pic_nsfw', prompt='图呢？')
 async def _nsfw_reading(bot: Bot,
                         event: GroupMessageEvent,
                         state: T_State) -> None:
-    msg = state['pic']
+    msg = state['pic_nsfw']
     pic = re.findall(r"url=(.*?)]", msg)
     if not pic:
         await nsfw_reading.reject('请发送图片而不是其它东西！！')
@@ -109,7 +109,7 @@ async def _nsfw_reading(bot: Bot,
     if score > 0.9:
         level = "hso! 我要发给主人看！"
         for sup in Config.BotSelfConfig.superusers:
-            await bot.send_private_msg(user_id=sup, message=f"{state['pic']}\n涩值: {result}")
+            await bot.send_private_msg(user_id=sup, message=f"{state['pic_nsfw']}\n涩值: {result}")
     elif 0.9 > score >= 0.6:
         level = "嗯，可冲"
     else:
