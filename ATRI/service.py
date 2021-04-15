@@ -1,4 +1,5 @@
 import os
+import re
 import json
 from pathlib import Path
 from datetime import datetime
@@ -15,8 +16,9 @@ from typing import (
 )
 from nonebot.matcher import Matcher
 from nonebot.permission import Permission
+from nonebot.plugin import on_message
 from nonebot.typing import T_State, T_Handler, T_RuleChecker
-from nonebot.rule import Rule, command, keyword
+from nonebot.rule import Rule, command, keyword, regex
 
 from .log import logger as log
 from .config import Config
@@ -237,6 +239,14 @@ class Service:
                    **kwargs) -> Type[Matcher]:
         _load_service_config(list(keywords)[0], docs)
         return cls.on_message(keyword(*keywords) & rule, **kwargs)
+    
+    @classmethod
+    def on_regex(cls,
+                 pattern: str,
+                 flags: Union[int, re.RegexFlag] = 0,
+                 rule: Optional[Union[Rule, T_RuleChecker]] = None,
+                 **kwargs) -> Type[Matcher]:
+        return on_message(regex(pattern, flags) & rule, **kwargs)
     
     
     class NetworkPost:

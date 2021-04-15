@@ -56,15 +56,14 @@ async def shutdown() -> None:
     try:
         shutil.rmtree(PLUGIN_INFO_DIR)
         logger.debug("成功！")
-    except:
+    except Exception:
         repo = (
             '清理插件信息失败',
             '请前往 ATRI/data/service/services 下',
             '将 services 整个文件夹删除'
         )
-        logger.error(repo)
         time.sleep(10)
-        pass
+        raise Exception(repo)
 
 
 @driver.on_bot_connect
@@ -342,8 +341,12 @@ recall_event = sv.on_notice()
 
 @recall_event.handle()
 async def _recall_event(bot: Bot, event: GroupRecallNoticeEvent) -> None:
+    try:
+        repo = await bot.get_msg(message_id=event.message_id)
+    except:
+        return
+    
     group = event.group_id
-    repo = await bot.get_msg(message_id=event.message_id)
     repo = str(repo["message"])
     check = await coolq_code_check(repo, group=group)
     if not check:
@@ -364,8 +367,12 @@ async def _recall_event(bot: Bot, event: GroupRecallNoticeEvent) -> None:
 
 @recall_event.handle()
 async def _rec(bot: Bot, event: FriendRecallNoticeEvent) -> None:
+    try:
+        repo = await bot.get_msg(message_id=event.message_id)
+    except:
+        return
+    
     user = event.user_id
-    repo = await bot.get_msg(message_id=event.message_id)
     repo = str(repo["message"])
     check = await coolq_code_check(repo, user)
     if not check:

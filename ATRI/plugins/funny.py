@@ -1,12 +1,18 @@
+import json
+import re
 import asyncio
 from pathlib import Path
 from random import choice, randint
 
 from nonebot.adapters.cqhttp import Bot, MessageEvent, GroupMessageEvent
+from nonebot.adapters.cqhttp.message import Message, MessageSegment
 
 from ATRI.service import Service as sv
 from ATRI.utils.limit import is_too_exciting
 from ATRI.rule import is_in_service
+from ATRI.utils.request import post_bytes
+from ATRI.utils.translate import to_simple_string
+from ATRI.exceptions import RequestTimeOut
 
 
 __doc__ = """
@@ -146,11 +152,58 @@ async def _fake_msg(bot: Bot, event: GroupMessageEvent) -> None:
     await bot.send_group_forward_msg(group_id=group, messages=node)
 
 
-__doc__ = """
-不知道吃什么？
-权限组：所有人
-用法：
-  今天{时段}吃什么
-示例：
-  今天中午吃什么
-"""
+EAT_URL = "https://wtf.hiigara.net/api/run/{}"
+
+eat_wat = sv.on_regex(r"[今|明|后|大后]天(.*?)吃什么", rule=is_in_service('今天吃什么'))
+
+@eat_wat.handle()
+async def _eat(bot: Bot, event: MessageEvent) -> None:
+    msg = str(event.message).strip()
+    user = event.user_id
+    user_n = event.sender.nickname
+    arg = re.findall(r"[今|明|后|大后]天(.*?)吃什么", msg)[0]
+    nd = re.match(r"[今|明|后|大后][天]", msg)[0]
+    
+    if arg == "中午":
+        a = f"LdS4K6/{randint(0, 999999)}"
+        url = EAT_URL.format(a)
+        params = {"event": "ManualRun"}
+        try:
+            data = json.loads(await post_bytes(url, params))
+        except RequestTimeOut:
+            raise RequestTimeOut('Request failed!')
+        
+        text = to_simple_string(data['text']).replace('今天', nd)
+        get_a = re.search(r"非常(.*?)的", text)[0]
+        result = f"> {MessageSegment.at(user)}\n" + text.replace(get_a, '')
+    
+    elif arg == "晚上":
+        a = f"KaTMS/{randint(0, 999999)}"
+        url = EAT_URL.format(a)
+        params = {"event": "ManualRun"}
+        try:
+            data = json.loads(await post_bytes(url, params))
+        except RequestTimeOut:
+            raise RequestTimeOut('Request failed!')
+        
+        text = to_simple_string(data['text']).replace('今天', '')
+        result = f"> {MessageSegment.at(user)}\n" + text
+    
+    else:
+        rd = randint(1, 10)
+        if rd == 5:
+            result = "吃我吧 ❤"
+        else:
+            a = f"JJr1hJ/{randint(0, 999999)}"
+            url = EAT_URL.format(a)
+            params = {"event": "ManualRun"}
+            try:
+                data = json.loads(await post_bytes(url, params))
+            except RequestTimeOut:
+                raise RequestTimeOut('Request failed!')
+            
+            text = to_simple_string(data['text']).replace('今天', nd)
+            get_a = re.match(r"(.*?)的智商", text)[0]
+            result = f"> {MessageSegment.at(user)}\n" + text.replace(get_a, f'{user_n}的智商')
+    
+    await eat_wat.finish(Message(result))
