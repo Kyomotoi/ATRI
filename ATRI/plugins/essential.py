@@ -268,7 +268,7 @@ async def _gro(bot: Bot, event: GroupDecreaseNoticeEvent) -> None:
                 message=msg
             )
     else:
-        await group_member_event.finish(f"阿！有人离开了我们...")
+        await group_member_event.finish("阿！有人离开了我们...")
 
 
 # 处理群管理事件
