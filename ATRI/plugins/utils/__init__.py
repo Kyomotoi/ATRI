@@ -18,7 +18,7 @@ roll一下
 """
 
 roll = sv.on_command(
-    cmd="roll",
+    cmd="/roll",
     docs=__doc__,
     rule=is_in_service('roll')
 )
@@ -53,7 +53,7 @@ __doc__ = """
 """
 
 encrypt = sv.on_command(
-    cmd="enc",
+    cmd="/enc",
     docs=__doc__,
     rule=is_in_service('enc')
 )

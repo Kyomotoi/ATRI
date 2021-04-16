@@ -14,14 +14,13 @@ __doc__ = """
 查询命令用法
 权限组：所有人
 用法：
-  /h
-  /h list
-  /h info (cmd)
+  /help
+  /help list
+  /help info (cmd)
 """
 
 help = sv.on_command(
-    cmd="help",
-    aliases={'h', '?', '？'},
+    cmd="/help",
     docs=__doc__,
 )
 
@@ -31,8 +30,8 @@ async def _help(bot: Bot, event: MessageEvent) -> None:
     if msg[0] == "":
         msg = (
             "呀？找不到路了？\n"
-            "/h list 查看可用命令列表\n"
-            "/h info (cmd) 查看命令具体帮助\n"
+            "/help list 查看可用命令列表\n"
+            "/help info (cmd) 查看命令具体帮助\n"
             "项目地址：github.com/Kyomotoi/ATRI\n"
             "咱只能帮你这么多了qwq"
         )
@@ -41,10 +40,11 @@ async def _help(bot: Bot, event: MessageEvent) -> None:
         files = []
         for _, _, i in os.walk(SERVICE_DIR):
             for a in i:
-                files.append(a.replace('.json', ''))
+                f = SERVICE_DIR / a
+                files.append(json.loads(f.read_bytes())['command'])
         cmds = " | ".join(map(str, files))
         msg = "咱能做很多事！比如：\n" + cmds
-        msg0 = msg + "\n具体用法呢，/(cmd) 就好！\n没反应可能是没权限..."
+        msg0 = msg + "\n没反应可能是没权限...或者为探测类型...不属于可直接触发命令..."
         await help.finish(msg0)
     elif msg[0] == "info":
         cmd = msg[1]

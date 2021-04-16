@@ -11,10 +11,13 @@ from ATRI.config import Config
 
 __doc__ = """
 测试机器人状态
+权限组：所有人
+用法：
+  /ping
 """
 
 ping = sv.on_command(
-    cmd="ping",
+    cmd="/ping",
     docs="测试机器人",
     rule=is_in_service('ping'))
 
@@ -31,7 +34,7 @@ __doc__ = """
 """
 
 status = sv.on_command(
-    cmd="status",
+    cmd="/status",
     docs=__doc__,
     rule=is_in_service('status')
 )

@@ -22,17 +22,16 @@ __doc__ = """
   来句笑话
 """
 
-get_laugh = sv.on_message(rule=is_in_service('来句笑话'))
-sv.manual_reg_service('来句笑话', __doc__)
+get_laugh = sv.on_command(
+    cmd='来句笑话',
+    docs=__doc__,
+    rule=is_in_service('来句笑话')
+)
 
 @get_laugh.handle()
 async def _get_laugh(bot: Bot, event: MessageEvent) -> None:
     user_name = event.sender.nickname
-    msg = str(event.message)
     laugh_list = []
-    
-    if msg != "来句笑话":
-        return
     
     FILE = Path('.') / 'ATRI' / 'data' / 'database' / 'funny' / 'laugh.txt'
     with open(FILE, 'r', encoding='utf-8') as r:
@@ -43,15 +42,7 @@ async def _get_laugh(bot: Bot, event: MessageEvent) -> None:
     await get_laugh.finish(result.replace("%name", user_name))
 
 
-__doc__ = """
-你又行了
-权限组：所有人
-用法：
-  (被动触发)
-"""
-
-me_to_you = sv.on_message(rule=is_in_service('你又行了'))
-sv.manual_reg_service('你又行了', __doc__)
+me_to_you = sv.on_message()
 
 @me_to_you.handle()
 async def _me_to_you(bot: Bot, event: MessageEvent) -> None:
@@ -68,8 +59,11 @@ __doc__ = """
   抽老婆
 """
 
-roll_wife = sv.on_message(rule=is_in_service('抽老婆'))
-sv.manual_reg_service('抽老婆', __doc__)
+roll_wife = sv.on_command(
+    cmd='抽老婆',
+    docs=__doc__,
+    rule=is_in_service('抽老婆')
+)
 
 @roll_wife.handle()
 async def _roll_wife(bot: Bot, event: GroupMessageEvent) -> None:
@@ -108,18 +102,17 @@ __doc__ = """
 伪造转发
 权限组：所有人
 用法：
-  /fm qq-name-msg...
+  /fakemsg qq*name*msg...
 补充:
   qq: QQ号
   name: 消息中的ID
   msg: 对应信息
 示例:
-  /fm 123456789*生草人*草 114514*仙贝*臭死了
+  /fakemsg 123456789*生草人*草 114514*仙贝*臭死了
 """
 
 fake_msg = sv.on_command(
-    cmd="fakemsg",
-    aliases={'fm'},
+    cmd="/fakemsg",
     docs=__doc__,
     rule=is_in_service('fakemsg')
 )

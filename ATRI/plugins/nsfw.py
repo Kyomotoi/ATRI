@@ -61,7 +61,7 @@ __doc__ = """
 """
 
 nsfw_reading = sv.on_command(
-    cmd="nsfw",
+    cmd="/nsfw",
     docs=__doc__,
     rule=is_in_service('nsfw')
 )

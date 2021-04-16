@@ -4,6 +4,7 @@ from random import randint
 from pathlib import Path
 
 from nonebot.permission import SUPERUSER
+from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.adapters.cqhttp import (
     Bot,
     MessageEvent,
@@ -25,15 +26,14 @@ __doc__ = """
 好友申请处理
 权限组：维护者
 用法：
-  /fr list
-  /fr (y/n) reqid
+  /friendreq list
+  /friendreq (y/n) reqid
 补充:
   reqid: 申请码
 """
 
 request_friend = sv.on_command(
-    cmd="friendreq",
-    aliases={'fr'},
+    cmd="/friendreq",
     docs=__doc__,
     permission=SUPERUSER
 )
@@ -76,15 +76,14 @@ __doc__ = """
 群聊申请处理
 权限组：维护者
 用法：
-  /gr list
-  /gr (y/n) reqid
+  /groupreq list
+  /groupreq (y/n) reqid
 补充：
   reqid: 申请码
 """
 
 request_group = sv.on_command(
-    cmd="groupreq",
-    aliases={'gr'},
+    cmd="/groupreq",
     docs=__doc__,
     permission=SUPERUSER
 )
@@ -141,8 +140,7 @@ __doc__ = """
 """
 
 broadcast = sv.on_command(
-    cmd="boradcast",
-    aliases={'bc'},
+    cmd="/bc",
     docs=__doc__,
     permission=SUPERUSER
 )
@@ -191,7 +189,7 @@ __doc__ = """
 """
 
 track_error = sv.on_command(
-    cmd="track",
+    cmd="/track",
     docs=__doc__,
     permission=SUPERUSER
 )
@@ -226,15 +224,14 @@ __doc__ = """
 获取控制台信息
 权限组：维护者
 用法：
-  /gl level line
+  /getlog level line
 补充：
   level: 等级(info, warning, error, debug)
   line: 行数(最近20行：-20)
 """
 
 get_log = sv.on_command(
-    cmd="getlog",
-    aliases={'gl'},
+    cmd="/getlog",
     docs=__doc__,
     permission=SUPERUSER
 )
@@ -281,12 +278,11 @@ __doc__ = """
 紧急停机
 权限组：维护者
 用法：
-  /st
+  /down
 """
 
 shutdown = sv.on_command(
-    cmd="shutdown",
-    aliases={'st'},
+    cmd="/down",
     docs=__doc__,
     permission=SUPERUSER
 )
@@ -310,21 +306,21 @@ __doc__ = """
 懒得和你废话，block了
 权限组：维护者
 用法：
-  /b u+uid,g+gid 0,1
+  /block (u,g) (int) (0,1)
 补充：
-  uid：QQ号
-  gid：QQ群号
+  u：QQ
+  g：QQ群
+  int: 对应号码
   0,1：对应布尔值False, True
   范围为全局
 示例：
-  /b u114514 1
+  /block u 114514 1
   执行对QQ号为114514的封禁
 """
 
 block = sv.on_command(
-    cmd="block",
-    aliases={'b'},
-    docs="懒得和你废话，block了\n用法：/b u,g 0,1",
+    cmd="/block",
+    docs=__doc__,
     permission=SUPERUSER
 )
 
@@ -355,9 +351,9 @@ __doc__ = """
 权限组：维护者，群管理
 用法：
   对于维护者：
-    /s 目标指令 u+uid,g+gid,global 0,1
+    /service 目标指令 u+uid,g+gid,global 0,1
   对于群管理：
-    /s 目标指令 0,1
+    /service 目标指令 0,1
 补充：
   user：QQ号
   group：QQ群号
@@ -365,16 +361,15 @@ __doc__ = """
   0,1：对应布尔值False, True
 示例：
   对于维护者：
-    /s /status u123456789 1
+    /service /status u123456789 1
   对于群管理：
-    /s /status 1
+    /service /status 1
 """
 
 service_control = sv.on_command(
-    cmd='service',
-    aliases={'s'},
+    cmd='/service',
     docs=__doc__,
-    permission=SUPERUSER
+    permission=SUPERUSER|GROUP_OWNER|GROUP_ADMIN
 )
 
 @service_control.handle()
@@ -415,3 +410,30 @@ async def _service_control(bot: Bot, event: GroupMessageEvent) -> None:
 @service_control.handle()
 async def _serv(bot: Bot, event: PrivateMessageEvent) -> None:
     await service_control.finish("此功能仅在群聊中触发")
+
+
+__doc__ = """
+休眠bot，不处理任何信息
+权限组：维护者
+用法：
+  /dormant (0,1)
+补充：
+  0,1: 对应布尔值(False,True)
+"""
+
+dormant = sv.on_command(
+    cmd='/dormant',
+    docs=__doc__,
+    permission=SUPERUSER
+)
+
+@dormant.handle()
+async def _dormant(bot: Bot, event: MessageEvent) -> None:
+    msg = str(event.message).strip()
+    if msg == "1":
+        sv.Dormant.control_dormant(True)
+        stat = "已进入休眠状态...期间咱不会回应任何人的消息哦..."
+    else:
+        sv.Dormant.control_dormant(False)
+        stat = "唔...回复精神力！"
+    await dormant.finish(stat)

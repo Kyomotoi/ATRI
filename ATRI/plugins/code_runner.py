@@ -51,7 +51,7 @@ __doc__ = """
 """
 
 code_runner = sv.on_command(
-    cmd="code",
+    cmd="/code",
     docs=__doc__,
     rule=is_in_service('code')
 )

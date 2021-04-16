@@ -93,11 +93,13 @@ async def _check_block(matcher: Matcher,
                        event: MessageEvent,
                        state: T_State) -> None:
     user = str(event.user_id)
+    msg = str(event.message)
     if not sv.BlockSystem.auth_user(user):
         raise IgnoredException(f'Block user: {user}')
     
     if not sv.Dormant.is_dormant():
-        raise IgnoredException('Bot has been dormant.')
+        if "/dormant" not in msg:
+            raise IgnoredException('Bot has been dormant.')
     
     if isinstance(event, GroupMessageEvent):
         group = str(event.group_id)
@@ -266,7 +268,7 @@ async def _gro(bot: Bot, event: GroupDecreaseNoticeEvent) -> None:
                 message=msg
             )
     else:
-        await group_member_event.finish(f"{event.user_id} 离开了我们...")
+        await group_member_event.finish(f"阿！有人离开了我们...")
 
 
 # 处理群管理事件

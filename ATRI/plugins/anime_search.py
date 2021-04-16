@@ -20,13 +20,13 @@ __doc__ = """
 以图搜番
 权限组：所有人
 用法：
-  /anime
+  以图搜番 (pic)
 """
 
 anime_search = sv.on_command(
-    cmd="anime",
+    cmd="以图搜番",
     docs=__doc__,
-    rule=is_in_service('anime')
+    rule=is_in_service('以图搜番')
 )
 
 @anime_search.args_parser  # type: ignore

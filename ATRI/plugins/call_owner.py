@@ -16,7 +16,7 @@ __doc__ = """
 给维护者留言
 权限组：所有人
 用法：
-  /来杯红茶 (msg)
+  来杯红茶 (msg)
 """
 
 repo = sv.on_command(cmd="来杯红茶", docs=__doc__)

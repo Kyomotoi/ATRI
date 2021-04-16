@@ -25,8 +25,11 @@ __doc__ = """
   @：at Bot
 """
 
-hitokoto = sv.on_message(rule=is_in_service('一言') & to_bot())
-sv.manual_reg_service('一言', __doc__)
+hitokoto = sv.on_command(
+    cmd='一言',
+    docs=__doc__,
+    rule=is_in_service('一言')
+)
 
 @hitokoto.handle()
 async def _hitokoto(bot: Bot, event: MessageEvent) -> None:
