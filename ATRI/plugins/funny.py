@@ -69,10 +69,6 @@ roll_wife = sv.on_command(
 async def _roll_wife(bot: Bot, event: GroupMessageEvent) -> None:
     user = event.user_id
     group = event.group_id
-    msg = str(event.message)
-    
-    if msg != "抽老婆":
-        return
     
     user_name = await bot.get_group_member_info(group_id=group,
                                                 user_id=user)
