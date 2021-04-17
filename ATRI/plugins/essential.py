@@ -93,7 +93,7 @@ async def _check_block(matcher: Matcher,
                        event: MessageEvent,
                        state: T_State) -> None:
     user = str(event.user_id)
-    try：
+    try:
         msg = str(event.message)
     except:
         msg = ""
