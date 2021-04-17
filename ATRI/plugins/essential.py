@@ -93,7 +93,10 @@ async def _check_block(matcher: Matcher,
                        event: MessageEvent,
                        state: T_State) -> None:
     user = str(event.user_id)
-    msg = str(event.message)
+    try：
+        msg = str(event.message)
+    except:
+        msg = ""
     if not sv.BlockSystem.auth_user(user):
         raise IgnoredException(f'Block user: {user}')
     
