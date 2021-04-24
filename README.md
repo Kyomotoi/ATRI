@@ -25,9 +25,7 @@
 
 实现方式为 `go-cqhttp 或其它遵守Onebot标准的协议` + `NoneBot2`。
 
-由于项目特殊性，会随机进行更新，通常推荐`clone main`分支，如急需体验新的功能/~~BUG~~，你可以选择`clone dev`
-
-**请注意：分支`dev`存在不确定因素，包括`造成机器卡顿、饥饿行为以及其它未知魔法`**
+由于项目特殊性，故随机进行更新。
 
 ### 特别感谢
 [Richard Chien](https://github.com/richardchien): [Onebot标准](https://github.com/howmanybots/onebot)
