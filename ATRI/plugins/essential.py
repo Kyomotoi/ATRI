@@ -261,6 +261,8 @@ async def _group_member_event(bot: Bot, event: GroupIncreaseNoticeEvent) -> None
 @group_member_event.handle()
 async def _gro(bot: Bot, event: GroupDecreaseNoticeEvent) -> None:
     if event.is_tome():
+        if event.user_id != event.self_id:
+            return
         msg = (
             "呜呜呜，主人"
             f"咱被群 {event.group_id} 里的 {event.operator_id} 扔出来了..."
@@ -279,7 +281,7 @@ group_admin_event = sv.on_notice()
 
 @group_admin_event.handle()
 async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent) -> None:
-    if event.is_tome():
+    if not event.is_tome():
         return
     
     for superuser in Config.BotSelfConfig.superusers:

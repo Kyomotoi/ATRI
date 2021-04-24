@@ -1,5 +1,5 @@
 import os
-from PIL import ImageFile, Image
+from PIL import Image, ImageFile
 
 from ATRI.exceptions import WriteError
 

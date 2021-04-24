@@ -30,7 +30,7 @@ logger.add(
 )
 
 logger.add(
-    LOGGER_DIR / "info" / f"{NOW_TIME}-INFO.log",
+    LOGGER_DIR / "info" / f"{NOW_TIME}.log",
     rotation="10 MB",
     enqueue=True,
     level="INFO",
@@ -39,7 +39,7 @@ logger.add(
 )
 
 logger.add(
-    LOGGER_DIR / 'warning' / f"{NOW_TIME}-WARNING.log",
+    LOGGER_DIR / "warning" / f"{NOW_TIME}.log",
     rotation="10 MB",
     enqueue=True,
     level="WARNING",
@@ -48,7 +48,7 @@ logger.add(
 )
 
 logger.add(
-    LOGGER_DIR / 'error' / f"{NOW_TIME}-ERROR.log",
+    LOGGER_DIR / "error" / f"{NOW_TIME}.log",
     rotation="10 MB",
     enqueue=True,
     level="ERROR",
@@ -57,7 +57,7 @@ logger.add(
 )
 
 logger.add(
-    LOGGER_DIR / 'debug' / f"{NOW_TIME}-DEBUG.log",
+    LOGGER_DIR / "debug" / f"{NOW_TIME}.log",
     rotation="10 MB",
     enqueue=True,
     level="DEBUG",

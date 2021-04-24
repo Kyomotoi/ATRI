@@ -1,5 +1,6 @@
 import re
 import json
+from aiohttp import FormData
 
 from nonebot.adapters.cqhttp.message import MessageSegment
 from nonebot.adapters.cqhttp import Bot, MessageEvent
@@ -11,6 +12,7 @@ from ATRI.rule import is_in_service
 from ATRI.exceptions import RequestTimeOut
 from ATRI.utils.request import get_bytes
 from ATRI.utils.translate import to_simple_string
+from ATRI.utils.ub_paste import paste
 
 
 URL = "https://trace.moe/api/search?url="
@@ -32,10 +34,9 @@ anime_search = sv.on_command(
 @anime_search.args_parser  # type: ignore
 async def _load_anime(bot: Bot, event: MessageEvent, state: T_State) -> None:
     msg = str(event.message)
-    quit_list = ['算了', '罢了', '不搜了']
+    quit_list = ['算了', '罢了', '不搜了', '取消']
     if msg in quit_list:
         await anime_search.finish('好吧...')
-    
     if not msg:
         await anime_search.reject('图呢？')
     else:
@@ -94,7 +95,7 @@ async def _deal_search(bot: Bot,
     
     t = 0
     
-    msg0 = f"> {MessageSegment.at(event.user_id)}"
+    msg0 = f"> {event.sender.nickname}"
     for i in result:
         t += 1
         s = "%.2f%%" % (i[1][0] * 100)
@@ -105,4 +106,15 @@ async def _deal_search(bot: Bot,
             f"Time: {i[1][1]} {i[1][2]}"
         )
     
-    await anime_search.finish(Message(msg0))
+    if len(result) == 2:
+        await anime_search.finish(Message(msg0))
+    else:
+        data = FormData()
+        data.add_field('poster', 'ATRI running log')
+        data.add_field('syntax', 'text')
+        data.add_field('expiration', 'day')
+        data.add_field('content', msg0)
+
+        repo = f"> {event.sender.nickname}\n"
+        repo = repo + f"详细请移步此处~\n{await paste(data)}"
+        await anime_search.finish(repo)

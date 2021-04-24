@@ -21,7 +21,7 @@ __doc__ = """
 
 help = sv.on_command(
     cmd="/help",
-    docs=__doc__,
+    docs=__doc__
 )
 
 @help.handle()

@@ -20,7 +20,7 @@ os.makedirs(ERROR_DIR, exist_ok=True)
 
 
 def _save_error(prompt: str, content: str) -> str:
-    track_id = ''.join(sample(string.ascii_letters + string.digits, 16))
+    track_id = ''.join(sample(string.ascii_letters + string.digits, 8))
     data = {
         "track_id": track_id,
         "prompt": prompt,
@@ -72,6 +72,14 @@ class GetStatusError(BaseBotException):
     prompt = "获取状态失败"
 
 
+class ReadFileError(BaseBotException):
+    prompt = "读取文件失败"
+
+
+class FormatError(BaseBotException):
+    prompt = "格式错误"
+
+
 @run_postprocessor  # type: ignore
 async def _track_error(matcher: Matcher,
                        exception: Optional[Exception],
@@ -95,7 +103,7 @@ async def _track_error(matcher: Matcher,
         "[WARNING] 这是一个错误... ;w;\n"
         f"追踪ID: {track_id}\n"
         f"触发原因: {prompt}\n"
-        "键入 /来杯红茶 以联系维护者"
+        "键入 来杯红茶 以联系维护者"
     )
     
     await bot.send(event, msg)
