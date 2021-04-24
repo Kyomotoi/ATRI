@@ -22,7 +22,7 @@ async def _dormant_enabled(bot: Bot, event: MessageEvent) -> None:
     sv.Dormant.control_dormant(True)
     msg = "已进入休眠状态...期间咱不会回应任何人的消息哦..."
     await dormant_enabled.finish(msg)
-    
+
 
 __doc__ = """
 苏醒，开始处理信息

@@ -2,7 +2,6 @@ import re
 import json
 from aiohttp import FormData
 
-from nonebot.adapters.cqhttp.message import MessageSegment
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 from nonebot.adapters.cqhttp.message import Message
 from nonebot.typing import T_State

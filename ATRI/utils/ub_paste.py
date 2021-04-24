@@ -1,4 +1,4 @@
-from aiohttp import ClientSession, FormData
+from aiohttp import ClientSession
 
 
 URL = "https://paste.ubuntu.com/"

@@ -3,7 +3,6 @@ from aiohttp import FormData
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, MessageEvent
-from nonebot.adapters.cqhttp.message import MessageSegment
 
 from ATRI.service import Service as sv
 from ATRI.log import LOGGER_DIR, NOW_TIME

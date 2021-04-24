@@ -2,7 +2,6 @@ import re
 import json
 from pathlib import Path
 
-from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
@@ -27,7 +26,7 @@ req_list = sv.on_command(
 )
 
 @req_list.handle()
-async def _req_list(bot: Bot, event: MessageEvent, state: T_State) -> None:
+async def _req_list(bot: Bot, event: MessageEvent) -> None:
     path_f = ESSENTIAL_DIR / 'request_friend.json'
     path_g = ESSENTIAL_DIR / 'request_group.json'
     data_f, data_g = dict()
@@ -64,7 +63,7 @@ req_deal = sv.on_regex(
 )
 
 @req_deal.handle()
-async def _req_deal(bot: Bot, event: MessageEvent, state: T_State) -> None:
+async def _req_deal(bot: Bot, event: MessageEvent) -> None:
     msg = str(event.message).split(' ')
     arg = re.findall(r'[同意|拒绝][好友|群]申请', msg[0])
     app = arg[0]
@@ -86,7 +85,7 @@ async def _req_deal(bot: Bot, event: MessageEvent, state: T_State) -> None:
             try:
                 await bot.set_friend_add_request(flag=reqid,
                                                  approve=True)
-                await req_deal.finish(f"完成~！已同意申请")
+                await req_deal.finish('完成~！已同意申请')
             except FormatError:
                 await req_deal.finish('请检查输入的值是否正确——！')
         elif _type == "群":
@@ -94,7 +93,7 @@ async def _req_deal(bot: Bot, event: MessageEvent, state: T_State) -> None:
                 await bot.set_group_add_request(flag=reqid,
                                                 sub_type=data_g[reqid]['sub_type'],
                                                 approve=True)
-                await req_deal.finish(f"完成~！已同意申请")
+                await req_deal.finish('完成~！已同意申请')
             except FormatError:
                 await req_deal.finish('请检查输入的值是否正确——！')
         else:
@@ -104,7 +103,7 @@ async def _req_deal(bot: Bot, event: MessageEvent, state: T_State) -> None:
             try:
                 await bot.set_friend_add_request(flag=reqid,
                                                  approve=False)
-                await req_deal.finish(f"完成~！已拒绝申请")
+                await req_deal.finish('完成~！已拒绝申请')
             except FormatError:
                 await req_deal.finish('请检查输入的值是否正确——！')
         elif _type == "群":
@@ -112,7 +111,7 @@ async def _req_deal(bot: Bot, event: MessageEvent, state: T_State) -> None:
                 await bot.set_group_add_request(flag=reqid,
                                                 sub_type=data_g[reqid]['sub_type'],
                                                 approve=False)
-                await req_deal.finish(f"完成~！已拒绝申请")
+                await req_deal.finish('完成~！已拒绝申请')
             except FormatError:
                 await req_deal.finish('请检查输入的值是否正确——！')
         else:
