@@ -2,6 +2,7 @@ from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
 from ATRI.service import Service as sv
+from ATRI.rule import to_bot
 
 
 __doc__ = """
@@ -14,6 +15,7 @@ __doc__ = """
 dormant_enabled = sv.on_command(
     cmd='休眠',
     docs=__doc__,
+    rule=to_bot(),
     permission=SUPERUSER
 )
 
@@ -32,8 +34,9 @@ __doc__ = """
 """
 
 dormant_disabled = sv.on_command(
-    cmd='休眠',
+    cmd='苏醒',
     docs=__doc__,
+    rule=to_bot(),
     permission=SUPERUSER
 )
 
