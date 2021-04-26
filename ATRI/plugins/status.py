@@ -46,7 +46,7 @@ async def _status(bot: Bot, event: MessageEvent) -> None:
         mem = psutil.virtual_memory().percent
         disk = psutil.disk_usage("/").percent
         inteSENT = psutil.net_io_counters().bytes_sent / 1000000 # type: ignore
-        inteRECV = psutil.net_io_counters().bytes_sent / 1000000 # type: ignore
+        inteRECV = psutil.net_io_counters().bytes_recv / 1000000 # type: ignore
     except GetStatusError:
         raise GetStatusError("Failed to get status.")
     
@@ -85,7 +85,7 @@ async def _():
         mem = psutil.virtual_memory().percent
         disk = psutil.disk_usage("/").percent
         inteSENT = psutil.net_io_counters().bytes_sent / 1000000 # type: ignore
-        inteRECV = psutil.net_io_counters().bytes_sent / 1000000 # type: ignore
+        inteRECV = psutil.net_io_counters().bytes_recv / 1000000 # type: ignore
     except GetStatusError:
         raise GetStatusError("Failed to get status.")
     
