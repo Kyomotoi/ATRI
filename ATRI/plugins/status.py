@@ -18,10 +18,8 @@ __doc__ = """
   /ping
 """
 
-ping = sv.on_command(
-    cmd="/ping",
-    docs="测试机器人",
-    rule=is_in_service('ping'))
+ping = sv.on_command(cmd="/ping", docs="测试机器人", rule=is_in_service("ping"))
+
 
 @ping.handle()
 async def _ping(bot: Bot, event: MessageEvent) -> None:
@@ -35,11 +33,8 @@ __doc__ = """
   /status
 """
 
-status = sv.on_command(
-    cmd="/status",
-    docs=__doc__,
-    rule=is_in_service('status')
-)
+status = sv.on_command(cmd="/status", docs=__doc__, rule=is_in_service("status"))
+
 
 @status.handle()
 async def _status(bot: Bot, event: MessageEvent) -> None:
@@ -47,8 +42,8 @@ async def _status(bot: Bot, event: MessageEvent) -> None:
         cpu = psutil.cpu_percent(interval=1)
         mem = psutil.virtual_memory().percent
         disk = psutil.disk_usage("/").percent
-        inteSENT = psutil.net_io_counters().bytes_sent / 1000000 # type: ignore
-        inteRECV = psutil.net_io_counters().bytes_recv / 1000000 # type: ignore
+        inteSENT = psutil.net_io_counters().bytes_sent / 1000000  # type: ignore
+        inteRECV = psutil.net_io_counters().bytes_recv / 1000000  # type: ignore
         now = time.time()
         boot = psutil.boot_time()
         up_time = str(
@@ -57,9 +52,9 @@ async def _status(bot: Bot, event: MessageEvent) -> None:
         )
     except GetStatusError:
         raise GetStatusError("Failed to get status.")
-    
+
     msg = "アトリは、高性能ですから！"
-    
+
     if cpu > 90:  # type: ignore
         msg = "咱感觉有些头晕..."
         if mem > 90:
@@ -68,7 +63,7 @@ async def _status(bot: Bot, event: MessageEvent) -> None:
         msg = "咱感觉有点累..."
     elif disk > 90:
         msg = "咱感觉身体要被塞满了..."
-    
+
     msg0 = (
         "Self status:\n"
         f"* CPU: {cpu}%\n"
@@ -78,26 +73,22 @@ async def _status(bot: Bot, event: MessageEvent) -> None:
         f"* netRECV: {inteRECV}MB\n"
         f"* Runtime: {up_time}\n"
     ) + msg
-    
+
     await status.finish(msg0)
 
 
-@scheduler.scheduled_job(
-    'interval',
-    minutes=5,
-    misfire_grace_time=10
-)
+@scheduler.scheduled_job("interval", minutes=5, misfire_grace_time=10)
 async def _():
     log.info("开始自检")
     try:
         cpu = psutil.cpu_percent(interval=1)
         mem = psutil.virtual_memory().percent
         disk = psutil.disk_usage("/").percent
-        inteSENT = psutil.net_io_counters().bytes_sent / 1000000 # type: ignore
-        inteRECV = psutil.net_io_counters().bytes_recv / 1000000 # type: ignore
+        inteSENT = psutil.net_io_counters().bytes_sent / 1000000  # type: ignore
+        inteRECV = psutil.net_io_counters().bytes_recv / 1000000  # type: ignore
     except GetStatusError:
         raise GetStatusError("Failed to get status.")
-    
+
     msg = str()
     if cpu > 90:  # type: ignore
         msg = "咱感觉有些头晕..."
@@ -110,7 +101,7 @@ async def _():
     else:
         log.info("运作正常")
         return
-    
+
     msg0 = (
         "Self status:\n"
         f"* CPU: {cpu}%\n"
@@ -119,9 +110,6 @@ async def _():
         f"* netSENT: {inteSENT}MB\n"
         f"* netRECV: {inteRECV}MB\n"
     ) + msg
-    
+
     for sup in BotSelfConfig.superusers:
-        await sv.NetworkPost.send_private_msg(
-            user_id=sup,
-            message=msg0
-        )
+        await sv.NetworkPost.send_private_msg(user_id=sup, message=msg0)

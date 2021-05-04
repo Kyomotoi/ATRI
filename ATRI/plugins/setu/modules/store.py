@@ -26,58 +26,59 @@ __doc__ = """
 """
 
 
-add_setu = sv.on_command(
-    cmd="添加涩图",
-    docs=__doc__,
-    permission=SUPERUSER
-)
+add_setu = sv.on_command(cmd="添加涩图", docs=__doc__, permission=SUPERUSER)
+
 
 @add_setu.args_parser  # type: ignore
 async def _load_add_setu(bot: Bot, event: MessageEvent, state: T_State) -> None:
     msg = str(event.message).strip()
-    cancel = ['算了', '罢了']
+    cancel = ["算了", "罢了"]
     if msg in cancel:
-        await add_setu.finish('好吧...')
+        await add_setu.finish("好吧...")
     if not msg:
-        await add_setu.reject('涩图(pid)速发！')
+        await add_setu.reject("涩图(pid)速发！")
     else:
-        state['setu_add'] = msg
+        state["setu_add"] = msg
+
 
 @add_setu.handle()
 async def _add_setu(bot: Bot, event: MessageEvent, state: T_State) -> None:
     msg = str(event.message).strip()
     if msg:
-        state['setu_add'] = msg
+        state["setu_add"] = msg
 
-@add_setu.got('setu_add', prompt='涩图(pid)速发！')
+
+@add_setu.got("setu_add", prompt="涩图(pid)速发！")
 async def _deal_add_setu(bot: Bot, event: MessageEvent, state: T_State) -> None:
-    pid = state['setu_add']
-    
+    pid = state["setu_add"]
+
     URL = API_URL + pid
     try:
-        data = json.loads(await get_bytes(URL))['illust']
+        data = json.loads(await get_bytes(URL))["illust"]
     except RequestError:
-        raise RequestError('Request failed!')
-    
+        raise RequestError("Request failed!")
+
     try:
-        pic = data['meta_single_page']['original_image_url'] \
-            .replace('pximg.net', 'pixiv.cat')
+        pic = data["meta_single_page"]["original_image_url"].replace(
+            "pximg.net", "pixiv.cat"
+        )
     except Exception:
-        pic = choice(data['meta_pages'])['image_urls']['original'] \
-            .replace('pximg.net', 'pixiv.cat')
-    
+        pic = choice(data["meta_pages"])["image_urls"]["original"].replace(
+            "pximg.net", "pixiv.cat"
+        )
+
     d = {
         "pid": pid,
-        "title": data['title'],
-        "tags": str(data['tags']),
-        "user_id": data['user']['id'],
-        "user_name": data['user']['name'],
-        "user_account": data['user']['account'],
-        "url": pic
+        "title": data["title"],
+        "tags": str(data["tags"]),
+        "user_id": data["user"]["id"],
+        "user_name": data["user"]["name"],
+        "user_account": data["user"]["account"],
+        "url": pic,
     }
     await SetuData.add_data(d)
-    
-    show_img = data['image_urls']['medium'].replace('pximg.net', 'pixiv.cat')
+
+    show_img = data["image_urls"]["medium"].replace("pximg.net", "pixiv.cat")
     msg = (
         "好欸！是新涩图：\n"
         f"Pid: {pid}\n"
@@ -97,40 +98,37 @@ __doc__ = """
 """
 
 
-del_setu = sv.on_command(
-    cmd="删除涩图",
-    docs=__doc__,
-    permission=SUPERUSER
-)
+del_setu = sv.on_command(cmd="删除涩图", docs=__doc__, permission=SUPERUSER)
+
 
 @del_setu.args_parser  # type: ignore
 async def _load_del_setu(bot: Bot, event: MessageEvent, state: T_State) -> None:
     msg = str(event.message).strip()
-    cancel = ['算了', '罢了']
+    cancel = ["算了", "罢了"]
     if msg in cancel:
-        await add_setu.finish('好吧...')
+        await add_setu.finish("好吧...")
     if not msg:
-        await add_setu.reject('涩图(pid)速发！')
+        await add_setu.reject("涩图(pid)速发！")
     else:
-        state['setu_del'] = msg
+        state["setu_del"] = msg
+
 
 @del_setu.handle()
 async def _del_setu(bot: Bot, event: MessageEvent, state: T_State) -> None:
     msg = str(event.message).strip()
     if msg:
-        state['setu_del'] = msg
+        state["setu_del"] = msg
 
-@del_setu.got('setu_del', prompt='涩图(pid)速发！')
+
+@del_setu.got("setu_del", prompt="涩图(pid)速发！")
 async def _deal_del_setu(bot: Bot, event: MessageEvent, state: T_State) -> None:
-    pid = int(state['setu_del'])
+    pid = int(state["setu_del"])
     await SetuData.del_data(pid)
-    await del_setu.finish(f'涩图({pid})已删除...')
+    await del_setu.finish(f"涩图({pid})已删除...")
 
 
-count_setu = sv.on_command(
-    cmd="涩图总量",
-    permission=SUPERUSER
-)
+count_setu = sv.on_command(cmd="涩图总量", permission=SUPERUSER)
+
 
 @count_setu.handle()
 async def _count_setu(bot: Bot, event: MessageEvent) -> None:

@@ -8,9 +8,9 @@ tencent_gchat_url = "gchat.qpic.cn"
 noob_code = ["record", "video", "music", "xml", "json"]
 
 
-async def coolq_code_check(cq_code: str,
-                     user: Optional[int] = None,
-                     group: Optional[int] = None):
+async def coolq_code_check(
+    cq_code: str, user: Optional[int] = None, group: Optional[int] = None
+):
     _type = re.findall(r"CQ:(.*?),", cq_code)
     for i in _type:
         if i == "image":
@@ -18,9 +18,7 @@ async def coolq_code_check(cq_code: str,
             url = "" if not result else result[0]
             if tencent_gchat_url not in url:
                 msg = "你注你🐎呢"
-                await sv.NetworkPost.send_msg(user_id=user,
-                                              group_id=group,
-                                              message=msg)
+                await sv.NetworkPost.send_msg(user_id=user, group_id=group, message=msg)
             else:
                 return True
         elif i in noob_code:

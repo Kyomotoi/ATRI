@@ -7,7 +7,7 @@ from ATRI.service import SERVICE_DIR
 from ATRI.service import Service as sv
 
 
-SERVICE_DIR = SERVICE_DIR / 'services'
+SERVICE_DIR = SERVICE_DIR / "services"
 
 
 __doc__ = """
@@ -19,14 +19,12 @@ __doc__ = """
   /help info (cmd)
 """
 
-help = sv.on_command(
-    cmd="/help",
-    docs=__doc__
-)
+help = sv.on_command(cmd="/help", docs=__doc__)
+
 
 @help.handle()
 async def _help(bot: Bot, event: MessageEvent) -> None:
-    msg = str(event.message).split(' ')
+    msg = str(event.message).split(" ")
     if msg[0] == "":
         msg = (
             "呀？找不到路了？\n"
@@ -41,7 +39,7 @@ async def _help(bot: Bot, event: MessageEvent) -> None:
         for _, _, i in os.walk(SERVICE_DIR):
             for a in i:
                 f = SERVICE_DIR / a
-                files.append(json.loads(f.read_bytes())['command'])
+                files.append(json.loads(f.read_bytes())["command"])
         cmds = " | ".join(map(str, files))
         msg = "咱能做很多事！比如：\n" + cmds
         msg0 = msg + "\n没反应可能是没权限...或者为探测类型...不属于可直接触发命令..."
@@ -53,13 +51,9 @@ async def _help(bot: Bot, event: MessageEvent) -> None:
         try:
             data = json.loads(path.read_bytes())
         except:
-            await help.finish('未找到相关命令...')
+            await help.finish("未找到相关命令...")
 
-        msg = (
-            f"{cmd} INFO:\n"
-            f"Enabled: {data['enabled']}\n"
-            f"{data['docs']}"
-        )
+        msg = f"{cmd} INFO:\n" f"Enabled: {data['enabled']}\n" f"{data['docs']}"
         await help.finish(msg)
     else:
-        await help.finish('请检查输入...')
+        await help.finish("请检查输入...")

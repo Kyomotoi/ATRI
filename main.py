@@ -5,5 +5,5 @@ import ATRI
 ATRI.init()
 app = ATRI.asgi()
 
-if __name__ == '__main__':
-    ATRI.run('main:app')
+if __name__ == "__main__":
+    ATRI.run("main:app")

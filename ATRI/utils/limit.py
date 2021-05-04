@@ -15,22 +15,18 @@ def del_list(user: str) -> None:
     exciting_user = del_list_aim(exciting_user, user)
 
 
-def is_too_exciting(user: int,
-                          times: int,
-                          seconds: float = 0,
-                          hours: float = 0,
-                          days: float = 0) -> bool:
+def is_too_exciting(
+    user: int, times: int, seconds: float = 0, hours: float = 0, days: float = 0
+) -> bool:
     global exciting_user
-    
+
     if user in exciting_user:
         return False
     else:
         if count_list(exciting_user_temp, user) == times:
-            delta = datetime.timedelta(
-                seconds=seconds, hours=hours, days=days)
-            trigger = DateTrigger(
-                run_date=datetime.datetime.now() + delta)
-            
+            delta = datetime.timedelta(seconds=seconds, hours=hours, days=days)
+            trigger = DateTrigger(run_date=datetime.datetime.now() + delta)
+
             scheduler.add_job(
                 func=del_list,
                 trigger=trigger,

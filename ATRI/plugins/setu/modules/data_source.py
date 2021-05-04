@@ -15,8 +15,8 @@ from ATRI.utils.request import get_bytes
 from ATRI.utils.img import compress_image
 
 
-TEMP_DIR: Path = Path('.') / 'ATRI' / 'data' / 'temp' / 'setu'
-SETU_DIR = Path('.') / 'ATRI' / 'data' / 'database' / 'setu'
+TEMP_DIR: Path = Path(".") / "ATRI" / "data" / "temp" / "setu"
+SETU_DIR = Path(".") / "ATRI" / "data" / "database" / "setu"
 os.makedirs(TEMP_DIR, exist_ok=True)
 os.makedirs(SETU_DIR, exist_ok=True)
 NSFW_URL = f"http://{NsfwCheck.host}:{NsfwCheck.port}/?url="
@@ -30,83 +30,79 @@ class Hso:
         try:
             data = json.loads(await get_bytes(url))
         except RequestError:
-            raise RequestError('Request failed!')
-        return round(data['score'], 4)
-    
+            raise RequestError("Request failed!")
+        return round(data["score"], 4)
+
     @staticmethod
     async def _comp_setu(url: str) -> str:
-        temp_id = ''.join(sample(string.ascii_letters + string.digits, 8))
-        file = TEMP_DIR / f'{temp_id}.png'
-        
+        temp_id = "".join(sample(string.ascii_letters + string.digits, 8))
+        file = TEMP_DIR / f"{temp_id}.png"
+
         try:
             async with ClientSession() as session:
                 async with session.get(url) as r:
                     data = await r.read()
         except RequestError:
-            raise RequestError('Request img failed!')
-        
+            raise RequestError("Request img failed!")
+
         try:
-            with open(file, 'wb') as r:
+            with open(file, "wb") as r:
                 r.write(data)
         except WriteError:
-            raise WriteError('Writing img failed!')
-        
+            raise WriteError("Writing img failed!")
+
         return compress_image(os.path.abspath(file))
-    
+
     @classmethod
     async def setu(cls, data: dict) -> str:
-        pid = data['pid']
-        title = data['title']
+        pid = data["pid"]
+        title = data["title"]
         if SIZE_REDUCE:
             img = MessageSegment.image(
-                'file:///' + await cls._comp_setu(data['url']), proxy=False)
+                "file:///" + await cls._comp_setu(data["url"]), proxy=False
+            )
         else:
-            img = MessageSegment.image(data['url'], proxy=False)
-        
-        msg = (
-            f"Pid: {pid}\n"
-            f"Title: {title}\n"
-            f"{img}"
-        )
+            img = MessageSegment.image(data["url"], proxy=False)
+
+        msg = f"Pid: {pid}\n" f"Title: {title}\n" f"{img}"
         return msg
-    
+
     @classmethod
     async def acc_setu(cls, d: list) -> str:
         data: dict = choice(d)
-        
-        for i in data['tags']:
-            if i['name'] == "R-18":
+
+        for i in data["tags"]:
+            if i["name"] == "R-18":
                 return "太涩了不方便发w"
-        
-        pid = data['id']
-        title = data['title']
+
+        pid = data["id"]
+        title = data["title"]
         try:
-            pic = data['meta_single_page']['original_image_url'] \
-                .replace('pximg.net', 'pixiv.cat')
+            pic = data["meta_single_page"]["original_image_url"].replace(
+                "pximg.net", "pixiv.cat"
+            )
         except Exception:
-            pic = choice(data['meta_pages'])['original']['image_urls'] \
-                .replace('pximg.net', 'pixiv.cat')
+            pic = choice(data["meta_pages"])["original"]["image_urls"].replace(
+                "pximg.net", "pixiv.cat"
+            )
         if SIZE_REDUCE:
             img = MessageSegment.image(
-                'file:///' + await cls._comp_setu(pic), proxy=False)
+                "file:///" + await cls._comp_setu(pic), proxy=False
+            )
         else:
             img = MessageSegment.image(pic, proxy=False)
-        
-        msg = (
-            f"Pid: {pid}\n"
-            f"Title: {title}\n"
-            f"{img}"
-        )
+
+        msg = f"Pid: {pid}\n" f"Title: {title}\n" f"{img}"
         return msg
 
 
 class SetuData:
-    SETU_DATA = SETU_DIR / 'setu.db'
-    
+    SETU_DATA = SETU_DIR / "setu.db"
+
     @classmethod
     async def _check_database(cls) -> bool:
         if not cls.SETU_DATA.exists():
-            log.warning(f'未发现数据库\n-> {cls.SETU_DATA}\n将开始创建')
+            log.warning(f"未发现数据库\n-> {cls.SETU_DATA}\n将开始创建")
             async with aiosqlite.connect(cls.SETU_DATA) as db:
                 cur = await db.cursor()
                 await cur.execute(
@@ -123,17 +119,22 @@ class SetuData:
                     """
                 )
                 await db.commit()
-            log.warning(f'...创建数据库\n-> {cls.SETU_DATA}\n完成！')
+            log.warning(f"...创建数据库\n-> {cls.SETU_DATA}\n完成！")
             return True
         return True
-    
+
     @classmethod
     async def add_data(cls, d: dict) -> None:
         data = (
-            d['pid'], d['title'], d['tags'], d['user_id'],
-            d['user_name'], d['user_account'], d['url']
+            d["pid"],
+            d["title"],
+            d["tags"],
+            d["user_id"],
+            d["user_name"],
+            d["user_account"],
+            d["url"],
         )
-        
+
         check = await cls._check_database()
         if check:
             async with aiosqlite.connect(cls.SETU_DATA) as db:
@@ -146,15 +147,15 @@ class SetuData:
                         ?, ?, ?, ?, ?, ?, ?
                     );
                     """,
-                    data
+                    data,
                 )
                 await db.commit()
-    
+
     @classmethod
     async def del_data(cls, pid: int) -> None:
         if not isinstance(pid, int):  # 防注入
-            raise ValueError('Please provide int.')
-        
+            raise ValueError("Please provide int.")
+
         check = await cls._check_database()
         if check:
             async with aiosqlite.connect(cls.SETU_DATA) as db:
@@ -168,11 +169,13 @@ class SetuData:
             async with aiosqlite.connect(cls.SETU_DATA) as db:
                 async with db.execute("SELECT * FROM setu") as cursor:
                     return len(await cursor.fetchall())  # type: ignore
-    
+
     @classmethod
     async def get_setu(cls):
         check = await cls._check_database()
         if check:
             async with aiosqlite.connect(cls.SETU_DATA) as db:
-                async with db.execute("SELECT * FROM setu ORDER BY RANDOM() limit 1;") as cursor:
+                async with db.execute(
+                    "SELECT * FROM setu ORDER BY RANDOM() limit 1;"
+                ) as cursor:
                     return await cursor.fetchall()
