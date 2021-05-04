@@ -13,9 +13,11 @@ __doc__ = """
 """
 
 dormant_enabled = sv.on_command(
-    cmd="休眠", docs=__doc__, rule=to_bot(), permission=SUPERUSER
+    cmd='休眠',
+    docs=__doc__,
+    rule=to_bot(),
+    permission=SUPERUSER
 )
-
 
 @dormant_enabled.handle()
 async def _dormant_enabled(bot: Bot, event: MessageEvent) -> None:
@@ -32,9 +34,11 @@ __doc__ = """
 """
 
 dormant_disabled = sv.on_command(
-    cmd="苏醒", docs=__doc__, rule=to_bot(), permission=SUPERUSER
+    cmd='苏醒',
+    docs=__doc__,
+    rule=to_bot(),
+    permission=SUPERUSER
 )
-
 
 @dormant_disabled.handle()
 async def _dormant_disabled(bot: Bot, event: MessageEvent) -> None:

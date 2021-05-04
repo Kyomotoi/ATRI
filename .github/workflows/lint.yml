@@ -38,7 +38,6 @@ jobs:
           poetry install
           python -m pip install --upgrade pip
           pip install flake8
-
       - name: Run Linters
         uses: wearerequired/lint-action@v1
         with:

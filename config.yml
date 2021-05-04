@@ -4,10 +4,9 @@ BotSelfConfig:
   debug: false
   superusers: ["1234567890"]
   nickname: ["ATRI", "Atri", "atri", "亚托莉", "アトリ"]
-  command_start: [""]
+  command_start: ["", "/"]
   command_sep: ["."]
-  session_expire_timeout: 0.6
-  session_exciting_time: 60
+  session_expire_timeout: 60
 
 NetworkPost:
   host: "127.0.0.1"
@@ -19,9 +18,12 @@ AdminPage:  # 待定，无用
 
 NsfwCheck:  # 详细请查看文档以获取帮助
   enabled: false
-  passing_rate: 0.8
+  passing_rate: 85
   host: "127.0.0.1"
   port: 20003
 
 SauceNAO:
+  key: ""
+
+Setu:  # https://api.lolicon.app/#/setu
   key: ""

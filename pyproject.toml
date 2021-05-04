@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "ATRI"
-version = "0.0.1a01"
+version = "0.0.1a02"
 description = "适用于QQ群中的二刺螈BOT"
 authors = ["Kyomotoi <kyomotoiowo@gmail.com>"]
 license = "GPLv3"
 readme = "README.md"
-homepage = "https://atri.0w0.ink/"
+homepage = "https://github.com/Kyomotoi/ATRI"
 repository = "https://github.com/Kyomotoi/ATRI"
-documentation = "https://atri.0w0.ink/"
+documentation = "https://github.com/Kyomotoi/ATRI/wiki"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -19,9 +19,11 @@ pathlib = "^1.0.1"
 psutil = "^5.7.2"
 aiohttp = "^3.6.2"
 APScheduler = "^3.7.0"
+jieba = "^0.42.1"
+aiosqlite = "^0.17.0"
 
 [tool.poetry.dev-dependencies]
-black = "^21.4b0"
+black = "^21.4b2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

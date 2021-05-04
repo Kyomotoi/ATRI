@@ -2,15 +2,15 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-from nonebot.log import logger, default_format
+from nonebot.log import logger
 
-from .config import Config
+from .config import BotSelfConfig
 
 
-LOGGER_DIR = Path(".") / "ATRI" / "data" / "logs"
+LOGGER_DIR = Path('.') / 'ATRI' / 'data' / 'logs'
 LOGGER_DIR.parent.mkdir(exist_ok=True, parents=True)
 
-NOW_TIME = datetime.now().strftime("%Y%m%d-%H")
+NOW_TIME = datetime.now().strftime('%Y%m%d-%H')
 
 log_format = (
     "\033[36mATRI\033[0m "
@@ -24,9 +24,9 @@ log_format = (
 logger.remove()
 logger.add(
     sys.stdout,
-    level="DEBUG" if Config.BotSelfConfig.debug else "INFO",
+    level="DEBUG" if BotSelfConfig.debug else "INFO",
     colorize=True,
-    format=log_format,
+    format=log_format
 )
 
 logger.add(
@@ -35,7 +35,7 @@ logger.add(
     enqueue=True,
     level="INFO",
     encoding="utf-8",
-    format=log_format,
+    format=log_format
 )
 
 logger.add(
@@ -44,7 +44,7 @@ logger.add(
     enqueue=True,
     level="WARNING",
     encoding="utf-8",
-    format=log_format,
+    format=log_format
 )
 
 logger.add(
@@ -53,7 +53,7 @@ logger.add(
     enqueue=True,
     level="ERROR",
     encoding="utf-8",
-    format=log_format,
+    format=log_format
 )
 
 logger.add(
@@ -62,5 +62,5 @@ logger.add(
     enqueue=True,
     level="DEBUG",
     encoding="utf-8",
-    format=log_format,
+    format=log_format
 )

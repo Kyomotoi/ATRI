@@ -12,8 +12,11 @@ __doc__ = """
   @ 关机
 """
 
-shutdown = sv.on_command(cmd="关机", docs=__doc__, permission=SUPERUSER)
-
+shutdown = sv.on_command(
+    cmd="关机",
+    docs=__doc__,
+    permission=SUPERUSER
+)
 
 @shutdown.handle()
 async def _shutdown(bot: Bot, event: MessageEvent, state: T_State) -> None:
@@ -21,10 +24,9 @@ async def _shutdown(bot: Bot, event: MessageEvent, state: T_State) -> None:
     if msg:
         state["msg"] = msg
 
-
 @shutdown.got("msg", prompt="[WARNING]此项操作将强行终止bot运行，是否继续(y/n)")
 async def __shutdown(bot: Bot, event: MessageEvent, state: T_State) -> None:
-    t = ["y", "Y", "是"]
+    t = ['y', 'Y', '是']
     if state["msg"] in t:
         await bot.send(event, "咱还会醒来的，一定")
         exit(0)

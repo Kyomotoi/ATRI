@@ -4,7 +4,7 @@ from ATRI.service import Service as sv
 from ATRI.rule import is_in_service
 from ATRI.utils.list import count_list, del_list_aim
 from ATRI.utils.request import get_text
-from ATRI.exceptions import RequestTimeOut
+from ATRI.exceptions import RequestError
 
 
 URL = "https://zuanbot.com/api.php?level=min&lang=zh_cn"
@@ -19,9 +19,11 @@ __doc__ = """
 """
 
 curse = sv.on_command(
-    cmd="口臭", docs=__doc__, aliases={"口臭一下，骂我"}, rule=is_in_service("口臭")
+    cmd='口臭',
+    docs=__doc__,
+    aliases={'口臭一下，骂我'},
+    rule=is_in_service('口臭')
 )
-
 
 @curse.handle()
 async def _curse(bot: Bot, event: MessageEvent) -> None:
@@ -29,7 +31,11 @@ async def _curse(bot: Bot, event: MessageEvent) -> None:
     user = event.get_user_id()
     if count_list(sick_list, user) == 3:
         sick_list.append(user)
-        repo = "不是？？你这么想被咱骂的嘛？？" "被咱骂就这么舒服的吗？！" "该......你该不会是.....M吧！"
+        repo = (
+            "不是？？你这么想被咱骂的嘛？？"
+            "被咱骂就这么舒服的吗？！"
+            "该......你该不会是.....M吧！"
+        )
         await curse.finish(repo)
     elif count_list(sick_list, user) == 6:
         sick_list = del_list_aim(sick_list, user)
@@ -38,5 +44,5 @@ async def _curse(bot: Bot, event: MessageEvent) -> None:
         sick_list.append(user)
         try:
             await curse.finish(await get_text(URL))
-        except RequestTimeOut:
-            raise RequestTimeOut("Time out!")
+        except RequestError:
+            raise RequestError("Time out!")
