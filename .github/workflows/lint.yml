@@ -36,7 +36,11 @@ jobs:
           POETRY_VIRTUALENVS_CREATE: "false"
         run: |
           poetry install
-      - uses: wearerequired/lint-action@v1
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run Linters
+        uses: wearerequired/lint-action@v1
         with:
           auto_fix: true
           black: true
