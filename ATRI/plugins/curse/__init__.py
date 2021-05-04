@@ -1,7 +1,7 @@
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
 from ATRI.service import Service as sv
-from ATRI.rule import is_in_service
+from ATRI.rule import is_in_service, to_bot
 from ATRI.utils.list import count_list, del_list_aim
 from ATRI.utils.request import get_text
 from ATRI.exceptions import RequestError
@@ -19,7 +19,7 @@ __doc__ = """
 """
 
 curse = sv.on_command(
-    cmd="口臭", docs=__doc__, aliases={"口臭一下，骂我"}, rule=is_in_service("口臭")
+    cmd="口臭", docs=__doc__, aliases={"口臭一下，骂我"}, rule=is_in_service("口臭") & to_bot()
 )
 
 
