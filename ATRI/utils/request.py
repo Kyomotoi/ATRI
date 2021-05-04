@@ -25,9 +25,9 @@ async def get_content(url: str, headers: Optional[dict] = None):
     return result
 
 
-async def post_bytes(url: str,
-                     params: Optional[dict] = None,
-                     json: Optional[dict] = None) -> bytes:
+async def post_bytes(
+    url: str, params: Optional[dict] = None, json: Optional[dict] = None
+) -> bytes:
     """异步以 Post 方式请求 url"""
     async with ClientSession() as session:
         async with session.post(url, params=params, json=json) as r:

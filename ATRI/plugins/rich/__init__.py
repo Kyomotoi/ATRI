@@ -16,11 +16,12 @@ from .data_source import dec
 temp_list = []
 img_url = [
     "https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/fkrich.png",
-    "https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/xixi.jpg"
+    "https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/xixi.jpg",
 ]
 
 
 bilibili_rich = sv.on_message()
+
 
 @bilibili_rich.handle()
 async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
@@ -28,10 +29,10 @@ async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
     try:
         msg = str(event.raw_message).replace("\\", "")
         bv = False
-        
+
         if "qqdocurl" not in msg:
             if "av" in msg:
-                av = re.findall(r"(av\d+)", msg)[0].replace('av', '')
+                av = re.findall(r"(av\d+)", msg)[0].replace("av", "")
             else:
                 bv = re.findall(r"(BV\w+)", msg)
                 av = str(dec(bv[0]))
@@ -43,31 +44,29 @@ async def _bilibili_rich(bot: Bot, event: MessageEvent) -> None:
                 async with session.get(url=bv_url) as r:
                     bv = re.findall(r"(BV\w+)", str(r.url))
                     av = dec(bv[0])
-        
+
         if not bv:
             if "av" in msg:
-                av = re.findall(r"(av\d+)", msg)[0].replace('av', '')
+                av = re.findall(r"(av\d+)", msg)[0].replace("av", "")
             else:
                 return
-        
+
         if count_list(temp_list, av) == 4:
             await bot.send(event, "你是怕别人看不到么发这么多次？")
             temp_list = del_list_aim(temp_list, av)
             return
-        
+
         temp_list.append(av)
-        
+
         URL = f"https://api.kyomotoi.moe/api/bilibili/v2/?aid={av}"
-        data = json.loads(await get_bytes(URL))['data']
+        data = json.loads(await get_bytes(URL))["data"]
         repo = (
             f"{data['bvid']} INFO:\n"
             f"Title: {data['title']}\n"
             f"Link: {data['short_link']}\n"
             "にまねげぴのTencent rich!"
         )
-        await bot.send(
-            event,
-            MessageSegment.image(file=choice(img_url)))
+        await bot.send(event, MessageSegment.image(file=choice(img_url)))
         await bilibili_rich.finish(repo)
     except BaseException:
         return

@@ -16,7 +16,7 @@ exciting_repo = [
     "其实吧我觉得你这速度去d个vup挺适合",
     "我不接受！你太快了",
     "我有点担心，因为你太快了",
-    "请稍等！您冲得太快了！"
+    "请稍等！您冲得太快了！",
 ]
 
 
@@ -25,34 +25,33 @@ def del_list(user: str) -> None:
     exciting_user = del_list_aim(exciting_user, user)
 
 
-async def is_too_exciting(user: int, group: int,
-                           times: int, repo: bool) -> bool:
+async def is_too_exciting(user: int, group: int, times: int, repo: bool) -> bool:
     global exciting_user
-    
+
     if user in exciting_user:
         if repo:
-            await sv.NetworkPost.send_msg(user_id=user,
-                                          group_id=group,
-                                          message=choice(exciting_repo))
+            await sv.NetworkPost.send_msg(
+                user_id=user, group_id=group, message=choice(exciting_repo)
+            )
         return False
     else:
         if count_list(exciting_user_temp, user) == times:
             delta = datetime.timedelta(
-                seconds=Config.BotSelfConfig.session_exciting_time)
-            trigger = DateTrigger(
-                run_date=datetime.datetime.now() + delta)
-            
+                seconds=Config.BotSelfConfig.session_exciting_time
+            )
+            trigger = DateTrigger(run_date=datetime.datetime.now() + delta)
+
             scheduler.add_job(
                 func=del_list,
                 trigger=trigger,
                 args=(user,),
                 misfire_grace_time=1,
             )
-            
+
             if repo:
-                await sv.NetworkPost.send_msg(user_id=user,
-                                              group_id=group,
-                                              message=choice(exciting_repo))
+                await sv.NetworkPost.send_msg(
+                    user_id=user, group_id=group, message=choice(exciting_repo)
+                )
             return False
         else:
             exciting_user_temp.append(user)
