@@ -4,7 +4,6 @@
 アトリは、高性能ですから！
 
 [![time tracker](https://wakatime.com/badge/github/Kyomotoi/ATRI.svg)](https://wakatime.com/badge/github/Kyomotoi/ATRI)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/79f1238b7ad74788aff6f5fafaa0e930)](https://www.codacy.com/gh/Kyomotoi/ATRI/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Kyomotoi/ATRI&amp;utm_campaign=Badge_Grade)
 
 [![](https://img.shields.io/github/license/Kyomotoi/ATRI?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![](https://img.shields.io/badge/Chat-567297659-blue?style=for-the-badge)](https://jq.qq.com/?_wv=1027&k=a89kfKQE)
@@ -25,7 +24,17 @@
 
 实现方式为 `go-cqhttp 或其它遵守Onebot标准的协议` + `NoneBot2`。
 
-由于项目特殊性，故随机进行更新。
+由于项目特殊性，故随机进行更新。更新日志：[传送门](changelog.md)
+
+### 功能列表
+请在群内对机器人发送`/help`以获取帮助
+
+**TODO**：
+  - [x] 网页控制台
+  - [x] RSS订阅
+  - [X] B站动态订阅
+  - [x] 冷重启
+  - [x] 词库（搭配nlp）
 
 ### 特别感谢
 [Richard Chien](https://github.com/richardchien): [Onebot标准](https://github.com/howmanybots/onebot)
