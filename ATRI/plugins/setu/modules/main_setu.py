@@ -49,7 +49,7 @@ async def _setu(bot: Bot, event: MessageEvent) -> None:
 
     if not MIX_LOCAL_DATA:
         if USE_LOCAL_DATA:
-            data = (await SetuData.get_setu())[0]  # type: ignore
+            data = choice(await SetuData.get_setu())  # type: ignore
             data = {"pid": data[0], "title": data[1], "url": data[6]}
             if random() <= 0.1:
                 await bot.send(event, "我找到图了，但我发给主人了❤")
@@ -86,7 +86,7 @@ async def _setu(bot: Bot, event: MessageEvent) -> None:
             else:
                 await setu.finish(Message(await Hso.setu(data)))
         else:
-            data = (await SetuData.get_setu())[0]  # type: ignore
+            data = choice(await SetuData.get_setu())  # type: ignore
             data = {"pid": data[0], "title": data[1], "url": data[6]}
             if random() <= 0.1:
                 await bot.send(event, "我找到图了，但我发给主人了❤")
@@ -126,7 +126,17 @@ async def _key_setu(bot: Bot, event: MessageEvent) -> None:
         await setu.finish(Message(await Hso.acc_setu(data)))
 
 
-setu_config = sv.on_command(cmd="涩图设置", permission=SUPERUSER)
+__doc__ = """
+涩图设置
+权限组：维护者
+用法：
+  涩图设置 启用/禁用r18
+  涩图设置 启用/禁用压缩
+  涩图设置 启用/禁用本地涩图
+  涩图设置 启用/禁用混合本地涩图
+"""
+
+setu_config = sv.on_command(cmd="涩图设置", docs=__doc__, permission=SUPERUSER)
 
 
 @setu_config.handle()
@@ -134,7 +144,7 @@ async def _setu_config(bot: Bot, event: MessageEvent) -> None:
     global R18_ENABLED, SIZE_REDUCE, USE_LOCAL_DATA, MIX_LOCAL_DATA
     msg = str(event.message).split(" ")
     if msg[0] == "":
-        repo = "可用设置如下：\n" "启用/禁用r18\n" "启用/禁用压缩\n" "启用/禁用本地涩图\n" "启用/禁用混合本地涩图"
+        repo = "可用设置如下：\n启用/禁用r18\n启用/禁用压缩\n启用/禁用本地涩图\n启用/禁用混合本地涩图"
         await setu_config.finish(repo)
     elif msg[0] == "启用r18":
         R18_ENABLED = 1
@@ -156,10 +166,10 @@ async def _setu_config(bot: Bot, event: MessageEvent) -> None:
         await setu_config.finish("已禁用本地涩图")
     elif msg[0] == "启用混合本地涩图":
         MIX_LOCAL_DATA = True
-        await setu_config.finish("启用混合本地涩图")
+        await setu_config.finish("已启用混合本地涩图")
     elif msg[0] == "禁用混合本地涩图":
         MIX_LOCAL_DATA = False
-        await setu_config.finish("禁用混合本地涩图")
+        await setu_config.finish("已禁用混合本地涩图")
     else:
         await setu_config.finish("阿！请检查拼写")
 
