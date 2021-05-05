@@ -94,11 +94,12 @@ eat_wat = sv.on_regex(r"[今|明|后|大后]天(.*?)吃什么", rule=is_in_servi
 
 @eat_wat.handle()
 async def _eat(bot: Bot, event: MessageEvent) -> None:
-    msg = str(event.message).strip()
+    msg = str(event.raw_message).strip()
+    msg = re.search(r"大?[今|明|后]天(.*?)吃什么", msg).group()
     user = event.user_id
     user_n = event.sender.nickname
-    arg = re.findall(r"(今|明|后|大后)天(.*?)吃什么", msg)[0]
-    nd = re.match(r"(今|明|后|大后)天", msg)[0]
+    arg = re.findall(r"大?[今|明|后]天(.*?)吃什么", msg)[0]
+    nd = re.match(r"大?[今|明|后]天", msg)[0]
 
     if arg == "中午":
         a = f"LdS4K6/{randint(0, 999999)}"
