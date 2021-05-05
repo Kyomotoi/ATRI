@@ -97,8 +97,8 @@ async def _eat(bot: Bot, event: MessageEvent) -> None:
     msg = str(event.message).strip()
     user = event.user_id
     user_n = event.sender.nickname
-    arg = re.findall(r"[今|明|后|大后]天(.*?)吃什么", msg)[0]
-    nd = re.match(r"[今|明|后|大后][天]", msg)[0]
+    arg = re.findall(r"(今|明|后|大后)天(.*?)吃什么", msg)[0]
+    nd = re.match(r"(今|明|后|大后)天", msg)[0]
 
     if arg == "中午":
         a = f"LdS4K6/{randint(0, 999999)}"
