@@ -16,7 +16,7 @@ from ATRI.exceptions import RequestError
 from .data_source import Hso, SIZE_REDUCE, SetuData
 
 
-LOLICON_URL: str = "https://api.lolicon.app/setu/v1"
+LOLICON_URL: str = "https://api.lolicon.app/setu/v1/"
 PIXIV_URL: str = (
     "https://api.kyomotoi.moe/api/pixiv/search?mode=exact_match_for_tags&word="
 )
