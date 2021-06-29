@@ -53,12 +53,6 @@ class SauceNAO:
     key: str = config.get("key", "")
 
 
-class Setu:
-    config: dict = config["Setu"]
-
-    key: str = config.get("key", "")
-
-
 RUNTIME_CONFIG = {
     "host": BotSelfConfig.host,
     "port": BotSelfConfig.port,

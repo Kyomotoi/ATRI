@@ -1,7 +1,6 @@
 from typing import Optional
 from aiohttp import ClientSession
 
-
 async def get_text(url: str, headers: Optional[dict] = None) -> str:
     async with ClientSession() as session:
         async with session.get(url, headers=headers) as r:
@@ -9,9 +8,9 @@ async def get_text(url: str, headers: Optional[dict] = None) -> str:
     return result
 
 
-async def get_bytes(url: str, headers: Optional[dict] = None) -> bytes:
+async def get_bytes(url: str, headers: Optional[dict] = None, params: Optional[dict] = None) -> bytes:
     async with ClientSession() as session:
-        async with session.get(url, headers=headers) as r:
+        async with session.get(url, headers=headers, params=params) as r:
             result = await r.read()
     return result
 

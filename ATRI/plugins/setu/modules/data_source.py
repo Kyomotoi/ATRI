@@ -26,6 +26,8 @@ SIZE_REDUCE: bool = True
 class Hso:
     @staticmethod
     async def nsfw_check(url: str) -> float:
+        if not NsfwCheck.enabled:
+            return 0
         url = NSFW_URL + url
         try:
             data = json.loads(await get_bytes(url))
@@ -54,15 +56,15 @@ class Hso:
         return compress_image(os.path.abspath(file))
 
     @classmethod
-    async def setu(cls, data: dict) -> str:
+    async def setu(cls, data: dict, pic_size) -> str:
         pid = data["pid"]
         title = data["title"]
         if SIZE_REDUCE:
             img = MessageSegment.image(
-                "file:///" + await cls._comp_setu(data["url"]), proxy=False
+                "file:///" + await cls._comp_setu(data["urls"][pic_size]), proxy=False
             )
         else:
-            img = MessageSegment.image(data["url"], proxy=False)
+            img = MessageSegment.image(data["urls"][pic_size], proxy=False)
 
         msg = f"Pid: {pid}\n" f"Title: {title}\n" f"{img}"
         return msg

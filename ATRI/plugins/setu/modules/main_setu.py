@@ -10,20 +10,20 @@ from ATRI.service import Service as sv
 from ATRI.rule import is_in_service
 from ATRI.utils.request import get_bytes, post_bytes
 from ATRI.utils.limit import is_too_exciting
-from ATRI.config import Setu, BotSelfConfig
+from ATRI.config import BotSelfConfig
 from ATRI.exceptions import RequestError
 
 from .data_source import Hso, SIZE_REDUCE, SetuData
 
 
-LOLICON_URL: str = "https://api.lolicon.app/setu/"
+LOLICON_URL: str = "https://api.lolicon.app/setu/v2"
 PIXIV_URL: str = (
     "https://api.kyomotoi.moe/api/pixiv/search?mode=exact_match_for_tags&word="
 )
 R18_ENABLED: int = 0
 USE_LOCAL_DATA: bool = False
 MIX_LOCAL_DATA: bool = False
-
+PIC_SIZE: str = "regular"
 
 setu = sv.on_regex(
     r"来[张点][色涩]图|[涩色]图来|想要[涩色]图|[涩色]图[Tt][Ii][Mm][Ee]", rule=is_in_service("setu")
@@ -38,13 +38,13 @@ async def _setu(bot: Bot, event: MessageEvent) -> None:
         return
 
     await bot.send(event, "别急，在找了！")
-    params = {"apikey": Setu.key, "r18": str(R18_ENABLED), "size1200": "true"}
+    params = {"r18": str(R18_ENABLED), "size": PIC_SIZE}
     try:
-        data = json.loads(await post_bytes(LOLICON_URL, params))["data"][0]
+        data = json.loads(await get_bytes(LOLICON_URL, params=params))["data"][0]
     except RequestError:
         raise RequestError("Request failed!")
 
-    check = await Hso.nsfw_check(data["url"])
+    check = await Hso.nsfw_check(data["urls"][PIC_SIZE])
     score = "{:.2%}".format(check, 4)
 
     if not MIX_LOCAL_DATA:
@@ -53,48 +53,48 @@ async def _setu(bot: Bot, event: MessageEvent) -> None:
             data = {"pid": data[0], "title": data[1], "url": data[6]}
             if random() <= 0.1:
                 await bot.send(event, "我找到图了，但我发给主人了❤")
-                msg = await Hso.setu(data) + f"\n由用户({user})提供"
+                msg = await Hso.setu(data, PIC_SIZE) + f"\n由用户({user})提供"
                 for sup in BotSelfConfig.superusers:
                     await bot.send_private_msg(user_id=sup, message=msg)
             else:
-                await setu.finish(Message(await Hso.setu(data)))
+                await setu.finish(Message(await Hso.setu(data, PIC_SIZE)))
         else:
             if check >= 0.9:
                 if random() <= 0.2:
                     repo = "我找到图了，但我发给主人了❤\n" f"涩值：{score}"
                     await bot.send(event, repo)
-                    msg = await Hso.setu(data) + f"\n由用户({user})提供，涩值：{score}"
+                    msg = await Hso.setu(data, PIC_SIZE) + f"\n由用户({user})提供，涩值：{score}"
                     for sup in BotSelfConfig.superusers:
                         await bot.send_private_msg(user_id=sup, message=msg)
                 else:
-                    await setu.finish(Message(await Hso.setu(data)))
+                    await setu.finish(Message(await Hso.setu(data, PIC_SIZE)))
             else:
                 if random() <= 0.1:
                     await bot.send(event, "我找到图了，但我发给主人了❤")
-                    msg = await Hso.setu(data) + f"\n由用户({user})提供，涩值：{score}"
+                    msg = await Hso.setu(data, PIC_SIZE) + f"\n由用户({user})提供，涩值：{score}"
                     for sup in BotSelfConfig.superusers:
                         await bot.send_private_msg(user_id=sup, message=msg)
                 else:
-                    await setu.finish(Message(await Hso.setu(data)))
+                    await setu.finish(Message(await Hso.setu(data, PIC_SIZE)))
     else:
         if random() <= 0.5:
             if random() <= 0.1:
                 await bot.send(event, "我找到图了，但我发给主人了❤")
-                msg = await Hso.setu(data) + f"\n由用户({user})提供"
+                msg = await Hso.setu(data, PIC_SIZE) + f"\n由用户({user})提供"
                 for sup in BotSelfConfig.superusers:
                     await bot.send_private_msg(user_id=sup, message=msg)
             else:
-                await setu.finish(Message(await Hso.setu(data)))
+                await setu.finish(Message(await Hso.setu(data, PIC_SIZE)))
         else:
             data = choice(await SetuData.get_setu())  # type: ignore
             data = {"pid": data[0], "title": data[1], "url": data[6]}
             if random() <= 0.1:
                 await bot.send(event, "我找到图了，但我发给主人了❤")
-                msg = await Hso.setu(data) + f"\n由用户({user})提供"
+                msg = await Hso.setu(data, PIC_SIZE) + f"\n由用户({user})提供"
                 for sup in BotSelfConfig.superusers:
                     await bot.send_private_msg(user_id=sup, message=msg)
             else:
-                await setu.finish(Message(await Hso.setu(data)))
+                await setu.finish(Message(await Hso.setu(data, PIC_SIZE)))
 
 
 key_setu = sv.on_regex(r"来[点张](.*?)的[涩色🐍]图", rule=is_in_service("setu"))
@@ -130,7 +130,7 @@ __doc__ = """
 涩图设置
 权限组：维护者
 用法：
-  涩图设置 启用/禁用r18
+  涩图设置 启用/禁用/混合r18
   涩图设置 启用/禁用压缩
   涩图设置 启用/禁用本地涩图
   涩图设置 启用/禁用混合本地涩图
@@ -149,6 +149,9 @@ async def _setu_config(bot: Bot, event: MessageEvent) -> None:
     elif msg[0] == "启用r18":
         R18_ENABLED = 1
         await setu_config.finish("已启用r18")
+    elif msg[0] == "混合r18":
+        R18_ENABLED = 2
+        await setu_config.finish("已混合r18与非r18涩图")
     elif msg[0] == "禁用r18":
         R18_ENABLED = 0
         await setu_config.finish("已禁用r18")
