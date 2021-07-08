@@ -23,6 +23,7 @@ class BotSelfConfig:
         seconds=config.get("session_expire_timeout", 60)
     )
 
+
 class SauceNAO:
     config: dict = config["SauceNAO"]
 
