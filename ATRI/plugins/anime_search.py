@@ -24,10 +24,9 @@ __doc__ = """
 
 
 class Anime(Service):
-    
     def __init__(self):
         Service.__init__(self, "以图搜番", __doc__, rule=is_in_service("以图搜番"))
-    
+
     @staticmethod
     async def _request(url: str) -> dict:
         aim = URL + url
@@ -37,12 +36,12 @@ class Anime(Service):
             raise RequestError("Request failed!")
         result = await res.json()
         return result
-    
+
     @classmethod
     async def search(cls, url: str) -> str:
         data = await cls._request(url)
         data = data["docs"]
-        
+
         d = dict()
         for i in range(len(data)):
             if data[i]["title_chinese"] in d.keys():
@@ -61,7 +60,7 @@ class Anime(Service):
                     f"第{n}集",
                     f"{int(m)}分{int(s)}秒处",
                 ]
-        
+
         result = sorted(d.items(), key=lambda x: x[1], reverse=True)
         t = 0
         msg0 = str()
@@ -74,7 +73,7 @@ class Anime(Service):
                 f"Name: {i[0]}\n"
                 f"Time: {i[1][1]} {i[1][2]}"
             )
-        
+
         if len(result) == 2:
             return msg0
         else:
@@ -90,6 +89,7 @@ class Anime(Service):
 
 anime_search = Anime().on_command("以图搜番", "发送一张图以搜索可能的番剧")
 
+
 @anime_search.args_parser  # type: ignore
 async def _get_anime(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message).strip()
@@ -101,15 +101,17 @@ async def _get_anime(bot: Bot, event: MessageEvent, state: T_State):
     else:
         state["anime"] = msg
 
+
 @anime_search.handle()
 async def _ready_sear(bot: Bot, event: MessageEvent, state: T_State):
     user_id = event.get_user_id()
     if not _anime_flmt.check(user_id):
         await anime_search.finish(_anime_flmt_notice)
-    
+
     msg = str(event.message).strip()
     if msg:
         state["anime"] = msg
+
 
 @anime_search.got("anime", "图呢？")
 async def _deal_sear(bot: Bot, event: MessageEvent, state: T_State):
@@ -118,7 +120,7 @@ async def _deal_sear(bot: Bot, event: MessageEvent, state: T_State):
     img = re.findall(r"url=(.*?)]", msg)
     if not img:
         await anime_search.reject("请发送图片而不是其它东西！！")
-    
+
     a = await Anime().search(img[0])
     result = f"> {MessageSegment.at(user_id)}\n" + a
     _anime_flmt.start_cd(user_id)

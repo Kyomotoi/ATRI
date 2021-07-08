@@ -18,7 +18,7 @@ def is_in_service(service: str) -> Rule:
             return result
         else:
             return True
-    
+
     return Rule(_is_in_service)
 
 

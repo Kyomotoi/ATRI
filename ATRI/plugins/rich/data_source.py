@@ -24,10 +24,9 @@ __doc__ = """
 
 
 class Rich(Service):
-    
     def __init__(self):
         Service.__init__(self, "小程序处理", __doc__, rule=is_in_service("小程序处理"))
-    
+
     @staticmethod
     def _bv_dec(x) -> str:
         r = 0
@@ -35,7 +34,7 @@ class Rich(Service):
             r += tr[x[s[i]]] * 58 ** i
         result = "av" + str((r - add) ^ xor)
         return result
-    
+
     @staticmethod
     def _bv_enc(x) -> str:
         x = (x ^ xor) + add
@@ -43,7 +42,7 @@ class Rich(Service):
         for i in range(6):
             r[s[i]] = table[x // 58 ** i % 58]
         return "".join(r)
-    
+
     @classmethod
     async def fk_bili(cls, text: str) -> tuple:
         """
@@ -52,7 +51,7 @@ class Rich(Service):
         """
         msg = text.replace("\\", "")
         bv = False
-        
+
         if "qqdocurl" not in msg:
             if "av" in msg:
                 av = re.findall(r"(av\d+)", msg)
@@ -70,7 +69,7 @@ class Rich(Service):
             if not bv_url:
                 return "Get value (bv url) failed!", False
             bv_url = bv_url[3]
-            
+
             try:
                 res = await request.get(bv_url)
             except RequestError:
@@ -79,7 +78,7 @@ class Rich(Service):
             if not bv:
                 return "Get value (bv) failed!", False
             av = cls._bv_dec(bv[0])
-        
+
         if not bv:
             if "av" in msg:
                 av = re.findall(r"(av\d+)", msg)
@@ -88,7 +87,7 @@ class Rich(Service):
                 av = av[0].replace("av", "")
             else:
                 return "Not found av", False
-        
+
         url = URL + av
         try:
             res = await request.get(url)
@@ -96,11 +95,10 @@ class Rich(Service):
             return "Request failed!", False
         res_data = await res.json()
         data = res_data["data"]
-        
+
         result = (
             f"{data['bvid']} INFO:\n"
             f"Title: {data['title']}\n"
             f"Link: {data['short_link']}"
         )
         return result, True
-        

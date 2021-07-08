@@ -10,7 +10,7 @@ class LimitBucket:
     """
     限制某功能运行中某段在一定速率下
     """
-    
+
     def __init__(self, capacity, fill_rate, is_lock: bool = False) -> None:
         """
         :param capacity: 容量总数
@@ -22,7 +22,7 @@ class LimitBucket:
         self._last_time = time()
         self._is_lock = is_lock
         self._lock = RLock()
-    
+
     def _get_cur_tokens(self):
         if self._tokens < self._capacity:
             now = time()
@@ -30,20 +30,20 @@ class LimitBucket:
             self._tokens = min(self._capacity, self._tokens + delta)
             self._last_time = now
         return self._tokens
-    
+
     def get_cur_tokens(self):
         if self._is_lock:
             with self._lock:
                 return self._get_cur_tokens()
         else:
             return self._get_cur_tokens()
-    
+
     def _consume(self, tokens) -> bool:
         if tokens <= self.get_cur_tokens():
             self._tokens -= tokens
             return True
         return False
-    
+
     def consume(self, tokens):
         if self._is_lock:
             with self._lock:
@@ -56,12 +56,12 @@ class RateLimiting:
     """
     限制该功能全体速率
     """
-    
+
     def __init__(self, max_calls, period=1.0):
         if period <= 0:
-            raise ValueError('Rate limiting period should be > 0')
+            raise ValueError("Rate limiting period should be > 0")
         if max_calls <= 0:
-            raise ValueError('Rate limiting number of calls should be > 0')
+            raise ValueError("Rate limiting number of calls should be > 0")
 
         self.calls = deque()
 
@@ -73,6 +73,7 @@ class RateLimiting:
         def wrapped(*args, **kwargs):
             with self:
                 return func(*args, **kwargs)
+
         return wrapped
 
     def __enter__(self):
@@ -94,7 +95,7 @@ class FreqLimiter:
     """
     Copy from: https://github.com/Ice-Cirno/HoshinoBot/blob/master/hoshino/util/__init__.py
     """
-    
+
     def __init__(self, default_cd_seconds):
         self.next_time = defaultdict(float)
         self.default_cd = default_cd_seconds
@@ -103,7 +104,9 @@ class FreqLimiter:
         return bool(time.time() >= self.next_time[key])
 
     def start_cd(self, key, cd_time=0):
-        self.next_time[key] = time.time() + (cd_time if cd_time > 0 else self.default_cd)
+        self.next_time[key] = time.time() + (
+            cd_time if cd_time > 0 else self.default_cd
+        )
 
     def left_time(self, key) -> float:
         return self.next_time[key] - time.time()
@@ -113,8 +116,9 @@ class DailyLimiter:
     """
     Copy from: https://github.com/Ice-Cirno/HoshinoBot/blob/master/hoshino/util/__init__.py
     """
-    tz = pytz.timezone('Asia/Shanghai')
-    
+
+    tz = pytz.timezone("Asia/Shanghai")
+
     def __init__(self, max_num):
         self.today = -1
         self.count = defaultdict(int)

@@ -15,10 +15,9 @@ SCHEDULER_FORMAT = """
 
 
 class Setu(Service):
-    
     def __init__(self):
         Service.__init__(self, "涩图", "hso!", rule=is_in_service("涩图"))
-    
+
     @staticmethod
     async def random_setu() -> tuple:
         """
@@ -27,17 +26,14 @@ class Setu(Service):
         res = await request.get(LOLICON_URL)
         data: dict = await res.json()
         temp_data: dict = data.get("data", list())[0]
-        
-        title = temp_data.get("title", "木陰のねこ")        
+
+        title = temp_data.get("title", "木陰のねこ")
         p_id = temp_data.get("pid", 88124144)
         ext = temp_data.get("ext", "jpg")
-        url = SETU_TEMP_FORMAT.format(
-            p_id=p_id,
-            ext=ext
-        )
+        url = SETU_TEMP_FORMAT.format(p_id=p_id, ext=ext)
         setu = MessageSegment.image(url)
         return setu, title, p_id
-    
+
     @staticmethod
     async def tag_setu(tag: str) -> tuple:
         """
@@ -46,22 +42,19 @@ class Setu(Service):
         url = LOLICON_URL + f"?tag={tag}"
         res = await request.get(url)
         data: dict = await res.json()
-        
+
         temp_data: dict = data.get("data", list())[0]
         if not temp_data:
             is_ok = False
         is_ok = True
-        
-        title = temp_data.get("title", "木陰のねこ")  
+
+        title = temp_data.get("title", "木陰のねこ")
         p_id = temp_data.get("pid", 88124144)
         ext = temp_data.get("ext", "jpg")
-        url = SETU_TEMP_FORMAT.format(
-            p_id=p_id,
-            ext=ext
-        )
+        url = SETU_TEMP_FORMAT.format(p_id=p_id, ext=ext)
         setu = MessageSegment.image(url)
         return setu, title, p_id, is_ok
-    
+
     @staticmethod
     async def scheduler() -> str:
         """
@@ -73,18 +66,12 @@ class Setu(Service):
         res = await request.get(LOLICON_URL)
         data: dict = await res.json()
         temp_data: dict = data.get("data", list())[0]
-        
+
         p_id = temp_data.get("pid", 88124144)
         tag = choice(temp_data.get("tags", ["女孩子"]))
         ext = temp_data.get("ext", "jpg")
-        
-        url = SETU_TEMP_FORMAT.format(
-            p_id=p_id,
-            ext=ext
-        )
+
+        url = SETU_TEMP_FORMAT.format(p_id=p_id, ext=ext)
         setu = MessageSegment.image(url)
-        repo = SCHEDULER_FORMAT.format(
-            tag=tag,
-            setu=setu
-        )
+        repo = SCHEDULER_FORMAT.format(tag=tag, setu=setu)
         return repo
