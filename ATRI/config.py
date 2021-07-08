@@ -23,30 +23,6 @@ class BotSelfConfig:
         seconds=config.get("session_expire_timeout", 60)
     )
 
-
-class NetworkPost:
-    config: dict = config["NetworkPost"]
-
-    host: str = config.get("host", "127.0.0.1")
-    port: int = int(config.get("port", 8081))
-
-
-class AdminPage:
-    config: dict = config["AdminPage"]
-
-    host: str = config.get("host", "127.0.0.1")
-    port: int = int(config.get("port", 8082))
-
-
-class NsfwCheck:
-    config: dict = config["NsfwCheck"]
-
-    enabled: bool = bool(config.get("enabled", False))
-    passing_rate: int = int(config.get("passing_rate", 85))
-    host: str = config.get("host", "127.0.0.1")
-    port: int = int(config.get("port", 5000))
-
-
 class SauceNAO:
     config: dict = config["SauceNAO"]
 
