@@ -2,7 +2,7 @@ from pathlib import Path
 from datetime import timedelta
 from ipaddress import IPv4Address
 
-from .utils.yaml import load_yml
+from .utils import *
 
 
 CONFIG_PATH = Path(".") / "config.yml"
@@ -49,12 +49,6 @@ class NsfwCheck:
 
 class SauceNAO:
     config: dict = config["SauceNAO"]
-
-    key: str = config.get("key", "")
-
-
-class Setu:
-    config: dict = config["Setu"]
 
     key: str = config.get("key", "")
 

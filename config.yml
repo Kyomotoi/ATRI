@@ -8,22 +8,5 @@ BotSelfConfig:
   command_sep: ["."]
   session_expire_timeout: 60
 
-NetworkPost:
-  host: "127.0.0.1"
-  port: 20001
-
-AdminPage:  # 待定，无用
-  host: "127.0.0.1"
-  port: 20002
-
-NsfwCheck:  # 详细请查看文档以获取帮助
-  enabled: false
-  passing_rate: 85
-  host: "127.0.0.1"
-  port: 20003
-
 SauceNAO:
-  key: ""
-
-Setu:  # https://api.lolicon.app/#/setu
   key: ""

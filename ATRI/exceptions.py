@@ -6,6 +6,7 @@ from pathlib import Path
 from random import sample
 from typing import Optional
 from traceback import format_exc
+from pydantic.main import BaseModel
 
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.matcher import Matcher
@@ -13,23 +14,31 @@ from nonebot.typing import T_State
 from nonebot.message import run_postprocessor
 
 from .log import logger
+from .config import BotSelfConfig
 
 
 ERROR_DIR = Path(".") / "ATRI" / "data" / "errors"
 os.makedirs(ERROR_DIR, exist_ok=True)
 
 
+class ErrorInfo(BaseModel):
+    track_id: str
+    prompt: str
+    time: str
+    content: str
+
+
 def _save_error(prompt: str, content: str) -> str:
     track_id = "".join(sample(string.ascii_letters + string.digits, 8))
-    data = {
-        "track_id": track_id,
-        "prompt": prompt,
-        "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-        "content": content,
-    }
+    data = ErrorInfo(
+        track_id=track_id,
+        prompt=prompt,
+        time=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        content=content
+    )
     path = ERROR_DIR / f"{track_id}.json"
     with open(path, "w", encoding="utf-8") as r:
-        r.write(json.dumps(data, indent=4))
+        r.write(json.dumps(data.dict(), indent=4))
     return track_id
 
 
@@ -99,12 +108,11 @@ async def _track_error(
         prompt = "Unknown ERROR->" + Error.__class__.__name__
         track_id = _save_error(prompt, format_exc())
 
-    logger.debug(f"A bug has been cumming, trace ID: {track_id}")
-    msg = (
-        "[WARNING] 这是一个错误... ;w;\n"
-        f"追踪ID: {track_id}\n"
-        f"触发原因: {prompt}\n"
-        "键入 来杯红茶 以联系维护者"
-    )
-
-    await bot.send(event, msg)
+    logger.debug(f"A bug has been cumming!!! Track ID: {track_id}")
+    msg = f"呜——出错了...追踪: {track_id}"
+    
+    for superusers in BotSelfConfig.superusers:
+        try:
+            await bot.send_private_msg(user_id=superusers, message=msg)
+        except BaseBotException:
+            return

@@ -24,17 +24,17 @@
 
 实现方式为 `go-cqhttp 或其它遵守Onebot标准的协议` + `NoneBot2`。
 
-由于项目特殊性，故随机进行更新。更新日志：[传送门](changelog.md)
+由于项目特殊性，会随机进行更新。更新日志：请关注commit
 
 ### 功能列表
-请在群内对机器人发送`/help`以获取帮助
+请在群内at机器人发送`菜单`以获取帮助
 
 **TODO**：
   - [ ] 网页控制台
   - [ ] RSS订阅
   - [ ] B站动态订阅
   - [ ] 冷重启
-  - [ ] 词库（搭配nlp）
+  - [x] 词库（搭配nlp）
 
 ### 特别感谢
 [Richard Chien](https://github.com/richardchien): [Onebot标准](https://github.com/howmanybots/onebot)
@@ -54,7 +54,7 @@
     · AfdianUser_quGy 5.0CNY<br>
     · 1752179928 56.14CNY<br>
     · Mikasa 66.0CNY<br>
-    · SkipM4 27.0CNY<br>
+    · SkipM4 32.0CNY<br>
     · Chunk7 33.0CNY<br>
     · Wwwwwwalnut 10.0CNY<br>
     · 演变 5.0CNY<br>

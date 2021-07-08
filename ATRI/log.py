@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from nonebot.log import logger
 
