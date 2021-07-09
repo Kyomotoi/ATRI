@@ -268,5 +268,5 @@ class Manege(Service):
         f_data.add_field("expiration", "day")
         f_data.add_field("content", msg0)
 
-        repo = f"详细请移步此处~\n{await UbuntuPaste(data).paste()}"
+        repo = f"详细请移步此处~\n{await UbuntuPaste(f_data).paste()}"
         return repo
