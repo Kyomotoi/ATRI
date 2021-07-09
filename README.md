@@ -34,7 +34,7 @@
   - [ ] RSS订阅
   - [ ] B站动态订阅
   - [ ] 冷重启
-  - [x] 词库（搭配nlp）
+  - [x] 词库
 
 ### 特别感谢
 [Richard Chien](https://github.com/richardchien): [Onebot标准](https://github.com/howmanybots/onebot)
@@ -74,7 +74,7 @@
 - [提交 Pull request](https://github.com/Kyomotoi/ATRI/pulls)
 - [在反馈群内进行反馈](https://jq.qq.com/?_wv=1027&k=WoAAYXbJ)
 
-提交 `Pull request` 你可以参考这篇[指南](docs/dev.md)
+提交 `Pull request` 你可以参考这篇[指南](https://github.com/Kyomotoi/ATRI/wiki/Dev)
 
 ### 协议
 本项目使用[GPLv3](https://github.com/Kyomotoi/Aya/blob/master/LICENSE)，意味着你可以运行本项目，并向你的用户提供服务，但出现对项目源码进行修改，则需要将你修改后的版本对你的用户开源。出现的一切责任，请自行处理。
