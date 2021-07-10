@@ -200,22 +200,6 @@ async def _group_invite(bot: Bot, event: GroupRequestEvent):
         await bot.send_private_msg(user_id=superuser, message=repo)
 
 
-group_member_event = Essential().on_notice("群成员变动")
-
-
-@group_member_event.handle()
-async def _group_member_join(bot: Bot, event: GroupIncreaseNoticeEvent):
-    await asyncio.sleep(randint(1, 6))
-    msg = "好欸！事新人！\n" f"在下 {choice(list(BotSelfConfig.nickname))} 哒!w!"
-    await group_member_event.finish(msg)
-
-
-@group_member_event.handle()
-async def _group_member_left(bot: Bot, event: GroupDecreaseNoticeEvent):
-    await asyncio.sleep(randint(1, 6))
-    await group_member_event.finish("呜——有人跑了...")
-
-
 group_admin_event = Essential().on_notice("群管理变动")
 
 
