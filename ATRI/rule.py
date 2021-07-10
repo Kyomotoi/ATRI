@@ -7,6 +7,10 @@ from .service import ServiceTools
 
 def is_in_service(service: str) -> Rule:
     async def _is_in_service(bot, event, state) -> bool:
+        result = ServiceTools().auth_service(service)
+        if not result:
+            return False
+        
         if isinstance(event, PrivateMessageEvent):
             user_id = event.get_user_id()
             result = ServiceTools().auth_service(service, user_id)
