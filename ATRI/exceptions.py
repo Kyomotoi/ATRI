@@ -17,7 +17,7 @@ from .log import logger
 from .config import BotSelfConfig
 
 
-ERROR_DIR = Path(".") / "ATRI" / "data" / "errors"
+ERROR_DIR = Path(".") / "data" / "errors"
 os.makedirs(ERROR_DIR, exist_ok=True)
 
 
@@ -34,7 +34,7 @@ def _save_error(prompt: str, content: str) -> str:
         track_id=track_id,
         prompt=prompt,
         time=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-        content=content,
+        content=content
     )
     path = ERROR_DIR / f"{track_id}.json"
     with open(path, "w", encoding="utf-8") as r:
@@ -96,7 +96,7 @@ async def _track_error(
     event: Event,
     state: T_State,
 ) -> None:
-    if exception is None:
+    if not exception:
         return
 
     try:
@@ -110,7 +110,7 @@ async def _track_error(
 
     logger.debug(f"A bug has been cumming!!! Track ID: {track_id}")
     msg = f"呜——出错了...追踪: {track_id}"
-
+    
     for superusers in BotSelfConfig.superusers:
         try:
             await bot.send_private_msg(user_id=superusers, message=msg)

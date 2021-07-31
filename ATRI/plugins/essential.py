@@ -36,8 +36,8 @@ from ATRI.utils import CoolqCodeChecker
 driver = ATRI.driver()
 bots = nonebot.get_bots()
 
-ESSENTIAL_DIR = Path(".") / "ATRI" / "data" / "database" / "essential"
-MANEGE_DIR = Path(".") / "ATRI" / "data" / "database" / "manege"
+ESSENTIAL_DIR = Path(".") / "data" / "database" / "essential"
+MANEGE_DIR = Path(".") / "data" / "database" / "manege"
 os.makedirs(ESSENTIAL_DIR, exist_ok=True)
 os.makedirs(MANEGE_DIR, exist_ok=True)
 
@@ -62,9 +62,9 @@ async def _check_block(
         with open(path, "w", encoding="utf-8") as w:
             w.write(json.dumps({}))
         data = dict()
-
+    
     data = json.loads(path.read_bytes())
-
+    
     user_id = event.get_user_id()
     if user_id in data:
         raise IgnoredException(f"Block user: {user_id}")
@@ -76,9 +76,9 @@ async def _check_block(
             with open(path, "w", encoding="utf-8") as w:
                 w.write(json.dumps({}))
             data = dict()
-
+        
         data = json.loads(path.read_bytes())
-
+        
         group_id = str(event.group_id)
         if group_id in data:
             raise IgnoredException(f"Block group: {user_id}")
@@ -104,12 +104,12 @@ __doc__ = """
 
 
 class Essential(Service):
+    
     def __init__(self):
         Service.__init__(self, "基础部件", __doc__)
 
 
 friend_add_event = Essential().on_request("好友添加")
-
 
 @friend_add_event.handle()
 async def _friend_add(bot: Bot, event: FriendRequestEvent):
@@ -130,19 +130,22 @@ async def _friend_add(bot: Bot, event: FriendRequestEvent):
         with open(path, "w", encoding="utf-8") as w:
             w.write(json.dumps({}))
         data = dict()
-
+    
     apply_code = event.flag
     apply_comment = event.comment
     user_id = event.get_user_id()
     now_time = datetime.now()
-
+    
     data = json.loads(path.read_bytes())
     data[apply_code] = FriendRequestInfo(
-        user_id=user_id, comment=apply_comment, time=now_time, is_approve=False
+        user_id=user_id,
+        comment=apply_comment,
+        time=now_time,
+        is_approve=False
     )
     with open(path, "w", encoding="utf-8") as w:
         w.write(json.dumps(data.dict(), indent=4))
-
+    
     repo = (
         "咱收到一条好友请求...\n"
         f"请求人：{user_id}\n"
@@ -155,7 +158,6 @@ async def _friend_add(bot: Bot, event: FriendRequestEvent):
 
 
 group_invite_event = Essential().on_request("邀请入群")
-
 
 @group_invite_event.handle()
 async def _group_invite(bot: Bot, event: GroupRequestEvent):
@@ -176,19 +178,22 @@ async def _group_invite(bot: Bot, event: GroupRequestEvent):
         with open(path, "w", encoding="utf-8") as w:
             w.write(json.dumps({}))
         data = dict()
-
+    
     apply_code = event.flag
     apply_comment = event.comment
     user_id = event.get_user_id()
     now_time = datetime.now()
-
+    
     data = json.loads(path.read_bytes())
     data[apply_code] = GroupRequestInfo(
-        user_id=user_id, comment=apply_comment, time=now_time, is_approve=False
+        user_id=user_id,
+        comment=apply_comment,
+        time=now_time,
+        is_approve=False
     )
     with open(path, "w", encoding="utf-8") as w:
         w.write(json.dumps(data.dict(), indent=4))
-
+    
     repo = (
         "咱收到一条群聊邀请请求...\n"
         f"请求人：{user_id}\n"
@@ -200,8 +205,24 @@ async def _group_invite(bot: Bot, event: GroupRequestEvent):
         await bot.send_private_msg(user_id=superuser, message=repo)
 
 
-group_admin_event = Essential().on_notice("群管理变动")
+group_member_event = Essential().on_notice("群成员变动")
 
+@group_member_event.handle()
+async def _group_member_join(bot: Bot, event: GroupIncreaseNoticeEvent):
+    await asyncio.sleep(randint(1, 6))
+    msg = (
+        "好欸！事新人！\n"
+        f"在下 {choice(list(BotSelfConfig.nickname))} 哒!w!"
+    )
+    await group_member_event.finish(msg)
+
+@group_member_event.handle()
+async def _group_member_left(bot: Bot, event: GroupDecreaseNoticeEvent):
+    await asyncio.sleep(randint(1, 6))
+    await group_member_event.finish("呜——有人跑了...")
+
+
+group_admin_event = Essential().on_notice("群管理变动")
 
 @group_admin_event.handle()
 async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent):
@@ -215,7 +236,6 @@ async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent):
 
 
 group_ban_event = Essential().on_notice("群禁言变动")
-
 
 @group_ban_event.handle()
 async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent):
@@ -238,12 +258,11 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent):
 
 recall_event = Essential().on_notice("撤回事件")
 
-
 @recall_event.handle()
 async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
     if event.is_tome():
         return
-
+    
     try:
         repo = await bot.get_msg(message_id=event.message_id)
     except BaseException:
@@ -256,7 +275,12 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
     if not check:
         repo = repo.replace("CQ", "QC")
 
-    msg = "主人，咱拿到了一条撤回信息！\n" f"{user}@[群:{group}]\n" "撤回了\n" f"{repo}"
+    msg = (
+        "主人，咱拿到了一条撤回信息！\n"
+        f"{user}@[群:{group}]\n"
+        "撤回了\n"
+        f"{repo}"
+    )
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=int(superuser), message=msg)
 
@@ -265,7 +289,7 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
 async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
     if event.is_tome():
         return
-
+    
     try:
         repo = await bot.get_msg(message_id=event.message_id)
     except BaseException:
@@ -277,6 +301,11 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
     if not check:
         repo = repo.replace("CQ", "QC")
 
-    msg = "主人，咱拿到了一条撤回信息！\n" f"{user}@[私聊]" "撤回了\n" f"{repo}"
+    msg = (
+        "主人，咱拿到了一条撤回信息！\n"
+        f"{user}@[私聊]"
+        "撤回了\n"
+        f"{repo}"
+    )
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=int(superuser), message=msg)

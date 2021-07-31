@@ -14,13 +14,14 @@ __doc__ = """
 
 
 class IsSurvive(Service):
+    
     def __init__(self):
         Service.__init__(self, "状态", __doc__, rule=is_in_service("状态"))
 
     @staticmethod
     def ping() -> str:
         return "I'm fine."
-
+    
     @staticmethod
     def get_status():
         log.info("开始检查资源消耗...")
@@ -30,7 +31,7 @@ class IsSurvive(Service):
             disk = psutil.disk_usage("/").percent
             inteSENT = psutil.net_io_counters().bytes_sent / 1000000  # type: ignore
             inteRECV = psutil.net_io_counters().bytes_recv / 1000000  # type: ignore
-
+            
             now = time.time()
             boot = psutil.boot_time()
             up_time = str(
@@ -39,7 +40,7 @@ class IsSurvive(Service):
             )
         except GetStatusError:
             raise GetStatusError("Failed to get status.")
-
+        
         msg = "アトリは、高性能ですから！"
         if cpu > 90:  # type: ignore
             msg = "咱感觉有些头晕..."
@@ -56,7 +57,7 @@ class IsSurvive(Service):
         else:
             log.info("资源占用正常")
             is_ok = True
-
+            
         msg0 = (
             "Self status:\n"
             f"* CPU: {cpu}%\n"
@@ -66,5 +67,5 @@ class IsSurvive(Service):
             f"* netRECV: {inteRECV}MB\n"
             f"* Runtime: {up_time}\n"
         ) + msg
-
+        
         return msg0, is_ok

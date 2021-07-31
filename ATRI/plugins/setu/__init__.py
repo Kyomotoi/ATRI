@@ -12,10 +12,7 @@ _setu_flmt = FreqLimiter(120)
 _setu_dlmt = DailyLimiter(5)
 
 
-random_setu = Setu().on_command(
-    "来张涩图", "来张随机涩图，冷却2分钟，每天限5张", aliases={"涩图来", "来点涩图", "来份涩图"}
-)
-
+random_setu = Setu().on_command("来张涩图", "来张随机涩图，冷却2分钟，每天限5张", aliases={"涩图来", "来点涩图", "来份涩图"})
 
 @random_setu.handle()
 async def _random_setu(bot: Bot, event: MessageEvent):
@@ -24,9 +21,12 @@ async def _random_setu(bot: Bot, event: MessageEvent):
         await random_setu.finish()
     if not _setu_dlmt.check(user_id):
         await random_setu.finish()
-
+    
     setu, title, p_id = await Setu().random_setu()
-    repo = f"Title: {title}\n" f"Pid: {p_id}"
+    repo = (
+        f"Title: {title}\n"
+        f"Pid: {p_id}"
+    )
     await bot.send(event, repo)
     msg_1 = await bot.send(event, Message(setu))
     event_id = msg_1["message_id"]
@@ -38,7 +38,6 @@ async def _random_setu(bot: Bot, event: MessageEvent):
 
 tag_setu = Setu().on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图")
 
-
 @tag_setu.handle()
 async def _tag_setu(bot: Bot, event: MessageEvent):
     user_id = event.get_user_id()
@@ -46,15 +45,18 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
         await random_setu.finish()
     if not _setu_dlmt.check(user_id):
         await random_setu.finish()
-
+    
     msg = str(event.message).strip()
     pattern = r"来[张点丶份](.*?)的[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
     setu, title, p_id, is_ok = await Setu().tag_setu(tag)
     if not is_ok:
         await tag_setu.finish(f"没有 {tag} 的涩图呢...")
-    repo_0 = f"Title: {title}\n" f"Pid: {p_id}"
-
+    repo_0 = (
+        f"Title: {title}\n"
+        f"Pid: {p_id}"
+    )
+    
     await bot.send(event, repo_0)
     msg_1 = await bot.send(event, Message(setu))
     event_id = msg_1["message_id"]
@@ -75,6 +77,6 @@ async def _scheduler_setu(bot):
         message_id = msg_0["message_id"]
         await asyncio.sleep(60)
         await bot.delete_msg(message_id=message_id)
-
+        
     except BaseException:
         pass

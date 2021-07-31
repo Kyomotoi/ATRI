@@ -14,9 +14,10 @@ __doc__ = """
 
 
 class Utils(Service):
+    
     def __init__(self):
         Service.__init__(self, "小工具", __doc__, rule=is_in_service("小工具"))
-
+    
     @staticmethod
     def roll_dice(par: str) -> str:
         result = 0
@@ -48,14 +49,13 @@ class Utils(Service):
 
         result = f"{par}=({proc})={result}"
         return result
-
-
+    
 class Encrypt(Utils):
     """
     某nb改的（逃
     总之就是非常nb
     """
-
+    
     cr = "ĀāĂăĄąÀÁÂÃÄÅ"
     cc = "ŢţŤťŦŧṪṫṬṭṮṯṰṱ"
     cn = "ŔŕŘřṘṙŖŗȐȑȒȓṚṛṜṝṞṟɌɍⱤɽᵲᶉɼɾᵳʀＲｒ"
@@ -186,9 +186,9 @@ class Encrypt(Utils):
             return self._decodeBytes(s).decode(encoding)
         except UnicodeDecodeError:
             raise ValueError("Decoding failed")
-
-
+    
 class Yinglish(Utils):
+    
     @staticmethod
     def _to_ying(x, y, ying) -> str:
         if random() > ying:

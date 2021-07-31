@@ -20,9 +20,10 @@ __doc__ = """
 
 
 class Curse(Service):
+    
     def __init__(self):
         Service.__init__(self, "口臭", __doc__, rule=is_in_service("口臭"))
-
+    
     @staticmethod
     async def now() -> str:
         res = await request.get(URL)
@@ -30,17 +31,14 @@ class Curse(Service):
         return result
 
 
-normal_curse = Curse().on_command(
-    "口臭一下", "主命令，骂你一下", aliases={"骂我", "口臭"}, rule=to_bot()
-)
-
+normal_curse = Curse().on_command("口臭一下", "主命令，骂你一下", aliases={"骂我", "口臭"}, rule=to_bot())
 
 @normal_curse.handle()
 async def _deal_n_curse(bot: Bot, event: MessageEvent):
     user_id = event.get_user_id()
     if not _curse_flmt.check(user_id):
         await normal_curse.finish(_curse_flmt_notice)
-
+    
     result = await Curse().now()
     _curse_flmt.start_cd(user_id)
     await normal_curse.finish(result)
@@ -48,13 +46,12 @@ async def _deal_n_curse(bot: Bot, event: MessageEvent):
 
 super_curse = Curse().on_regex(r"[来求有](.*?)骂我吗?", "有求必应")
 
-
 @super_curse.handle()
 async def _deal_s_curse(bot: Bot, event: MessageEvent):
     user_id = event.get_user_id()
     if not _curse_flmt.check(user_id):
         await normal_curse.finish(_curse_flmt_notice)
-
+    
     result = await Curse().now()
     _curse_flmt.start_cd(user_id)
     await normal_curse.finish(result)
