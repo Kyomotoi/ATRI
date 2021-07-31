@@ -32,6 +32,7 @@ error_freq = 0
 
 record_msg = Console().on_message(block=False)
 
+
 @record_msg.handle()
 async def _record_msg(bot: Bot, event: Event):
     global msg_freq
@@ -44,7 +45,7 @@ async def _record_is_error(
     exception: Optional[Exception],
     bot: Bot,
     event: Event,
-    state: T_State
+    state: T_State,
 ):
     global health_freq, error_freq
     if matcher.type != "message":
@@ -60,11 +61,7 @@ async def _record_data():
     now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data = {
         "time": now_time,
-        "freq_data": {
-            "msg": msg_freq,
-            "health": health_freq,
-            "error": error_freq
-        }
+        "freq_data": {"msg": msg_freq, "health": health_freq, "error": error_freq},
     }
     Console().record_data(data)
     msg_freq, health_freq, error_freq = 0, 0, 0
@@ -72,5 +69,6 @@ async def _record_data():
 
 def init():
     register_route()
+
 
 init()

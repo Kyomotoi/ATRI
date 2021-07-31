@@ -14,25 +14,24 @@ is_connect = False
 
 
 class Console(Service):
-    
     def __init__(self):
         Service.__init__(self, "控制台")
-    
+
     @staticmethod
     def record_data(data: dict) -> None:
         now_time = datetime.now().strftime("%Y-%m-%d")
         file_name = f"{now_time}-runtime.json"
         path = CONSOLE_DIR / file_name
         if not path.is_file():
-            with open(path ,"w", encoding="utf-8") as w:
+            with open(path, "w", encoding="utf-8") as w:
                 w.write(json.dumps(list()))
             temp_data = list()
-        
+
         temp_data: list = json.loads(path.read_bytes())
         temp_data.append(data)
         with open(path, "w", encoding="utf-8") as w:
             w.write(json.dumps(temp_data, indent=4))
-    
+
     @staticmethod
     def load_data() -> list:
         now_time = datetime.now().strftime("%Y-%m-%d")
@@ -42,7 +41,7 @@ class Console(Service):
             with open(path, "w", encoding="utf-8") as w:
                 w.write(json.dumps(list()))
             return list()
-        
+
         data: list = json.loads(path.read_bytes())
         return data
 
@@ -50,7 +49,7 @@ class Console(Service):
     def store_connect_stat(i: bool):
         global is_connect
         is_connect = i
-    
+
     @staticmethod
     def is_connect() -> bool:
         return is_connect

@@ -12,7 +12,7 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:8080",
-    "http://localhost:20000"
+    "http://localhost:20000",
 ]
 
 
@@ -23,15 +23,15 @@ def register_route():
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["*"]
+        allow_headers=["*"],
     )
-    
-    static_path = str((Path(".") / "ATRI" / "plugins" / "console" / "atri-manege" / "dist").absolute())
-    
+
+    static_path = str(
+        (Path(".") / "ATRI" / "plugins" / "console" / "atri-manege" / "dist").absolute()
+    )
+
     app.get("/bot/is_connect")(handle_is_connect)
     app.get("/bot/status")(handle_status)
     app.get("/bot/dashboard_info")(handle_dashboard_info)
-    
-    app.mount("/",
-              StaticFiles(directory=static_path, html=True),
-              name="bot")
+
+    app.mount("/", StaticFiles(directory=static_path, html=True), name="bot")
