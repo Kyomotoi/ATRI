@@ -13,7 +13,7 @@ from ATRI.utils.limit import FreqLimiter
 from ATRI.exceptions import RequestError
 
 
-URL = "https://trace.moe/api/search?url="
+URL = "https://api.trace.moe/search?url="
 _anime_flmt = FreqLimiter(10)
 _anime_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
