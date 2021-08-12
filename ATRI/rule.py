@@ -16,7 +16,7 @@ def is_in_service(service: str) -> Rule:
             result = ServiceTools().auth_service(service, user_id)
             return result
         elif isinstance(event, GroupMessageEvent):
-            user_id = event.get_event_name()
+            user_id = event.get_user_id()
             group_id = str(event.group_id)
             result = ServiceTools().auth_service(service, user_id, group_id)
             return result
