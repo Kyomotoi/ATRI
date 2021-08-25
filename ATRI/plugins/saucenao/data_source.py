@@ -3,11 +3,9 @@ from random import choice
 from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.exceptions import RequestError
-from ATRI.utils import request, UbuntuPaste
-
+from ATRI.utils import request
 
 URL = "https://saucenao.com/search.php"
-
 
 __doc__ = """
 以图搜图，仅限二刺螈
@@ -15,15 +13,13 @@ __doc__ = """
 
 
 class SaouceNao(Service):
-    def __init__(
-        self,
-        api_key: str = None,
-        output_type=2,
-        testmode=1,
-        dbmaski=32768,
-        db=5,
-        numres=5,
-    ):
+    def __init__(self,
+                 api_key: str = None,
+                 output_type=2,
+                 testmode=1,
+                 dbmaski=32768,
+                 db=5,
+                 numres=5):
         Service.__init__(self, "以图搜图", __doc__, rule=is_in_service("以图搜图"))
 
         params = dict()
@@ -50,26 +46,25 @@ class SaouceNao(Service):
         res = data["results"]
 
         result = list()
-        for i in range(len(res)):
-            data = res[i]
+        for i in range(3):
+            sim = res[i]["header"]["similarity"]
+            if float(sim) >= 80:
+                data = res[i]
 
-            _result = dict()
-            _result["similarity"] = data["header"]["similarity"]
-            _result["index_name"] = data["header"]["index_name"]
-            _result["url"] = choice(data["data"].get("ext_urls", ["None"]))
-            result.append(_result)
+                _result = dict()
+                _result["similarity"] = sim
+                _result["index_name"] = data[i]["header"]["index_name"]
+                _result["url"] = choice(data["data"].get("ext_urls", ["None"]))
+                result.append(_result)
 
         msg0 = str()
         for i in result:
-            msg0 += (
-                "\n——————————\n"
-                f"Similarity: {i['similarity']}\n"
-                f"Name: {i['index_name']}\n"
-                f"URL: {i['url'].replace('https://', '')}"
-            )
+            msg0 += ("\n——————————\n"
+                     f"Similarity: {i['similarity']}\n"
+                     f"Name: {i['index_name']}\n"
+                     f"URL: {i['url'].replace('https://', '')}")
 
-        if len(res) <= 3:
-            return msg0
+        if not result:
+            return "没有相似的结果呢..."
         else:
-            repo = f"\n详细请移步此处~\n{await UbuntuPaste(content=msg0).paste()}"
-            return repo
+            return msg0

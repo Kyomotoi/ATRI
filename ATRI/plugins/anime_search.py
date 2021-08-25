@@ -7,15 +7,13 @@ from nonebot.adapters.cqhttp.message import Message, MessageSegment
 
 from ATRI.service import Service
 from ATRI.rule import is_in_service
-from ATRI.utils import request, UbuntuPaste, Translate
+from ATRI.utils import request, Translate
 from ATRI.utils.limit import FreqLimiter
 from ATRI.exceptions import RequestError
-
 
 URL = "https://api.trace.moe/search?anilistInfo=true&url="
 _anime_flmt = FreqLimiter(10)
 _anime_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
-
 
 __doc__ = """
 通过一张图片搜索你需要的番！据说里*也可以
@@ -42,9 +40,10 @@ class Anime(Service):
         data = data["result"]
 
         d = dict()
-        for i in range(len(data)):
+        for i in range(3):
             if data[i]["anilist"]["title"]["native"] in d.keys():
-                d[data[i]["anilist"]["title"]["native"]][0] += data[i]["similarity"]
+                d[data[i]["anilist"]["title"]
+                  ["native"]][0] += data[i]["similarity"]
             else:
                 from_m = data[i]["from"] / 60
                 from_s = data[i]["from"] % 60
@@ -57,7 +56,8 @@ class Anime(Service):
                 else:
                     n = data[i]["episode"]
 
-                d[Translate(data[i]["anilist"]["title"]["native"]).to_simple()] = [
+                d[Translate(data[i]["anilist"]["title"]["native"]).to_simple(
+                )] = [
                     data[i]["similarity"],
                     f"第{n}集",
                     f"约{int(from_m)}min{int(from_s)}s至{int(to_m)}min{int(to_s)}s处",
@@ -69,18 +69,12 @@ class Anime(Service):
         for i in result:
             t += 1
             s = "%.2f%%" % (i[1][0] * 100)
-            msg0 = msg0 + (
-                "\n——————————\n"
-                f"({t}) Similarity: {s}\n"
-                f"Name: {i[0]}\n"
-                f"Time: {i[1][1]} {i[1][2]}"
-            )
+            msg0 = msg0 + ("\n——————————\n"
+                           f"({t}) Similarity: {s}\n"
+                           f"Name: {i[0]}\n"
+                           f"Time: {i[1][1]} {i[1][2]}")
 
-        if len(result) == 2:
-            return msg0
-        else:
-            repo = f"详细请移步此处~\n{await UbuntuPaste(content=msg0).paste()}"
-            return repo
+        return msg0
 
 
 anime_search = Anime().on_command("以图搜番", "发送一张图以搜索可能的番剧")

@@ -4,27 +4,20 @@ from pathlib import Path
 from datetime import datetime
 
 from ATRI.service import Service, ServiceTools
-from ATRI.utils import UbuntuPaste
 from ATRI.exceptions import ReadFileError, load_error
-
 
 MANAGE_DIR = Path(".") / "data" / "database" / "manege"
 ESSENTIAL_DIR = Path(".") / "data" / "database" / "essential"
 os.makedirs(MANAGE_DIR, exist_ok=True)
 os.makedirs(ESSENTIAL_DIR, exist_ok=True)
 
-
-TRACK_BACK_FORMAT = """
-Track ID：{track_id}
+TRACK_BACK_FORMAT = """Track ID：{track_id}
 Prompt: {prompt}
 Time: {time}
 {content}
 """.strip()
 
-
-__doc__ = """
-控制bot的各项服务
-"""
+__doc__ = """控制bot的各项服务"""
 
 
 class Manage(Service):
@@ -160,7 +153,8 @@ class Manage(Service):
         return True
 
     @staticmethod
-    def control_user_service(service: str, user_id: str, is_enabled: bool) -> bool:
+    def control_user_service(service: str, user_id: str,
+                             is_enabled: bool) -> bool:
         """
         Only SUPERUSER.
         """
@@ -182,7 +176,8 @@ class Manage(Service):
         return True
 
     @staticmethod
-    def control_group_service(service: str, group_id: str, is_enabled: bool) -> bool:
+    def control_group_service(service: str, group_id: str,
+                              is_enabled: bool) -> bool:
         """
         SUPERUSER and GROUPADMIN or GROUPOWNER.
         Only current group.
@@ -267,8 +262,8 @@ class Manage(Service):
         time = data.get("time", "ignore")
         content = data.get("content", "ignore")
 
-        msg0 = TRACK_BACK_FORMAT.format(
-            track_id=track_id, prompt=prompt, time=time, content=content
-        )
-        repo = f"详细请移步此处~\n{await UbuntuPaste(content=msg0).paste()}"
+        repo = TRACK_BACK_FORMAT.format(track_id=track_id,
+                                        prompt=prompt,
+                                        time=time,
+                                        content=content)
         return repo

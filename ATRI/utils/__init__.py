@@ -37,7 +37,6 @@ class ListDealer:
     """
     对列表进行处理
     """
-
     def __init__(self, lst: list, aim):
         self.lst = lst
         self.aim = aim
@@ -59,7 +58,6 @@ class CoolqCodeChecker:
     """
     检查所传回的cq码是否存在被注入可能
     """
-
     tenc_gchat_url: str = "gchat.qpic.cn"
     may_inject_keys: list = ["record", "video", "music", "xml", "json"]
 
@@ -89,14 +87,14 @@ class FileDealer:
     """
     打开文件
     """
-
     def __init__(self, path: Path, encoding: str = "utf-8"):
         self.path = path
         self.encoding = encoding
 
     async def write(self, path: Path, content):
         try:
-            async with aiofiles.open(path, "w", encoding=self.encoding) as target:
+            async with aiofiles.open(path, "w",
+                                     encoding=self.encoding) as target:
                 await target.write(content)
         except Exception:
             raise Exception(f"Writing file({path}) failed!")
@@ -129,8 +127,11 @@ class ImageDealer:
     """
     对图片进行压缩处理
     """
-
-    def __init__(self, out_path, kb: int = 300, quality: int = 85, k: float = 0.9):
+    def __init__(self,
+                 out_path,
+                 kb: int = 300,
+                 quality: int = 85,
+                 k: float = 0.9):
         self.out_path = out_path
         self.kb = kb
         self.quality = quality
@@ -145,7 +146,8 @@ class ImageDealer:
         while o_size > self.kb:
             img = Image.open(self.out_path)
             x, y = img.size
-            out = img.resize((int(x * self.k), int(y * self.k)), Image.ANTIALIAS)
+            out = img.resize((int(x * self.k), int(y * self.k)),
+                             Image.ANTIALIAS)
             try:
                 out.save(self.out_path, quality=self.quality)
             except Exception:
@@ -192,42 +194,3 @@ class Translate:
                 output_str_list.append(self.text[i])
 
         return "".join(output_str_list)
-
-
-class UbuntuPaste:
-    """
-    将信息粘贴至 ubuntu pastebin
-    """
-
-    URL = "https://paste.ubuntu.com/"
-
-    def __init__(
-        self,
-        poster: str = "ATRI running log",
-        syntax: str = "text",
-        expiration: str = "day",
-        content: str = "0w0",
-    ):
-        self.poster = poster
-        self.syntax = syntax
-        self.expiration = expiration
-        self.content = content
-
-    def _gen_form_data(self) -> FormData:
-        data = FormData()
-        data.add_field("poster", self.poster)
-        data.add_field("syntax", self.syntax)
-        data.add_field("expiration", self.expiration)
-        data.add_field("content", self.content)
-        return data
-
-    async def paste(self) -> str:
-        try:
-            res = await request.post(self.URL, self._gen_form_data())
-        except BaseException:
-            raise BaseException("Request failed!")
-        result = str(res.url)
-        if result == self.URL:
-            result = self.content
-
-        return result
