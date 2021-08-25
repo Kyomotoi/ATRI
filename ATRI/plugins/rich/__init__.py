@@ -1,11 +1,10 @@
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 
 from ATRI.utils.limit import FreqLimiter
+from ATRI.log import logger as log
 from .data_source import Rich
 
-
 _rich_flmt = FreqLimiter(2)
-
 
 bili_rich = Rich().on_message("小程序爪巴", block=False)
 
@@ -21,6 +20,7 @@ async def _fk_bili(bot: Bot, event: MessageEvent):
         result, is_ok = await Rich().fk_bili(msg)
     except BaseException:
         return
+    log.debug(result, is_ok)
     if not is_ok:
         return
     _rich_flmt.start_cd(user_id)

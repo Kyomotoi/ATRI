@@ -5,9 +5,7 @@ from ATRI.utils import request
 from ATRI.rule import is_in_service
 from ATRI.exceptions import RequestError
 
-
-URL = f"https://api.kyomotoi.moe/api/bilibili/v2/?aid="
-
+URL = f"https://api.kyomotoi.moe/api/bilibili/v3/video_info?aid="
 
 table = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF"
 tr = dict()
@@ -17,9 +15,7 @@ s = [11, 10, 3, 8, 4, 6]
 xor = 177451812
 add = 8728348608
 
-
-__doc__ = """
-啥b腾讯小程序给👴爪巴
+__doc__ = """啥b腾讯小程序给👴爪巴
 目前只整了b站的
 """
 
@@ -32,7 +28,7 @@ class Rich(Service):
     def _bv_dec(x) -> str:
         r = 0
         for i in range(6):
-            r += tr[x[s[i]]] * 58 ** i
+            r += tr[x[s[i]]] * 58**i
         result = "av" + str((r - add) ^ xor)
         return result
 
@@ -41,7 +37,7 @@ class Rich(Service):
         x = (x ^ xor) + add
         r = list("BV1  4 1 7  ")
         for i in range(6):
-            r[s[i]] = table[x // 58 ** i % 58]
+            r[s[i]] = table[x // 58**i % 58]
         return "".join(r)
 
     @classmethod
@@ -52,42 +48,32 @@ class Rich(Service):
         """
         msg = text.replace("\\", "")
         bv = False
-
-        if "qqdocurl" not in msg:
-            if "av" in msg:
-                av = re.findall(r"(av\d+)", msg)
-                if not av:
-                    return "Get value (av) failed!", False
-                av = av[0].replace("av", "")
-            else:
-                bv = re.findall(r"([Bb][Vv]\w+)", msg)
-                if not bv:
-                    return "Get value (bv) failed!", False
-                av = str(cls._bv_dec(bv[0])).replace("av", "")
-        else:
-            pattern = r"(?:(?:https?):\/\/)?[\w/\-?=%.]+\.[\w/\-&?=%.]+"
-            bv_url = re.findall(pattern, msg)
-            if not bv_url:
-                return "Get value (bv url) failed!", False
-            bv_url = bv_url[3]
+        if "https://b23" in msg:
+            pattern = r"https://b23\.tv/[a-zA-Z0-9]+"
+            burl = re.findall(pattern, msg)
+            u = burl[0]
 
             try:
-                res = await request.get(bv_url)
-            except RequestError:
+                res = await request.get(u)
+            except:
                 return "Request failed!", False
-            bv = re.findall(r"(BV\w+)", str(res.url))
-            if not bv:
-                return "Get value (bv) failed!", False
-            av = cls._bv_dec(bv[0])
 
-        if not bv:
-            if "av" in msg:
-                av = re.findall(r"(av\d+)", msg)
-                if not av:
-                    return "Get value (av) failed!", False
-                av = av[0].replace("av", "")
-            else:
-                return "Not found av", False
+            bv_pattern = r"video/BV[a-zA-Z0-9]+"
+            try:
+                tu = str(res.url)
+                t_bv = re.findall(bv_pattern, tu)
+                bv = t_bv[0].replace("video/", "")
+            except:
+                return "Deal bv code failed!", False
+            av = cls._bv_dec(bv).replace("av", "")
+
+        else:
+            pattern = r"BV[a-zA-Z0-9]+"
+            try:
+                be = re.findall(pattern, msg)[0]
+            except:
+                return "Deal bv code failed!", False
+            av = cls._bv_dec(bv).replace("av", "")
 
         url = URL + av
         try:
@@ -97,9 +83,7 @@ class Rich(Service):
         res_data = await res.json()
         data = res_data["data"]
 
-        result = (
-            f"{data['bvid']} INFO:\n"
-            f"Title: {data['title']}\n"
-            f"Link: {data['short_link']}"
-        )
+        result = (f"{data['bvid']} INFO:\n"
+                  f"Title: {data['title']}\n"
+                  f"Link: {data['short_link']}")
         return result, True
