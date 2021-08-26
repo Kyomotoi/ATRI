@@ -51,8 +51,9 @@ async def shutdown():
 
 
 @run_preprocessor  # type: ignore
-async def _check_block(matcher: Matcher, bot: Bot, event: MessageEvent,
-                       state: T_State) -> None:
+async def _check_block(
+    matcher: Matcher, bot: Bot, event: MessageEvent, state: T_State
+) -> None:
     user_file = "block_user.json"
     path = MANEGE_DIR / user_file
     if not path.is_file():
@@ -138,18 +139,19 @@ async def _friend_add(bot: Bot, event: FriendRequestEvent):
     now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     data = json.loads(path.read_bytes())
-    data[apply_code] = FriendRequestInfo(user_id=user_id,
-                                         comment=apply_comment,
-                                         time=now_time,
-                                         is_approve=False).dict()
+    data[apply_code] = FriendRequestInfo(
+        user_id=user_id, comment=apply_comment, time=now_time, is_approve=False
+    ).dict()
     with open(path, "w", encoding="utf-8") as w:
         w.write(json.dumps(data, indent=4))
 
-    repo = ("咱收到一条好友请求...\n"
-            f"请求人：{user_id}\n"
-            f"申请信息：{apply_comment}\n"
-            f"申请码：{apply_code}\n"
-            "Tip：好友申请 帮助")
+    repo = (
+        "咱收到一条好友请求...\n"
+        f"请求人：{user_id}\n"
+        f"申请信息：{apply_comment}\n"
+        f"申请码：{apply_code}\n"
+        "Tip：好友申请 帮助"
+    )
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=superuser, message=repo)
 
@@ -183,18 +185,19 @@ async def _group_invite(bot: Bot, event: GroupRequestEvent):
     now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     data = json.loads(path.read_bytes())
-    data[apply_code] = GroupRequestInfo(user_id=user_id,
-                                        comment=apply_comment,
-                                        time=now_time,
-                                        is_approve=False).dict()
+    data[apply_code] = GroupRequestInfo(
+        user_id=user_id, comment=apply_comment, time=now_time, is_approve=False
+    ).dict()
     with open(path, "w", encoding="utf-8") as w:
         w.write(json.dumps(data, indent=4))
 
-    repo = ("咱收到一条群聊邀请请求...\n"
-            f"请求人：{user_id}\n"
-            f"申请信息：{apply_comment}\n"
-            f"申请码：{apply_code}\n"
-            "Tip：群聊邀请 帮助")
+    repo = (
+        "咱收到一条群聊邀请请求...\n"
+        f"请求人：{user_id}\n"
+        f"申请信息：{apply_comment}\n"
+        f"申请码：{apply_code}\n"
+        "Tip：群聊邀请 帮助"
+    )
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=superuser, message=repo)
 
@@ -205,7 +208,7 @@ group_member_event = Essential().on_notice("群成员变动")
 @group_member_event.handle()
 async def _group_member_join(bot: Bot, event: GroupIncreaseNoticeEvent):
     await asyncio.sleep(randint(1, 6))
-    msg = ("好欸！事新人！\n" f"在下 {choice(list(BotSelfConfig.nickname))} 哒!w!")
+    msg = "好欸！事新人！\n" f"在下 {choice(list(BotSelfConfig.nickname))} 哒!w!"
     await group_member_event.finish(msg)
 
 
@@ -225,8 +228,8 @@ async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent):
 
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(
-            user_id=int(superuser),
-            message=f"好欸！主人！我在群 {event.group_id} 成为了管理！！")
+            user_id=int(superuser), message=f"好欸！主人！我在群 {event.group_id} 成为了管理！！"
+        )
 
 
 group_ban_event = Essential().on_notice("群禁言变动")
@@ -238,9 +241,11 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent):
         return
 
     if event.duration:
-        msg = ("那个..。，主人\n"
-               f"咱在群 {event.group_id} 被 {event.operator_id} 塞上了口球...\n"
-               f"时长...是 {event.duration} 秒")
+        msg = (
+            "那个..。，主人\n"
+            f"咱在群 {event.group_id} 被 {event.operator_id} 塞上了口球...\n"
+            f"时长...是 {event.duration} 秒"
+        )
         for superuser in BotSelfConfig.superusers:
             await bot.send_private_msg(user_id=int(superuser), message=msg)
     else:
@@ -269,7 +274,7 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
     if not check:
         repo = repo.replace("CQ", "QC")
 
-    msg = ("主人，咱拿到了一条撤回信息！\n" f"{user}@[群:{group}]\n" "撤回了\n" f"{repo}")
+    msg = "主人，咱拿到了一条撤回信息！\n" f"{user}@[群:{group}]\n" "撤回了\n" f"{repo}"
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=int(superuser), message=msg)
 
@@ -290,6 +295,6 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
     if not check:
         repo = repo.replace("CQ", "QC")
 
-    msg = ("主人，咱拿到了一条撤回信息！\n" f"{user}@[私聊]" "撤回了\n" f"{repo}")
+    msg = "主人，咱拿到了一条撤回信息！\n" f"{user}@[私聊]" "撤回了\n" f"{repo}"
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=int(superuser), message=msg)

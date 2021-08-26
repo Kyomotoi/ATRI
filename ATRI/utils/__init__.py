@@ -37,6 +37,7 @@ class ListDealer:
     """
     对列表进行处理
     """
+
     def __init__(self, lst: list, aim):
         self.lst = lst
         self.aim = aim
@@ -58,6 +59,7 @@ class CoolqCodeChecker:
     """
     检查所传回的cq码是否存在被注入可能
     """
+
     tenc_gchat_url: str = "gchat.qpic.cn"
     may_inject_keys: list = ["record", "video", "music", "xml", "json"]
 
@@ -87,14 +89,14 @@ class FileDealer:
     """
     打开文件
     """
+
     def __init__(self, path: Path, encoding: str = "utf-8"):
         self.path = path
         self.encoding = encoding
 
     async def write(self, path: Path, content):
         try:
-            async with aiofiles.open(path, "w",
-                                     encoding=self.encoding) as target:
+            async with aiofiles.open(path, "w", encoding=self.encoding) as target:
                 await target.write(content)
         except Exception:
             raise Exception(f"Writing file({path}) failed!")
@@ -127,11 +129,8 @@ class ImageDealer:
     """
     对图片进行压缩处理
     """
-    def __init__(self,
-                 out_path,
-                 kb: int = 300,
-                 quality: int = 85,
-                 k: float = 0.9):
+
+    def __init__(self, out_path, kb: int = 300, quality: int = 85, k: float = 0.9):
         self.out_path = out_path
         self.kb = kb
         self.quality = quality
@@ -146,8 +145,7 @@ class ImageDealer:
         while o_size > self.kb:
             img = Image.open(self.out_path)
             x, y = img.size
-            out = img.resize((int(x * self.k), int(y * self.k)),
-                             Image.ANTIALIAS)
+            out = img.resize((int(x * self.k), int(y * self.k)), Image.ANTIALIAS)
             try:
                 out.save(self.out_path, quality=self.quality)
             except Exception:

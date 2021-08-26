@@ -103,9 +103,7 @@ async def _deal_unblock_group(bot: Bot, event: MessageEvent, state: T_State):
     await unblock_group.finish(f"好欸！群 {group_id} 重获新生！")
 
 
-global_block_service = Manage().on_command("全局禁用",
-                                           "全局禁用某服务",
-                                           permission=SUPERUSER)
+global_block_service = Manage().on_command("全局禁用", "全局禁用某服务", permission=SUPERUSER)
 
 
 @global_block_service.handle()
@@ -116,8 +114,7 @@ async def _ready_block_service(bot: Bot, event: MessageEvent, state: T_State):
 
 
 @global_block_service.got("global_block_service", "阿...是哪个服务呢")
-async def _deal_global_block_service(bot: Bot, event: MessageEvent,
-                                     state: T_State):
+async def _deal_global_block_service(bot: Bot, event: MessageEvent, state: T_State):
     block_service = state["global_block_service"]
     quit_list = ["算了", "罢了"]
     if block_service in quit_list:
@@ -130,22 +127,18 @@ async def _deal_global_block_service(bot: Bot, event: MessageEvent,
     await global_block_service.finish(f"服务 {block_service} 已被禁用")
 
 
-global_unblock_service = Manage().on_command("全局启用",
-                                             "全局启用某服务",
-                                             permission=SUPERUSER)
+global_unblock_service = Manage().on_command("全局启用", "全局启用某服务", permission=SUPERUSER)
 
 
 @global_unblock_service.handle()
-async def _ready_unblock_service(bot: Bot, event: MessageEvent,
-                                 state: T_State):
+async def _ready_unblock_service(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message).strip()
     if msg:
         state["global_unblock_service"] = msg
 
 
 @global_unblock_service.got("global_unblock_service", "阿...是哪个服务呢")
-async def _deal_global_unblock_service(bot: Bot, event: MessageEvent,
-                                       state: T_State):
+async def _deal_global_unblock_service(bot: Bot, event: MessageEvent, state: T_State):
     unblock_service = state["global_unblock_service"]
     quit_list = ["算了", "罢了"]
     if unblock_service in quit_list:
@@ -158,9 +151,9 @@ async def _deal_global_unblock_service(bot: Bot, event: MessageEvent,
     await global_unblock_service.finish(f"服务 {unblock_service} 已启用")
 
 
-user_block_service = Manage().on_regex(r"对用户(.*?)禁用(.*)",
-                                       "针对某一用户禁用服务",
-                                       permission=SUPERUSER)
+user_block_service = Manage().on_regex(
+    r"对用户(.*?)禁用(.*)", "针对某一用户禁用服务", permission=SUPERUSER
+)
 
 
 @user_block_service.handle()
@@ -177,9 +170,9 @@ async def _user_block_service(bot: Bot, event: MessageEvent):
     await user_block_service.finish(f"完成～已禁止用户 {aim_user} 使用 {aim_service}")
 
 
-user_unblock_service = Manage().on_regex(r"对用户(.*?)启用(.*)",
-                                         "针对某一用户启用服务",
-                                         permission=SUPERUSER)
+user_unblock_service = Manage().on_regex(
+    r"对用户(.*?)启用(.*)", "针对某一用户启用服务", permission=SUPERUSER
+)
 
 
 @user_unblock_service.handle()
@@ -196,23 +189,22 @@ async def _user_unblock_service(bot: Bot, event: MessageEvent):
     await user_unblock_service.finish(f"完成～已允许用户 {aim_user} 使用 {aim_service}")
 
 
-group_block_service = Manage().on_command("禁用",
-                                          "针对所在群禁用某服务",
-                                          permission=SUPERUSER | GROUP_OWNER
-                                          | GROUP_ADMIN)
+group_block_service = Manage().on_command(
+    "禁用", "针对所在群禁用某服务", permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN
+)
 
 
 @group_block_service.handle()
-async def _ready_group_block_service(bot: Bot, event: GroupMessageEvent,
-                                     state: T_State):
+async def _ready_group_block_service(
+    bot: Bot, event: GroupMessageEvent, state: T_State
+):
     msg = str(event.message).strip()
     if msg:
         state["group_block_service"] = msg
 
 
 @group_block_service.got("group_block_service", "阿...是哪个服务呢")
-async def _deal_group_block_service(bot: Bot, event: GroupMessageEvent,
-                                    state: T_State):
+async def _deal_group_block_service(bot: Bot, event: GroupMessageEvent, state: T_State):
     aim_service = state["group_block_service"]
     group_id = str(event.group_id)
     quit_list = ["算了", "罢了"]
@@ -225,23 +217,24 @@ async def _deal_group_block_service(bot: Bot, event: GroupMessageEvent,
     await group_block_service.finish(f"完成！～已禁止本群使用服务：{aim_service}")
 
 
-group_unblock_service = Manage().on_command("启用",
-                                            "针对所在群启用某服务",
-                                            permission=SUPERUSER | GROUP_OWNER
-                                            | GROUP_ADMIN)
+group_unblock_service = Manage().on_command(
+    "启用", "针对所在群启用某服务", permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN
+)
 
 
 @group_unblock_service.handle()
-async def _ready_group_unblock_service(bot: Bot, event: GroupMessageEvent,
-                                       state: T_State):
+async def _ready_group_unblock_service(
+    bot: Bot, event: GroupMessageEvent, state: T_State
+):
     msg = str(event.message).strip()
     if msg:
         state["group_unblock_service"] = msg
 
 
 @group_unblock_service.got("group_unblock_service", "阿...是哪个服务呢")
-async def _deal_group_unblock_service(bot: Bot, event: GroupMessageEvent,
-                                      state: T_State):
+async def _deal_group_unblock_service(
+    bot: Bot, event: GroupMessageEvent, state: T_State
+):
     aim_service = state["group_unblock_service"]
     group_id = str(event.group_id)
     quit_list = ["算了", "罢了"]
@@ -254,9 +247,7 @@ async def _deal_group_unblock_service(bot: Bot, event: GroupMessageEvent,
     await group_unblock_service.finish(f"完成！～已允许本群使用服务：{aim_service}")
 
 
-get_friend_add_list = Manage().on_command("获取好友申请",
-                                          "获取好友申请列表",
-                                          permission=SUPERUSER)
+get_friend_add_list = Manage().on_command("获取好友申请", "获取好友申请列表", permission=SUPERUSER)
 
 
 @get_friend_add_list.handle()
@@ -275,22 +266,18 @@ async def _get_friend_add_list(bot: Bot, event: MessageEvent):
     await get_friend_add_list.finish(msg1)
 
 
-approve_friend_add = Manage().on_command("同意好友",
-                                         "同意好友申请",
-                                         permission=SUPERUSER)
+approve_friend_add = Manage().on_command("同意好友", "同意好友申请", permission=SUPERUSER)
 
 
 @approve_friend_add.handle()
-async def _ready_approve_friend_add(bot: Bot, event: MessageEvent,
-                                    state: T_State):
+async def _ready_approve_friend_add(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message).strip()
     if msg:
         state["approve_friend_add"] = msg
 
 
 @approve_friend_add.got("approve_friend_add", "申请码GKD!")
-async def _deal_approve_friend_add(bot: Bot, event: MessageEvent,
-                                   state: T_State):
+async def _deal_approve_friend_add(bot: Bot, event: MessageEvent, state: T_State):
     apply_code = state["approve_friend_add"]
     quit_list = ["算了", "罢了"]
     if apply_code in quit_list:
@@ -310,16 +297,14 @@ refuse_friend_add = Manage().on_command("拒绝好友", "拒绝好友申请", pe
 
 
 @refuse_friend_add.handle()
-async def _ready_refuse_friend_add(bot: Bot, event: MessageEvent,
-                                   state: T_State):
+async def _ready_refuse_friend_add(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message).strip()
     if msg:
         state["refuse_friend_add"] = msg
 
 
 @refuse_friend_add.got("refuse_friend_add", "申请码GKD!")
-async def _deal_refuse_friend_add(bot: Bot, event: MessageEvent,
-                                  state: T_State):
+async def _deal_refuse_friend_add(bot: Bot, event: MessageEvent, state: T_State):
     apply_code = state["refuse_friend_add"]
     quit_list = ["算了", "罢了"]
     if apply_code in quit_list:
@@ -335,9 +320,7 @@ async def _deal_refuse_friend_add(bot: Bot, event: MessageEvent,
     await refuse_friend_add.finish("已拒绝！")
 
 
-get_group_invite_list = Manage().on_command("获取邀请列表",
-                                            "获取群邀请列表",
-                                            permission=SUPERUSER)
+get_group_invite_list = Manage().on_command("获取邀请列表", "获取群邀请列表", permission=SUPERUSER)
 
 
 @get_group_invite_list.handle()
@@ -356,31 +339,27 @@ async def _get_group_invite_list(bot: Bot, event: MessageEvent):
     await get_friend_add_list.finish(msg1)
 
 
-approve_group_invite = Manage().on_command("同意邀请",
-                                           "同意群聊邀请",
-                                           permission=SUPERUSER)
+approve_group_invite = Manage().on_command("同意邀请", "同意群聊邀请", permission=SUPERUSER)
 
 
 @approve_group_invite.handle()
-async def _ready_approve_group_invite(bot: Bot, event: MessageEvent,
-                                      state: T_State):
+async def _ready_approve_group_invite(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message).strip()
     if msg:
         state["approve_group_invite"] = msg
 
 
 @approve_group_invite.got("approve_group_invite", "申请码GKD!")
-async def _deal_approve_group_invite(bot: Bot, event: MessageEvent,
-                                     state: T_State):
+async def _deal_approve_group_invite(bot: Bot, event: MessageEvent, state: T_State):
     apply_code = state["approve_group_invite"]
     quit_list = ["算了", "罢了"]
     if apply_code in quit_list:
         await approve_group_invite.finish("好吧...")
 
     try:
-        await bot.set_group_add_request(flag=apply_code,
-                                        sub_type="invite",
-                                        approve=True)
+        await bot.set_group_add_request(
+            flag=apply_code, sub_type="invite", approve=True
+        )
     except BaseException:
         await approve_group_invite.finish("同意失败...尝试下手动？")
     data = Manage().load_invite_apply_list()
@@ -389,31 +368,27 @@ async def _deal_approve_group_invite(bot: Bot, event: MessageEvent,
     await approve_group_invite.finish("好欸！申请已通过！")
 
 
-refuse_group_invite = Manage().on_command("拒绝邀请",
-                                          "拒绝群聊邀请",
-                                          permission=SUPERUSER)
+refuse_group_invite = Manage().on_command("拒绝邀请", "拒绝群聊邀请", permission=SUPERUSER)
 
 
 @refuse_group_invite.handle()
-async def _ready_refuse_group_invite(bot: Bot, event: MessageEvent,
-                                     state: T_State):
+async def _ready_refuse_group_invite(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message).strip()
     if msg:
         state["refuse_group_invite"] = msg
 
 
 @refuse_group_invite.got("refuse_group_invite", "申请码GKD!")
-async def _deal_refuse_group_invite(bot: Bot, event: MessageEvent,
-                                    state: T_State):
+async def _deal_refuse_group_invite(bot: Bot, event: MessageEvent, state: T_State):
     apply_code = state["refuse_group_invite"]
     quit_list = ["算了", "罢了"]
     if apply_code in quit_list:
         await refuse_group_invite.finish("好吧...")
 
     try:
-        await bot.set_group_add_request(flag=apply_code,
-                                        sub_type="invite",
-                                        approve=False)
+        await bot.set_group_add_request(
+            flag=apply_code, sub_type="invite", approve=False
+        )
     except BaseException:
         await refuse_group_invite.finish("拒绝失败...尝试下手动？")
     data = Manage().load_invite_apply_list()

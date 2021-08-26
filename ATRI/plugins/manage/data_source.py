@@ -153,8 +153,7 @@ class Manage(Service):
         return True
 
     @staticmethod
-    def control_user_service(service: str, user_id: str,
-                             is_enabled: bool) -> bool:
+    def control_user_service(service: str, user_id: str, is_enabled: bool) -> bool:
         """
         Only SUPERUSER.
         """
@@ -176,8 +175,7 @@ class Manage(Service):
         return True
 
     @staticmethod
-    def control_group_service(service: str, group_id: str,
-                              is_enabled: bool) -> bool:
+    def control_group_service(service: str, group_id: str, is_enabled: bool) -> bool:
         """
         SUPERUSER and GROUPADMIN or GROUPOWNER.
         Only current group.
@@ -262,8 +260,7 @@ class Manage(Service):
         time = data.get("time", "ignore")
         content = data.get("content", "ignore")
 
-        repo = TRACK_BACK_FORMAT.format(track_id=track_id,
-                                        prompt=prompt,
-                                        time=time,
-                                        content=content)
+        repo = TRACK_BACK_FORMAT.format(
+            track_id=track_id, prompt=prompt, time=time, content=content
+        )
         return repo

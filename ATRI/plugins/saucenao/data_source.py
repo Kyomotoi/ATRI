@@ -13,13 +13,15 @@ __doc__ = """
 
 
 class SaouceNao(Service):
-    def __init__(self,
-                 api_key: str = None,
-                 output_type=2,
-                 testmode=1,
-                 dbmaski=32768,
-                 db=5,
-                 numres=5):
+    def __init__(
+        self,
+        api_key: str = None,
+        output_type=2,
+        testmode=1,
+        dbmaski=32768,
+        db=5,
+        numres=5,
+    ):
         Service.__init__(self, "以图搜图", __doc__, rule=is_in_service("以图搜图"))
 
         params = dict()
@@ -59,10 +61,12 @@ class SaouceNao(Service):
 
         msg0 = str()
         for i in result:
-            msg0 += ("\n——————————\n"
-                     f"Similarity: {i['similarity']}\n"
-                     f"Name: {i['index_name']}\n"
-                     f"URL: {i['url'].replace('https://', '')}")
+            msg0 += (
+                "\n——————————\n"
+                f"Similarity: {i['similarity']}\n"
+                f"Name: {i['index_name']}\n"
+                f"URL: {i['url'].replace('https://', '')}"
+            )
 
         if not result:
             return "没有相似的结果呢..."
