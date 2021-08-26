@@ -42,10 +42,6 @@ class Rich(Service):
 
     @classmethod
     async def fk_bili(cls, text: str) -> tuple:
-        """
-        为何本函数这么多 try，因为此函数被用于监听所有信息
-        如果真出现错误，就会一直刷屏
-        """
         msg = text.replace("\\", "")
         bv = False
         if "https://b23" in msg:
@@ -70,7 +66,7 @@ class Rich(Service):
         else:
             pattern = r"BV[a-zA-Z0-9]+"
             try:
-                be = re.findall(pattern, msg)[0]
+                bv = re.findall(pattern, msg)[0]
             except:
                 return "Deal bv code failed!", False
             av = cls._bv_dec(bv).replace("av", "")
