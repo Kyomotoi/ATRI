@@ -1,0 +1,83 @@
+name: Lint
+
+on:
+  push:
+    paths:
+      - "**.py"
+      - "**.pyi"
+      - ".github/workflows/lint.yml"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint Code
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Setup Python 🐍
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - uses: Gr1N/setup-poetry@v4
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+
+      - name: Install Dependencies 🔧
+        env:
+          POETRY_VIRTUALENVS_CREATE: "false"
+        run: |
+          poetry install
+          python -m pip install --upgrade pip
+          pip install flake8
+      - name: Run Linters
+        uses: wearerequired/lint-action@v1
+        with:
+          auto_fix: true
+          black: true
+          commit_message: ":rotating_light: 自动进行代码格式化"
+          git_email: noreply@github.com
+
+  analyze:
+    runs-on: ubuntu-latest
+    name: CodeQL Analyze
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Setup Python 🐍
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - uses: Gr1N/setup-poetry@v4
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+
+      - name: Install Dependencies 🔧
+        env:
+          POETRY_VIRTUALENVS_CREATE: "false"
+        run: |
+          poetry install
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: python
+          # Override the default behavior so that the action doesn't attempt
+          # to auto-install Python dependencies
+          setup-python-dependencies: false
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
