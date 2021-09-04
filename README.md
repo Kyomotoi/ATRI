@@ -14,7 +14,7 @@
 
 本项目中所使用的任何有关 ATRI 的图标、LOGO，解释权、著作权均归 [ANIPLEX](https://aniplex-exe.com/)。你可以[在此](https://aniplex-exe.com/guidelines/)查看相关内容
 
-为QQ群中复现一个功能性机器人是本项目的目标
+为QQ群中复现一个优秀的功能性机器人是本项目的目标
 
 ### 声明
 **一切开发旨在学习，请勿用于非法用途**
@@ -22,19 +22,47 @@
 ### 实现
 本项目可以在**任何平台**下运行，只要你具备基本的 `Python >= 3.8` 环境和一根接入互联网的网线
 
-实现方式为 `go-cqhttp 或其它遵守Onebot标准的协议` + `NoneBot2`。
+实现方式为 `go-cqhttp 或其它遵守Onebot标准的协议` + `NoneBot2`
 
 由于项目特殊性，会随机进行更新。更新日志：请关注commit
 
+由于学业原因，在`2022年6月`前不会有太大的更新，当然，欢迎提交`Pull Request`
+
 ### 功能列表
-请在群内at机器人发送`菜单`以获取帮助
+
+> 此页面只展示主要功能，详细请在群内 at机器人 发送`菜单`以获取帮助
+
+涩批：
+- 文爱
+- 涩图
+- 涩批翻译机
+
+实用：
+- 在线运行代码
+- 数据可视化（前端界面，未完成）
+- 伪造转发内容
+- 以图搜图
+- 以图搜番
+- ATRI语（加密、解密，改自[`rcnb`](https://github.com/rcnbapp/RCNB.js)）
+- 简单骰子
+
+娱乐：
+- 看不懂的笑话
+- 今天吃什么
+- 老婆！
+- 口臭一下
+
+其他：
+- B站小程序解析
+- 状态查看
 
 **TODO**：
   - [x] 网页控制台 （目前仅支持部分数据可视化，请于启动后点击，uvicorn给予的url以访问）
   - [ ] RSS订阅
   - [ ] B站动态订阅
   - [ ] 冷重启
-  - [x] 词库
+  - [ ] 进裙验证（问题可自定义）
+  - [ ] 好感度系统（目前优先在[`go-ATRI`](https://github.com/Kyomotoi/go-ATRI)上实现）
 
 ### 特别感谢
 [Richard Chien](https://github.com/richardchien): [Onebot标准](https://github.com/howmanybots/onebot)
@@ -49,16 +77,19 @@
 以及以下朋友们：
   <details markdown='1'><summary>*/ω＼*(</summary>
     *排名不分现后*<br>
-    · 50861735 11.0CNY<br>
-    · 1072324725 17.0CNY<br>
-    · AfdianUser_quGy 5.0CNY<br>
-    · 1752179928 56.14CNY<br>
-    · Mikasa 66.0CNY<br>
-    · SkipM4 32.0CNY<br>
-    · Chunk7 33.0CNY<br>
-    · Wwwwwwalnut 10.0CNY<br>
-    · 演变 5.0CNY<br>
-    · 梓哟P 23.33CNY
+    · 50861735 11.00 CNY<br>
+    · 1072324725 17.00 CNY<br>
+    · AfdianUser_quGy 5.00 CNY<br>
+    · 1752179928 56.14 CNY<br>
+    · Mikasa 66.00 CNY<br>
+    · SkipM4 32.00 CNY<br>
+    · Chunk7 33.00 CNY<br>
+    · Wwwwwwalnut 10.00 CNY<br>
+    · 演变 5.00 CNY<br>
+    · 梓哟P 23.33 CNY<br>
+    · Ohdmire 5.00 CNY<br>
+    · TerRALi 23.45 CNY<br>
+    · 虾仁 10.00 CNY
  </details>
 
 ### 其它
