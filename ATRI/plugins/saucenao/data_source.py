@@ -55,7 +55,7 @@ class SaouceNao(Service):
 
                 _result = dict()
                 _result["similarity"] = sim
-                _result["index_name"] = data[i]["header"]["index_name"]
+                _result["index_name"] = data["header"]["index_name"]
                 _result["url"] = choice(data["data"].get("ext_urls", ["None"]))
                 result.append(_result)
 
