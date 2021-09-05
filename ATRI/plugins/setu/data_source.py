@@ -45,15 +45,15 @@ class Setu(Service):
         res = await request.get(url)
         data: dict = await res.json()
 
-        temp_data: dict = data.get("data", list())[0]
-        if not temp_data:
-            is_ok = False
-        is_ok = True
-
-        title = temp_data.get("title", "木陰のねこ")
-        p_id = temp_data.get("pid", 88124144)
-        url = temp_data["urls"].get("original", "ignore")
-        setu = MessageSegment.image(url, timeout=114514)
+        try :
+            temp_data: dict = data.get("data", list())[0]
+            is_ok = True
+            title = temp_data.get("title", "木陰のねこ")
+            p_id = temp_data.get("pid", 88124144)
+            url = temp_data["urls"].get("original", "ignore")
+            setu = MessageSegment.image(url, timeout=114514)
+        except :
+            setu,title,p_id,is_ok = None,None,None,False
         return setu, title, p_id, is_ok
 
     @staticmethod
