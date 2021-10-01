@@ -29,7 +29,7 @@ class Chat(Service):
     @staticmethod
     async def _request(url: str) -> dict:
         res = await request.get(url)
-        data = await res.json()
+        data = res.json()
         return data
 
     @classmethod
