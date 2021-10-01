@@ -4,7 +4,7 @@ from ATRI.utils.limit import FreqLimiter
 from ATRI.log import logger as log
 from .data_source import Rich
 
-_rich_flmt = FreqLimiter(2)
+_rich_flmt = FreqLimiter(3)
 
 bili_rich = Rich().on_message("小程序爪巴", block=False)
 

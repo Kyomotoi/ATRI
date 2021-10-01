@@ -34,8 +34,7 @@ SUPPORTED_LANGUAGES = {
 }
 
 
-__doc__ = """
-在线跑代码
+__doc__ = """在线跑代码
 """
 
 
@@ -91,7 +90,7 @@ class CodeRunner(Service):
         except RequestError:
             raise RequestError("Request failed!")
 
-        payload = await res.json()
+        payload = res.json()
         sent = False
         for k in ["stdout", "stderr", "error"]:
             v = payload.get(k)

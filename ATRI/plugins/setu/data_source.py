@@ -10,10 +10,6 @@ from ATRI.utils import request
 
 
 LOLICON_URL = "https://api.lolicon.app/setu/v2"
-SCHEDULER_FORMAT = """
-是{tag}哦~❤
-{setu}
-"""
 
 
 class Setu(Service):
@@ -26,15 +22,19 @@ class Setu(Service):
         随机涩图.
         """
         res = await request.get(LOLICON_URL)
-        data: dict = await res.json()
-        temp_data: dict = data.get("data", list())[0]
+        data: dict = res.json()
+        temp_data: dict = data.get("data", list())
+        if not temp_data:
+            return "涩批爬", None
 
-        title = temp_data.get("title", "木陰のねこ")
-        p_id = temp_data.get("pid", 88124144)
-        url = temp_data["urls"].get("original", "ignore")
+        data: dict = temp_data[0]
+        title = data.get("title", "木陰のねこ")
+        p_id = data.get("pid", 88124144)
+        url = data["urls"].get("original", "ignore")
 
         setu = MessageSegment.image(url, timeout=114514)
-        return setu, title, p_id
+        repo = f"Title: {title}\nPid: {p_id}"
+        return repo, setu
 
     @staticmethod
     async def tag_setu(tag: str) -> tuple:
@@ -43,18 +43,22 @@ class Setu(Service):
         """
         url = LOLICON_URL + f"?tag={tag}"
         res = await request.get(url)
-        data: dict = await res.json()
+        data: dict = res.json()
 
-        temp_data: dict = data.get("data", list())[0]
+        temp_data: dict = data.get("data", list())
         if not temp_data:
-            is_ok = False
-        is_ok = True
+            return f"没有 {tag} 的涩图呢...", None
 
-        title = temp_data.get("title", "木陰のねこ")
-        p_id = temp_data.get("pid", 88124144)
-        url = temp_data["urls"].get("original", "ignore")
+        data = temp_data[0]
+        title = data.get("title", "木陰のねこ")
+        p_id = data.get("pid", 88124144)
+        url = data["urls"].get(
+            "original",
+            "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg",
+        )
         setu = MessageSegment.image(url, timeout=114514)
-        return setu, title, p_id, is_ok
+        repo = f"Title: {title}\nPid: {p_id}"
+        return repo, setu
 
     @staticmethod
     async def scheduler() -> str:
@@ -65,12 +69,21 @@ class Setu(Service):
             {setu}
         """
         res = await request.get(LOLICON_URL)
-        data: dict = await res.json()
-        temp_data: dict = data.get("data", list())[0]
+        data: dict = res.json()
+        temp_data: dict = data.get("data", list())
+        if not temp_data:
+            return ""
 
         tag = choice(temp_data.get("tags", ["女孩子"]))
 
-        url = temp_data["urls"].get("original", "ignore")
+        temp_arg = temp_data[0].get(
+            "urls",
+            "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg",
+        )
+        url = temp_data[0]["urls"].get(
+            "original",
+            "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg",
+        )
         setu = MessageSegment.image(url, timeout=114514)
-        repo = SCHEDULER_FORMAT.format(tag=tag, setu=setu)
+        repo = f"是{tag}哦~❤\n{setu}"
         return repo

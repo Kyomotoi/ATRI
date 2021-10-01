@@ -5,7 +5,8 @@ from ATRI.utils import request
 from ATRI.rule import is_in_service
 from ATRI.exceptions import RequestError
 
-URL = f"https://api.kyomotoi.moe/api/bilibili/v3/video_info?aid="
+
+URL = "https://api.kyomotoi.moe/api/bilibili/v3/video_info?aid="
 
 table = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF"
 tr = dict()
@@ -76,7 +77,7 @@ class Rich(Service):
             res = await request.get(url)
         except RequestError:
             return "Request failed!", False
-        res_data = await res.json()
+        res_data = res.json()
         data = res_data["data"]
 
         result = (

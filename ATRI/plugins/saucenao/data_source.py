@@ -40,7 +40,7 @@ class SaouceNao(Service):
             res = await request.post(URL, params=self.params)
         except RequestError:
             raise RequestError("Request failed!")
-        data = await res.json()
+        data = res.json()
         return data
 
     async def search(self, url: str) -> str:

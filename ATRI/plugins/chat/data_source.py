@@ -12,7 +12,7 @@ from ATRI.exceptions import ReadFileError, WriteError
 
 
 __doc__ = """
-好像有点涩？（偏文爱，需at
+好像有点涩？
 """
 
 CHAT_PATH = Path(".") / "data" / "database" / "chat"
@@ -37,7 +37,7 @@ class Chat(Service):
         file_name = "kimo.json"
         path = CHAT_PATH / file_name
         if not path.is_file():
-            log.warning("未检测到闲聊词库，生成中")
+            log.warning("未检测到词库，生成中")
             data = await cls._request(KIMO_URL)
             try:
                 with open(path, "w", encoding="utf-8") as w:

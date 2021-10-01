@@ -25,10 +25,15 @@ async def _random_setu(bot: Bot, event: MessageEvent):
     if not _setu_dlmt.check(user_id):
         await random_setu.finish()
 
-    setu, title, p_id = await Setu().random_setu()
-    repo = f"Title: {title}\n" f"Pid: {p_id}"
+    repo, setu = await Setu().random_setu()
     await bot.send(event, repo)
-    msg_1 = await bot.send(event, Message(setu))
+
+    msg_1 = dict()
+    try:
+        msg_1 = await bot.send(event, Message(setu))
+    except Exception:
+        await random_setu.finish("hso（发不出")
+
     event_id = msg_1["message_id"]
     _setu_flmt.start_cd(user_id)
     _setu_dlmt.increase(user_id)
@@ -50,13 +55,18 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     msg = str(event.message).strip()
     pattern = r"来[张点丶份](.*?)的[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
-    setu, title, p_id, is_ok = await Setu().tag_setu(tag)
-    if not is_ok:
-        await tag_setu.finish(f"没有 {tag} 的涩图呢...")
-    repo_0 = f"Title: {title}\n" f"Pid: {p_id}"
+    repo, setu = await Setu().tag_setu(tag)
+    if not setu:
+        await tag_setu.finish(repo)
 
-    await bot.send(event, repo_0)
-    msg_1 = await bot.send(event, Message(setu))
+    await bot.send(event, repo)
+
+    msg_1 = dict()
+    try:
+        msg_1 = await bot.send(event, Message(setu))
+    except Exception:
+        await random_setu.finish("hso（发不出")
+
     event_id = msg_1["message_id"]
     _setu_flmt.start_cd(user_id)
     _setu_dlmt.increase(user_id)
@@ -71,10 +81,13 @@ async def _scheduler_setu(bot):
         lucky_group = choice(group_list)
         group_id = lucky_group["group_id"]
         setu = await Setu().scheduler()
+        if not setu:
+            return
+
         msg_0 = await bot.send_group_msg(group_id=int(group_id), message=Message(setu))
         message_id = msg_0["message_id"]
         await asyncio.sleep(60)
         await bot.delete_msg(message_id=message_id)
 
-    except BaseException:
+    except Exception:
         pass
