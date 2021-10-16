@@ -53,6 +53,6 @@ async def _deal_search(bot: Bot, event: MessageEvent, state: T_State):
     except Exception:
         await saucenao.finish("失败了...")
 
-    result = f"> {MessageSegment.at(user_id)}" + await a.search(img[0])
+    result = f"> {MessageSegment.at(user_id)}" + await a.search(img[0])  # type: ignore
     _search_flmt.start_cd(user_id)
     await saucenao.finish(Message(result))

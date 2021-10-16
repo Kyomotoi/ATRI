@@ -26,7 +26,7 @@ class Curse(Service):
     @staticmethod
     async def now() -> str:
         res = await request.get(URL)
-        result = await res.text  # type: ignore
+        result = res.text
         return result
 
 
