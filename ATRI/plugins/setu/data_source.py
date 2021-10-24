@@ -7,6 +7,7 @@ from nonebot.adapters.cqhttp import MessageSegment
 from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.utils import request
+from .tf_dealer import detect_image
 
 
 LOLICON_URL = "https://api.lolicon.app/setu/v2"
@@ -59,6 +60,14 @@ class Setu(Service):
         setu = MessageSegment.image(url, timeout=114514)
         repo = f"Title: {title}\nPid: {p_id}"
         return repo, setu
+
+    @staticmethod
+    async def detecter(url: str) -> list:
+        """
+        涩值检测.
+        """
+        data = await detect_image(url)
+        return data
 
     @staticmethod
     async def scheduler() -> str:

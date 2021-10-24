@@ -1,8 +1,13 @@
+import yaml
 from pathlib import Path
 from datetime import timedelta
 from ipaddress import IPv4Address
 
-from .utils import *
+
+def load_yml(file: Path, encoding="utf-8") -> dict:
+    with open(file, "r", encoding=encoding) as f:
+        data = yaml.safe_load(f)
+    return data
 
 
 CONFIG_PATH = Path(".") / "config.yml"
@@ -22,6 +27,7 @@ class BotSelfConfig:
     session_expire_timeout: timedelta = timedelta(
         seconds=config.get("session_expire_timeout", 60)
     )
+    proxy: str = config.get("proxy", None)
 
 
 class SauceNAO:

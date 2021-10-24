@@ -7,6 +7,7 @@ BotSelfConfig:
   command_start: ["", "/"]
   command_sep: ["."]
   session_expire_timeout: 60
+  proxy: ""
 
 SauceNAO:
   key: ""

@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 import asyncio
 from datetime import datetime
 from pydantic.main import BaseModel
@@ -30,14 +31,19 @@ from ATRI.service import Service
 from ATRI.log import logger as log
 from ATRI.config import BotSelfConfig
 from ATRI.utils import CoolqCodeChecker
+from ATRI.utils.apscheduler import scheduler
+
 
 driver = ATRI.driver()
 bots = nonebot.get_bots()
 
+
 ESSENTIAL_DIR = Path(".") / "data" / "database" / "essential"
 MANEGE_DIR = Path(".") / "data" / "database" / "manege"
+TEMP_PATH = Path(".") / "data" / "temp"
 os.makedirs(ESSENTIAL_DIR, exist_ok=True)
 os.makedirs(MANEGE_DIR, exist_ok=True)
+os.makedirs(TEMP_PATH, exist_ok=True)
 
 
 @driver.on_startup
@@ -298,3 +304,11 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
     msg = "主人，咱拿到了一条撤回信息！\n" f"{user}@[私聊]" "撤回了\n" f"{repo}"
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=int(superuser), message=msg)
+
+
+@scheduler.scheduled_job("interval", name="清除缓存", minutes=30, misfire_grace_time=5)
+async def _clear_cache():
+    try:
+        shutil.rmtree(TEMP_PATH)
+    except Exception:
+        log.warning("清除缓存失败，请手动清除：data/temp")

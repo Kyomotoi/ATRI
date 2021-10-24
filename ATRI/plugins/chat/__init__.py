@@ -26,7 +26,10 @@ async def _chat(bot: Bot, event: MessageEvent):
     msg = str(event.message)
     repo = await Chat().deal(msg, user_id)
     _chat_flmt.start_cd(user_id)
-    await chat.finish(repo)
+    try:
+        await chat.finish(repo)
+    except Exception:
+        return
 
 
 my_name_is = Chat().on_command("叫我", "更改闲聊（划掉 文爱）时的称呼", aliases={"我是"}, priority=1)
@@ -111,7 +114,7 @@ async def _deal_say(bot: Bot, event: MessageEvent, state: T_State):
     await say.finish(msg)
 
 
-@scheduler.scheduled_job("interval", hours=3, misfire_grace_time=60)
+@scheduler.scheduled_job("interval", name="闲聊词库检查更新", hours=3, misfire_grace_time=60)
 async def _check_kimo():
     try:
         await Chat().update_data()

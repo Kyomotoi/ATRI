@@ -24,7 +24,7 @@ async def _status(bot: Bot, event: MessageEvent):
 info_msg = "アトリは高性能ですから！"
 
 
-@scheduler.scheduled_job("interval", minutes=10, misfire_grace_time=15)
+@scheduler.scheduled_job("interval", name="状态检查", minutes=10, misfire_grace_time=15)
 async def _status_checking():
     global info_msg
     msg, stat = IsSurvive().get_status()

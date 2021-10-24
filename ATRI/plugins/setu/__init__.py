@@ -2,7 +2,10 @@ import re
 import asyncio
 from random import choice
 from nonebot.adapters.cqhttp import Bot, MessageEvent, Message
+from nonebot.adapters.cqhttp.message import MessageSegment
+from nonebot.typing import T_State
 
+from ATRI.config import BotSelfConfig
 from ATRI.utils.limit import FreqLimiter, DailyLimiter
 from ATRI.utils.apscheduler import scheduler
 from .data_source import Setu
@@ -74,7 +77,91 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     await bot.delete_msg(message_id=event_id)
 
 
-@scheduler.scheduled_job("interval", hours=1, misfire_grace_time=60, args=[Bot])
+setu_catcher = Setu().on_message("涩图嗅探")
+
+
+@setu_catcher.handle()
+async def _setu_catcher(bot: Bot, event: MessageEvent):
+    msg = str(event.message)
+    pattern = r"url=(.*?)]"
+    args = re.findall(pattern, msg)
+    if not args:
+        return
+    else:
+        hso = list()
+        for i in args:
+            try:
+                data = await Setu().detecter(i)
+            except Exception:
+                return
+            if data[1] > 0.7:
+                hso.append(data[1])
+
+        hso.sort(reverse=True)
+
+        if not hso:
+            return
+        elif len(hso) == 1:
+            u_repo = f"hso! 涩值：{'{:.2%}'.format(hso[0])}\n不行我要发给别人看"
+            s_repo = (
+                f"涩图来咧！\n{MessageSegment.image(args[0])}\n涩值：{'{:.2%}'.format(hso[0])}"
+            )
+
+        else:
+            u_repo = f"hso! 最涩的达到：{'{:.2%}'.format(hso[0])}\n不行我一定要发给别人看"
+
+            ss = list()
+            for s in args:
+                ss.append(MessageSegment.image(s))
+            ss = "\n".join(ss)
+            s_repo = f"多张涩图来咧！\n{ss}\n最涩的达到：{'{:.2%}'.format(hso[0])}"
+
+        await bot.send(event, u_repo)
+        for superuser in BotSelfConfig.superusers:
+            await bot.send_private_msg(user_id=superuser, message=s_repo)
+
+
+nsfw_checker = Setu().on_command("/nsfw", "涩值检测")
+
+
+@nsfw_checker.handle()
+async def _nsfw_checker(bot: Bot, event: MessageEvent, state: T_State):
+    msg = str(event.message).strip()
+    if msg:
+        state["nsfw_img"] = msg
+
+
+@nsfw_checker.got("nsfw_img", "图呢？")
+async def _deal_check(bot: Bot, event: MessageEvent, state: T_State):
+    msg = state["nsfw_img"]
+    pattern = r"url=(.*?)]"
+    args = re.findall(pattern, msg)
+    if not args:
+        await nsfw_checker.reject("请发送图片而不是其他东西！！")
+
+    data = await Setu().detecter(args[0])
+    hso = data[1]
+    if not hso:
+        await nsfw_checker.finish("图太小了！不测！")
+
+    resu = f"涩值：{'{:.2%}'.format(hso)}\n"
+    if hso >= 0.75:
+        resu += "hso！不行我要发给别人看"
+        repo = f"涩图来咧！\n{MessageSegment.image(args[0])}\n涩值：{'{:.2%}'.format(hso[0])}"
+        for superuser in BotSelfConfig.superusers:
+            await bot.send_private_msg(user_id=superuser, message=repo)
+
+    elif 0.75 > hso >= 0.5:
+        resu += "嗯。可冲"
+    else:
+        resu += "还行8"
+
+    await nsfw_checker.finish(resu)
+
+
+@scheduler.scheduled_job(
+    "interval", name="涩批诱捕器", hours=1, misfire_grace_time=60, args=[Bot]
+)
 async def _scheduler_setu(bot):
     try:
         group_list = await bot.get_group_list()
