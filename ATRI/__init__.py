@@ -7,7 +7,7 @@ from .config import RUNTIME_CONFIG
 from .log import logger
 
 
-__version__ = "YHN-001-A03"
+__version__ = "YHN-001-A04"
 
 
 def asgi():
