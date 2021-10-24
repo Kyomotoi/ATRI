@@ -77,7 +77,7 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     await bot.delete_msg(message_id=event_id)
 
 
-setu_catcher = Setu().on_message("涩图嗅探")
+setu_catcher = Setu().on_message("涩图嗅探", block=False)
 
 
 @setu_catcher.handle()
