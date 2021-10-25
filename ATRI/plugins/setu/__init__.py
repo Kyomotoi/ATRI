@@ -164,11 +164,13 @@ async def _deal_check(bot: Bot, event: MessageEvent, state: T_State):
 
 catcher_setting = Setu().on_command("嗅探", "涩图检测图片文件大小设置")
 
+
 @catcher_setting.handle()
 async def _catcher_setting(bot: Bot, event: MessageEvent, state: T_State):
     msg = str(event.message).strip()
     if msg:
         state["catcher_set"] = msg
+
 
 @catcher_setting.got("catcher_set", "数值呢？（1对应1kb，默认128）")
 async def _deal_setting(bot: Bot, event: MessageEvent, state: T_State):
@@ -178,7 +180,7 @@ async def _deal_setting(bot: Bot, event: MessageEvent, state: T_State):
         _catcher_max_file_size = int(msg)
     except Exception:
         await catcher_setting.reject("请发送阿拉伯数字～！")
-    
+
     repo = f"好诶！涩图检测文件最小值已设为：{_catcher_max_file_size}kb"
     await catcher_setting.finish(repo)
 
