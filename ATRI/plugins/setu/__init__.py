@@ -77,6 +77,9 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     await bot.delete_msg(message_id=event_id)
 
 
+_catcher_max_file_size = 128
+
+
 setu_catcher = Setu().on_message("涩图嗅探", block=False)
 
 
@@ -91,7 +94,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
         hso = list()
         for i in args:
             try:
-                data = await Setu().detecter(i)
+                data = await Setu().detecter(i, _catcher_max_file_size)
             except Exception:
                 return
             if data[1] > 0.7:
@@ -139,7 +142,7 @@ async def _deal_check(bot: Bot, event: MessageEvent, state: T_State):
     if not args:
         await nsfw_checker.reject("请发送图片而不是其他东西！！")
 
-    data = await Setu().detecter(args[0])
+    data = await Setu().detecter(args[0], _catcher_max_file_size)
     hso = data[1]
     if not hso:
         await nsfw_checker.finish("图太小了！不测！")
@@ -147,7 +150,7 @@ async def _deal_check(bot: Bot, event: MessageEvent, state: T_State):
     resu = f"涩值：{'{:.2%}'.format(hso)}\n"
     if hso >= 0.75:
         resu += "hso！不行我要发给别人看"
-        repo = f"涩图来咧！\n{MessageSegment.image(args[0])}\n涩值：{'{:.2%}'.format(hso[0])}"
+        repo = f"涩图来咧！\n{MessageSegment.image(args[0])}\n涩值：{'{:.2%}'.format(hso)}"
         for superuser in BotSelfConfig.superusers:
             await bot.send_private_msg(user_id=superuser, message=repo)
 
@@ -157,6 +160,27 @@ async def _deal_check(bot: Bot, event: MessageEvent, state: T_State):
         resu += "还行8"
 
     await nsfw_checker.finish(resu)
+
+
+catcher_setting = Setu().on_command("嗅探", "涩图检测图片文件大小设置")
+
+@catcher_setting.handle()
+async def _catcher_setting(bot: Bot, event: MessageEvent, state: T_State):
+    msg = str(event.message).strip()
+    if msg:
+        state["catcher_set"] = msg
+
+@catcher_setting.got("catcher_set", "数值呢？（1对应1kb，默认128）")
+async def _deal_setting(bot: Bot, event: MessageEvent, state: T_State):
+    global _catcher_max_file_size
+    msg = state["catcher_set"]
+    try:
+        _catcher_max_file_size = int(msg)
+    except Exception:
+        await catcher_setting.reject("请发送阿拉伯数字～！")
+    
+    repo = f"好诶！涩图检测文件最小值已设为：{_catcher_max_file_size}kb"
+    await catcher_setting.finish(repo)
 
 
 @scheduler.scheduled_job(

@@ -62,11 +62,11 @@ class Setu(Service):
         return repo, setu
 
     @staticmethod
-    async def detecter(url: str) -> list:
+    async def detecter(url: str, file_size: int) -> list:
         """
         涩值检测.
         """
-        data = await detect_image(url)
+        data = await detect_image(url, file_size)
         return data
 
     @staticmethod
@@ -85,10 +85,6 @@ class Setu(Service):
 
         tag = choice(temp_data.get("tags", ["女孩子"]))
 
-        temp_arg = temp_data[0].get(
-            "urls",
-            "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg",
-        )
         url = temp_data[0]["urls"].get(
             "original",
             "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg",

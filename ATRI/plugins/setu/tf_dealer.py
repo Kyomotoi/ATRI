@@ -49,14 +49,14 @@ def prepare_image(img):
     return image
 
 
-async def detect_image(url) -> list:
+async def detect_image(url: str, file_size: int) -> list:
     try:
         req = await request.get(url)
     except RequestError:
         raise RequestError("Get info from download image failed!")
 
     img_byte = getsizeof(req.read()) // 1024
-    if img_byte < 256:
+    if img_byte < file_size:
         return [0, 0]
 
     try:

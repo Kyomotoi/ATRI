@@ -310,5 +310,6 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
 async def _clear_cache():
     try:
         shutil.rmtree(TEMP_PATH)
+        os.makedirs(TEMP_PATH, exist_ok=True)
     except Exception:
         log.warning("清除缓存失败，请手动清除：data/temp")
