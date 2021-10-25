@@ -1,6 +1,7 @@
 import re
 import asyncio
 from random import choice
+from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, MessageEvent, Message
 from nonebot.adapters.cqhttp.message import MessageSegment
 from nonebot.typing import T_State
@@ -162,7 +163,7 @@ async def _deal_check(bot: Bot, event: MessageEvent, state: T_State):
     await nsfw_checker.finish(resu)
 
 
-catcher_setting = Setu().on_command("嗅探", "涩图检测图片文件大小设置")
+catcher_setting = Setu().on_command("嗅探设置", "涩图检测图片文件大小设置", permission=SUPERUSER)
 
 @catcher_setting.handle()
 async def _catcher_setting(bot: Bot, event: MessageEvent, state: T_State):
