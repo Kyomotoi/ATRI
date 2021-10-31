@@ -38,7 +38,7 @@ class Funny(Service):
                 "https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/laugh.txt"
             )
             res = await request.get(url)
-            context = await res.text()  # type: ignore
+            context = res.text
             with open(path, "w", encoding="utf-8") as w:
                 w.write(context)
             logger.warning("完成")
