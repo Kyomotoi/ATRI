@@ -86,7 +86,7 @@ class Funny(Service):
             url = EAT_URL + a
             try:
                 data = await request.post(url, params=params)
-                data = await data.json()
+                data = data.json()
             except RequestError:
                 raise RequestError("Request failed!")
 
@@ -99,7 +99,7 @@ class Funny(Service):
             url = EAT_URL + a
             try:
                 data = await request.post(url, params=params)
-                data = await data.json()
+                data = data.json()
             except RequestError:
                 raise RequestError("Request failed!")
 
@@ -115,7 +115,7 @@ class Funny(Service):
                 url = EAT_URL + a
                 try:
                     data = await request.post(url, params=params)
-                    data = await data.json()
+                    data = data.json()
                 except RequestError:
                     raise RequestError("Request failed!")
 
