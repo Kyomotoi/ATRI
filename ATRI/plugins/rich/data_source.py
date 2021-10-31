@@ -65,7 +65,7 @@ class Rich(Service):
             av = cls._bv_dec(bv).replace("av", "")
 
         else:
-            pattern = r"BV[a-zA-Z0-9]+"
+            pattern = r"[bB][vV][a-zA-Z0-9]+"
             try:
                 bv = re.findall(pattern, msg)[0]
             except:

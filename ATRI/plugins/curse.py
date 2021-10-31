@@ -27,6 +27,8 @@ class Curse(Service):
     async def now() -> str:
         res = await request.get(URL)
         result = res.text
+        if "访问太频繁服务器受不了啦" in result:
+            result = "爪巴，吃我一圈火箭拳——"
         return result
 
 
