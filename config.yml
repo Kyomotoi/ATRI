@@ -11,3 +11,15 @@ BotSelfConfig:
 
 SauceNAO:
   key: ""
+
+ChatterBot:
+  # mongodb存储数据库地址(数据库将自动创建)
+  # 示例 mongodb://localhost:27017/atri-chatterbot
+  # 如果为空将用SQLite代替(Python3.8后不再支持time.clock将导致初始化SQLite报错)
+  mongo_database_uri: "mongodb://localhost:27017/atri-chatterbot"
+  # 置信率阈值
+  maximum_similarity_threshold: 0.05
+  # 生成的回复低于置信率阈值时将使用的默认回复
+  default_response: ["咱听不明白(o_ _)ﾉ", "不懂欸", "?_?"]
+  # 群聊天随机回复概率
+  group_random_response_rate: 0.05

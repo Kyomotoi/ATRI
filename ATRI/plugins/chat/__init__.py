@@ -7,7 +7,7 @@ from ATRI.utils import CoolqCodeChecker
 from ATRI.utils.limit import FreqLimiter
 from ATRI.utils.apscheduler import scheduler
 from .data_source import Chat
-
+from ATRI.plugins.atri_chat_bot import ATRIChatBot
 
 _chat_flmt = FreqLimiter(3)
 _chat_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~", "我开始为你以后的伴侣担心了..."])
@@ -27,7 +27,10 @@ async def _chat(bot: Bot, event: MessageEvent):
     repo = await Chat().deal(msg, user_id)
     _chat_flmt.start_cd(user_id)
     try:
-        await chat.finish(repo)
+        if repo:
+            await chat.finish(repo)
+        else:  # 实在没话说就尝试 chatterbot
+            await chat.finish(await ATRIChatBot.get_response(msg))
     except Exception:
         return
 
