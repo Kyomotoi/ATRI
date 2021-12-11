@@ -12,19 +12,22 @@ https://chatterbot.readthedocs.io/
 MONGO_ADAPTER = "chatterbot.storage.MongoDatabaseAdapter"
 SQLITE_ADAPTER = "chatterbot.storage.SQLStorageAdapter"
 
+
 class ATRIChatBot:
     bot = ChatBot(
         "ATRI",
-        storage_adapter=MONGO_ADAPTER if ChatterBot.mongo_database_uri else SQLITE_ADAPTER,
+        storage_adapter=MONGO_ADAPTER
+        if ChatterBot.mongo_database_uri
+        else SQLITE_ADAPTER,
         logic_adapters=[
             {
-                'import_path': 'chatterbot.logic.BestMatch',
-                'default_response': ChatterBot.default_response,
-                'maximum_similarity_threshold': ChatterBot.maximum_similarity_threshold
+                "import_path": "chatterbot.logic.BestMatch",
+                "default_response": ChatterBot.default_response,
+                "maximum_similarity_threshold": ChatterBot.maximum_similarity_threshold,
             }
         ],
         database_uri=ChatterBot.mongo_database_uri,
-        read_only=True  # 只能通过 learn 函数学习
+        read_only=True,  # 只能通过 learn 函数学习
     )
     list_trainer = ListTrainer(bot)
     session_text_dict = dict()
@@ -41,10 +44,7 @@ class ATRIChatBot:
         # 查找上一条消息并训练模型
         last_text = ATRIChatBot.session_text_dict.get(session_id)
         if last_text:
-            ATRIChatBot.list_trainer.train([
-                last_text,  # 问(可多个)
-                text  # 答
-            ])
+            ATRIChatBot.list_trainer.train([last_text, text])  # 问(可多个)  # 答
         # 更新最后一条消息
         ATRIChatBot.session_text_dict[session_id] = text
 

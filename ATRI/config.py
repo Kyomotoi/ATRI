@@ -40,9 +40,14 @@ class ChatterBot:
     config: dict = config["ChatterBot"]
 
     mongo_database_uri: str = config.get("mongo_database_uri", None)
-    maximum_similarity_threshold: float = float(config.get("maximum_similarity_threshold", 0.05))
+    maximum_similarity_threshold: float = float(
+        config.get("maximum_similarity_threshold", 0.05)
+    )
     default_response: set = set(config.get("default_response", ["咱听不明白(o_ _)ﾉ"]))
-    group_random_response_rate: float = float(config.get("group_random_response_rate", 0.1))
+    group_random_response_rate: float = float(
+        config.get("group_random_response_rate", 0.1)
+    )
+
 
 RUNTIME_CONFIG = {
     "host": BotSelfConfig.host,
