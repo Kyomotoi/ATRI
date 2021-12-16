@@ -88,6 +88,10 @@ class FormatError(BaseBotException):
     prompt = "格式错误"
 
 
+class ServiceRegisterError(BaseBotException):
+    prompt = "服务注册错误"
+
+
 @run_postprocessor  # type: ignore
 async def _track_error(
     matcher: Matcher,
