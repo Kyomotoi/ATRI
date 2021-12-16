@@ -21,11 +21,24 @@ log_format = (
 )
 
 
+class LoguruNameDealer:
+    def __call__(self, record):
+        log_handle = record["name"]
+        if "nonebot.plugin.manager" in log_handle:
+            plugin_name = log_handle.split(".")[-1]
+            record["name"] = f"plugin.{plugin_name}"
+        else:
+            record["name"] = record["name"].split(".")[0]
+        
+        return record
+
+
 logger.remove()
 logger.add(
     sys.stdout,
     level="DEBUG" if BotSelfConfig.debug else "INFO",
     colorize=True,
+    filter=LoguruNameDealer(),
     format=log_format,
 )
 
