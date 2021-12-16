@@ -29,7 +29,7 @@ class LoguruNameDealer:
             record["name"] = f"plugin.{plugin_name}"
         else:
             record["name"] = record["name"].split(".")[0]
-        
+
         return record
 
 

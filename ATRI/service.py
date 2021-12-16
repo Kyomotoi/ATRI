@@ -182,7 +182,7 @@ class Service:
             "message",
             Rule() & rule,
             permission or Permission(),
-            module=self.service+"-"+_from,
+            module=self.service + "-" + _from,
             temp=self.temp,
             priority=priority,
             block=block,
@@ -204,7 +204,7 @@ class Service:
             "notice",
             Rule() & self.rule,
             Permission(),
-            module=self.service+"-"+name,
+            module=self.service + "-" + name,
             temp=self.temp,
             priority=self.priority,
             block=block,
@@ -225,7 +225,7 @@ class Service:
             "request",
             Rule() & self.rule,
             Permission(),
-            module=self.service+"-"+name,
+            module=self.service + "-" + name,
             temp=self.temp,
             priority=self.priority,
             block=block,
@@ -304,7 +304,9 @@ class Service:
         cmd_list[pattern] = CommandInfo(type="regex", docs=docs, aliases=list()).dict()
         self._save_cmds(cmd_list)
 
-        return self.on_message(_from=pattern, rule=regex(pattern, flags) & rule, **kwargs)
+        return self.on_message(
+            _from=pattern, rule=regex(pattern, flags) & rule, **kwargs
+        )
 
 
 class ServiceTools(object):
