@@ -12,7 +12,7 @@ _chat_flmt = FreqLimiter(3)
 _chat_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~", "我开始为你以后的伴侣担心了..."])
 
 
-chat = Chat().on_message("闲聊（文爱")
+chat = Chat().on_message("文爱", "闲聊（文爱")
 
 
 @chat.handle()
@@ -31,7 +31,7 @@ async def _chat(bot: Bot, event: MessageEvent):
         return
 
 
-my_name_is = Chat().on_command("叫我", "更改闲聊（划掉 文爱）时的称呼", aliases={"我是"}, priority=1)
+my_name_is = Chat().on_command("叫我", "更改闲聊（文爱）时的称呼", aliases={"我是"}, priority=1)
 
 
 @my_name_is.args_parser  # type: ignore

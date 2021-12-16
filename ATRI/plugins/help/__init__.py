@@ -5,9 +5,7 @@ from ATRI.rule import to_bot
 from .data_source import Helper
 
 
-main_help = Helper().on_command(
-    "菜单", "获取食用bot的方法", rule=to_bot(), aliases={"/help", "menu"}
-)
+main_help = Helper().on_command("菜单", "获取食用bot的方法", rule=to_bot(), aliases={"menu"})
 
 
 @main_help.handle()
@@ -34,7 +32,7 @@ async def _service_list(bot: Bot, event: MessageEvent):
     await service_list.finish(repo)
 
 
-service_info = Helper().on_command("帮助", "获取服务详细帮助", rule=to_bot())
+service_info = Helper().on_command("帮助", "获取服务详细帮助", aliases={"help"}, rule=to_bot())
 
 
 @service_info.handle()

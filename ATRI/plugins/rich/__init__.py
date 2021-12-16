@@ -6,7 +6,7 @@ from .data_source import Rich
 
 _rich_flmt = FreqLimiter(3)
 
-bili_rich = Rich().on_message("小程序爪巴", block=False)
+bili_rich = Rich().on_message("小程序检测", "小程序爪巴", block=False)
 
 
 @bili_rich.handle()
@@ -18,7 +18,7 @@ async def _fk_bili(bot: Bot, event: MessageEvent):
     msg = str(event.message)
     try:
         result, is_ok = await Rich().fk_bili(msg)
-    except BaseException:
+    except Exception:
         return
     log.debug(result, is_ok)
     if not is_ok:

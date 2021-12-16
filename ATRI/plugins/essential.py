@@ -48,6 +48,7 @@ os.makedirs(TEMP_PATH, exist_ok=True)
 
 @driver.on_startup
 async def startup():
+    log.info(f"Now running: {ATRI.__version__}")
     log.info("アトリは、高性能ですから！")
 
 
@@ -116,7 +117,7 @@ class Essential(Service):
         Service.__init__(self, "基础部件", __doc__)
 
 
-friend_add_event = Essential().on_request("好友添加")
+friend_add_event = Essential().on_request("好友添加", "好友添加检测")
 
 
 @friend_add_event.handle()
@@ -162,7 +163,7 @@ async def _friend_add(bot: Bot, event: FriendRequestEvent):
         await bot.send_private_msg(user_id=superuser, message=repo)
 
 
-group_invite_event = Essential().on_request("邀请入群")
+group_invite_event = Essential().on_request("邀请入群", "被邀请入群检测")
 
 
 @group_invite_event.handle()
@@ -208,7 +209,7 @@ async def _group_invite(bot: Bot, event: GroupRequestEvent):
         await bot.send_private_msg(user_id=superuser, message=repo)
 
 
-group_member_event = Essential().on_notice("群成员变动")
+group_member_event = Essential().on_notice("群成员变动", "群成员变动检测")
 
 
 @group_member_event.handle()
@@ -224,7 +225,7 @@ async def _group_member_left(bot: Bot, event: GroupDecreaseNoticeEvent):
     await group_member_event.finish("呜——有人跑了...")
 
 
-group_admin_event = Essential().on_notice("群管理变动")
+group_admin_event = Essential().on_notice("群管理变动", "群管理变动检测")
 
 
 @group_admin_event.handle()
@@ -238,7 +239,7 @@ async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent):
         )
 
 
-group_ban_event = Essential().on_notice("群禁言变动")
+group_ban_event = Essential().on_notice("群禁言变动", "群禁言变动检测")
 
 
 @group_ban_event.handle()
@@ -260,7 +261,7 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent):
             await bot.send_private_msg(user_id=int(superuser), message=msg)
 
 
-recall_event = Essential().on_notice("撤回事件")
+recall_event = Essential().on_notice("撤回事件", "撤回事件检测")
 
 
 @recall_event.handle()

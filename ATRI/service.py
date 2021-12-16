@@ -10,7 +10,7 @@ from nonebot.permission import Permission
 from nonebot.typing import T_State, T_Handler, T_RuleChecker
 from nonebot.rule import Rule, command, keyword, regex
 
-from ATRI.exceptions import ReadFileError, WriteError
+from ATRI.exceptions import ReadFileError, ServiceRegisterError, WriteError
 
 if TYPE_CHECKING:
     from nonebot.adapters import Bot, Event
@@ -35,7 +35,7 @@ class ServiceInfo(BaseModel):
 class CommandInfo(BaseModel):
     type: str
     docs: str
-    aliases: list
+    aliases: list or set
 
 
 class Service:
@@ -147,7 +147,9 @@ class Service:
 
     def on_message(
         self,
+        name: str = None,
         docs: str = None,
+        _from: str = str(),  # 供类似 on_command 的方法，提供更直观的 log 中 matcher 触发来源
         rule: Optional[Union[Rule, T_RuleChecker]] = None,
         permission: Optional[Permission] = None,
         handlers: Optional[List[T_Handler]] = None,
@@ -166,48 +168,43 @@ class Service:
         if not state:
             state = self.state
 
-        if docs:
-            a = 0
+        if name:
             cmd_list = self._load_cmds()
-            while True:
-                _type = "message" + str(a)
-                if _type not in cmd_list:
-                    break
-                else:
-                    a += 1
 
-            cmd_list[_type] = CommandInfo(type=_type, docs=docs, aliases=list()).dict()
+            name = name + "-onmsg"
+
+            cmd_list[name] = CommandInfo(
+                type="message", docs=docs, aliases=list()
+            ).dict()
             self._save_cmds(cmd_list)
 
         matcher = Matcher.new(
             "message",
             Rule() & rule,
             permission or Permission(),
+            module=self.service+"-"+_from,
             temp=self.temp,
             priority=priority,
             block=block,
             handlers=handlers,
             default_state=state,
         )
+        matcher.module = self.service
         return matcher
 
-    def on_notice(self, docs: str, block: bool = True) -> Type[Matcher]:
-        a = 0
+    def on_notice(self, name: str, docs: str, block: bool = True) -> Type[Matcher]:
         cmd_list = self._load_cmds()
-        while True:
-            _type = "notice" + str(a)
-            if _type not in cmd_list:
-                break
-            else:
-                a += 1
 
-        cmd_list[_type] = CommandInfo(type=_type, docs=docs, aliases=list()).dict()
+        name = name + "-onntc"
+
+        cmd_list[name] = CommandInfo(type="notice", docs=docs, aliases=list()).dict()
         self._save_cmds(cmd_list)
 
         matcher = Matcher.new(
             "notice",
             Rule() & self.rule,
             Permission(),
+            module=self.service+"-"+name,
             temp=self.temp,
             priority=self.priority,
             block=block,
@@ -216,23 +213,19 @@ class Service:
         )
         return matcher
 
-    def on_request(self, docs: str, block: bool = True) -> Type[Matcher]:
-        a = 0
+    def on_request(self, name: str, docs: str, block: bool = True) -> Type[Matcher]:
         cmd_list = self._load_cmds()
-        while True:
-            _type = "request" + str(a)
-            if _type not in cmd_list:
-                break
-            else:
-                a += 1
 
-        cmd_list[_type] = CommandInfo(type=_type, docs=docs, aliases=list()).dict()
+        name = name + "-onreq"
+
+        cmd_list[name] = CommandInfo(type="request", docs=docs, aliases=list()).dict()
         self._save_cmds(cmd_list)
 
         matcher = Matcher.new(
             "request",
             Rule() & self.rule,
             Permission(),
+            module=self.service+"-"+name,
             temp=self.temp,
             priority=self.priority,
             block=block,
@@ -249,14 +242,15 @@ class Service:
         aliases: Optional[Set[Union[str, Tuple[str, ...]]]] = None,
         **kwargs,
     ) -> Type[Matcher]:
-        _type = "command"
         cmd_list = self._load_cmds()
         if not rule:
             rule = self.rule
         if not aliases:
             aliases = set()
 
-        cmd_list[cmd] = CommandInfo(type=_type, docs=docs, aliases=list(aliases)).dict()
+        cmd_list[cmd] = CommandInfo(
+            type="command", docs=docs, aliases=list(aliases)
+        ).dict()
         self._save_cmds(cmd_list)
 
         async def _strip_cmd(bot: "Bot", event: "Event", state: T_State):
@@ -273,7 +267,7 @@ class Service:
 
         commands = set([cmd]) | (aliases or set())
         return self.on_message(
-            rule=command(*commands) & rule, handlers=handlers, **kwargs
+            _from=str(cmd), rule=command(*commands) & rule, handlers=handlers, **kwargs
         )
 
     def on_keyword(
@@ -286,19 +280,14 @@ class Service:
         if not rule:
             rule = self.rule
 
-        a = 0
-        cmd_list = self._load_cmds()
-        while True:
-            _type = "keyword" + str(a)
-            if _type not in cmd_list:
-                break
-            else:
-                a += 1
+        name = list(keywords)[0] + "-onkw"
 
-        cmd_list[_type] = CommandInfo(type=_type, docs=docs, aliases=list()).dict()
+        cmd_list = self._load_cmds()
+
+        cmd_list[name] = CommandInfo(type="keyword", docs=docs, aliases=keywords).dict()
         self._save_cmds(cmd_list)
 
-        return self.on_message(rule=keyword(*keywords) & rule, **kwargs)
+        return self.on_message(_from=name, rule=keyword(*keywords) & rule, **kwargs)
 
     def on_regex(
         self,
@@ -308,15 +297,14 @@ class Service:
         rule: Optional[Union[Rule, T_RuleChecker]] = None,
         **kwargs,
     ) -> Type[Matcher]:
-        _type = "regex"
         if not rule:
             rule = self.rule
 
         cmd_list = self._load_cmds()
-        cmd_list[pattern] = CommandInfo(type=_type, docs=docs, aliases=list()).dict()
+        cmd_list[pattern] = CommandInfo(type="regex", docs=docs, aliases=list()).dict()
         self._save_cmds(cmd_list)
 
-        return self.on_message(rule=regex(pattern, flags) & rule, **kwargs)
+        return self.on_message(_from=pattern, rule=regex(pattern, flags) & rule, **kwargs)
 
 
 class ServiceTools(object):

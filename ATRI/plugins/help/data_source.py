@@ -9,7 +9,7 @@ from ATRI.exceptions import ReadFileError
 SERVICE_INFO_FORMAT = """
 服务名：{service}
 说明：{docs}
-可用命令：\n{cmd_list}
+可用命令：\n    {cmd_list}
 是否全局启用：{enabled}
 Tip: 帮助 [服务] [命令] 以查看对应命令详细信息
 """.strip()
@@ -60,7 +60,7 @@ class Helper(Service):
             temp_list.append(service)
 
         msg0 = "咱搭载了以下服务~\n"
-        services = " | ".join(map(str, temp_list))
+        services = "、".join(map(str, temp_list))
         msg0 = msg0 + services
         repo = msg0 + "\n@ 帮助 [服务] -以查看对应服务帮助"
         return repo
@@ -77,7 +77,7 @@ class Helper(Service):
         service_enabled = data.get("enabled", True)
 
         _service_cmd_list = list(data.get("cmd_list", {"error"}))
-        service_cmd_list = "\n".join(map(str, _service_cmd_list))
+        service_cmd_list = "、".join(map(str, _service_cmd_list))
 
         repo = SERVICE_INFO_FORMAT.format(
             service=service_name,

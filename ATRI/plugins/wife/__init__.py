@@ -16,7 +16,11 @@ _is_tietie = True
 
 
 tietie_superuser = Wife().on_message(
-    "只与维护者贴贴w，‘不可以贴’以拒绝贴贴~，‘来贴贴’以接受贴贴~", rule=Rule(), permission=SUPERUSER, block=False
+    "贴贴",
+    "只与维护者贴贴w，‘不可以贴’以拒绝贴贴~，‘来贴贴’以接受贴贴~",
+    rule=Rule(),
+    permission=SUPERUSER,
+    block=False,
 )
 
 

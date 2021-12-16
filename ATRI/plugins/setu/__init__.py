@@ -81,7 +81,7 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
 _catcher_max_file_size = 128
 
 
-setu_catcher = Setu().on_message("涩图嗅探", block=False)
+setu_catcher = Setu().on_message("涩图嗅探", "涩图嗅探器", block=False)
 
 
 @setu_catcher.handle()
