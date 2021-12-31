@@ -35,7 +35,6 @@ class SaouceNao(Service):
 
     async def _request(self, url: str):
         self.params["url"] = url
-
         try:
             res = await request.post(URL, params=self.params)
         except RequestError:
@@ -50,12 +49,12 @@ class SaouceNao(Service):
         result = list()
         for i in range(3):
             sim = res[i]["header"]["similarity"]
-            if float(sim) >= 80:
+            if float(sim) >= 70:
                 data = res[i]
 
                 _result = dict()
                 _result["similarity"] = sim
-                _result["index_name"] = data[i]["header"]["index_name"]
+                _result["index_name"] = data["header"]["index_name"]
                 _result["url"] = choice(data["data"].get("ext_urls", ["None"]))
                 result.append(_result)
 
