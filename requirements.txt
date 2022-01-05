@@ -2,7 +2,7 @@ aiohttp>=3.6.2
 aiofiles>=0.6.0
 APScheduler>=3.7.0
 Pillow>=8.1.1
-nonebot-adapter-cqhttp>=2.0.0a14
+nonebot-adapter-cqhttp==2.0.0a16
 nonebot-plugin-test>=0.2.0
 nonebot2>=2.0.0a13.post1
 psutil>=5.7.2
