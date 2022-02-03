@@ -37,7 +37,7 @@ service_info = Helper().on_command("帮助", "获取服务详细帮助", aliases
 @service_info.handle()
 async def _ready_service_info(event: MessageEvent):
     msg = str(event.get_message()).split(" ")
-    
+
     service = msg[0]
     try:
         cmd = msg[2]

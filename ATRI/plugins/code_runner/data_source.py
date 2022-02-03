@@ -63,7 +63,7 @@ class CodeRunner(Service):
         args = msg.split("\n")
         if not args:
             return "请检查键入内容..."
-        
+
         try:
             _ = args[1]
         except:
