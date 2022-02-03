@@ -281,9 +281,16 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
 
     user = event.user_id
     group = event.group_id
-    repo: dict = repo["message"]
+    repo = repo["message"]
 
-    m = recall_msg_dealer(repo)
+    try:
+        m = recall_msg_dealer(repo)
+    except:
+        check = MessageChecker(repo).check_cq_code
+        if not check:
+            m = repo
+        else:
+            return
 
     msg = f"主人，咱拿到了一条撤回信息！\n{user}@[群:{group}]\n撤回了\n{m}"
     for superuser in BotSelfConfig.superusers:
@@ -304,9 +311,16 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
         return
 
     user = event.user_id
-    repo: dict = repo["message"]
+    repo = repo["message"]
 
-    m = recall_msg_dealer(repo)
+    try:
+        m = recall_msg_dealer(repo)
+    except:
+        check = MessageChecker(repo).check_cq_code
+        if not check:
+            m = repo
+        else:
+            return
 
     msg = f"主人，咱拿到了一条撤回信息！\n{user}@[私聊]撤回了\n{m}"
     for superuser in BotSelfConfig.superusers:
