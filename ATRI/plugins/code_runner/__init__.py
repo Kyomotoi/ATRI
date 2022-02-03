@@ -1,5 +1,7 @@
 from random import choice
 
+from nonebot.matcher import Matcher
+from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment, unescape
 
 from ATRI.utils.limit import FreqLimiter
@@ -14,22 +16,32 @@ code_runner = CodeRunner().on_command("/code", "在线运行一段代码，帮�
 
 
 @code_runner.handle()
-async def _code_runner(event: MessageEvent):
+async def _code_runner(matcher: Matcher, event: MessageEvent, args: Message = CommandArg()):
     user_id = event.get_user_id()
     if not _flmt.check(user_id):
         await code_runner.finish(_flmt_notice)
-
-    msg = str(event.get_message())
-    args = msg.split("\n")
-
-    if not args[0]:
+    
+    msg = args.extract_plain_text()
+    print(msg, args, type(msg), type(args))
+    if msg:
+        matcher.set_arg("opt", args)
+    else:
         content = f"> {MessageSegment.at(user_id)}\n" + "请键入 /code help 以获取帮助~！"
-    elif args[0] == "help":
-        content = f"> {MessageSegment.at(user_id)}\n" + CodeRunner().help()
-    elif args[0] == "list":
+        await code_runner.finish(Message(content))
+
+
+@code_runner.got("opt")
+async def _(event: MessageEvent, opt: str = ArgPlainText("opt")):
+    user_id = event.get_user_id()
+    msg = opt.split("\n")
+
+    
+    if msg[0] == "help":
+        content = f"> {MessageSegment.at(user_id)}\n" + "请键入 /code help 以获取帮助~！"
+    elif msg[0] == "list":
         content = f"> {MessageSegment.at(user_id)}\n" + CodeRunner().list_supp_lang()
     else:
-        content = MessageSegment.at(user_id) + await CodeRunner().runner(unescape(msg))
+        content = MessageSegment.at(user_id) + await CodeRunner().runner(unescape(opt))
 
     _flmt.start_cd(user_id)
     await code_runner.finish(Message(content))

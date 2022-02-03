@@ -55,7 +55,7 @@ class BroadCast(Service):
 
 
 caster = BroadCast().on_command(
-    "广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"/bc", "bc"}, permission=SUPERUSER
+    "广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"bc"}, permission=SUPERUSER
 )
 
 
