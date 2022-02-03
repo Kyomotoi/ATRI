@@ -9,8 +9,9 @@ from .tf_dealer import detect_image
 
 
 LOLICON_URL = "https://api.lolicon.app/setu/v2"
-DEFAULT_SETU = "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg"
-
+DEFAULT_SETU = (
+    "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg"
+)
 
 
 class Setu(Service):

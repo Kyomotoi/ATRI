@@ -32,7 +32,7 @@ _BROADCAST_BACK = """
 class BroadCast(Service):
     def __init__(self):
         Service.__init__(self, "广播", "向bot所在的所有群发送信息", True, to_bot())
-    
+
     @staticmethod
     def load_rej_list() -> list:
         data = list()
@@ -41,20 +41,22 @@ class BroadCast(Service):
             with open(path, "w", encoding="utf-8") as w:
                 w.write(json.dumps(data))
             return data
-        
+
         return json.loads(path.read_bytes())
-    
+
     @classmethod
     def store_rej_list(cls, data: list):
-        path = BC_PATH/ "rej_list.json"
+        path = BC_PATH / "rej_list.json"
         if not path.is_file():
             cls.load_rej_list()
-        
+
         with open(path, "w", encoding="utf-8") as w:
             w.write(json.dumps(data))
 
 
-caster = BroadCast().on_command("广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"/bc","bc"}, permission=SUPERUSER)
+caster = BroadCast().on_command(
+    "广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"/bc", "bc"}, permission=SUPERUSER
+)
 
 
 @caster.handle()
@@ -81,20 +83,22 @@ async def _(bot: Bot, event: MessageEvent, s_msg: str = ArgPlainText("bc_msg")):
             su_g.append(group_id)
         except:
             fl_g.append(group_id)
-        
+
         await asyncio.sleep(random.randint(2, 3))
-    
+
     repo_msg = _BROADCAST_BACK.format(
         msg=s_msg,
         len_g=len(w_group),
         su_g=su_g,
         fl_g=fl_g,
-        f_g="、".join(map(str, fl_g))
+        f_g="、".join(map(str, fl_g)),
     )
     await caster.finish(repo_msg)
 
 
-rej_broadcast = BroadCast().on_command("拒绝广播", "拒绝来自开发者的广播推送", permission=GROUP_OWNER | GROUP_ADMIN)
+rej_broadcast = BroadCast().on_command(
+    "拒绝广播", "拒绝来自开发者的广播推送", permission=GROUP_OWNER | GROUP_ADMIN
+)
 
 
 @rej_broadcast.handle()
@@ -109,12 +113,15 @@ async def _(bot: Bot, event: GroupMessageEvent):
         BroadCast().store_rej_list(rej_g)
         await rej_broadcast.finish("完成～！已将本群列入推送黑名单")
 
+
 @rej_broadcast.handle()
 async def _(event: PrivateMessageEvent):
     await rej_broadcast.finish("该功能仅在群聊中触发...")
 
 
-acc_broadcast = BroadCast().on_command("接受广播", "接受来自开发者的广播推送", permission=GROUP_OWNER | GROUP_ADMIN)
+acc_broadcast = BroadCast().on_command(
+    "接受广播", "接受来自开发者的广播推送", permission=GROUP_OWNER | GROUP_ADMIN
+)
 
 
 @acc_broadcast.handle()
@@ -128,6 +135,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         await rej_broadcast.finish("已将本群移除推送黑名单！")
     else:
         await rej_broadcast.finish("本群不在推送黑名单里呢...")
+
 
 @acc_broadcast.handle()
 async def _(event: PrivateMessageEvent):

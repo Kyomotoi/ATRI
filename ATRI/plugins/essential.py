@@ -24,7 +24,7 @@ from nonebot.adapters.onebot.v11 import (
     GroupRecallNoticeEvent,
     FriendRecallNoticeEvent,
     MessageSegment,
-    Message
+    Message,
 )
 
 import ATRI
@@ -302,7 +302,7 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
         repo = await bot.get_msg(message_id=event.message_id)
     except BaseException:
         return
-    
+
     user = event.user_id
     repo: dict = repo["message"]
 
@@ -315,6 +315,7 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
 
 rej_recall = Essential().on_command("拒绝撤回", "拒绝撤回信息", permission=SUPERUSER)
 
+
 @rej_recall.handle()
 async def _():
     global _acc_recall
@@ -323,6 +324,7 @@ async def _():
 
 
 acc_recall = Essential().on_command("接受撤回", "接受撤回信息", permission=SUPERUSER)
+
 
 @acc_recall.handle()
 async def _():
@@ -349,7 +351,7 @@ def recall_msg_dealer(msg: dict) -> str:
         if _type == "text":
             temp_m.append(_data["text"])
         elif _type == "image":
-            url =  _data["url"]
+            url = _data["url"]
             check = MessageChecker(url).check_image_url
             if check:
                 temp_m.append(MessageSegment.image(url))

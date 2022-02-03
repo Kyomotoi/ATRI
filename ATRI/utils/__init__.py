@@ -83,7 +83,7 @@ class MessageChecker:
                 return True
         else:
             return True
-    
+
     @property
     def check_image_url(self) -> bool:
         if self.tenc_gchat_url not in self.text:

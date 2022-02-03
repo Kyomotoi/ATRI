@@ -23,7 +23,9 @@ random_setu = Setu().on_command(
 
 
 @random_setu.handle()
-async def _random_setu(bot: Bot, event: MessageEvent, matcher: Matcher, args: Message = CommandArg()):
+async def _random_setu(
+    bot: Bot, event: MessageEvent, matcher: Matcher, args: Message = CommandArg()
+):
     user_id = event.get_user_id()
     if not _setu_flmt.check(user_id):
         await random_setu.finish()
@@ -49,6 +51,7 @@ async def _random_setu(bot: Bot, event: MessageEvent, matcher: Matcher, args: Me
     if msg:
         matcher.set_arg("r_rush_after_think", args)
 
+
 @random_setu.got("r_rush_after_think")
 async def _(think: str = ArgPlainText("r_rush_after_think")):
     is_repo = will_think(think)
@@ -58,12 +61,13 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
         await random_setu.finish(is_repo)
 
 
-
 tag_setu = Setu().on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图")
 
 
 @tag_setu.handle()
-async def _tag_setu(bot: Bot, event: MessageEvent, matcher: Matcher, args: Message = CommandArg()):
+async def _tag_setu(
+    bot: Bot, event: MessageEvent, matcher: Matcher, args: Message = CommandArg()
+):
     user_id = event.get_user_id()
     if not _setu_flmt.check(user_id):
         await random_setu.finish()
@@ -247,7 +251,7 @@ _again_repo = ["没了...", "自己找去"]
 def will_think(msg: str) -> str:
     if msg in _ag_l:
         return str()
-    
+
     ag_jud = re.findall(_ag_patt, msg)
     if ag_jud:
         return str()

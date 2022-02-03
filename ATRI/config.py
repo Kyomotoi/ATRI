@@ -59,7 +59,6 @@ RUNTIME_CONFIG = {
     "command_start": BotSelfConfig.command_start,
     "command_sep": BotSelfConfig.command_sep,
     "session_expire_timeout": BotSelfConfig.session_expire_timeout,
-
     "gocq_accounts": InlineGoCQHTTP.accounts,
     "gocq_version": InlineGoCQHTTP.download_version,
 }
