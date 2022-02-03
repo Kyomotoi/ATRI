@@ -16,11 +16,13 @@ code_runner = CodeRunner().on_command("/code", "在线运行一段代码，帮�
 
 
 @code_runner.handle()
-async def _code_runner(matcher: Matcher, event: MessageEvent, args: Message = CommandArg()):
+async def _code_runner(
+    matcher: Matcher, event: MessageEvent, args: Message = CommandArg()
+):
     user_id = event.get_user_id()
     if not _flmt.check(user_id):
         await code_runner.finish(_flmt_notice)
-    
+
     msg = args.extract_plain_text()
     print(msg, args, type(msg), type(args))
     if msg:
@@ -35,7 +37,6 @@ async def _(event: MessageEvent, opt: str = ArgPlainText("opt")):
     user_id = event.get_user_id()
     msg = opt.split("\n")
 
-    
     if msg[0] == "help":
         content = f"> {MessageSegment.at(user_id)}\n" + "请键入 /code help 以获取帮助~！"
     elif msg[0] == "list":
