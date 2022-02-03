@@ -346,8 +346,8 @@ def recall_msg_dealer(msg: dict) -> str:
     temp_m = list()
 
     for i in msg:
-        _type = i["type"]
-        _data = i["data"]
+        _type = i.get("type", "idk")
+        _data = i.get("data", "idk")
         if _type == "text":
             temp_m.append(_data["text"])
         elif _type == "image":

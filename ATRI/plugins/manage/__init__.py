@@ -415,7 +415,17 @@ track_error = Manage().on_command("追踪", "获取报错信息，传入追踪�
 
 
 @track_error.handle()
-async def _track_error(event: MessageEvent):
-    track_id = str(event.message).strip()
-    repo = await Manage().track_error(track_id)
+async def _track_error(matcher: Matcher, args: Message = CommandArg()):
+    msg = args.extract_plain_text()
+    if msg:
+        matcher.set_arg("track_code", args)
+
+
+@track_error.got("track_code", "报错码 速速")
+async def _(track_code: str = ArgPlainText("track_code")):
+    quit_list = ["算了", "罢了"]
+    if track_code in quit_list:
+        await track_error.finish("好吧...")
+
+    repo = await Manage().track_error(track_code)
     await track_error.finish(repo)
