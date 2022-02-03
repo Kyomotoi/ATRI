@@ -63,10 +63,15 @@ class CodeRunner(Service):
         args = msg.split("\n")
         if not args:
             return "请检查键入内容..."
+        
+        try:
+            _ = args[1]
+        except:
+            return "请检查键入内容...需要帮助：/code help"
 
         lang = args[0].replace("\r", "")
         if lang not in SUPPORTED_LANGUAGES:
-            return "该语言暂不支持..."
+            return "该语言暂不支持...或者可能格式错误？"
 
         del args[0]
         code = "\n".join(map(str, args))

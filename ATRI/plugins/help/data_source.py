@@ -11,7 +11,7 @@ SERVICE_INFO_FORMAT = """
 说明：{docs}
 可用命令：\n    {cmd_list}
 是否全局启用：{enabled}
-Tip: 帮助 [服务] [命令] 以查看对应命令详细信息
+Tip: @bot 帮助 [服务] [命令] 以查看对应命令详细信息
 """.strip()
 
 
