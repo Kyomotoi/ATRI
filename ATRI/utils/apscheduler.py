@@ -1,9 +1,10 @@
-# Fork from: https://github.com/nonebot/plugin-apscheduler
-
+"""
+Fork from: https://github.com/nonebot/plugin-apscheduler
+"""
 import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from nonebot import get_driver, export
+from nonebot import get_driver
 from nonebot.log import logger, LoguruHandler
 
 
@@ -13,7 +14,6 @@ apscheduler_config: dict = {"apscheduler.timezone": "Asia/Shanghai"}
 
 driver = get_driver()
 scheduler = AsyncIOScheduler()
-export().scheduler = scheduler
 
 
 async def _start_scheduler():

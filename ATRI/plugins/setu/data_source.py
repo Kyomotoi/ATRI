@@ -1,16 +1,16 @@
-import base64
-
-# from pathlib import Path
 from random import choice
-from nonebot.adapters.cqhttp import MessageSegment
+from nonebot.adapters.onebot.v11 import MessageSegment
 
 from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.utils import request
+from ATRI.config import Setu as ST
 from .tf_dealer import detect_image
 
 
 LOLICON_URL = "https://api.lolicon.app/setu/v2"
+DEFAULT_SETU = "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg"
+
 
 
 class Setu(Service):
@@ -31,9 +31,9 @@ class Setu(Service):
         data: dict = temp_data[0]
         title = data.get("title", "木陰のねこ")
         p_id = data.get("pid", 88124144)
-        url = data["urls"].get("original", "ignore")
+        url: str = data["urls"].get("original", "ignore")
 
-        setu = MessageSegment.image(url, timeout=114514)
+        setu = MessageSegment.image(use_proxy(url), timeout=114514)
         repo = f"Title: {title}\nPid: {p_id}"
         return repo, setu
 
@@ -55,7 +55,7 @@ class Setu(Service):
         p_id = data.get("pid", 88124144)
         url = data["urls"].get(
             "original",
-            "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg",
+            use_proxy(DEFAULT_SETU),
         )
         setu = MessageSegment.image(url, timeout=114514)
         repo = f"Title: {title}\nPid: {p_id}"
@@ -87,8 +87,15 @@ class Setu(Service):
 
         url = temp_data[0]["urls"].get(
             "original",
-            "https://i.pixiv.cat/img-original/img/2021/02/28/22/44/49/88124144_p0.jpg",
+            use_proxy(DEFAULT_SETU),
         )
         setu = MessageSegment.image(url, timeout=114514)
         repo = f"是{tag}哦~❤\n{setu}"
         return repo
+
+
+def use_proxy(url: str) -> str:
+    if ST.reverse_proxy:
+        return url.replace("i.pixiv.cat", ST.reverse_proxy_domain)
+    else:
+        return url

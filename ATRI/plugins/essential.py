@@ -8,11 +8,10 @@ from random import choice, randint
 from pathlib import Path
 
 import nonebot
-from nonebot.typing import T_State
-from nonebot.matcher import Matcher
+from nonebot.permission import SUPERUSER
 from nonebot.message import run_preprocessor
 from nonebot.exception import IgnoredException
-from nonebot.adapters.cqhttp import (
+from nonebot.adapters.onebot.v11 import (
     Bot,
     MessageEvent,
     GroupMessageEvent,
@@ -24,13 +23,15 @@ from nonebot.adapters.cqhttp import (
     GroupBanNoticeEvent,
     GroupRecallNoticeEvent,
     FriendRecallNoticeEvent,
+    MessageSegment,
+    Message
 )
 
 import ATRI
 from ATRI.service import Service
 from ATRI.log import logger as log
 from ATRI.config import BotSelfConfig
-from ATRI.utils import CoolqCodeChecker
+from ATRI.utils import MessageChecker
 from ATRI.utils.apscheduler import scheduler
 
 
@@ -57,10 +58,8 @@ async def shutdown():
     log.info("Thanks for using.")
 
 
-@run_preprocessor  # type: ignore
-async def _check_block(
-    matcher: Matcher, bot: Bot, event: MessageEvent, state: T_State
-) -> None:
+@run_preprocessor
+async def _check_block(event: MessageEvent):
     user_file = "block_user.json"
     path = MANEGE_DIR / user_file
     if not path.is_file():
@@ -261,12 +260,18 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent):
             await bot.send_private_msg(user_id=int(superuser), message=msg)
 
 
+_acc_recall = True
+
+
 recall_event = Essential().on_notice("撤回事件", "撤回事件检测")
 
 
 @recall_event.handle()
 async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
     if event.is_tome():
+        return
+
+    if not _acc_recall:
         return
 
     try:
@@ -276,14 +281,13 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
 
     user = event.user_id
     group = event.group_id
-    repo = str(repo["message"])
-    check = CoolqCodeChecker(repo).check
-    if not check:
-        repo = repo.replace("CQ", "QC")
+    repo: dict = repo["message"]
 
-    msg = "主人，咱拿到了一条撤回信息！\n" f"{user}@[群:{group}]\n" "撤回了\n" f"{repo}"
+    m = recall_msg_dealer(repo)
+
+    msg = f"主人，咱拿到了一条撤回信息！\n{user}@[群:{group}]\n撤回了\n{m}"
     for superuser in BotSelfConfig.superusers:
-        await bot.send_private_msg(user_id=int(superuser), message=msg)
+        await bot.send_private_msg(user_id=int(superuser), message=Message(msg))
 
 
 @recall_event.handle()
@@ -291,20 +295,40 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
     if event.is_tome():
         return
 
+    if not _acc_recall:
+        return
+
     try:
         repo = await bot.get_msg(message_id=event.message_id)
     except BaseException:
         return
-
+    
     user = event.user_id
-    repo = str(repo["message"])
-    check = CoolqCodeChecker(repo).check
-    if not check:
-        repo = repo.replace("CQ", "QC")
+    repo: dict = repo["message"]
 
-    msg = "主人，咱拿到了一条撤回信息！\n" f"{user}@[私聊]" "撤回了\n" f"{repo}"
+    m = recall_msg_dealer(repo)
+
+    msg = f"主人，咱拿到了一条撤回信息！\n{user}@[私聊]撤回了\n{m}"
     for superuser in BotSelfConfig.superusers:
-        await bot.send_private_msg(user_id=int(superuser), message=msg)
+        await bot.send_private_msg(user_id=int(superuser), message=Message(msg))
+
+
+rej_recall = Essential().on_command("拒绝撤回", "拒绝撤回信息", permission=SUPERUSER)
+
+@rej_recall.handle()
+async def _():
+    global _acc_recall
+    _acc_recall = False
+    await rej_recall.finish("已拒绝撤回信息...")
+
+
+acc_recall = Essential().on_command("接受撤回", "接受撤回信息", permission=SUPERUSER)
+
+@acc_recall.handle()
+async def _():
+    global _acc_recall
+    _acc_recall = True
+    await acc_recall.finish("现在可以接受撤回信息啦！")
 
 
 @scheduler.scheduled_job("interval", name="清除缓存", minutes=30, misfire_grace_time=5)
@@ -314,3 +338,27 @@ async def _clear_cache():
         os.makedirs(TEMP_PATH, exist_ok=True)
     except Exception:
         log.warning("清除缓存失败，请手动清除：data/temp")
+
+
+def recall_msg_dealer(msg: dict) -> str:
+    temp_m = list()
+
+    for i in msg:
+        _type = i["type"]
+        _data = i["data"]
+        if _type == "text":
+            temp_m.append(_data["text"])
+        elif _type == "image":
+            url =  _data["url"]
+            check = MessageChecker(url).check_image_url
+            if check:
+                temp_m.append(MessageSegment.image(url))
+            else:
+                temp_m.append(f"[该图片可能包含非法内容，源url：{url}]")
+        elif _type == "face":
+            temp_m.append(MessageSegment.face(_data["id"]))
+        else:
+            temp_m.append(f"[未知类型信息：{_data}]")
+
+    repo = str().join(map(str, temp_m))
+    return repo

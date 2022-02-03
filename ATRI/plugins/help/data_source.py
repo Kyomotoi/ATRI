@@ -34,7 +34,7 @@ class Helper(Service):
             "关于 -查看bot基本信息\n"
             "服务列表 -以查看所有可用服务\n"
             "帮助 [服务] -以查看对应服务帮助\n"
-            "Tip: 均需要at触发。菜单 以打开此页面"
+            "Tip: 均需要at触发。@bot 菜单 以打开此页面"
         )
 
     @staticmethod
@@ -59,10 +59,8 @@ class Helper(Service):
             service = i.replace(".json", "")
             temp_list.append(service)
 
-        msg0 = "咱搭载了以下服务~\n"
         services = "、".join(map(str, temp_list))
-        msg0 = msg0 + services
-        repo = msg0 + "\n@ 帮助 [服务] -以查看对应服务帮助"
+        repo = f"咱搭载了以下服务~\n{services}\n@bot 帮助 [服务] -以查看对应服务帮助"
         return repo
 
     @staticmethod

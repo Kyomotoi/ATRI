@@ -2,15 +2,22 @@ import os
 import re
 import json
 from pathlib import Path
+from types import ModuleType
 from pydantic import BaseModel
 from typing import List, Set, Tuple, Type, Union, Optional, TYPE_CHECKING
 
 from nonebot.matcher import Matcher
 from nonebot.permission import Permission
-from nonebot.typing import T_State, T_Handler, T_RuleChecker
+from nonebot.dependencies import Dependent
+from nonebot.typing import (
+    T_State,
+    T_Handler,
+    T_RuleChecker,
+    T_PermissionChecker,
+)
 from nonebot.rule import Rule, command, keyword, regex
 
-from ATRI.exceptions import ReadFileError, ServiceRegisterError, WriteError
+from ATRI.exceptions import ReadFileError, WriteError
 
 if TYPE_CHECKING:
     from nonebot.adapters import Bot, Event
@@ -35,7 +42,7 @@ class ServiceInfo(BaseModel):
 class CommandInfo(BaseModel):
     type: str
     docs: str
-    aliases: list or set
+    aliases: Union[list, set]
 
 
 class Service:
@@ -148,11 +155,10 @@ class Service:
     def on_message(
         self,
         name: str = None,
-        docs: str = None,
-        _from: str = str(),  # 供类似 on_command 的方法，提供更直观的 log 中 matcher 触发来源
+        docs: str = str(),
         rule: Optional[Union[Rule, T_RuleChecker]] = None,
-        permission: Optional[Permission] = None,
-        handlers: Optional[List[T_Handler]] = None,
+        permission: Optional[Union[Permission, T_PermissionChecker]] = None,
+        handlers: Optional[List[Union[T_Handler, Dependent]]] = None,
         block: bool = True,
         priority: int = None,
         state: Optional[T_State] = None,
@@ -181,15 +187,14 @@ class Service:
         matcher = Matcher.new(
             "message",
             Rule() & rule,
-            permission or Permission(),
-            module=self.service + "-" + _from,
+            Permission() | permission,
+            module=ModuleType(self.service),
             temp=self.temp,
             priority=priority,
             block=block,
             handlers=handlers,
             default_state=state,
         )
-        matcher.module = self.service
         return matcher
 
     def on_notice(self, name: str, docs: str, block: bool = True) -> Type[Matcher]:
@@ -204,7 +209,7 @@ class Service:
             "notice",
             Rule() & self.rule,
             Permission(),
-            module=self.service + "-" + name,
+            module=ModuleType(self.service),
             temp=self.temp,
             priority=self.priority,
             block=block,
@@ -225,7 +230,7 @@ class Service:
             "request",
             Rule() & self.rule,
             Permission(),
-            module=self.service + "-" + name,
+            module=ModuleType(self.service),
             temp=self.temp,
             priority=self.priority,
             block=block,
@@ -253,22 +258,8 @@ class Service:
         ).dict()
         self._save_cmds(cmd_list)
 
-        async def _strip_cmd(bot: "Bot", event: "Event", state: T_State):
-            message = event.get_message()
-            segment = message.pop(0)
-            new_message = message.__class__(
-                str(segment).lstrip()[len(state["_prefix"]["raw_command"]) :].lstrip()
-            )  # type: ignore
-            for new_segment in reversed(new_message):
-                message.insert(0, new_segment)
-
-        handlers = kwargs.pop("handlers", [])
-        handlers.insert(0, _strip_cmd)
-
         commands = set([cmd]) | (aliases or set())
-        return self.on_message(
-            _from=str(cmd), rule=command(*commands) & rule, handlers=handlers, **kwargs
-        )
+        return self.on_message(rule=command(*commands) & rule, block=True, **kwargs)
 
     def on_keyword(
         self,
@@ -287,7 +278,7 @@ class Service:
         cmd_list[name] = CommandInfo(type="keyword", docs=docs, aliases=keywords).dict()
         self._save_cmds(cmd_list)
 
-        return self.on_message(_from=name, rule=keyword(*keywords) & rule, **kwargs)
+        return self.on_message(rule=keyword(*keywords) & rule, **kwargs)
 
     def on_regex(
         self,
@@ -304,9 +295,7 @@ class Service:
         cmd_list[pattern] = CommandInfo(type="regex", docs=docs, aliases=list()).dict()
         self._save_cmds(cmd_list)
 
-        return self.on_message(
-            _from=pattern, rule=regex(pattern, flags) & rule, **kwargs
-        )
+        return self.on_message(rule=regex(pattern, flags) & rule, **kwargs)
 
 
 class ServiceTools(object):

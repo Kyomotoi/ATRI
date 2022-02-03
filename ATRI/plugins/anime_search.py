@@ -1,9 +1,9 @@
 import re
 from random import choice
 
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, MessageEvent
-from nonebot.adapters.cqhttp.message import Message, MessageSegment
+from nonebot.matcher import Matcher
+from nonebot.params import ArgPlainText, CommandArg
+from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message, MessageSegment
 
 from ATRI.service import Service
 from ATRI.rule import is_in_service
@@ -80,34 +80,25 @@ class Anime(Service):
 anime_search = Anime().on_command("以图搜番", "发送一张图以搜索可能的番剧")
 
 
-@anime_search.args_parser  # type: ignore
-async def _get_anime(bot: Bot, event: MessageEvent, state: T_State):
-    msg = str(event.message).strip()
-    quit_list = ["算了", "罢了", "不搜了", "取消"]
-    if msg in quit_list:
-        await anime_search.finish("好吧...")
-    if not msg:
-        await anime_search.reject("图呢？")
-    else:
-        state["anime"] = msg
-
-
 @anime_search.handle()
-async def _ready_sear(bot: Bot, event: MessageEvent, state: T_State):
+async def _ready_sear(
+    matcher: Matcher, event: MessageEvent, args: Message = CommandArg()
+):
     user_id = event.get_user_id()
     if not _anime_flmt.check(user_id):
         await anime_search.finish(_anime_flmt_notice)
 
-    msg = str(event.message).strip()
+    msg = args.extract_plain_text()
     if msg:
-        state["anime"] = msg
+        matcher.set_arg("anime_pic", args)
 
 
-@anime_search.got("anime", "图呢？")
-async def _deal_sear(bot: Bot, event: MessageEvent, state: T_State):
+@anime_search.got("anime_pic", "图呢？")
+async def _deal_sear(
+    bot: Bot, event: MessageEvent, pic: str = ArgPlainText("anime_pic")
+):
     user_id = event.get_user_id()
-    msg = state["anime"]
-    img = re.findall(r"url=(.*?)]", msg)
+    img = re.findall(r"url=(.*?)]", pic)
     if not img:
         await anime_search.reject("请发送图片而不是其它东西！！")
 

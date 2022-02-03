@@ -3,7 +3,7 @@ import os
 
 from pathlib import Path
 from random import choice, randint
-from nonebot.adapters.cqhttp.utils import unescape
+from nonebot.adapters.onebot.v11 import unescape
 
 from ATRI.service import Service
 from ATRI.log import logger
@@ -77,9 +77,9 @@ class Funny(Service):
         EAT_URL = "https://wtf.hiigara.net/api/run/"
         params = {"event": "ManualRun"}
         pattern_0 = r"大?[今明后]天(.*?)吃[什啥]么?"
-        pattern_1 = r"(今|明|后|大后)天"
+        pattern_1 = r"[今|明|后|大后]天"
         arg = re.findall(pattern_0, msg)[0]
-        day = re.match(pattern_1, msg).group(0)  # type: ignore
+        day = re.findall(pattern_1, msg)[0]
 
         if arg == "中午":
             a = f"LdS4K6/{randint(0, 1145141919810)}"

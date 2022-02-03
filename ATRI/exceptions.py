@@ -8,9 +8,7 @@ from typing import Optional
 from traceback import format_exc
 from pydantic.main import BaseModel
 
-from nonebot.adapters.cqhttp import Bot, Event
-from nonebot.matcher import Matcher
-from nonebot.typing import T_State
+from nonebot.adapters.onebot.v11 import Bot
 from nonebot.message import run_postprocessor
 
 from .log import logger
@@ -92,13 +90,10 @@ class ServiceRegisterError(BaseBotException):
     prompt = "服务注册错误"
 
 
-@run_postprocessor  # type: ignore
+@run_postprocessor
 async def _track_error(
-    matcher: Matcher,
     exception: Optional[Exception],
     bot: Bot,
-    event: Event,
-    state: T_State,
 ) -> None:
     if not exception:
         return

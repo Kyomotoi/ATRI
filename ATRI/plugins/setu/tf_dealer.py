@@ -1,7 +1,6 @@
 import io
 import os
 import re
-import string
 import asyncio
 import skimage
 import skimage.io
@@ -9,12 +8,8 @@ import numpy as np
 from PIL import Image
 from pathlib import Path
 from sys import getsizeof
-from random import sample
 
-try:
-    import tflite_runtime.interpreter as tf  # type: ignore
-except Exception:
-    import tensorflow as tf
+import tensorflow as tf
 
 from ATRI.log import logger as log
 from ATRI.utils import request
@@ -116,4 +111,5 @@ async def init_module():
             raise WriteError("NSFW TF module init failed!")
 
 
-asyncio.get_event_loop().run_until_complete(init_module())
+loop = asyncio.get_event_loop()
+loop.create_task(init_module())

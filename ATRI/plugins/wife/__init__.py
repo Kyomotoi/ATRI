@@ -3,9 +3,10 @@ from random import choice
 from pydantic import BaseModel
 
 from nonebot.rule import Rule
-from nonebot.typing import T_State
+from nonebot.matcher import Matcher
+from nonebot.params import CommandArg, ArgPlainText
 from nonebot.permission import SUPERUSER
-from nonebot.adapters.cqhttp import Bot, MessageEvent, GroupMessageEvent, Message
+from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
 
 from ATRI.utils.limit import FreqLimiter
 from .data_source import Wife
@@ -25,7 +26,7 @@ tietie_superuser = Wife().on_message(
 
 
 @tietie_superuser.handle()
-async def _tietie_superuser(bot: Bot, event: MessageEvent):
+async def _tietie_superuser(event: MessageEvent):
     if not _is_tietie:
         await tietie_superuser.finish()
 
@@ -38,25 +39,21 @@ async def _tietie_superuser(bot: Bot, event: MessageEvent):
     await tietie_superuser.finish(Message(result))
 
 
-no_tietie = Wife().on_command(
-    "不可以贴", docs="拒绝贴贴", rule=Rule(), permission=SUPERUSER, block=False
-)
+no_tietie = Wife().on_command("不可以贴", docs="拒绝贴贴", rule=Rule(), permission=SUPERUSER)
 
 
 @no_tietie.handle()
-async def _no_tietie(bot: Bot, event: MessageEvent):
+async def _no_tietie():
     global _is_tietie
     _is_tietie = False
     await no_tietie.finish("好吧...")
 
 
-yes_tietie = Wife().on_command(
-    "来贴贴", docs="继续贴贴", rule=Rule(), permission=SUPERUSER, block=False
-)
+yes_tietie = Wife().on_command("来贴贴", docs="继续贴贴", rule=Rule(), permission=SUPERUSER)
 
 
 @yes_tietie.handle()
-async def _yes_tietie(bot: Bot, event: MessageEvent):
+async def _yes_tietie():
     global _is_tietie
     _is_tietie = True
     await yes_tietie.finish("好欸！")
@@ -117,7 +114,7 @@ async def _get_wife(bot: Bot, event: GroupMessageEvent):
         name=req_user_card, sex=is_nick, wife=user_id
     ).dict()
     data[user_id] = MarryInfo(
-        name=lucky_user_card, sex=lucky_user_sex, wife=lucky_user
+        name=lucky_user_card, sex=lucky_user_sex, wife=str(lucky_user)
     ).dict()
     Wife().save_marry_list(data)
 
@@ -133,7 +130,7 @@ call_wife = Wife().on_command("老婆", "呼唤老婆/老公！", aliases={"老�
 
 
 @call_wife.handle()
-async def _call_wife(bot: Bot, event: MessageEvent):
+async def _call_wife(event: MessageEvent):
     user_id = event.get_user_id()
     if not _wife_flmt.check(user_id):
         await call_wife.finish()
@@ -154,7 +151,9 @@ discard_wife = Wife().on_command("我要离婚", "离婚！")
 
 
 @discard_wife.handle()
-async def _discard_wife(bot: Bot, event: GroupMessageEvent, state: T_State):
+async def _discard_wife(
+    matcher: Matcher, event: GroupMessageEvent, args: Message = CommandArg()
+):
     user_id = event.get_user_id()
     if not _wife_flmt.check(user_id):
         await discard_wife.finish()
@@ -163,19 +162,20 @@ async def _discard_wife(bot: Bot, event: GroupMessageEvent, state: T_State):
     if user_id not in data:
         await discard_wife.finish("你还没对象呐...")
 
-    msg = str(event.message).strip()
+    msg = args.extract_plain_text()
     if msg:
-        state["is_disc"] = msg
+        matcher.set_arg("is_disc", args)
 
 
 @discard_wife.got("is_disc", "真的吗...（y/是）")
-async def _deal_discard(bot: Bot, event: GroupMessageEvent, state: T_State):
-    msg = state["is_disc"]
+async def _deal_discard(
+    bot: Bot, event: GroupMessageEvent, is_disc: str = ArgPlainText("is_disc")
+):
     rd_list = ["y", "Y", "是", "确认", "对"]
 
     user_id = event.get_user_id()
     group_id = event.group_id
-    if msg not in rd_list:
+    if is_disc not in rd_list:
         user_info = await bot.get_group_member_info(
             group_id=group_id, user_id=int(user_id)
         )

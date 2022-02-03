@@ -2,7 +2,7 @@ import os
 import json
 from random import choice
 from pathlib import Path
-from nonebot.adapters.cqhttp import MessageSegment
+from nonebot.adapters.onebot.v11 import MessageSegment
 
 from ATRI.service import Service
 from ATRI.rule import is_in_service

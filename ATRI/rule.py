@@ -1,12 +1,12 @@
-from nonebot.adapters.cqhttp.event import PrivateMessageEvent
 from nonebot.rule import Rule
-from nonebot.adapters.cqhttp import MessageEvent, GroupMessageEvent
+from nonebot.adapters import Bot, Event
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from .service import ServiceTools
 
 
 def is_in_service(service: str) -> Rule:
-    async def _is_in_service(bot, event, state) -> bool:
+    async def _is_in_service(bot: Bot, event: Event) -> bool:
         result = ServiceTools().auth_service(service)
         if not result:
             return False
@@ -27,7 +27,7 @@ def is_in_service(service: str) -> Rule:
 
 
 def to_bot() -> Rule:
-    async def _to_bot(bot, event, state) -> bool:
+    async def _to_bot(bot: Bot, event: Event) -> bool:
         return event.is_tome()
 
     return Rule(_to_bot)

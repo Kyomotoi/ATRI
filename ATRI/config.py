@@ -30,10 +30,24 @@ class BotSelfConfig:
     proxy: str = config.get("proxy", None)
 
 
+class InlineGoCQHTTP:
+    config: dict = config["InlineGoCQHTTP"]
+
+    accounts: list = config.get("accounts", [])
+    download_version: str = str(config.get("download_version", "latest"))
+
+
 class SauceNAO:
     config: dict = config["SauceNAO"]
 
     key: str = config.get("key", "")
+
+
+class Setu:
+    config: dict = config["Setu"]
+
+    reverse_proxy: bool = bool(config.get("reverse_proxy", False))
+    reverse_proxy_domain: str = config.get("reverse_proxy_domain", str())
 
 
 RUNTIME_CONFIG = {
@@ -45,4 +59,7 @@ RUNTIME_CONFIG = {
     "command_start": BotSelfConfig.command_start,
     "command_sep": BotSelfConfig.command_sep,
     "session_expire_timeout": BotSelfConfig.session_expire_timeout,
+
+    "gocq_accounts": InlineGoCQHTTP.accounts,
+    "gocq_version": InlineGoCQHTTP.download_version,
 }

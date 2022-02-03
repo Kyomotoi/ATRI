@@ -27,6 +27,9 @@ class LoguruNameDealer:
         if "nonebot.plugin.manager" in log_handle:
             plugin_name = log_handle.split(".")[-1]
             record["name"] = f"plugin.{plugin_name}"
+        elif "nonebot_plugin_gocqhttp" in log_handle:
+            plugin_name = log_handle.split("_")[-1]
+            record["name"] = "gocqhttp"
         else:
             record["name"] = record["name"].split(".")[0]
 

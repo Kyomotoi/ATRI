@@ -1,8 +1,8 @@
 from random import choice, randint
 
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, MessageEvent, GroupMessageEvent
-from nonebot.adapters.cqhttp.message import Message
+from nonebot.matcher import Matcher
+from nonebot.params import ArgPlainText, CommandArg
+from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
 
 from ATRI.utils.limit import FreqLimiter, DailyLimiter
 from .data_source import Funny
@@ -39,38 +39,36 @@ _fake_flmt = FreqLimiter(60)
 _fake_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
-@fake_msg.args_parser  # type: ignore
-async def _perp_fake(bot: Bot, event: GroupMessageEvent, state: T_State):
-    msg = str(event.message).strip()
-    quit_list = ["算了", "罢了"]
-    if msg in quit_list:
-        await fake_msg.finish("好吧...")
-    if not msg:
-        await fake_msg.reject("内容呢？格式：qq-name-content\n可构造多条，以上仅为一条，使用空格隔开")
-    else:
-        state["content"] = msg
-
-
 @fake_msg.handle()
-async def _ready_fake(bot: Bot, event: GroupMessageEvent, state: T_State):
+async def _ready_fake(
+    matcher: Matcher, event: GroupMessageEvent, args: Message = CommandArg()
+):
     user_id = event.get_user_id()
     if not _fake_daliy_max.check(user_id):
         await fake_msg.finish(_fake_max_notice)
     if not _fake_flmt.check(user_id):
         await fake_msg.finish(_fake_flmt_notice)
 
-    msg = str(event.message).strip()
+    msg = args.extract_plain_text()
     if msg:
-        state["content"] = msg
+        matcher.set_arg("content", args)
 
 
 @fake_msg.got("content", "内容呢？格式：qq-name-content\n可构造多条，以上仅为一条，使用空格隔开")
-async def _deal_fake(bot: Bot, event: GroupMessageEvent, state: T_State):
-    content = state["content"]
+async def _deal_fake(
+    bot: Bot, event: GroupMessageEvent, content: str = ArgPlainText("content")
+):
     group_id = event.group_id
     user_id = event.get_user_id()
-    node = Funny().fake_msg(content)
-    await bot.send_group_forward_msg(group_id=group_id, messages=node)
+    try:
+        node = Funny().fake_msg(content)
+    except Exception:
+        await fake_msg.finish("内容格式错误，请检查（")
+
+    try:
+        await bot.send_group_forward_msg(group_id=group_id, messages=node)
+    except Exception:
+        await fake_msg.finish("构造失败惹...可能是被制裁了（")
 
     _fake_flmt.start_cd(user_id)
     _fake_daliy_max.increase(user_id)

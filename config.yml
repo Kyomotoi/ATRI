@@ -7,7 +7,19 @@ BotSelfConfig:
   command_start: ["", "/"]
   command_sep: ["."]
   session_expire_timeout: 60
-  proxy: ""
+  proxy: ""  # 请参考文档
+
+InlineGoCQHTTP:
+  accounts: # 可多个账号，具体请参考文档
+    - uin: 1234567890
+      password: ""
+      protocol: 3
+  
+  download_version: "latest"
 
 SauceNAO:
   key: ""
+
+Setu:
+  reverse_proxy: true # 请参考文档
+  reverse_proxy_domain: "i.pixiv.re"

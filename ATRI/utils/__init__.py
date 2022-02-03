@@ -55,9 +55,9 @@ class ListDealer:
         return self.lst
 
 
-class CoolqCodeChecker:
+class MessageChecker:
     """
-    检查所传回的cq码是否存在被注入可能
+    检查所传回的信息是否存在被注入可能
     """
 
     tenc_gchat_url: str = "gchat.qpic.cn"
@@ -67,7 +67,7 @@ class CoolqCodeChecker:
         self.text = text
 
     @property
-    def check(self) -> bool:
+    def check_cq_code(self) -> bool:
         _type = re.findall(r"CQ:(.*?),", self.text)
         for i in _type:
             if i == "image":
@@ -81,6 +81,13 @@ class CoolqCodeChecker:
                 return False
             else:
                 return True
+        else:
+            return True
+    
+    @property
+    def check_image_url(self) -> bool:
+        if self.tenc_gchat_url not in self.text:
+            return False
         else:
             return True
 
