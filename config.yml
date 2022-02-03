@@ -10,6 +10,7 @@ BotSelfConfig:
   proxy: ""  # 请参考文档
 
 InlineGoCQHTTP:
+  enabled: true
   accounts: # 可多个账号，具体请参考文档
     - uin: 1234567890
       password: ""

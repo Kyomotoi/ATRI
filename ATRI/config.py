@@ -33,6 +33,7 @@ class BotSelfConfig:
 class InlineGoCQHTTP:
     config: dict = config["InlineGoCQHTTP"]
 
+    enabled: bool = bool(config.get("enabled", True))
     accounts: list = config.get("accounts", [])
     download_version: str = str(config.get("download_version", "latest"))
 
