@@ -16,9 +16,7 @@ from .data_source import Setu
 loop = asyncio.get_event_loop()
 
 
-random_setu = Setu().on_command(
-    "来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"}
-)
+random_setu = Setu().on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
 
 
 @random_setu.handle([Cooldown(120)])
@@ -33,7 +31,6 @@ async def _random_setu(
         msg_1 = await bot.send(event, Message(setu))
     except Exception:
         await random_setu.finish("hso（发不出")
-
 
     msg = args.extract_plain_text()
     if msg:

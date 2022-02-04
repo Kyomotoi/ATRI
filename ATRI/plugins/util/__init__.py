@@ -74,9 +74,7 @@ _sepi_flmt_notice = choice(["涩批爬", "✌🥵✌"])
 
 
 @sepi.handle([Cooldown(3, prompt=_sepi_flmt_notice)])
-async def _ready_sepi(
-    matcher: Matcher, args: Message = CommandArg()
-):
+async def _ready_sepi(matcher: Matcher, args: Message = CommandArg()):
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("sepi_text", args)

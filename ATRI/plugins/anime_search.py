@@ -80,9 +80,7 @@ anime_search = Anime().on_command("以图搜番", "发送一张图以搜索可�
 
 
 @anime_search.got("anime_pic", "图呢？", [Cooldown(5, prompt=_anime_flmt_notice)])
-async def _deal_sear(
-    bot: Bot, event: MessageEvent
-):
+async def _deal_sear(bot: Bot, event: MessageEvent):
     user_id = event.get_user_id()
     img = extract_image_urls(event.message)
     if not img:

@@ -18,7 +18,7 @@ DEFAULT_SETU = (
 class Setu(Service):
     def __init__(self):
         Service.__init__(self, "涩图", "hso!", rule=is_in_service("涩图"))
-    
+
     @staticmethod
     def _use_proxy(url: str) -> str:
         if ST.reverse_proxy:

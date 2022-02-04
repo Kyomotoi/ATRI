@@ -55,9 +55,7 @@ say = Chat().on_command("说", "别人让我说啥就说啥（", priority=1)
 
 
 @say.handle([Cooldown(3, prompt=_chat_flmt_notice)])
-async def _ready_say(
-    matcher: Matcher, args: Message = CommandArg()
-):
+async def _ready_say(matcher: Matcher, args: Message = CommandArg()):
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("say", args)
