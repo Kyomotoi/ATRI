@@ -1,18 +1,14 @@
-import re
 from random import choice
 
-from nonebot.matcher import Matcher
-from nonebot.params import ArgPlainText, CommandArg
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message, MessageSegment
+from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
 from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.utils import request, Translate
-from ATRI.utils.limit import FreqLimiter
 from ATRI.exceptions import RequestError
 
 URL = "https://api.trace.moe/search?anilistInfo=true&url="
-_anime_flmt = FreqLimiter(10)
 _anime_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 __doc__ = """
@@ -31,13 +27,16 @@ class Anime(Service):
             res = await request.get(aim)
         except RequestError:
             raise RequestError("Request failed!")
-        result = await res.json()
+        result = res.json()
         return result
 
     @classmethod
     async def search(cls, url: str) -> str:
         data = await cls._request(url)
-        data = data["result"]
+        try:
+            data = data["result"]
+        except:
+            return "没有相似的结果呢..."
 
         d = dict()
         for i in range(3):
@@ -80,30 +79,16 @@ class Anime(Service):
 anime_search = Anime().on_command("以图搜番", "发送一张图以搜索可能的番剧")
 
 
-@anime_search.handle()
-async def _ready_sear(
-    matcher: Matcher, event: MessageEvent, args: Message = CommandArg()
-):
-    user_id = event.get_user_id()
-    if not _anime_flmt.check(user_id):
-        await anime_search.finish(_anime_flmt_notice)
-
-    msg = args.extract_plain_text()
-    if msg:
-        matcher.set_arg("anime_pic", args)
-
-
-@anime_search.got("anime_pic", "图呢？")
+@anime_search.got("anime_pic", "图呢？", [Cooldown(5, prompt=_anime_flmt_notice)])
 async def _deal_sear(
-    bot: Bot, event: MessageEvent, pic: str = ArgPlainText("anime_pic")
+    bot: Bot, event: MessageEvent
 ):
     user_id = event.get_user_id()
-    img = re.findall(r"url=(.*?)]", pic)
+    img = extract_image_urls(event.message)
     if not img:
-        await anime_search.reject("请发送图片而不是其它东西！！")
+        await anime_search.finish("请发送图片而不是其它东西！！")
 
     await bot.send(event, "别急，在找了")
     a = await Anime().search(img[0])
     result = f"> {MessageSegment.at(user_id)}\n" + a
-    _anime_flmt.start_cd(user_id)
     await anime_search.finish(Message(result))

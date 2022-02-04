@@ -35,6 +35,7 @@ class InlineGoCQHTTP:
 
     enabled: bool = bool(config.get("enabled", True))
     accounts: list = config.get("accounts", [])
+    download_domain: str = config.get("download_domain", "download.fastgit.org")
     download_version: str = str(config.get("download_version", "latest"))
 
 
@@ -60,6 +61,8 @@ RUNTIME_CONFIG = {
     "command_start": BotSelfConfig.command_start,
     "command_sep": BotSelfConfig.command_sep,
     "session_expire_timeout": BotSelfConfig.session_expire_timeout,
+    
     "gocq_accounts": InlineGoCQHTTP.accounts,
+    "gocq_download_domain": InlineGoCQHTTP.download_domain,
     "gocq_version": InlineGoCQHTTP.download_version,
 }

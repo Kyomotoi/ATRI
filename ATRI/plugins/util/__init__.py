@@ -4,8 +4,8 @@ from random import choice, random
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import MessageEvent, Message
+from nonebot.adapters.onebot.v11.helpers import Cooldown
 
-from ATRI.utils.limit import FreqLimiter
 from .data_source import Encrypt, Utils, Yinglish
 
 
@@ -69,18 +69,14 @@ async def _deal_de(text: str = ArgPlainText("encr_de_text")):
 
 sepi = Utils().on_command("涩批一下", "将正常的句子涩一涩~")
 
-_sepi_flmt = FreqLimiter(3)
-_sepi_flmt_notice = ["涩批爬", "✌🥵✌"]
+
+_sepi_flmt_notice = choice(["涩批爬", "✌🥵✌"])
 
 
-@sepi.handle()
+@sepi.handle([Cooldown(3, prompt=_sepi_flmt_notice)])
 async def _ready_sepi(
-    matcher: Matcher, event: MessageEvent, args: Message = CommandArg()
+    matcher: Matcher, args: Message = CommandArg()
 ):
-    user_id = event.get_user_id()
-    if not _sepi_flmt.check(user_id):
-        await sepi.finish(choice(_sepi_flmt_notice))
-
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("sepi_text", args)
@@ -93,5 +89,4 @@ async def _deal_sepi(event: MessageEvent, msg: str = ArgPlainText("sepi_text")):
         await sepi.finish("这么短？涩不起来！")
 
     result = Yinglish.deal(msg, random())
-    _sepi_flmt.start_cd(user_id)
     await sepi.finish(result)

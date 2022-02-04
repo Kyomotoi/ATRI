@@ -3,8 +3,8 @@ from random import choice, randint
 from nonebot.matcher import Matcher
 from nonebot.params import ArgPlainText, CommandArg
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
+from nonebot.adapters.onebot.v11.helpers import Cooldown
 
-from ATRI.utils.limit import FreqLimiter, DailyLimiter
 from .data_source import Funny
 
 
@@ -29,26 +29,18 @@ async def _me_re_you(bot: Bot, event: MessageEvent):
             await me_re_you.finish(content)
 
 
+_fake_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
+
+
 fake_msg = Funny().on_command(
     "/fakemsg", "伪造假转发内容，格式：qq-name-content\n可构造多条，使用空格隔开，仅限群聊"
 )
 
-_fake_daliy_max = DailyLimiter(3)
-_fake_max_notice = "不能继续下去了！明早再来"
-_fake_flmt = FreqLimiter(60)
-_fake_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
-
-@fake_msg.handle()
+@fake_msg.handle([Cooldown(3600, prompt=_fake_flmt_notice)])
 async def _ready_fake(
-    matcher: Matcher, event: GroupMessageEvent, args: Message = CommandArg()
+    matcher: Matcher, args: Message = CommandArg()
 ):
-    user_id = event.get_user_id()
-    if not _fake_daliy_max.check(user_id):
-        await fake_msg.finish(_fake_max_notice)
-    if not _fake_flmt.check(user_id):
-        await fake_msg.finish(_fake_flmt_notice)
-
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("content", args)
@@ -59,7 +51,6 @@ async def _deal_fake(
     bot: Bot, event: GroupMessageEvent, content: str = ArgPlainText("content")
 ):
     group_id = event.group_id
-    user_id = event.get_user_id()
     try:
         node = Funny().fake_msg(content)
     except Exception:
@@ -70,23 +61,13 @@ async def _deal_fake(
     except Exception:
         await fake_msg.finish("构造失败惹...可能是被制裁了（")
 
-    _fake_flmt.start_cd(user_id)
-    _fake_daliy_max.increase(user_id)
-
 
 eat_what = Funny().on_regex(r"大?[今明后]天(.*?)吃[什啥]么?", "我来决定你吃什么！")
 
-_eat_flmt = FreqLimiter(15)
 
-
-@eat_what.handle()
-async def _eat_what(bot: Bot, event: MessageEvent):
-    user_id = event.get_user_id()
-    if not _eat_flmt.check(user_id):
-        return
-
+@eat_what.handle([Cooldown(15, prompt="慢慢吃，不要贪心哦！")])
+async def _eat_what(event: MessageEvent):
     msg = str(event.get_message())
     user_name = event.sender.nickname or "裙友"
     eat = await Funny().eat_what(user_name, msg)
-    _eat_flmt.start_cd(user_id)
     await eat_what.finish(Message(eat))

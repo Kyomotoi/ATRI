@@ -16,6 +16,7 @@ InlineGoCQHTTP:
       password: ""
       protocol: 3
   
+  download_domain: "github.com"
   download_version: "latest"
 
 SauceNAO:

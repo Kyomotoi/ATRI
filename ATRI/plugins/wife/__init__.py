@@ -7,12 +7,11 @@ from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
+from nonebot.adapters.onebot.v11.helpers import Cooldown
 
-from ATRI.utils.limit import FreqLimiter
 from .data_source import Wife
 
 
-_tietie_flmt = FreqLimiter(600)
 _is_tietie = True
 
 
@@ -25,17 +24,13 @@ tietie_superuser = Wife().on_message(
 )
 
 
-@tietie_superuser.handle()
+@tietie_superuser.handle([Cooldown(600)])
 async def _tietie_superuser(event: MessageEvent):
     if not _is_tietie:
         await tietie_superuser.finish()
 
     user_id = event.get_user_id()
-    if not _tietie_flmt.check(user_id):
-        await tietie_superuser.finish()
-
     result = Wife().to_superuser(user_id)
-    _tietie_flmt.start_cd(user_id)
     await tietie_superuser.finish(Message(result))
 
 
@@ -59,9 +54,6 @@ async def _yes_tietie():
     await yes_tietie.finish("好欸！")
 
 
-_wife_flmt = FreqLimiter(10)
-
-
 class MarryInfo(BaseModel):
     name: str
     sex: str
@@ -71,11 +63,9 @@ class MarryInfo(BaseModel):
 get_wife = Wife().on_command("抽老婆", "随机选择一位幸运裙友成为老婆！")
 
 
-@get_wife.handle()
+@get_wife.handle([Cooldown(10)])
 async def _get_wife(bot: Bot, event: GroupMessageEvent):
     user_id = event.get_user_id()
-    if not _wife_flmt.check(user_id):
-        await get_wife.finish()
 
     data = Wife().load_marry_list()
     if user_id in data:
@@ -119,21 +109,15 @@ async def _get_wife(bot: Bot, event: GroupMessageEvent):
     Wife().save_marry_list(data)
 
     repo_1 = f"好欸！{lucky_user_card}成为了{req_user_card}的{is_nick}"
-    _wife_flmt.start_cd(user_id)
     await get_wife.finish(repo_1)
-
-
-_call_wife_flmt = FreqLimiter(60)
 
 
 call_wife = Wife().on_command("老婆", "呼唤老婆/老公！", aliases={"老公", "老婆！", "老公！"})
 
 
-@call_wife.handle()
+@call_wife.handle([Cooldown(60)])
 async def _call_wife(event: MessageEvent):
     user_id = event.get_user_id()
-    if not _wife_flmt.check(user_id):
-        await call_wife.finish()
 
     data = Wife().load_marry_list()
     if user_id not in data:
@@ -143,20 +127,17 @@ async def _call_wife(event: MessageEvent):
     sex = data[user_id].get("sex", "male")
     is_nick = "老公" if sex == "male" else "老婆"
     repo = f"你已经有{is_nick}啦！是{wife}噢~"
-    _call_wife_flmt.start_cd(user_id)
     await call_wife.finish(repo)
 
 
 discard_wife = Wife().on_command("我要离婚", "离婚！")
 
 
-@discard_wife.handle()
+@discard_wife.handle([Cooldown(60)])
 async def _discard_wife(
     matcher: Matcher, event: GroupMessageEvent, args: Message = CommandArg()
 ):
     user_id = event.get_user_id()
-    if not _wife_flmt.check(user_id):
-        await discard_wife.finish()
 
     data = Wife().load_marry_list()
     if user_id not in data:
@@ -200,5 +181,4 @@ async def _deal_discard(
     data.pop(discard_user_id)
     Wife().save_marry_list(data)
     repo = f"悲，{user_card}抛弃了{discard_user_card}..."
-    _wife_flmt.start_cd(user_id)
     await discard_wife.finish(repo)

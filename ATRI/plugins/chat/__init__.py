@@ -2,28 +2,24 @@ from random import choice
 
 from nonebot.matcher import Matcher
 from nonebot.params import ArgPlainText, CommandArg
-from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message
+from nonebot.adapters.onebot.v11 import MessageEvent, Message
+from nonebot.adapters.onebot.v11.helpers import Cooldown
 
-from ATRI.utils.limit import FreqLimiter
 from ATRI.utils.apscheduler import scheduler
 from .data_source import Chat
 
-_chat_flmt = FreqLimiter(3)
+
 _chat_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~", "我开始为你以后的伴侣担心了..."])
 
 
 chat = Chat().on_message("文爱", "闲聊（文爱")
 
 
-@chat.handle()
-async def _chat(bot: Bot, event: MessageEvent):
+@chat.handle([Cooldown(3, prompt=_chat_flmt_notice)])
+async def _chat(event: MessageEvent):
     user_id = event.get_user_id()
-    if not _chat_flmt.check(user_id):
-        await chat.finish(_chat_flmt_notice)
-
     msg = str(event.message)
     repo = await Chat().deal(msg, user_id)
-    _chat_flmt.start_cd(user_id)
     try:
         await chat.finish(repo)
     except Exception:
@@ -33,12 +29,8 @@ async def _chat(bot: Bot, event: MessageEvent):
 my_name_is = Chat().on_command("叫我", "更改闲聊（文爱）时的称呼", aliases={"我是"}, priority=1)
 
 
-@my_name_is.handle()
-async def _name(matcher: Matcher, event: MessageEvent, args: Message = CommandArg()):
-    user_id = event.get_user_id()
-    if not _chat_flmt.check(user_id):
-        await my_name_is.finish(_chat_flmt_notice)
-
+@my_name_is.handle([Cooldown(3, prompt=_chat_flmt_notice)])
+async def _name(matcher: Matcher, args: Message = CommandArg()):
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("name", args)
@@ -56,30 +48,23 @@ async def _deal_name(event: MessageEvent, new_name: str = ArgPlainText("name")):
         ]
     )
     Chat().name_is(user_id, new_name)
-    _chat_flmt.start_cd(user_id)
     await my_name_is.finish(repo)
 
 
 say = Chat().on_command("说", "别人让我说啥就说啥（", priority=1)
 
 
-@say.handle()
+@say.handle([Cooldown(3, prompt=_chat_flmt_notice)])
 async def _ready_say(
-    matcher: Matcher, event: MessageEvent, args: Message = CommandArg()
+    matcher: Matcher, args: Message = CommandArg()
 ):
-    user_id = event.get_user_id()
-    if not _chat_flmt.check(user_id):
-        await say.finish(_chat_flmt_notice)
-
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("say", args)
 
 
 @say.got("say", "想要咱复读啥呢...")
-async def _deal_say(event: MessageEvent, msg: str = ArgPlainText("say")):
-    user_id = event.get_user_id()
-    _chat_flmt.start_cd(user_id)
+async def _deal_say(msg: str = ArgPlainText("say")):
     await say.finish(msg)
 
 

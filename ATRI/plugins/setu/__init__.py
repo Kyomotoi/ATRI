@@ -6,32 +6,25 @@ from nonebot.permission import SUPERUSER
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message, MessageSegment
+from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
 from ATRI.config import BotSelfConfig
-from ATRI.utils.limit import FreqLimiter, DailyLimiter
 from ATRI.utils.apscheduler import scheduler
 from .data_source import Setu
 
 
-_setu_flmt = FreqLimiter(120)
-_setu_dlmt = DailyLimiter(5)
+loop = asyncio.get_event_loop()
 
 
 random_setu = Setu().on_command(
-    "来张涩图", "来张随机涩图，冷却2分钟，每天限5张", aliases={"涩图来", "来点涩图", "来份涩图"}
+    "来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"}
 )
 
 
-@random_setu.handle()
+@random_setu.handle([Cooldown(120)])
 async def _random_setu(
     bot: Bot, event: MessageEvent, matcher: Matcher, args: Message = CommandArg()
 ):
-    user_id = event.get_user_id()
-    if not _setu_flmt.check(user_id):
-        await random_setu.finish()
-    if not _setu_dlmt.check(user_id):
-        await random_setu.finish()
-
     repo, setu = await Setu().random_setu()
     await bot.send(event, repo)
 
@@ -41,15 +34,13 @@ async def _random_setu(
     except Exception:
         await random_setu.finish("hso（发不出")
 
-    event_id = msg_1["message_id"]
-    _setu_flmt.start_cd(user_id)
-    _setu_dlmt.increase(user_id)
-    await asyncio.sleep(30)
-    await bot.delete_msg(message_id=event_id)
 
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("r_rush_after_think", args)
+
+    event_id = msg_1["message_id"]
+    loop.create_task(Setu().async_recall(bot, event_id))
 
 
 @random_setu.got("r_rush_after_think")
@@ -61,19 +52,13 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
         await random_setu.finish(is_repo)
 
 
-tag_setu = Setu().on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图")
+tag_setu = Setu().on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
 
 
-@tag_setu.handle()
+@tag_setu.handle([Cooldown(120)])
 async def _tag_setu(
     bot: Bot, event: MessageEvent, matcher: Matcher, args: Message = CommandArg()
 ):
-    user_id = event.get_user_id()
-    if not _setu_flmt.check(user_id):
-        await random_setu.finish()
-    if not _setu_dlmt.check(user_id):
-        await random_setu.finish()
-
     msg = str(event.message).strip()
     pattern = r"来[张点丶份](.*?)的[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
@@ -89,15 +74,12 @@ async def _tag_setu(
     except Exception:
         await random_setu.finish("hso（发不出")
 
-    event_id = msg_1["message_id"]
-    _setu_flmt.start_cd(user_id)
-    _setu_dlmt.increase(user_id)
-    await asyncio.sleep(30)
-    await bot.delete_msg(message_id=event_id)
-
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("r_rush_after_think", args)
+
+    event_id = msg_1["message_id"]
+    loop.create_task(Setu().async_recall(bot, event_id))
 
 
 @tag_setu.got("t_rush_after_think")
@@ -117,9 +99,7 @@ setu_catcher = Setu().on_message("涩图嗅探", "涩图嗅探器", block=False)
 
 @setu_catcher.handle()
 async def _setu_catcher(bot: Bot, event: MessageEvent):
-    msg = str(event.message)
-    pattern = r"url=(.*?)]"
-    args = re.findall(pattern, msg)
+    args = extract_image_urls(event.message)
     if not args:
         return
     else:
@@ -159,17 +139,9 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
 nsfw_checker = Setu().on_command("/nsfw", "涩值检测")
 
 
-@nsfw_checker.handle()
-async def _nsfw_checker(matcher: Matcher, args: Message = CommandArg()):
-    msg = args.extract_plain_text()
-    if msg:
-        matcher.set_arg("nsfw_img", args)
-
-
 @nsfw_checker.got("nsfw_img", "图呢？")
-async def _deal_check(bot: Bot, img: str = ArgPlainText("nsfw_img")):
-    pattern = r"url=(.*?)]"
-    args = re.findall(pattern, img)
+async def _deal_check(bot: Bot, event: MessageEvent):
+    args = extract_image_urls(event.message)
     if not args:
         await nsfw_checker.reject("请发送图片而不是其他东西！！")
 
