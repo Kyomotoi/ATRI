@@ -36,8 +36,7 @@ class InlineGoCQHTTP:
     enabled: bool = bool(config.get("enabled", True))
     accounts: list = config.get("accounts", [])
     download_domain: str = config.get("download_domain", "download.fastgit.org")
-    download_version: str = str(config.get("download_version", "latest"))
-
+    download_version: str = str(config.get("download_version", "v1.0.0-beta8-fix2"))
 
 class SauceNAO:
     config: dict = config["SauceNAO"]
