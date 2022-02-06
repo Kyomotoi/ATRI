@@ -13,34 +13,28 @@ from ATRI.utils.apscheduler import scheduler
 from .data_source import Setu
 
 
-loop = asyncio.get_event_loop()
-
-
 random_setu = Setu().on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
 
 
-@random_setu.handle([Cooldown(120)])
+@random_setu.handle()
 async def _random_setu(
-    bot: Bot, event: MessageEvent, matcher: Matcher, args: Message = CommandArg()
-):
+    bot: Bot, event: MessageEvent
+):  
+    loop = asyncio.get_running_loop()
+
     repo, setu = await Setu().random_setu()
     await bot.send(event, repo)
 
-    msg_1 = dict()
     try:
         msg_1 = await bot.send(event, Message(setu))
     except Exception:
         await random_setu.finish("hso（发不出")
 
-    msg = args.extract_plain_text()
-    if msg:
-        matcher.set_arg("r_rush_after_think", args)
-
     event_id = msg_1["message_id"]
     loop.create_task(Setu().async_recall(bot, event_id))
 
 
-@random_setu.got("r_rush_after_think")
+@random_setu.got("r_rush_after_think", prompt="看完不来点感想么-w-", parameterless=[Cooldown(120)])
 async def _(think: str = ArgPlainText("r_rush_after_think")):
     is_repo = will_think(think)
     if not is_repo:
@@ -52,11 +46,13 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
 tag_setu = Setu().on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
 
 
-@tag_setu.handle([Cooldown(120)])
+@tag_setu.handle([Cooldown(5, prompt="慢...慢一..点❤")])
 async def _tag_setu(
-    bot: Bot, event: MessageEvent, matcher: Matcher, args: Message = CommandArg()
-):
-    msg = str(event.message).strip()
+    bot: Bot, event: MessageEvent
+):  
+    loop = asyncio.get_running_loop()
+
+    msg = str(event.get_message()).strip()
     pattern = r"来[张点丶份](.*?)的[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
     repo, setu = await Setu().tag_setu(tag)
@@ -65,21 +61,16 @@ async def _tag_setu(
 
     await bot.send(event, repo)
 
-    msg_1 = dict()
     try:
         msg_1 = await bot.send(event, Message(setu))
     except Exception:
         await random_setu.finish("hso（发不出")
 
-    msg = args.extract_plain_text()
-    if msg:
-        matcher.set_arg("r_rush_after_think", args)
-
     event_id = msg_1["message_id"]
     loop.create_task(Setu().async_recall(bot, event_id))
 
 
-@tag_setu.got("t_rush_after_think")
+@tag_setu.got("t_rush_after_think", prompt="看完不来点感想么-w-", parameterless=[Cooldown(120)])
 async def _(think: str = ArgPlainText("t_rush_after_think")):
     is_repo = will_think(think)
     if not is_repo:

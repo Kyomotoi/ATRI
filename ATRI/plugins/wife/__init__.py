@@ -87,28 +87,33 @@ async def _get_wife(bot: Bot, event: GroupMessageEvent):
     await bot.send(event, repo_0)
     await asyncio.sleep(10)
 
+    # 获取群成员列表
     prep_list = await bot.get_group_member_list(group_id=group_id)
     prep_list = [prep.get("user_id", 114514) for prep in prep_list]
 
+    # 随机抽取群友
     lucky_user = choice(prep_list)
     lucky_user_info: dict = await bot.get_group_member_info(
         group_id=group_id, user_id=lucky_user
     )
+
+    # 获取幸运群友信息
     lucky_user_card = lucky_user_info["card"]
     if not lucky_user_card:
         lucky_user_card = lucky_user_info["nickname"]
 
     lucky_user_sex = lucky_user_info["sex"]
 
+    # 存储配对信息
     data[str(lucky_user)] = MarryInfo(
-        name=req_user_card, sex=is_nick, wife=user_id
+        name=req_user_card, sex=req_user_sex, wife=user_id
     ).dict()
     data[user_id] = MarryInfo(
         name=lucky_user_card, sex=lucky_user_sex, wife=str(lucky_user)
     ).dict()
     Wife().save_marry_list(data)
 
-    repo_1 = f"好欸！{lucky_user_card}成为了{req_user_card}的{is_nick}"
+    repo_1 = f"好欸！{lucky_user_card}({lucky_user}) 成为了 {req_user_card}({user_id}) 的 {is_nick}"
     await get_wife.finish(repo_1)
 
 
@@ -124,9 +129,11 @@ async def _call_wife(event: MessageEvent):
         return
 
     wife = data[user_id].get("name", "ignore")
+    wife_id = data[user_id].get("wife", "114514")
+
     sex = data[user_id].get("sex", "male")
     is_nick = "老公" if sex == "male" else "老婆"
-    repo = f"你已经有{is_nick}啦！是{wife}噢~"
+    repo = f"你已经有{is_nick}啦！是 {wife}({wife_id}) 噢~"
     await call_wife.finish(repo)
 
 
