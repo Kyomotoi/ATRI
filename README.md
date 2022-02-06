@@ -8,11 +8,11 @@
 [![](https://img.shields.io/github/license/Kyomotoi/ATRI?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![](https://img.shields.io/badge/QQgroup-567297659-blue?style=for-the-badge)](https://jq.qq.com/?_wv=1027&k=a89kfKQE)
 
-文档:
-  - [传送门 1](atri.kyomotoi.moe)
-  - [传送门 2](project-atri-docs.vercel.app)
+- 文档:
+    - [传送门 1](atri.kyomotoi.moe)
+    - [传送门 2](project-atri-docs.vercel.app)
 
-> 国内用户无法访问 1 的请走 2
+- [更新日志](changelog.md)
 
 ## 关于（About）
 
