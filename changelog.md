@@ -5,6 +5,31 @@
 
 ---
 
+## Feb 7, 2022
+
+> 接下来该把精力放到 [`RouterForGuild`](https://github.com/Kyomotoi/RouterForGuild) 了
+
+- 更新版本至: `YHN-001-A05.fix1`
+- 新增:
+    - 插件：[`帮助`](user/plugin-help.md)
+        - 新增本文档地址
+    - 插件：[`涩图`](user/plugin-setu.md)
+        - 添加了 `冲后感`
+    - `config.yml`:
+        - `InlineGoCQHTTP`: `download_version` 用于指定内置 `gocqhttp` 下载、运行版本
+- 其它:
+    - 更新:
+        - 所有需要冷却的插件均换上了 `NoneBot v2.0.0 beta1` 内置的 `Cooldown`<br>（原来的由于未知原因已失效）
+        - 优化本项目 `README`
+    - 修复:
+        - 插件：[`老婆`](user/plugin-wife.md)
+            - QQ号指向错误
+            - 由于**原子性**，后续bug可能会频发，正考虑是否删除
+        - 部分插件索取图片相关部分未完全适配 `NoneBot v2.0.0 beta1`
+        - 内置 `gocqhttp` 指向版本 `latest` 下载**可能**提示 `404 Not Found`
+
+---
+
 ## Jan 31, 2022
 
 > 新年快乐！
@@ -87,5 +112,7 @@
 ---
 
 ## 更早记录
+
+> 本项目始于 2020 年 5月，原项目名: `Aya`，后更改为现在的名称
 
 - 请自行查看[`GitHub commits`](https://github.com/Kyomotoi/ATRI/commits/main)
