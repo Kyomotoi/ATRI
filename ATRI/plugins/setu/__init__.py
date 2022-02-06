@@ -17,9 +17,7 @@ random_setu = Setu().on_command("来张涩图", "来张随机涩图，冷却2分
 
 
 @random_setu.handle()
-async def _random_setu(
-    bot: Bot, event: MessageEvent
-):  
+async def _random_setu(bot: Bot, event: MessageEvent):
     loop = asyncio.get_running_loop()
 
     repo, setu = await Setu().random_setu()
@@ -34,7 +32,9 @@ async def _random_setu(
     loop.create_task(Setu().async_recall(bot, event_id))
 
 
-@random_setu.got("r_rush_after_think", prompt="看完不来点感想么-w-", parameterless=[Cooldown(120)])
+@random_setu.got(
+    "r_rush_after_think", prompt="看完不来点感想么-w-", parameterless=[Cooldown(120)]
+)
 async def _(think: str = ArgPlainText("r_rush_after_think")):
     is_repo = will_think(think)
     if not is_repo:
@@ -47,9 +47,7 @@ tag_setu = Setu().on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据�
 
 
 @tag_setu.handle([Cooldown(5, prompt="慢...慢一..点❤")])
-async def _tag_setu(
-    bot: Bot, event: MessageEvent
-):  
+async def _tag_setu(bot: Bot, event: MessageEvent):
     loop = asyncio.get_running_loop()
 
     msg = str(event.get_message()).strip()

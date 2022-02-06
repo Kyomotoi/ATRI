@@ -113,7 +113,9 @@ async def _get_wife(bot: Bot, event: GroupMessageEvent):
     ).dict()
     Wife().save_marry_list(data)
 
-    repo_1 = f"好欸！{lucky_user_card}({lucky_user}) 成为了 {req_user_card}({user_id}) 的 {is_nick}"
+    repo_1 = (
+        f"好欸！{lucky_user_card}({lucky_user}) 成为了 {req_user_card}({user_id}) 的 {is_nick}"
+    )
     await get_wife.finish(repo_1)
 
 
