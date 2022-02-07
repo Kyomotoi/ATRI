@@ -44,7 +44,10 @@ class SaouceNao(Service):
 
     async def search(self, url: str) -> str:
         data = await self._request(url)
-        res = data["results"]
+        try:
+            res = data["result"]
+        except:
+            return "没有相似的结果呢..."
 
         result = list()
         for i in range(3):
@@ -67,7 +70,4 @@ class SaouceNao(Service):
                 f"URL: {i['url'].replace('https://', '')}"
             )
 
-        if not result:
-            return "没有相似的结果呢..."
-        else:
-            return msg0
+        return msg0

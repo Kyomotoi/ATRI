@@ -1,6 +1,7 @@
 import os
 
 from ATRI import __version__
+from ATRI.rule import to_bot
 from ATRI.service import Service, SERVICES_DIR, ServiceTools
 from ATRI.config import BotSelfConfig
 from ATRI.exceptions import ReadFileError
@@ -25,7 +26,7 @@ COMMAND_INFO_FORMAT = """
 
 class Helper(Service):
     def __init__(self):
-        Service.__init__(self, "帮助", "bot的食用指南~")
+        Service.__init__(self, "帮助", "bot的食用指南~", rule=to_bot())
 
     @staticmethod
     def menu() -> str:
@@ -69,7 +70,7 @@ class Helper(Service):
         try:
             data = ServiceTools().load_service(service)
         except ReadFileError:
-            return "请检查是否输入错误呢..."
+            return "请检查是否输入错误呢...@bot 帮助 [服务]"
 
         service_name = data.get("service", "error")
         service_docs = data.get("docs", "error")
