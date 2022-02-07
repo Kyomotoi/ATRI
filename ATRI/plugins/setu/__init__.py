@@ -114,7 +114,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
             ss = list()
             for s in args:
                 ss.append(MessageSegment.image(s))
-            ss = "\n".join(ss)
+            ss = "\n".join(map(str, ss))
             s_repo = f"多张涩图来咧！\n{ss}\n最涩的达到：{'{:.2%}'.format(hso[0])}"
 
         await bot.send(event, u_repo)
