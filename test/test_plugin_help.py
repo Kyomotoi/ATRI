@@ -111,7 +111,7 @@ async def test_service_info(app: App):
         event = make_fake_event(_message=msg, _to_me=True)()
 
         ctx.receive_event(bot, event)
-        ctx.should_call_send(event, "请检查是否输入错误...", True)
+        ctx.should_call_send(event, "请检查是否输入错误呢...@bot 帮助 [服务]", True)
 
     async with app.test_matcher(service_info) as ctx:
         bot = ctx.create_bot()
@@ -124,13 +124,11 @@ async def test_service_info(app: App):
             event,
             """
             服务名：状态
-            说明：
-            检查咱自身状态
-
+            说明：检查咱自身状态
             可用命令：
                 /ping、/status
             是否全局启用：True
-            Tip: 帮助 [服务] [命令] 以查看对应命令详细信息
+            Tip: @bot 帮助 [服务] [命令] 以查看对应命令详细信息
             """,
             True,
         )
