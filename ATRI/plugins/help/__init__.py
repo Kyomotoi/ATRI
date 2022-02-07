@@ -50,6 +50,6 @@ async def _ready_service_info(event: MessageEvent):
     if not cmd:
         repo = Helper().service_info(service)
         await service_info.finish(repo)
-    
+
     repo = Helper().cmd_info(service, cmd)
     await service_info.finish(repo)
