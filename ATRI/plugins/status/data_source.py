@@ -8,9 +8,7 @@ from ATRI.rule import is_in_service
 from ATRI.exceptions import GetStatusError
 
 
-__doc__ = """
-检查咱自身状态
-"""
+__doc__ = "检查咱自身状态"
 
 
 class IsSurvive(Service):
