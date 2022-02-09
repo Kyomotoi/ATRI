@@ -36,7 +36,7 @@ class SaouceNao(Service):
     async def _request(self, url: str):
         self.params["url"] = url
         try:
-            res = await request.post(URL, params=self.params)
+            res = await request.get(URL, params=self.params)
         except RequestError:
             raise RequestError("Request failed!")
         data = res.json()
@@ -45,24 +45,27 @@ class SaouceNao(Service):
     async def search(self, url: str) -> str:
         data = await self._request(url)
         try:
-            res = data["result"]
+            res = data.get("results", "result")
         except:
             return "没有相似的结果呢..."
 
-        result = list()
+        r = list()
         for i in range(3):
-            sim = res[i]["header"]["similarity"]
-            if float(sim) >= 70:
-                data = res[i]
+            data = res[i]
 
+            sim = data["header"]["similarity"]
+            if float(sim) >= 70:
                 _result = dict()
                 _result["similarity"] = sim
                 _result["index_name"] = data["header"]["index_name"]
                 _result["url"] = choice(data["data"].get("ext_urls", ["None"]))
-                result.append(_result)
+                r.append(_result)
+        
+        if not r:
+            return "没有相似的结果呢..."
 
         msg0 = str()
-        for i in result:
+        for i in r:
             msg0 += (
                 "\n——————————\n"
                 f"Similarity: {i['similarity']}\n"
