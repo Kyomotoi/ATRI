@@ -169,7 +169,11 @@ class Manage(Service):
             except BaseException:
                 return False
         else:
+            if user_id in temp_list:
+                return True
+
             temp_list.append(user_id)
+            
         data["disable_user"] = temp_list
         ServiceTools().save_service(data, service)
         return True
@@ -182,17 +186,21 @@ class Manage(Service):
         """
         try:
             data = ServiceTools().load_service(service)
-        except BaseException:
+        except:
             return False
         temp_list: list = data.get("disable_group", list())
 
         if is_enabled:
             try:
                 temp_list.remove(group_id)
-            except BaseException:
+            except:
                 return False
         else:
+            if group_id in temp_list:
+                return True
+
             temp_list.append(group_id)
+
         data["disable_group"] = temp_list
         ServiceTools().save_service(data, service)
         return True
@@ -208,7 +216,7 @@ class Manage(Service):
 
         try:
             data = json.loads(path.read_bytes())
-        except BaseException:
+        except:
             data = dict()
         return data
 
