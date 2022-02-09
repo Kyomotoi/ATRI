@@ -60,7 +60,7 @@ class SaouceNao(Service):
                 _result["index_name"] = data["header"]["index_name"]
                 _result["url"] = choice(data["data"].get("ext_urls", ["None"]))
                 r.append(_result)
-        
+
         if not r:
             return "没有相似的结果呢..."
 

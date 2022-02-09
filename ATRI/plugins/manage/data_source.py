@@ -173,7 +173,7 @@ class Manage(Service):
                 return True
 
             temp_list.append(user_id)
-            
+
         data["disable_user"] = temp_list
         ServiceTools().save_service(data, service)
         return True
