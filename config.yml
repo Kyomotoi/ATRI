@@ -17,7 +17,7 @@ InlineGoCQHTTP:
       protocol: 3
   
   download_domain: "github.com"
-  download_version: "v1.0.0-beta8-fix2"
+  download_version: "v1.0.0-rc1"
 
 SauceNAO:
   key: ""
