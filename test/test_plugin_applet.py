@@ -6,7 +6,7 @@ from .utils import make_fake_message, make_fake_event
 
 @pytest.mark.asyncio
 async def test_bili_rich(app: App):
-    from ATRI.plugins.rich import bili_rich
+    from ATRI.plugins.applet import bili_rich
 
     Message = make_fake_message()
 

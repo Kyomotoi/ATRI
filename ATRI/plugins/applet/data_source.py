@@ -21,7 +21,7 @@ __doc__ = """啥b腾讯小程序给👴爪巴
 """
 
 
-class Rich(Service):
+class Applet(Service):
     def __init__(self):
         Service.__init__(self, "小程序处理", __doc__, rule=is_in_service("小程序处理"))
 
