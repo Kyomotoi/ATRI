@@ -5,12 +5,12 @@ from .utils import make_fake_message, make_fake_event
 
 
 @pytest.mark.asyncio
-async def test_bili_rich(app: App):
-    from ATRI.plugins.applet import bili_rich
+async def test_bili_applet(app: App):
+    from ATRI.plugins.applet import bili_applet
 
     Message = make_fake_message()
 
-    async with app.test_matcher(bili_rich) as ctx:
+    async with app.test_matcher(bili_applet) as ctx:
         bot = ctx.create_bot()
 
         msg = Message("BV1Ff4y1C7YR")
