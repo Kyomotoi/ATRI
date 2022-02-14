@@ -9,8 +9,8 @@
 [![](https://img.shields.io/badge/QQgroup-567297659-blue?style=for-the-badge)](https://jq.qq.com/?_wv=1027&k=a89kfKQE)
 
 - 文档:
-    - [传送门 1](atri.kyomotoi.moe)
-    - [传送门 2](project-atri-docs.vercel.app)
+    - [传送门 1](https://atri.kyomotoi.moe)
+    - [传送门 2](https://project-atri-docs.vercel.app)
 
 - [更新日志](changelog.md)
 
