@@ -14,7 +14,7 @@ async def _(event: MessageEvent):
         result, is_ok = await Applet().msg_builder(msg)
     except Exception:
         return
-    
+
     if not is_ok:
         return
 

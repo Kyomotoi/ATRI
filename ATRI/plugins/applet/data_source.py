@@ -47,7 +47,7 @@ class Applet(Service):
         pattern = re.compile(r"BV[0-9A-Za-z]{10}")
         result = pattern.findall(text)
         return result[0] if result else ""
-    
+
     @classmethod
     async def msg_builder(cls, text: str) -> tuple:
         bv = cls.bili_video_code_catcher(text)
@@ -61,10 +61,10 @@ class Applet(Service):
             rep = await cls.bili_request(u)
             bv = cls.bili_video_code_catcher(rep)
             av = cls._bv_dec(bv)
-            
+
         else:
             av = cls._bv_dec(bv)
-        
+
         url = URL + av
         req = await request.get(url)
         res_data = req.json()
