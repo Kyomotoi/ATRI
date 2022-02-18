@@ -1,11 +1,13 @@
 import os
+import json
+
+from tabulate import tabulate
 
 from ATRI import __version__
 from ATRI.rule import to_bot
 from ATRI.service import Service, SERVICES_DIR, ServiceTools
 from ATRI.config import BotSelfConfig
 from ATRI.exceptions import ReadFileError
-
 
 SERVICE_INFO_FORMAT = """
 服务名：{service}
@@ -14,7 +16,6 @@ SERVICE_INFO_FORMAT = """
 是否全局启用：{enabled}
 Tip: @bot 帮助 [服务] [命令] 以查看对应命令详细信息
 """.strip()
-
 
 COMMAND_INFO_FORMAT = """
 命令：{cmd}
@@ -56,13 +57,15 @@ class Helper(Service):
     @staticmethod
     def service_list() -> str:
         files = os.listdir(SERVICES_DIR)
-        temp_list = list()
-        for i in files:
-            service = i.replace(".json", "")
-            temp_list.append(service)
-
-        services = "、".join(map(str, temp_list))
-        repo = f"咱搭载了以下服务~\n{services}\n@bot 帮助 [服务] -以查看对应服务帮助"
+        services = list()
+        for f in files:
+            prefix = f.replace(".json", "")
+            f = os.path.join(SERVICES_DIR, f)
+            with open(f, "r", encoding="utf-8") as r:
+                service = json.load(r)
+                services.append([prefix, "√" if service["enabled"] else "×", "√" if service["only_admin"] else "×"])
+        table = tabulate(services, headers=["服务名称", "开启状态", "仅支持管理员"], tablefmt="plain", showindex=True)
+        repo = f"咱搭载了以下服务~\n{table}\n@bot 帮助 [服务] -以查看对应服务帮助"
         return repo
 
     @staticmethod

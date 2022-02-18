@@ -9,16 +9,16 @@ from nonebot.log import logger, LoguruHandler
 
 
 apscheduler_autostart: bool = True
-apscheduler_config: dict = {"apscheduler.timezone": "Asia/Shanghai"}
+# apscheduler_config: dict = {"apscheduler.timezone": "Asia/Shanghai"}
 
 
 driver = get_driver()
-scheduler = AsyncIOScheduler()
+scheduler = AsyncIOScheduler(timezone="Asia/Shanghai")
 
 
 async def _start_scheduler():
     if not scheduler.running:
-        scheduler.configure(apscheduler_config)
+        # scheduler.configure(apscheduler_config)
         scheduler.start()
         logger.info("Scheduler Started.")
 

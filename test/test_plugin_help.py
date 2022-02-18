@@ -66,17 +66,22 @@ async def test_about_me(app: App):
 @pytest.mark.asyncio
 async def test_service_list(app: App):
     import os
+    import json
+    from tabulate import tabulate
 
     from ATRI.service import SERVICES_DIR
     from ATRI.plugins.help import service_list
 
     files = os.listdir(SERVICES_DIR)
-    temp_list = list()
-    for i in files:
-        service = i.replace(".json", "")
-        temp_list.append(service)
-
-    services = "、".join(map(str, temp_list))
+    services = list()
+    for f in files:
+        prefix = f.replace(".json", "")
+        f = os.path.join(SERVICES_DIR, f)
+        with open(f, "r", encoding="utf-8") as r:
+            service = json.load(r)
+            services.append([prefix, "√" if service["enabled"] else "×", "√" if service["only_admin"] else "×"])
+    table = tabulate(services, headers=["服务名称", "开启状态", "仅支持管理员"], tablefmt="plain", showindex=True)
+    output = f"咱搭载了以下服务~\n{table}\n@bot 帮助 [服务] -以查看对应服务帮助"
 
     Message = make_fake_message()
 
@@ -91,7 +96,7 @@ async def test_service_list(app: App):
             event,
             f"""
             咱搭载了以下服务~
-            {services}
+            {output}
             @bot 帮助 [服务] -以查看对应服务帮助
             """,
             True,
