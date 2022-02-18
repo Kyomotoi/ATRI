@@ -139,5 +139,8 @@ dmypy.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
+# for JetBrain Pycharm
+.idea
+
 /accounts/*
 /data/*
