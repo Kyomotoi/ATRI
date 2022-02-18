@@ -32,9 +32,7 @@ async def _random_setu(bot: Bot, event: MessageEvent):
     loop.create_task(Setu().async_recall(bot, event_id))
 
 
-@random_setu.got(
-    "r_rush_after_think", prompt="看完不来点感想么-w-"
-)
+@random_setu.got("r_rush_after_think", prompt="看完不来点感想么-w-")
 async def _(think: str = ArgPlainText("r_rush_after_think")):
     is_repo = will_think(think)
     if not is_repo:
