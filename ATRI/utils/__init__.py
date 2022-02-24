@@ -18,8 +18,10 @@ def timestamp2datetimestr(timestamp: int) -> str:
     dt = time.strftime(format, timestamp)
     return dt
 
+
 def timestamp2datetime(value: int) -> datetime:
     return datetime.fromtimestamp(value)
+
 
 def now_time() -> float:
     """获取当前时间的整数."""

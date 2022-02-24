@@ -18,7 +18,8 @@ from .exceptions.ApiException import ApiException
 import json
 import re
 
-API = get_api('bangumi')
+API = get_api("bangumi")
+
 
 class BangumiCommentOrder(Enum):
     """
@@ -27,6 +28,7 @@ class BangumiCommentOrder(Enum):
     + DEFAULT: 默认
     + CTIME: 发布时间倒序
     """
+
     DEFAULT = 0
     CTIME = 1
 
@@ -42,15 +44,16 @@ async def get_meta(media_id: int, credential: Credential = None):
     credential = credential if credential is not None else Credential()
 
     api = API["info"]["meta"]
-    params = {
-        "media_id": media_id
-    }
-    return await request('GET', api['url'], params, credential=credential)
+    params = {"media_id": media_id}
+    return await request("GET", api["url"], params, credential=credential)
 
 
-
-async def get_short_comment_list(media_id: int, order: BangumiCommentOrder = BangumiCommentOrder.DEFAULT,
-                           next: str = None, credential: Credential = None):
+async def get_short_comment_list(
+    media_id: int,
+    order: BangumiCommentOrder = BangumiCommentOrder.DEFAULT,
+    next: str = None,
+    credential: Credential = None,
+):
     """
     获取短评列表
 
@@ -63,20 +66,19 @@ async def get_short_comment_list(media_id: int, order: BangumiCommentOrder = Ban
     credential = credential if credential is not None else Credential()
 
     api = API["info"]["short_comment"]
-    params = {
-        "media_id": media_id,
-        "ps": 20,
-        "sort": order.value
-    }
+    params = {"media_id": media_id, "ps": 20, "sort": order.value}
     if next is not None:
         params["cursor"] = next
 
-    return await request('GET', api['url'], params, credential=credential)
+    return await request("GET", api["url"], params, credential=credential)
 
 
-
-async def get_long_comment_list(media_id: int, order: BangumiCommentOrder = BangumiCommentOrder.DEFAULT,
-                           next: str = None, credential: Credential = None):
+async def get_long_comment_list(
+    media_id: int,
+    order: BangumiCommentOrder = BangumiCommentOrder.DEFAULT,
+    next: str = None,
+    credential: Credential = None,
+):
     """
     获取长评列表
 
@@ -89,16 +91,11 @@ async def get_long_comment_list(media_id: int, order: BangumiCommentOrder = Bang
     credential = credential if credential is not None else Credential()
 
     api = API["info"]["long_comment"]
-    params = {
-        "media_id": media_id,
-        "ps": 20,
-        "sort": order.value
-    }
+    params = {"media_id": media_id, "ps": 20, "sort": order.value}
     if next is not None:
         params["cursor"] = next
 
-    return await request('GET', api['url'], params, credential=credential)
-
+    return await request("GET", api["url"], params, credential=credential)
 
 
 async def get_episode_list(season_id: int, credential: Credential = None):
@@ -112,10 +109,8 @@ async def get_episode_list(season_id: int, credential: Credential = None):
     credential = credential if credential is not None else Credential()
 
     api = API["info"]["episodes_list"]
-    params = {
-        "season_id": season_id
-    }
-    return await request('GET', api['url'], params, credential=credential)
+    params = {"season_id": season_id}
+    return await request("GET", api["url"], params, credential=credential)
 
 
 async def get_stat(season_id: int, credential: Credential = None):
@@ -129,10 +124,8 @@ async def get_stat(season_id: int, credential: Credential = None):
     credential = credential if credential is not None else Credential()
 
     api = API["info"]["season_status"]
-    params = {
-        "season_id": season_id
-    }
-    return await request('GET', api['url'], params, credential=credential)
+    params = {"season_id": season_id}
+    return await request("GET", api["url"], params, credential=credential)
 
 
 async def get_episode_info(epid: int, credential: Credential = None):
@@ -146,9 +139,11 @@ async def get_episode_info(epid: int, credential: Credential = None):
     credential = credential if credential is not None else Credential()
     session = get_session()
 
-    async with session.get(f"https://www.bilibili.com/bangumi/play/ep{epid}", cookies=credential.get_cookies(), headers={
-        "User-Agent": "Mozilla/5.0"
-    }) as resp:
+    async with session.get(
+        f"https://www.bilibili.com/bangumi/play/ep{epid}",
+        cookies=credential.get_cookies(),
+        headers={"User-Agent": "Mozilla/5.0"},
+    ) as resp:
         if resp.status != 200:
             raise ResponseException(resp.status)
 
@@ -177,16 +172,16 @@ async def get_overview(season_id: int, credential: Credential = None):
     credential = credential if credential is not None else Credential()
 
     api = API["info"]["collective_info"]
-    params = {
-        "season_id": season_id
-    }
-    return await request('GET', api['url'], params, credential=credential)
+    params = {"season_id": season_id}
+    return await request("GET", api["url"], params, credential=credential)
 
 
 # 番剧操作
 
 
-async def set_follow(season_id: int, status: bool = True, credential: Credential = None):
+async def set_follow(
+    season_id: int, status: bool = True, credential: Credential = None
+):
     """
     追番状态设置
 
@@ -199,7 +194,5 @@ async def set_follow(season_id: int, status: bool = True, credential: Credential
     credential.raise_for_no_sessdata()
 
     api = API["operate"]["follow_add"] if status else API["operate"]["follow_del"]
-    data = {
-        "season_id": season_id
-    }
-    return await request('POST', api['url'], data=data, credential=credential)
+    data = {"season_id": season_id}
+    return await request("POST", api["url"], data=data, credential=credential)

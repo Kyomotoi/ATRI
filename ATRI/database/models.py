@@ -12,7 +12,11 @@ class Subscription(Model):
     uid = fields.IntField(pk=True)  # up的uid
     groupid = fields.IntField()  # 群号
     nickname = fields.TextField(null=True)  # 订阅up的名称
-    last_update = fields.DatetimeField(default=datetime.fromordinal(1)) # 上一条动态更新时间 默认0001-01-01 00:00:00
+    last_update = fields.DatetimeField(
+        default=datetime.fromordinal(1)
+    )  # 上一条动态更新时间 默认0001-01-01 00:00:00
 
     def __str__(self):
-        return '[{nickname}|{uid}|{groupid}]'.format(nickname=self.nickname, uid=self.uid, groupid=self.groupid)
+        return "[{nickname}|{uid}|{groupid}]".format(
+            nickname=self.nickname, uid=self.uid, groupid=self.groupid
+        )

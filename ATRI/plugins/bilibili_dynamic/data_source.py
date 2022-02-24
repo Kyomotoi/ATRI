@@ -20,7 +20,9 @@ class BilibiliDynamicSubscriptor(Service):
 
     async def remove_subscription(self, uid: int, groupid: int) -> bool:
         async with DB() as db:
-            res = await db.remove_subscription(query_map={'uid': uid, 'groupid': groupid})
+            res = await db.remove_subscription(
+                query_map={"uid": uid, "groupid": groupid}
+            )
             return res
 
     async def get_subscriptions(self, query_map: dict) -> list:
@@ -35,7 +37,7 @@ class BilibiliDynamicSubscriptor(Service):
 
     async def get_all_subscriptions(self) -> list:
         async with DB() as db:
-            res = await  db.get_all_subscriptions()
+            res = await db.get_all_subscriptions()
             return res
 
     # bilibili network function
@@ -156,6 +158,7 @@ class BilibiliDynamicSubscriptor(Service):
 
     def extract_dynamics_detail(self, dynamic_list: list) -> list:
         import time
+
         ret = []
         for d in dynamic_list:
             pattern = {}
@@ -214,10 +217,16 @@ class BilibiliDynamicSubscriptor(Service):
         return ret
 
     def generate_output(self, pattern: dict) -> (str, str):
-        text_part = '''【UP名称】{name}\n【动态类型】{dynamic_type}\n【动态ID】{dynamic_id}\n【时间】{time}\n【UID】{uid}\n【当前阅读次数】{view}\n【当前转发次数】{repost}\n【当前点赞次数】{like}\n【内容摘要】{content}\n'''.format(
-            name=pattern["name"], dynamic_type=pattern["type_zh"], dynamic_id=pattern["dynamic_id"],
+        text_part = """【UP名称】{name}\n【动态类型】{dynamic_type}\n【动态ID】{dynamic_id}\n【时间】{time}\n【UID】{uid}\n【当前阅读次数】{view}\n【当前转发次数】{repost}\n【当前点赞次数】{like}\n【内容摘要】{content}\n""".format(
+            name=pattern["name"],
+            dynamic_type=pattern["type_zh"],
+            dynamic_id=pattern["dynamic_id"],
             time=pattern["time"],
-            uid=pattern["uid"], view=pattern["view"], repost=pattern["repost"], like=pattern["like"],
-            content=pattern["content"])
+            uid=pattern["uid"],
+            view=pattern["view"],
+            repost=pattern["repost"],
+            like=pattern["like"],
+            content=pattern["content"],
+        )
         pic_part = pattern["pic"]
         return text_part, pic_part

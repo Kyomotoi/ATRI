@@ -4,7 +4,8 @@
 from .utils.utils import get_api
 from .utils.network import request
 
-API = get_api('misc')
+API = get_api("misc")
+
 
 async def web_search(keyword: str):
     """
@@ -14,10 +15,9 @@ async def web_search(keyword: str):
         keyword (str): 搜索关键词
     """
     api = API["search"]["web_search"]
-    params = {
-        "keyword": keyword
-    }
-    return await request('GET', url=api["url"], params=params)
+    params = {"keyword": keyword}
+    return await request("GET", url=api["url"], params=params)
+
 
 async def web_search_by_type(keyword: str, search_type: str):
     """
@@ -29,8 +29,5 @@ async def web_search_by_type(keyword: str, search_type: str):
         search_type (str): 搜索类型
     """
     api = API["search"]["web_search_by_type"]
-    params = {
-        "keyword": keyword,
-        "search_type": search_type
-    }
-    return await request('GET', url=api["url"], params=params)
+    params = {"keyword": keyword, "search_type": search_type}
+    return await request("GET", url=api["url"], params=params)

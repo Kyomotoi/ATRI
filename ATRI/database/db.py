@@ -15,9 +15,10 @@ class DB:
 
     async def init(self):
         from ATRI.database import models
+
         await Tortoise.init(
-            db_url='sqlite://ATRI/database/db.sqlite3',
-            modules={"models": [locals()["models"]]}
+            db_url="sqlite://ATRI/database/db.sqlite3",
+            modules={"models": [locals()["models"]]},
         )
         # Generate the schema
         await Tortoise.generate_schemas()
@@ -31,7 +32,7 @@ class DB:
 
     async def get_all_subscriptions_by_gid(self, groupid: int) -> list:
         try:
-            subs = await self.get_subscriptions(query_map={'groupid': groupid})
+            subs = await self.get_subscriptions(query_map={"groupid": groupid})
             return subs
         except:
             return []

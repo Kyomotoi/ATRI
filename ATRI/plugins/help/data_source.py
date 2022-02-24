@@ -63,8 +63,19 @@ class Helper(Service):
             f = os.path.join(SERVICES_DIR, f)
             with open(f, "r", encoding="utf-8") as r:
                 service = json.load(r)
-                services.append([prefix, "√" if service["enabled"] else "×", "√" if service["only_admin"] else "×"])
-        table = tabulate(services, headers=["服务名称", "开启状态", "仅支持管理员"], tablefmt="plain", showindex=True)
+                services.append(
+                    [
+                        prefix,
+                        "√" if service["enabled"] else "×",
+                        "√" if service["only_admin"] else "×",
+                    ]
+                )
+        table = tabulate(
+            services,
+            headers=["服务名称", "开启状态", "仅支持管理员"],
+            tablefmt="plain",
+            showindex=True,
+        )
         repo = f"咱搭载了以下服务~\n{table}\n@bot 帮助 [服务] -以查看对应服务帮助"
         return repo
 
