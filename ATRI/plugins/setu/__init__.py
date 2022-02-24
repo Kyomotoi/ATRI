@@ -16,7 +16,7 @@ from .data_source import Setu
 random_setu = Setu().on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
 
 
-@random_setu.handle()
+@random_setu.handle([Cooldown(120)])
 async def _random_setu(bot: Bot, event: MessageEvent):
     loop = asyncio.get_running_loop()
 
@@ -32,9 +32,7 @@ async def _random_setu(bot: Bot, event: MessageEvent):
     loop.create_task(Setu().async_recall(bot, event_id))
 
 
-@random_setu.got(
-    "r_rush_after_think", prompt="看完不来点感想么-w-", parameterless=[Cooldown(120)]
-)
+@random_setu.got("r_rush_after_think", prompt="看完不来点感想么-w-")
 async def _(think: str = ArgPlainText("r_rush_after_think")):
     is_repo = will_think(think)
     if not is_repo:
@@ -46,7 +44,7 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
 tag_setu = Setu().on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
 
 
-@tag_setu.handle([Cooldown(5, prompt="慢...慢一..点❤")])
+@tag_setu.handle([Cooldown(120, prompt="慢...慢一..点❤")])
 async def _tag_setu(bot: Bot, event: MessageEvent):
     loop = asyncio.get_running_loop()
 
@@ -68,7 +66,7 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     loop.create_task(Setu().async_recall(bot, event_id))
 
 
-@tag_setu.got("t_rush_after_think", prompt="看完不来点感想么-w-", parameterless=[Cooldown(120)])
+@tag_setu.got("t_rush_after_think", prompt="看完不来点感想么-w-")
 async def _(think: str = ArgPlainText("t_rush_after_think")):
     is_repo = will_think(think)
     if not is_repo:
