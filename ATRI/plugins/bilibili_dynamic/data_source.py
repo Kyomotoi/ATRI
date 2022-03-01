@@ -9,6 +9,7 @@ import os
 import re
 import asyncio
 from typing import Any
+from operator import itemgetter
 
 __doc__ = """b站订阅动态助手
 """
@@ -54,13 +55,13 @@ def get_session():
 
 
 async def bilibili_request(
-    method: str,
-    url: str,
-    params: dict = None,
-    data: Any = None,
-    no_csrf: bool = False,
-    json_body: bool = False,
-    **kwargs,
+        method: str,
+        url: str,
+        params: dict = None,
+        data: Any = None,
+        no_csrf: bool = False,
+        json_body: bool = False,
+        **kwargs,
 ):
     """
     向接口发送请求。
@@ -330,7 +331,7 @@ class BilibiliDynamicSubscriptor(Service):
                     pattern["pic"] = card["image_urls"][0]
 
             ret.append(pattern)
-
+        ret = sorted(ret, key=itemgetter("timestamp"))
         return ret
 
     def generate_output(self, pattern: dict) -> (str, str):

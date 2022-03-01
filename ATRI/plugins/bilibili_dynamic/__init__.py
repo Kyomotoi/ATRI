@@ -151,7 +151,6 @@ async def _check_dynamic():
         if info:
             if info.get("cards") is not None:
                 res = subscriptor.extract_dynamics_detail(info.get("cards"))
-        res = res[::-1]
         for i in res:
             i["name"] = d.nickname
             if ts < i["timestamp"]:
