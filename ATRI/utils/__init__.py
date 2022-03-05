@@ -2,6 +2,7 @@ import os
 import re
 import yaml
 import aiofiles
+import time
 from pathlib import Path
 from aiohttp import FormData
 from datetime import datetime
@@ -9,6 +10,17 @@ from PIL import Image, ImageFile
 from aiofiles.threadpool.text import AsyncTextIOWrapper
 
 from . import request
+
+
+def timestamp2datetimestr(timestamp: int) -> str:
+    format = "%Y-%m-%d %H:%M:%S"
+    timestamp = time.localtime(timestamp)
+    dt = time.strftime(format, timestamp)
+    return dt
+
+
+def timestamp2datetime(value: int) -> datetime:
+    return datetime.fromtimestamp(value)
 
 
 def now_time() -> float:
