@@ -335,16 +335,13 @@ class BilibiliDynamicSubscriptor(Service):
         return ret
 
     def generate_output(self, pattern: dict) -> (str, str):
-        text_part = """【UP名称】{name}\n【动态类型】{dynamic_type}\n【动态ID】{dynamic_id}\n【时间】{time}\n【UID】{uid}\n【当前阅读次数】{view}\n【当前转发次数】{repost}\n【当前点赞次数】{like}\n【内容摘要】{content}\n""".format(
+        # 限制摘要的字数
+        abstractLimit = 40
+        text_part = """【UP名称】{name}\n【动态类型】{dynamic_type}\n【时间】{time}\n【内容摘要】{content}\n""".format(
             name=pattern["name"],
             dynamic_type=pattern["type_zh"],
-            dynamic_id=pattern["dynamic_id"],
             time=pattern["time"],
-            uid=pattern["uid"],
-            view=pattern["view"],
-            repost=pattern["repost"],
-            like=pattern["like"],
-            content=pattern["content"],
+            content=pattern["content"][:abstractLimit],
         )
         pic_part = pattern["pic"]
         return text_part, pic_part
