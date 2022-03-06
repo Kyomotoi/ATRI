@@ -1,3 +1,7 @@
+from apscheduler.triggers.base import BaseTrigger
+from apscheduler.triggers.combining import AndTrigger
+from apscheduler.triggers.interval import IntervalTrigger
+
 from ATRI.utils.apscheduler import scheduler
 from ATRI.utils import timestamp2datetime
 
@@ -130,11 +134,24 @@ from queue import Queue
 tq = Queue()
 
 
+class BilibiliDynamicCheckEnabledTrigger(BaseTrigger):
+    # 自定义trigger 保证服务开启
+    # 实现abstract方法 <get_next_fire_time>
+    def get_next_fire_time(self, previous_fire_time, now):
+        subscriptor = BilibiliDynamicSubscriptor()
+        config = subscriptor.load_service()
+        if config["enabled"] == False:
+            return None
+        else:
+            return now
+
+
 # 业务逻辑
 # 每10s从任务队列中拉一个uid出来，调用api进行查询
 # 当任务队列为空时，从数据库读取订阅列表，并塞入任务队列tq中
 @scheduler.scheduled_job(
-    "interval", name="b站动态检查", seconds=10, max_instances=3, misfire_grace_time=60
+    AndTrigger([IntervalTrigger(seconds=10),
+                BilibiliDynamicCheckEnabledTrigger()]), name="b站动态检查", max_instances=3, misfire_grace_time=60
 )
 async def _check_dynamic():
     from ATRI.database.models import Subscription
