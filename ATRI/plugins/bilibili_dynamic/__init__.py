@@ -9,6 +9,7 @@ from nonebot import get_bot
 from .data_source import BilibiliDynamicSubscriptor
 import re
 from tabulate import tabulate
+from datetime import datetime
 
 bilibili_dynamic = BilibiliDynamicSubscriptor().on_command(
     "/bilibili_dynamic", "b站动态订阅助手", aliases={"b站动态"}
@@ -102,7 +103,7 @@ async def handle_uid(event: GroupMessageEvent, state: T_State = State()):
         print(success)
         success = success and (
             await subscriptor.update_subscription_by_uid(
-                uid=uid, update_map={"nickname": up_name}
+                uid=uid, update_map={"nickname": up_name, "last_update": datetime.now()}
             )
         )
     elif sub_command == "取消订阅":
