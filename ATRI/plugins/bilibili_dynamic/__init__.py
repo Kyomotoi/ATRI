@@ -150,8 +150,10 @@ class BilibiliDynamicCheckEnabledTrigger(BaseTrigger):
 # 每10s从任务队列中拉一个uid出来，调用api进行查询
 # 当任务队列为空时，从数据库读取订阅列表，并塞入任务队列tq中
 @scheduler.scheduled_job(
-    AndTrigger([IntervalTrigger(seconds=10),
-                BilibiliDynamicCheckEnabledTrigger()]), name="b站动态检查", max_instances=3, misfire_grace_time=60
+    AndTrigger([IntervalTrigger(seconds=10), BilibiliDynamicCheckEnabledTrigger()]),
+    name="b站动态检查",
+    max_instances=3,
+    misfire_grace_time=60,
 )
 async def _check_dynamic():
     from ATRI.database.models import Subscription
