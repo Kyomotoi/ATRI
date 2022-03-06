@@ -55,13 +55,13 @@ def get_session():
 
 
 async def bilibili_request(
-        method: str,
-        url: str,
-        params: dict = None,
-        data: Any = None,
-        no_csrf: bool = False,
-        json_body: bool = False,
-        **kwargs,
+    method: str,
+    url: str,
+    params: dict = None,
+    data: Any = None,
+    no_csrf: bool = False,
+    json_body: bool = False,
+    **kwargs,
 ):
     """
     向接口发送请求。
