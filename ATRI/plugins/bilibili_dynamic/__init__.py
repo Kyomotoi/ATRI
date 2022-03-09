@@ -1,3 +1,4 @@
+import pytz
 from apscheduler.triggers.base import BaseTrigger
 from apscheduler.triggers.combining import AndTrigger
 from apscheduler.triggers.interval import IntervalTrigger
@@ -13,7 +14,8 @@ from nonebot import get_bot
 from .data_source import BilibiliDynamicSubscriptor
 import re
 from tabulate import tabulate
-from datetime import datetime
+from datetime import datetime, timedelta
+from ATRI.log import logger
 
 bilibili_dynamic = BilibiliDynamicSubscriptor().on_command(
     "/bilibili_dynamic", "b站动态订阅助手", aliases={"b站动态"}
@@ -60,7 +62,8 @@ async def handle_subcommand(event: GroupMessageEvent, state: T_State = State()):
         r = await subscriptor.get_subscriptions(query_map={"groupid": event.group_id})
         subs = []
         for s in r:
-            subs.append([s.nickname, s.uid, s.last_update])
+            tm = s.last_update.replace(tzinfo=pytz.timezone("Asia/Shanghai"))
+            subs.append([s.nickname, s.uid, tm + timedelta(hours=8)])
         output = "本群订阅的UP列表如下～\n" + tabulate(
             subs, headers=["up名称", "UID", "上次更新时间"], tablefmt="plain", showindex=True
         )
@@ -165,13 +168,19 @@ async def _check_dynamic():
             tq.put(d)
     else:
         d: Subscription = tq.get()
+        logger.info("准备查询UP【{up}】的动态 队列剩余{size}".format(up=d.nickname, size=tq.qsize()))
         ts = int(d.last_update.timestamp())
+        # logger.info("上一次更新的时间戳{time}".format(time=ts))
         info: dict = await subscriptor.get_recent_dynamic_by_uid(d.uid)
         res = []
         if info:
             if info.get("cards") is not None:
                 res = subscriptor.extract_dynamics_detail(info.get("cards"))
+
+        if len(res) == 0:
+            logger.warning("获取UP【{up}】的动态为空".format(up=d.nickname))
         for i in res:
+            # logger.info("获取UP【{up}】的动态，时间{time}，内容{content}".format(up=d.nickname, time=i["timestamp"],content=i["content"][:20]))
             i["name"] = d.nickname
             if ts < i["timestamp"]:
                 text, pic_url = subscriptor.generate_output(pattern=i)
