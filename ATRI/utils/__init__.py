@@ -1,5 +1,6 @@
 import os
 import re
+import pytz
 import yaml
 import aiofiles
 import time
@@ -20,7 +21,8 @@ def timestamp2datetimestr(timestamp: int) -> str:
 
 
 def timestamp2datetime(value: int) -> datetime:
-    return datetime.fromtimestamp(value)
+    tz = pytz.timezone("Asia/Shanghai")
+    return datetime.fromtimestamp(value, tz=tz)
 
 
 def now_time() -> float:
