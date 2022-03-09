@@ -110,7 +110,8 @@ async def handle_uid(event: GroupMessageEvent, state: T_State = State()):
         print(success)
         success = success and (
             await subscriptor.update_subscription_by_uid(
-                uid=uid, update_map={"nickname": up_name, "last_update": datetime.utcnow()}
+                uid=uid,
+                update_map={"nickname": up_name, "last_update": datetime.utcnow()},
             )
         )
     elif sub_command == "取消订阅":
