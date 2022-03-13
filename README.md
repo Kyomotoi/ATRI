@@ -75,19 +75,19 @@
 
 获取项目的所有文件之后:
 
-    - 如果你是x86用户:
+   - 如果你是x86用户:
     
         >sudo docker-composed up
 
-    - 如果您是aarch64 (ARM64) 用户:
+   - 如果您是aarch64 (ARM64) 用户:
     
-    由于平台特殊性，请确保在`%ATRI%`目录下存在`tenserflow`的`whl`文件，例如`tensorflow-2.8.0-cp38-none-linux_aarch64.whl`，无需重命名
+   由于平台特殊性，请确保在`%ATRI%`目录下存在`tenserflow`的`whl`文件，例如`tensorflow-2.8.0-cp38-none-linux_aarch64.whl`，无需重命名
     
         > cp ./Dockerfile ./Dockerfile_x86 && cp -f ./Dockerfile_aarch64 ./Dockerfile
     
         > sudo docker-composed up
 
--  在看到bot成功运行并扫码登陆之后，CTRL + C 结束运行，之后
+-  对于所有平台，在看到bot成功运行并扫码登陆之后，CTRL + C 结束运行，之后
 
     >sudo docker-composed up -d
 
