@@ -65,6 +65,16 @@
     - B站小程序解析
     - 状态查看
 
+**TODO**:
+
+  - [ ] 网页控制台
+  - [ ] RSS订阅
+  - [ ] B站动态订阅
+  - [ ] 冷重启
+  - [ ] 进裙验证（问题可自定义）
+  - [ ] 好感度系统（目前优先在[`go-ATRI`](https://github.com/Kyomotoi/go-ATRI)上实现）
+  - [ ] 模拟韭菜
+
 ## 使用Docker部署
 > 注意，本条目仅为使用docker的部署方法，如果您不知道何为docker，请参考文档中的传统部署方法
 
@@ -91,15 +101,6 @@
 
     >sudo docker-composed up -d
 
-**TODO**:
-
-  - [ ] 网页控制台
-  - [ ] RSS订阅
-  - [ ] B站动态订阅
-  - [ ] 冷重启
-  - [ ] 进裙验证（问题可自定义）
-  - [ ] 好感度系统（目前优先在[`go-ATRI`](https://github.com/Kyomotoi/go-ATRI)上实现）
-  - [ ] 模拟韭菜
 
 ## 特别感谢（Thanks）
 
