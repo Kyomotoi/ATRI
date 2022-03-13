@@ -77,6 +77,7 @@
 - 如果您是aarch64 (ARM64) 用户:
     
     >cp ./Dockerfile ./Dockerfile_x86 && cp -f ./Dockerfile_aarch64 ./Dockerfile
+    
     >sudo docker-composed up
 
 -  在看到bot成功运行并扫码登陆之后，CTRL + C 结束运行，之后再在protainer之类的地方重新启动
