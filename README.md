@@ -65,6 +65,25 @@
     - B站小程序解析
     - 状态查看
 
+## 使用Docker部署
+> 注意，本条目仅为使用docker的部署方法，如果您不知道何为docker，请参考文档中的传统部署方法
+
+> 由于能力有限，尚无法通过环境变量来配置bot的功能，请自行修改config.yml 之后再部署
+
+- 如果你是x86用户:
+    
+    > sudo docker-composed up
+
+- 如果您是aarch64 (ARM64) 用户:
+    
+    >cp ./Dockerfile ./Dockerfile_x86 && cp -f ./Dockerfile_aarch64 ./Dockerfile
+    >sudo docker-composed up
+
+-  在看到bot成功运行并扫码登陆之后，CTRL + C 结束运行，之后再在protainer之类的地方重新启动
+
+- 为什么不添加 -d 参数？
+    如果您不需要命令行扫码登陆的话，可以加上
+
 **TODO**:
 
   - [ ] 网页控制台
