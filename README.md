@@ -70,13 +70,15 @@
 
 > 由于能力有限，尚无法通过环境变量来配置bot的功能，请自行修改config.yml 之后再部署
 
+> 基于python 3.8
+
 - 如果你是x86用户:
     
     > sudo docker-composed up
 
 - 如果您是aarch64 (ARM64) 用户:
     
-    由于平台特殊性，请确保在`%ATRI%`目录下存在`tenserflow`的`whl`文件，并且不需要重命名(docker镜像使用的python版本为python3.8)
+> 由于平台特殊性，请确保在`%ATRI%`目录下存在`tenserflow`的`whl`文件，例如`tensorflow-2.8.0-cp38-none-linux_aarch64.whl`，无需重命名
     
     >cp ./Dockerfile ./Dockerfile_x86 && cp -f ./Dockerfile_aarch64 ./Dockerfile
     
