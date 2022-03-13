@@ -72,9 +72,11 @@
 
 > 基于python 3.8
 
+获取项目的所有文件之后:
+
 - 如果你是x86用户:
     
-    > sudo docker-composed up
+    >sudo docker-composed up
 
 - 如果您是aarch64 (ARM64) 用户:
     
