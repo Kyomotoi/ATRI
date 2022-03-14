@@ -16,4 +16,3 @@ tabulate>=0.8.9
 wcwidth>=0.2.5
 aiohttp>=3.7.4.post0
 tortoise-orm>=0.18.1
-aiohttp>=3.5.0
