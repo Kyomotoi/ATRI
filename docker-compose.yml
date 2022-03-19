@@ -1,0 +1,13 @@
+version: "3"
+services:
+  nonebot:
+    build: .
+    container_name: nonebot # 容器名称
+    ports:
+      - "20000:20000" # 映射端口到宿主机 宿主机端口:容器端口
+    network_mode: bridge
+    restart: unless-stopped
+    volumes:
+      - ~/.ATRI/data:/app/data              # 这几条为挂载ATRI的工作数据目录与配置文件
+      - ~/.ATRI/accounts:/app/accounts      # 挂载格式为 宿主机路径:容器路径
+      - ~/.ATRI/config.yml:/app/config.yml  # 默认的工作路径为 ~/.ATRI 注意该目录默认状态下是隐藏的
