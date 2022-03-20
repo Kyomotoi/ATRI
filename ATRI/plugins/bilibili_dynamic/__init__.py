@@ -18,18 +18,18 @@ from datetime import datetime, timedelta
 from ATRI.log import logger
 
 bilibili_dynamic = BilibiliDynamicSubscriptor().on_command(
-    "/bilibili_dynamic", "b站动态订阅助手", aliases={"b站动态"}
+    "/bilibili_dynamic", "b站动态订阅助手", aliases={"/bd", "b站动态"}
 )
 
-__help__ = """欢迎使用【b站动态订阅助手】～
-目前支持的功能如下...请选择：
+__help__ = """好哦！是b站动态订阅诶～
+目前支持的功能如下...请键入对应关键词：
 1.添加订阅
 2.取消订阅
 3.订阅列表
 -----------------------------------
-用法示例1：/bilibili_dynamic 添加订阅
-用法示例2：/bilibili_dynamic 取消订阅 401742377（数字uid）
-用法示例3：/bilibili_dynamic 订阅列表"""
+用法示例1：/bd 添加订阅
+用法示例2：/bd 取消订阅 401742377（数字uid）
+用法示例3：/bd 订阅列表"""
 
 
 def help() -> str:
