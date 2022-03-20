@@ -56,13 +56,13 @@ async def startup():
     log.info("Starting to check update...")
     log.info(await CheckUpdate.show_latest_commit_info())
     sleep(1)
-    
+
     l_v, l_v_t = await CheckUpdate.show_latest_version()
     if l_v != ATRI.__version__:
         log.warning("New version has been released, please update.")
         log.warning(f"Latest version: {l_v} Update time: {l_v_t}")
         sleep(3)
-    
+
     log.info("アトリは、高性能ですから！")
 
 

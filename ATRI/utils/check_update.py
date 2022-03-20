@@ -8,12 +8,11 @@ REPO_RELEASE_URL = "https://api.github.com/repos/Kyomotoi/ATRI/releases"
 
 
 class CheckUpdate:
-    
     @staticmethod
     async def _get_commits_info() -> dict:
         req = await request.get(REPO_COMMITS_URL)
         return req.json()
-    
+
     @staticmethod
     async def _get_release_info() -> dict:
         req = await request.get(REPO_RELEASE_URL)
@@ -25,7 +24,7 @@ class CheckUpdate:
             data = await cls._get_commits_info()
         except RequestError:
             raise RequestError("Getting commit info timeout...")
-        
+
         try:
             commit_data: dict = data[0]
         except Exception:
@@ -44,15 +43,12 @@ class CheckUpdate:
             data = await cls._get_release_info()
         except RequestError:
             raise RequestError("Getting release list timeout...")
-        
+
         try:
             release_data: dict = data[0]
         except Exception:
             raise Exception("GitHub has been error!!!")
-        
+
         l_v = release_data["tag_name"]
         l_v_t = release_data["published_at"]
         return l_v, l_v_t
-
-
-
