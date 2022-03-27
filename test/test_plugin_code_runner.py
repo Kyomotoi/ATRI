@@ -17,12 +17,12 @@ async def test_code_runner(app: App):
         event = make_fake_event(_message=msg)()
 
         ctx.receive_event(bot, event)
-        ctx.should_call_send(event, "请键入 /code help 以获取帮助~！", True)
+        ctx.should_call_send(event, "请键入 /code.help 以获取帮助~！", True)
 
     async with app.test_matcher(code_runner) as ctx:
         bot = ctx.create_bot()
 
-        msg = Message("/code help")
+        msg = Message("/code.help")
         event = make_fake_event(_message=msg)()
 
         ctx.receive_event(bot, event)
@@ -34,14 +34,14 @@ async def test_code_runner(app: App):
             For example:
             /code python
             print('hello world')
-            """,
+            """.strip(),
             True,
         )
 
     async with app.test_matcher(code_runner) as ctx:
         bot = ctx.create_bot()
 
-        msg = Message("/code list")
+        msg = Message("/code.list")
         event = make_fake_event(_message=msg)()
 
         ctx.receive_event(bot, event)
@@ -56,7 +56,7 @@ async def test_code_runner(app: App):
             julia, kotlin, lua, perl,
             php, python, ruby, rust,
             scala, swift, typescript
-            """,
+            """.strip(),
             True,
         )
 
