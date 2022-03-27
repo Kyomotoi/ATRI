@@ -144,3 +144,6 @@ dmypy.json
 
 /accounts/*
 /data/*
+
+# for MacOS
+.DS_Store
