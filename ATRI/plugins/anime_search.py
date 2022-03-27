@@ -8,17 +8,16 @@ from ATRI.rule import is_in_service
 from ATRI.utils import request, Translate
 from ATRI.exceptions import RequestError
 
+
 URL = "https://api.trace.moe/search?anilistInfo=true&url="
 _anime_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
-
-__doc__ = """
-通过一张图片搜索你需要的番！据说里*也可以
-"""
 
 
 class Anime(Service):
     def __init__(self):
-        Service.__init__(self, "以图搜番", __doc__, rule=is_in_service("以图搜番"))
+        Service.__init__(
+            self, "以图搜番", "通过一张图片搜索你需要的番！据说里*也可以", rule=is_in_service("以图搜番")
+        )
 
     @staticmethod
     async def _request(url: str) -> dict:

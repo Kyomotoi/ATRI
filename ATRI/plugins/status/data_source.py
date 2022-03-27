@@ -8,12 +8,9 @@ from ATRI.rule import is_in_service
 from ATRI.exceptions import GetStatusError
 
 
-__doc__ = "检查咱自身状态"
-
-
 class IsSurvive(Service):
     def __init__(self):
-        Service.__init__(self, "状态", __doc__, rule=is_in_service("状态"))
+        Service.__init__(self, "状态", "检查自身状态", rule=is_in_service("状态"))
 
     @staticmethod
     def ping() -> str:

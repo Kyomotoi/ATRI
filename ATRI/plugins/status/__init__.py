@@ -22,7 +22,7 @@ async def _status():
 info_msg = "アトリは高性能ですから！"
 
 
-@scheduler.scheduled_job("interval", name="状态检查", minutes=10, misfire_grace_time=15)
+@scheduler.scheduled_job("interval", name="状态检查", minutes=10, misfire_grace_time=15)  # type: ignore
 async def _status_checking():
     msg, stat = IsSurvive().get_status()
     if not stat:

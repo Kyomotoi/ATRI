@@ -6,6 +6,7 @@ from datetime import datetime
 from ATRI.service import Service, ServiceTools
 from ATRI.exceptions import ReadFileError, load_error
 
+
 MANAGE_DIR = Path(".") / "data" / "database" / "manege"
 ESSENTIAL_DIR = Path(".") / "data" / "database" / "essential"
 os.makedirs(MANAGE_DIR, exist_ok=True)
@@ -17,12 +18,10 @@ Time: {time}
 {content}
 """.strip()
 
-__doc__ = """控制bot的各项服务"""
-
 
 class Manage(Service):
     def __init__(self):
-        Service.__init__(self, "管理", __doc__, True)
+        Service.__init__(self, "管理", "控制bot的各项服务", True)
 
     @staticmethod
     def _load_block_user_list() -> dict:
