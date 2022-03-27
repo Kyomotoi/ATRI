@@ -34,13 +34,11 @@ SUPPORTED_LANGUAGES = {
 }
 
 
-__doc__ = """在线跑代码
-"""
-
-
 class CodeRunner(Service):
     def __init__(self):
-        Service.__init__(self, "在线跑代码", __doc__, rule=is_in_service("在线跑代码"))
+        Service.__init__(
+            self, "在线跑代码", "在线跑代码", rule=is_in_service("在线跑代码"), main_cmd="/code"
+        )
 
     @staticmethod
     def help() -> str:
