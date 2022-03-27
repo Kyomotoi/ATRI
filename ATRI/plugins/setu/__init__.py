@@ -171,27 +171,6 @@ async def _deal_setting(msg: str = ArgPlainText("catcher_set")):
     await catcher_setting.finish(repo)
 
 
-@scheduler.scheduled_job(
-    "interval", name="涩批诱捕器", hours=1, misfire_grace_time=60, args=[Bot]
-)
-async def _scheduler_setu(bot):
-    try:
-        group_list = await bot.get_group_list()
-        lucky_group = choice(group_list)
-        group_id = lucky_group["group_id"]
-        setu = await Setu().scheduler()
-        if not setu:
-            return
-
-        msg_0 = await bot.send_group_msg(group_id=int(group_id), message=Message(setu))
-        message_id = msg_0["message_id"]
-        await asyncio.sleep(60)
-        await bot.delete_msg(message_id=message_id)
-
-    except Exception:
-        pass
-
-
 _ag_l = ["涩图来", "来点涩图", "来份涩图"]
 _ag_patt = r"来[张点丶份](.*?)的[涩色🐍]图"
 
