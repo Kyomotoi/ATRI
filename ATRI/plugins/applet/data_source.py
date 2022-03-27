@@ -26,7 +26,7 @@ class Applet(Service):
     def _bv_dec(x) -> str:
         r = 0
         for i in range(6):
-            r += tr[x[s[i]]] * 58**i
+            r += tr[x[s[i]]] * 58 ** i
         return str((r - add) ^ xor)
 
     @staticmethod
@@ -34,7 +34,7 @@ class Applet(Service):
         x = (x ^ xor) + add
         r = list("BV1  4 1 7  ")
         for i in range(6):
-            r[s[i]] = table[x // 58**i % 58]
+            r[s[i]] = table[x // 58 ** i % 58]
         return "".join(r)
 
     @staticmethod
