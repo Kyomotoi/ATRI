@@ -66,6 +66,10 @@ async def startup():
     except Exception:
         log.error("检查 更新/最新推送 失败...")
 
+    if not scheduler.running:
+        scheduler.start()
+        log.info("Scheduler Started.")
+
     log.info("アトリは、高性能ですから！")
 
 
