@@ -9,7 +9,6 @@ from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message, MessageSegme
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
 from ATRI.config import BotSelfConfig
-from ATRI.utils.apscheduler import scheduler
 from .data_source import Setu
 
 

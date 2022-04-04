@@ -1,4 +1,3 @@
-from re import findall
 from random import choice
 
 from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment
