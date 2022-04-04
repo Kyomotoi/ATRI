@@ -66,7 +66,7 @@ async def _deal_say(msg: str = ArgPlainText("say")):
     await say.finish(msg)
 
 
-@scheduler.scheduled_job("interval", name="闲聊词库检查更新", hours=3, misfire_grace_time=60)
+@scheduler.scheduled_job("interval", name="闲聊词库检查更新", hours=3, misfire_grace_time=60)  # type: ignore
 async def _check_kimo():
     try:
         await Chat().update_data()
