@@ -138,7 +138,7 @@ tq = Queue()
 class BilibiliDynamicCheckEnabledTrigger(BaseTrigger):
     # 自定义trigger 保证服务开启
     # 实现abstract方法 <get_next_fire_time>
-    def get_next_fire_time(self, now):
+    def get_next_fire_time(self, previous_fire_time, now):
         subscriptor = BilibiliDynamicSubscriptor()
         config = subscriptor.load_service("b站动态订阅")
         if config["enabled"] == False:
