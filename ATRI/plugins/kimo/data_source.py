@@ -11,15 +11,15 @@ from ATRI.utils import request
 from ATRI.exceptions import ReadFileError, WriteError
 
 
-CHAT_PATH = Path(".") / "data" / "database" / "chat"
+CHAT_PATH = Path(".") / "data" / "database" / "kimo"
 os.makedirs(CHAT_PATH, exist_ok=True)
 KIMO_URL = "https://cdn.jsdelivr.net/gh/Kyomotoi/AnimeThesaurus/data.json"
 
 
-class Chat(Service):
+class Kimo(Service):
     def __init__(self):
         Service.__init__(
-            self, "闲聊", "好像有点涩？", rule=to_bot() & is_in_service("闲聊"), priority=5
+            self, "kimo", "好像有点涩？", rule=to_bot() & is_in_service("kimo"), priority=5
         )
 
     @staticmethod
@@ -69,7 +69,7 @@ class Chat(Service):
 
         with open(path, "w", encoding="utf-8") as w:
             w.write(json.dumps(data, indent=4))
-        log.info("闲聊词库更新完成")
+        log.info("kimo词库更新完成")
 
     @staticmethod
     def name_is(user_id: str, new_name: str):
