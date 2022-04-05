@@ -27,7 +27,7 @@ class SaouceNao(Service):
             data = ServiceTools.load_service("以图搜图")
             data["enabled"] = False
             ServiceTools.save_service(data, "以图搜图")
-            log.warning("key 未配置，本插件将被禁用")
+            log.warning("插件 SauceNao 所需的 key 未配置，将被全局禁用，后续填写请手动启用")
 
         params = dict()
         params["api_key"] = api_key
