@@ -8,6 +8,21 @@ from ATRI.rule import is_in_service
 from ATRI.exceptions import GetStatusError
 
 
+_status_msg = """
+> Status Overview
+
+[CPU: {cpu}%]
+[Memory: {mem}%]
+[Disk usage: {disk}%]
+
+[Net sent: {inteSENT}MB]
+[Net recv: {inteRECV}MB]
+
+[Runtime: {up_time}]
+{msg}
+""".strip()
+
+
 class IsSurvive(Service):
     def __init__(self):
         Service.__init__(self, "状态", "检查自身状态", rule=is_in_service("状态"))
@@ -52,14 +67,14 @@ class IsSurvive(Service):
             log.info("资源占用正常")
             is_ok = True
 
-        msg0 = (
-            "Self status:\n"
-            f"* CPU: {cpu}%\n"
-            f"* MEM: {mem}%\n"
-            f"* DISK: {disk}%\n"
-            f"* netSENT: {inteSENT}MB\n"
-            f"* netRECV: {inteRECV}MB\n"
-            f"* Runtime: {up_time}\n"
-        ) + msg
+        msg0 = _status_msg.format(
+            cpu=cpu,
+            mem=mem,
+            disk=disk,
+            inteSENT=inteSENT,
+            inteRECV=inteRECV,
+            up_time=up_time,
+            msg=msg,
+        )
 
         return msg0, is_ok
