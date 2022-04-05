@@ -2,6 +2,7 @@ import os
 import json
 import shutil
 import asyncio
+from time import sleep
 from datetime import datetime
 from pydantic.main import BaseModel
 from random import choice, randint
@@ -33,6 +34,7 @@ from ATRI.log import logger as log
 from ATRI.config import BotSelfConfig
 from ATRI.utils import MessageChecker
 from ATRI.utils.apscheduler import scheduler
+from ATRI.utils.check_update import CheckUpdate
 
 
 driver = ATRI.driver()
@@ -50,6 +52,24 @@ os.makedirs(TEMP_PATH, exist_ok=True)
 @driver.on_startup
 async def startup():
     log.info(f"Now running: {ATRI.__version__}")
+
+    try:
+        log.info("Starting to check update...")
+        log.info(await CheckUpdate.show_latest_commit_info())
+        sleep(1)
+
+        l_v, l_v_t = await CheckUpdate.show_latest_version()
+        if l_v != ATRI.__version__:
+            log.warning("New version has been released, please update.")
+            log.warning(f"Latest version: {l_v} Update time: {l_v_t}")
+            sleep(3)
+    except Exception:
+        log.error("检查 更新/最新推送 失败...")
+
+    if not scheduler.running:
+        scheduler.start()
+        log.info("Scheduler Started.")
+
     log.info("アトリは、高性能ですから！")
 
 
@@ -106,14 +126,9 @@ class GroupRequestInfo(BaseModel):
     is_approve: bool
 
 
-__doc__ = """
-对bot基础/必须请求进行处理
-"""
-
-
 class Essential(Service):
     def __init__(self):
-        Service.__init__(self, "基础部件", __doc__)
+        Service.__init__(self, "基础部件", "对bot基础/必须请求进行处理")
 
 
 friend_add_event = Essential().on_request("好友添加", "好友添加检测")
@@ -279,6 +294,7 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
     except BaseException:
         return
 
+    log.debug(f"Recall raw msg:\n{repo}")
     user = event.user_id
     group = event.group_id
     repo = repo["message"]
@@ -310,6 +326,7 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
     except BaseException:
         return
 
+    log.debug(f"Recall raw msg:\n{repo}")
     user = event.user_id
     repo = repo["message"]
 
@@ -347,7 +364,7 @@ async def _():
     await acc_recall.finish("现在可以接受撤回信息啦！")
 
 
-@scheduler.scheduled_job("interval", name="清除缓存", minutes=30, misfire_grace_time=5)
+@scheduler.scheduled_job("interval", name="清除缓存", minutes=30, misfire_grace_time=5)  # type: ignore
 async def _clear_cache():
     try:
         shutil.rmtree(TEMP_PATH)

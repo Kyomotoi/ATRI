@@ -1,5 +1,4 @@
 import asyncio
-from random import choice
 from nonebot.adapters.onebot.v11 import Bot, MessageSegment
 
 from ATRI.service import Service
@@ -77,30 +76,6 @@ class Setu(Service):
         """
         data = await detect_image(url, file_size)
         return data
-
-    @classmethod
-    async def scheduler(cls) -> str:
-        """
-        每隔指定时间随机抽取一个群发送涩图.
-        格式：
-            是{tag}哦~❤
-            {setu}
-        """
-        res = await request.get(LOLICON_URL)
-        data: dict = res.json()
-        temp_data: dict = data.get("data", list())
-        if not temp_data:
-            return ""
-
-        tag = choice(temp_data.get("tags", ["女孩子"]))
-
-        url = temp_data[0]["urls"].get(
-            "original",
-            cls._use_proxy(DEFAULT_SETU),
-        )
-        setu = MessageSegment.image(url, timeout=114514)
-        repo = f"是{tag}哦~❤\n{setu}"
-        return repo
 
     @staticmethod
     async def async_recall(bot: Bot, event_id):

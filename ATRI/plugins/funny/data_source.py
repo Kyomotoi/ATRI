@@ -17,14 +17,9 @@ FUNNY_DIR = Path(".") / "data"
 os.makedirs(FUNNY_DIR, exist_ok=True)
 
 
-__doc__ = """
-乐1乐，莫当真
-"""
-
-
 class Funny(Service):
     def __init__(self):
-        Service.__init__(self, "乐", __doc__, rule=is_in_service("乐"))
+        Service.__init__(self, "乐", "乐1乐，莫当真", rule=is_in_service("乐"))
 
     @staticmethod
     async def idk_laugh(name: str) -> str:

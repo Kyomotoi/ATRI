@@ -72,7 +72,7 @@ class Helper(Service):
                 )
         table = tabulate(
             services,
-            headers=["服务名称", "开启状态", "仅支持管理员"],
+            headers=["服务名称", "开启状态(全局)", "仅支持管理员"],
             tablefmt="plain",
             showindex=True,
         )
@@ -91,7 +91,7 @@ class Helper(Service):
         service_enabled = data.get("enabled", True)
 
         _service_cmd_list = list(data.get("cmd_list", {"error"}))
-        service_cmd_list = "、".join(map(str, _service_cmd_list))
+        service_cmd_list = "\n".join(map(str, _service_cmd_list))
 
         repo = SERVICE_INFO_FORMAT.format(
             service=service_name,

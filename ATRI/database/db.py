@@ -1,7 +1,12 @@
+from pathlib import Path
 from tortoise import Tortoise
+from nonebot import get_driver
 
 from ATRI.database import models
-from nonebot import get_driver
+
+
+DB_DIR = Path(".") / "data" / "database" / "sql"
+DB_DIR.mkdir(exist_ok=True)
 
 
 # 关于数据库的操作类，只实现与数据库有关的CRUD
@@ -17,7 +22,7 @@ class DB:
         from ATRI.database import models
 
         await Tortoise.init(
-            db_url="sqlite://ATRI/database/db.sqlite3",
+            db_url=f"sqlite://{DB_DIR}/db.sqlite3",
             modules={"models": [locals()["models"]]},
         )
         # Generate the schema

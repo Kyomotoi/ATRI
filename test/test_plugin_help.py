@@ -6,11 +6,11 @@ from .utils import make_fake_message, make_fake_event
 
 @pytest.mark.asyncio
 async def test_main_help(app: App):
-    from ATRI.plugins.help import main_help
+    from ATRI.plugins.help import menu
 
     Message = make_fake_message()
 
-    async with app.test_matcher(main_help) as ctx:
+    async with app.test_matcher(menu) as ctx:
         bot = ctx.create_bot()
 
         msg = Message("菜单")
@@ -25,7 +25,7 @@ async def test_main_help(app: App):
             服务列表 -以查看所有可用服务
             帮助 [服务] -以查看对应服务帮助
             Tip: 均需要at触发。@bot 菜单 以打开此页面
-            """,
+            """.strip(),
             True,
         )
 
@@ -34,7 +34,7 @@ async def test_main_help(app: App):
 async def test_about_me(app: App):
     from ATRI import __version__
     from ATRI.config import BotSelfConfig
-    from ATRI.plugins.help import about_me
+    from ATRI.plugins.help import about
 
     temp_list = list()
     for i in BotSelfConfig.nickname:
@@ -43,7 +43,7 @@ async def test_about_me(app: App):
 
     Message = make_fake_message()
 
-    async with app.test_matcher(about_me) as ctx:
+    async with app.test_matcher(about) as ctx:
         bot = ctx.create_bot()
 
         msg = Message("关于")
@@ -57,8 +57,9 @@ async def test_about_me(app: App):
             可以称呼咱：{nickname}
             咱的型号是：{__version__}
             想进一步了解：
-            https://github.com/Kyomotoi/ATRI
-            """,
+            atri.kyomotoi.moe
+            进不去: project-atri-docs.vercel.app
+            """.strip(),
             True,
         )
 
@@ -87,7 +88,10 @@ async def test_service_list(app: App):
                 ]
             )
     table = tabulate(
-        services, headers=["服务名称", "开启状态", "仅支持管理员"], tablefmt="plain", showindex=True
+        services,
+        headers=["服务名称", "开启状态(全局)", "仅支持管理员"],
+        tablefmt="plain",
+        showindex=True,
     )
     output = f"咱搭载了以下服务~\n{table}\n@bot 帮助 [服务] -以查看对应服务帮助"
 
@@ -139,7 +143,8 @@ async def test_service_info(app: App):
             服务名：状态
             说明：检查咱自身状态
             可用命令：
-                /ping、/status
+                /ping
+                /status
             是否全局启用：True
             Tip: @bot 帮助 [服务] [命令] 以查看对应命令详细信息
             """,

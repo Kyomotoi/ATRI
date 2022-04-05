@@ -11,13 +11,11 @@ import asyncio
 from typing import Any
 from operator import itemgetter
 
-__doc__ = """b站订阅动态助手
-"""
 
 __session_pool = {}
 
 
-def get_api(field: str):
+def get_api(field: str) -> dict:
     """
     获取 API。
 
@@ -33,9 +31,11 @@ def get_api(field: str):
     if os.path.exists(path):
         with open(path, encoding="utf8") as f:
             return json.loads(f.read())
+    else:
+        return dict()
 
 
-API = get_api("user")
+API: dict = get_api("user")
 
 
 def get_session():
@@ -57,12 +57,12 @@ def get_session():
 async def bilibili_request(
     method: str,
     url: str,
-    params: dict = None,
+    params: dict = dict(),
     data: Any = None,
     no_csrf: bool = False,
     json_body: bool = False,
     **kwargs,
-):
+) -> dict:
     """
     向接口发送请求。
 
@@ -130,21 +130,21 @@ async def bilibili_request(
         # 检查响应头 Content-Length
         content_length = resp.headers.get("content-length")
         if content_length and int(content_length) == 0:
-            return None
+            return dict()
 
         # 检查响应头 Content-Type
         content_type = resp.headers.get("content-type")
 
         # 不是 application/json
-        if content_type.lower().index("application/json") == -1:
+        if content_type.lower().index("application/json") == -1:  # type: ignore
             raise Exception("响应不是 application/json 类型")
 
         raw_data = await resp.text()
-        resp_data: dict
+        resp_data: dict = dict()
 
         if "callback" in params:
             # JSONP 请求
-            resp_data = json.loads(re.match("^.*?({.*}).*$", raw_data, re.S).group(1))
+            resp_data = json.loads(re.match("^.*?({.*}).*$", raw_data, re.S).group(1))  # type: ignore
         else:
             # JSON
             resp_data = json.loads(raw_data)
@@ -181,9 +181,9 @@ class User:
         """
         self.uid = uid
 
-        self.__self_info = None
+        self.__self_info = None  # 暂时无用
 
-    async def get_user_info(self):
+    async def get_user_info(self) -> dict:
         """
         获取用户信息（昵称，性别，生日，签名，头像 URL，空间横幅 URL 等）
 
@@ -216,7 +216,7 @@ class User:
             "offset_dynamic_id": offset,
             "need_top": 1 if need_top else 0,
         }
-        data = await bilibili_request("GET", url=api["url"], params=params)
+        data: dict = await bilibili_request("GET", url=api["url"], params=params)
         # card 字段自动转换成 JSON。
         if "cards" in data:
             for card in data["cards"]:
@@ -227,7 +227,7 @@ class User:
 
 class BilibiliDynamicSubscriptor(Service):
     def __init__(self):
-        Service.__init__(self, "b站动态订阅", __doc__, rule=is_in_service("b站动态订阅"))
+        Service.__init__(self, "b站动态订阅", "b站订阅动态助手", rule=is_in_service("b站动态订阅"))
 
     async def add_subscription(self, uid: int, groupid: int) -> bool:
         async with DB() as db:
@@ -261,7 +261,7 @@ class BilibiliDynamicSubscriptor(Service):
     async def get_upname_by_uid(self, uid: int) -> str:
         try:
             u = User(uid)
-            info = await u.get_user_info()
+            info: dict = await u.get_user_info()
             return info.get("name")
         except:
             return ""
@@ -334,7 +334,7 @@ class BilibiliDynamicSubscriptor(Service):
         ret = sorted(ret, key=itemgetter("timestamp"))
         return ret
 
-    def generate_output(self, pattern: dict) -> (str, str):
+    def generate_output(self, pattern: dict) -> tuple:
         # 限制摘要的字数
         abstractLimit = 40
         text_part = """【UP名称】{name}\n【动态类型】{dynamic_type}\n【时间】{time}\n【内容摘要】{content}\n""".format(

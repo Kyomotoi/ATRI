@@ -15,7 +15,7 @@ _repo_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~
 REPO_FORMAT = """
 来自用户{user}反馈：
 {msg}
-"""
+""".strip()
 
 
 class Repo(Service):

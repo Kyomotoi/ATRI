@@ -1,35 +1,37 @@
+import re
+from tabulate import tabulate
+from datetime import datetime, timedelta
+
 import pytz
 from apscheduler.triggers.base import BaseTrigger
 from apscheduler.triggers.combining import AndTrigger
 from apscheduler.triggers.interval import IntervalTrigger
-
-from ATRI.utils.apscheduler import scheduler
-from ATRI.utils import timestamp2datetime
 
 from nonebot.params import State
 from nonebot.adapters.onebot.v11 import MessageSegment, GroupMessageEvent, Message
 from nonebot.typing import T_State
 from nonebot import get_bot
 
-from .data_source import BilibiliDynamicSubscriptor
-import re
-from tabulate import tabulate
-from datetime import datetime, timedelta
+from ATRI.utils.apscheduler import scheduler
+from ATRI.utils import timestamp2datetime
 from ATRI.log import logger
 
+from .data_source import BilibiliDynamicSubscriptor
+
+
 bilibili_dynamic = BilibiliDynamicSubscriptor().on_command(
-    "/bilibili_dynamic", "b站动态订阅助手", aliases={"b站动态"}
+    "/bilibili_dynamic", "b站动态订阅助手", aliases={"/bd", "b站动态"}
 )
 
-__help__ = """欢迎使用【b站动态订阅助手】～
-目前支持的功能如下...请选择：
+__help__ = """好哦！是b站动态订阅诶～
+目前支持的功能如下...请键入对应关键词：
 1.添加订阅
 2.取消订阅
 3.订阅列表
 -----------------------------------
-用法示例1：/bilibili_dynamic 添加订阅
-用法示例2：/bilibili_dynamic 取消订阅 401742377（数字uid）
-用法示例3：/bilibili_dynamic 订阅列表"""
+用法示例1：/bd 添加订阅
+用法示例2：/bd 取消订阅 401742377（数字uid）
+用法示例3：/bd 订阅列表"""
 
 
 def help() -> str:
@@ -39,7 +41,6 @@ def help() -> str:
 @bilibili_dynamic.handle()
 async def _menu(event: GroupMessageEvent, state: T_State = State()):
     args = str(event.get_plaintext()).strip().lower().split()[1:]
-    # print(args)
     if not args:
         await bilibili_dynamic.finish(help())
     elif args and len(args) == 1:
@@ -58,7 +59,6 @@ async def handle_subcommand(event: GroupMessageEvent, state: T_State = State()):
 
     if state["sub_command"] == "订阅列表":
         subscriptor = BilibiliDynamicSubscriptor()
-        # print(event.group_id)
         r = await subscriptor.get_subscriptions(query_map={"groupid": event.group_id})
         subs = []
         for s in r:
@@ -80,8 +80,6 @@ async def handle_uid(event: GroupMessageEvent, state: T_State = State()):
 
     if uid == "-1":
         await bilibili_dynamic.finish("已经成功退出订阅~")
-    # print(state)
-    # print(uid)
     if not re.match(r"^\d+$", uid):
         await bilibili_dynamic.reject("这似乎不是UID呢, 请重新输入:")
     uid = int(uid)
@@ -107,7 +105,6 @@ async def handle_uid(event: GroupMessageEvent, state: T_State = State()):
                 )
             )
         success = await subscriptor.add_subscription(uid, event.group_id)
-        print(success)
         success = success and (
             await subscriptor.update_subscription_by_uid(
                 uid=uid,
@@ -143,7 +140,7 @@ class BilibiliDynamicCheckEnabledTrigger(BaseTrigger):
     # 实现abstract方法 <get_next_fire_time>
     def get_next_fire_time(self, previous_fire_time, now):
         subscriptor = BilibiliDynamicSubscriptor()
-        config = subscriptor.load_service()
+        config = subscriptor.load_service("b站动态订阅")
         if config["enabled"] == False:
             return None
         else:
@@ -156,8 +153,8 @@ class BilibiliDynamicCheckEnabledTrigger(BaseTrigger):
 @scheduler.scheduled_job(
     AndTrigger([IntervalTrigger(seconds=10), BilibiliDynamicCheckEnabledTrigger()]),
     name="b站动态检查",
-    max_instances=3,
-    misfire_grace_time=60,
+    max_instances=3,  # type: ignore
+    misfire_grace_time=60,  # type: ignore
 )
 async def _check_dynamic():
     from ATRI.database.models import Subscription
@@ -171,7 +168,6 @@ async def _check_dynamic():
         d: Subscription = tq.get()
         logger.info("准备查询UP【{up}】的动态 队列剩余{size}".format(up=d.nickname, size=tq.qsize()))
         ts = int(d.last_update.timestamp())
-        # logger.info("上一次更新的时间戳{time}".format(time=ts))
         info: dict = await subscriptor.get_recent_dynamic_by_uid(d.uid)
         res = []
         if info:
@@ -181,11 +177,9 @@ async def _check_dynamic():
         if len(res) == 0:
             logger.warning("获取UP【{up}】的动态为空".format(up=d.nickname))
         for i in res:
-            # logger.info("获取UP【{up}】的动态，时间{time}，内容{content}".format(up=d.nickname, time=i["timestamp"],content=i["content"][:20]))
             i["name"] = d.nickname
             if ts < i["timestamp"]:
                 text, pic_url = subscriptor.generate_output(pattern=i)
-                # print(text,pic_url)
                 output = Message(
                     [MessageSegment.text(text), MessageSegment.image(pic_url)]
                 )

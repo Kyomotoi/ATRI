@@ -15,12 +15,12 @@ s = [11, 10, 3, 8, 4, 6]
 xor = 177451812
 add = 8728348608
 
-__doc__ = "啥b腾讯小程序给👴爪巴\n目前只整了b站的"
-
 
 class Applet(Service):
     def __init__(self):
-        Service.__init__(self, "小程序处理", __doc__, rule=is_in_service("小程序处理"))
+        Service.__init__(
+            self, "小程序处理", "啥b腾讯小程序给👴爪巴\n目前只整了b站的", rule=is_in_service("小程序处理")
+        )
 
     @staticmethod
     def _bv_dec(x) -> str:

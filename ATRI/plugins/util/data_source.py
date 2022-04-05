@@ -8,14 +8,9 @@ from ATRI.service import Service
 from ATRI.rule import is_in_service
 
 
-__doc__ = """
-非常实用（？）的工具们！
-"""
-
-
 class Utils(Service):
     def __init__(self):
-        Service.__init__(self, "小工具", __doc__, rule=is_in_service("小工具"))
+        Service.__init__(self, "小工具", "非常实用（？）的工具们！", rule=is_in_service("小工具"))
 
     @staticmethod
     def roll_dice(par: str) -> str:
