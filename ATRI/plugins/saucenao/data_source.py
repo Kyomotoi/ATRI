@@ -1,17 +1,15 @@
 from random import choice
 
-from ATRI.service import Service, ServiceTools
+from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.exceptions import RequestError
 from ATRI.utils import request
-from ATRI.config import SauceNAO as sa
-from ATRI.log import logger as log
 
 
 URL = "https://saucenao.com/search.php"
 
 
-class SaouceNao(Service):
+class SauceNao(Service):
     def __init__(
         self,
         api_key: str = str(),
@@ -22,12 +20,6 @@ class SaouceNao(Service):
         numres=5,
     ):
         Service.__init__(self, "以图搜图", "以图搜图，仅限二刺螈", rule=is_in_service("以图搜图"))
-
-        if not sa.key:
-            data = ServiceTools.load_service("以图搜图")
-            data["enabled"] = False
-            ServiceTools.save_service(data, "以图搜图")
-            log.warning("插件 SauceNao 所需的 key 未配置，将被全局禁用，后续填写请手动启用")
 
         params = dict()
         params["api_key"] = api_key
