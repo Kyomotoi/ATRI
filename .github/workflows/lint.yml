@@ -39,7 +39,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8
       - name: Run Linters
-        uses: wearerequired/lint-action@v1
+        uses: wearerequired/lint-action@v2.0.0
         with:
           auto_fix: true
           black: true
