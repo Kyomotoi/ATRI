@@ -21,7 +21,8 @@ async def _chat(event: MessageEvent):
     msg = str(event.message)
     repo = await Kimo().deal(msg, user_id)
     try:
-        await kimo.finish(repo)
+        if repo:
+            await kimo.send(repo)
     except Exception:
         return
 
