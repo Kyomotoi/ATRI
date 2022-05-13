@@ -62,12 +62,12 @@ class InvalidConfigured(BaseBotException):
     prompt = "无效配置"
 
 
-class WriteError(BaseBotException):
+class WriteFileError(BaseBotException):
     prompt = "写入错误"
 
 
-class LoadingError(BaseBotException):
-    prompt = "加载错误"
+class ReadFileError(BaseBotException):
+    prompt = "读取文件失败"
 
 
 class RequestError(BaseBotException):
@@ -76,10 +76,6 @@ class RequestError(BaseBotException):
 
 class GetStatusError(BaseBotException):
     prompt = "获取状态失败"
-
-
-class ReadFileError(BaseBotException):
-    prompt = "读取文件失败"
 
 
 class FormatError(BaseBotException):

@@ -17,7 +17,7 @@ from nonebot.typing import (
 )
 from nonebot.rule import Rule, command, keyword, regex
 
-from ATRI.exceptions import ReadFileError, WriteError
+from ATRI.exceptions import ReadFileError, WriteFileError
 
 
 SERVICE_DIR = Path(".") / "data" / "service"
@@ -101,8 +101,8 @@ class Service:
         try:
             with open(path, "w", encoding="utf-8") as w:
                 w.write(json.dumps(data.dict(), indent=4))
-        except WriteError:
-            raise WriteError("Write service info failed!")
+        except WriteFileError:
+            raise WriteFileError("Write service info failed!")
 
     def save_service(self, service_data: dict, service: str) -> None:
         if not service:
@@ -304,9 +304,9 @@ class ServiceTools(object):
         path = SERVICES_DIR / f"{service}.json"
         if not path.is_file():
             raise ReadFileError(
-                f"Can't find service: ({service}) file.\n"
-                "Please delete all file in data/service/services.\n"
-                "Next reboot bot."
+                f"Can't find service file: {service}\n"
+                "Please delete all file in data/service/services\n"
+                "And reboot bot."
             )
 
         with open(path, "w", encoding="utf-8") as w:
@@ -317,9 +317,9 @@ class ServiceTools(object):
         path = SERVICES_DIR / f"{service}.json"
         if not path.is_file():
             raise ReadFileError(
-                f"Can't find service: ({service}) file.\n"
-                "Please delete all file in data/service/services.\n"
-                "Next reboot bot."
+                f"Can't find service file: {service}\n"
+                "Please delete all file in data/service/services\n"
+                "And reboot bot."
             )
 
         with open(path, "r", encoding="utf-8") as r:

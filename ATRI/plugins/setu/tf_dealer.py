@@ -13,7 +13,7 @@ import tensorflow as tf
 
 from ATRI.log import logger as log
 from ATRI.utils import request
-from ATRI.exceptions import RequestError, WriteError
+from ATRI.exceptions import RequestError, WriteFileError
 
 
 SETU_PATH = Path(".") / "data" / "database" / "setu"
@@ -60,8 +60,8 @@ async def detect_image(url: str, file_size: int) -> list:
         path = TEMP_PATH / f"{file_name}.jpg"
         with open(path, "wb") as f:
             f.write(req.read())
-    except WriteError:
-        raise WriteError("Writing file failed!")
+    except WriteFileError:
+        raise WriteFileError("Writing file failed!")
 
     await init_module()
     model_path = str((SETU_PATH / "nsfw.tflite").absolute())
@@ -107,8 +107,8 @@ async def init_module():
             with open(path, "wb") as w:
                 w.write(data.read())
             log.info("模型装载完成")
-        except WriteError:
-            raise WriteError("NSFW TF module init failed!")
+        except WriteFileError:
+            raise WriteFileError("NSFW TF module init failed!")
 
 
 loop = asyncio.get_event_loop()

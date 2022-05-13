@@ -4,7 +4,7 @@ from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.utils import request
 from ATRI.log import logger as log
-from ATRI.exceptions import RequestError, WriteError
+from ATRI.exceptions import RequestError, WriteFileError
 from .image_dealer import image_dealer
 
 
@@ -52,8 +52,8 @@ async def init_source():
                 with open(path, "wb") as w:
                     w.write(data.read())
                 log.info("所需资源装载完成")
-            except WriteError:
-                raise WriteError("装载资源失败")
+            except WriteFileError:
+                raise WriteFileError("装载资源失败")
 
 
 loop = asyncio.get_event_loop()
