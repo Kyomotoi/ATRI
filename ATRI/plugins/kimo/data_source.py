@@ -8,7 +8,7 @@ from ATRI.service import Service
 from ATRI.rule import to_bot, is_in_service
 from ATRI.log import logger as log
 from ATRI.utils import request
-from ATRI.exceptions import ReadFileError, WriteError
+from ATRI.exceptions import ReadFileError, WriteFileError
 
 
 CHAT_PATH = Path(".") / "data" / "database" / "kimo"
@@ -39,8 +39,8 @@ class Kimo(Service):
                 with open(path, "w", encoding="utf-8") as w:
                     w.write(json.dumps(data, indent=4))
                 log.info("生成完成")
-            except WriteError:
-                raise WriteError("Writing kimo words failed!")
+            except WriteFileError:
+                raise WriteFileError("Writing kimo words failed!")
 
     @classmethod
     async def _load_data(cls) -> dict:
