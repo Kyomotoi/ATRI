@@ -12,14 +12,9 @@ WIFE_DIR = Path(".") / "data" / "database" / "wife"
 os.makedirs(WIFE_DIR, exist_ok=True)
 
 
-__doc__ = """
-老婆...嘿嘿嘿...
-"""
-
-
 class Wife(Service):
     def __init__(self):
-        Service.__init__(self, "老婆", __doc__, rule=is_in_service("老婆"))
+        Service.__init__(self, "老婆", "老婆...嘿嘿嘿...", rule=is_in_service("老婆"))
 
     def to_superuser(self, user_id: str):
         """
