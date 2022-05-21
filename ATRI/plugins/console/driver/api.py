@@ -149,7 +149,7 @@ def get_block_list() -> dict:
     return {"user": u_data, "group": g_data}
 
 
-def edit_block_list(is_enab: int, user_id: str, group_id: str) -> tuple:
+def edit_block_list(is_enab: bool, user_id: str, group_id: str) -> tuple:
     d = get_block_list()
     u_d = d["user"]
     g_d = d["group"]
@@ -191,3 +191,7 @@ def edit_block_list(is_enab: int, user_id: str, group_id: str) -> tuple:
         return False, dict()
 
     return True, {"user": u_d, "group": g_d}
+
+
+def get_group_list():
+    ...
