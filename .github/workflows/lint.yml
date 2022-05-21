@@ -17,16 +17,16 @@ jobs:
 
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Python 🐍
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.8
 
-      - uses: Gr1N/setup-poetry@v4
+      - uses: Gr1N/setup-poetry@v7
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3.0.2
         with:
           path: ~/.cache/pypoetry
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
@@ -38,6 +38,7 @@ jobs:
           poetry install
           python -m pip install --upgrade pip
           pip install flake8
+          
       - name: Run Linters
         uses: wearerequired/lint-action@v2.0.0
         with:
