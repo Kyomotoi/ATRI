@@ -88,6 +88,10 @@
 
 ## 🔊 更新日志 | Changelog
 
+版本更新请参考[此处](changelog.md).
+
+小改动请参考以往的 [commit](https://github.com/Kyomotoi/ATRI/commits/main).
+
 ## ❤️ 特别感谢 | Acknowledgments
 
 [Bot Universe](https://github.com/botuniverse): [Onebot标准](https://onebot.dev/)
