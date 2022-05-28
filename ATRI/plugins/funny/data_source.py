@@ -1,5 +1,4 @@
 import re
-import os
 
 from pathlib import Path
 from random import choice, randint
@@ -13,8 +12,8 @@ from ATRI.utils import request, Translate
 from ATRI.rule import is_in_service
 
 
-FUNNY_DIR = Path(".") / "data"
-os.makedirs(FUNNY_DIR, exist_ok=True)
+FUNNY_DIR = Path(".") / "data" / "database" / "funny"
+FUNNY_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class Funny(Service):
