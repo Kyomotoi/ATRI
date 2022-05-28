@@ -124,7 +124,8 @@
 - Tianli 11.00 CNY
 - linx 33.00 CNY
 - 屁东 5.00 CNY
-> Total: 343.92 CNY. 16 supporters.
+- A_Kyuu 200.00 CNY
+> Total: 543.92 CNY. 17 sponsors.
 </details>
 
 ## 👥 贡献 | Contribution
