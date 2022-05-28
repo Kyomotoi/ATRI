@@ -14,7 +14,7 @@ InlineGoCQHTTP:
   accounts: # 可多个账号，具体请参考文档
     - uin: 1234567890
       password: ""
-      protocol: 3
+      protocol: 5
   
   download_domain: "github.com"
   download_version: "v1.0.0-rc1"
