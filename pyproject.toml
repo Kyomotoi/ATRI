@@ -1,19 +1,36 @@
 [tool.poetry]
 name = "ATRI"
-version = "0.0.1"
-description = "仅用于自动格式化代码"
+version = "001.105.01"
+description = "A project for ATRI, Usage go-CQHTTP + Nonebot."
 authors = ["Kyomotoi <kyomotoiowo@gmail.com>"]
 license = "GPLv3"
 readme = "README.md"
-homepage = "https://github.com/Kyomotoi/ATRI"
+homepage = "https://atri.kyomotoi.moe/"
 repository = "https://github.com/Kyomotoi/ATRI"
-documentation = "https://github.com/Kyomotoi/ATRI/wiki"
+documentation = "https://atri.kyomotoi.moe/"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "3.8.5"
+aiofiles = "^0.8.0"
+APScheduler = "^3.9.1"
+Pillow = "^9.1.1"
+nonebot2 = "^2.0.0-beta.3"
+nonebot-adapter-onebot = "^2.0.0-beta.1"
+nonebot-plugin-gocqhttp = "^0.5.5"
+psutil = "^5.9.1"
+pytz = "^2022.1"
+PyYAML = "^6.0"
+scikit-image = "^0.19.2"
+tensorflow = "^2.9.1"
+jieba = "^0.42.1"
+tabulate = "^0.8.9"
+wcwidth = "^0.2.5"
+aiohttp = "^3.8.1"
+tortoise-orm = "^0.19.1"
+httpx = "^0.23.0"
 
 [tool.poetry.dev-dependencies]
-black = "^21.4-beta.0"
+black = "^22.3"
 
 [tool.pytest.ini_options]
 addopts = '-p no:warnings'
