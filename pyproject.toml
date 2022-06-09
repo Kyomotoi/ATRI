@@ -31,6 +31,7 @@ httpx = "^0.23.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3"
+nonebug = "^0.2.1"
 
 [tool.pytest.ini_options]
 addopts = '-p no:warnings'
