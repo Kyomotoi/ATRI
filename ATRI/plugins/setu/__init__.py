@@ -16,7 +16,9 @@ random_setu = Setu().on_command("来张涩图", "来张随机涩图，冷却2分
 
 
 @random_setu.handle([Cooldown(120)])
-async def _(): ...
+async def _():
+    ...
+
 
 @random_setu.handle()
 async def _random_setu(bot: Bot, event: MessageEvent):

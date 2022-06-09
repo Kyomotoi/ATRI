@@ -30,7 +30,7 @@ class Console(Service):
         s = None
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(('8.8.8.8', 80))
+            s.connect(("8.8.8.8", 80))
             ip = s.getsockname()[0]
             return ip
         finally:
