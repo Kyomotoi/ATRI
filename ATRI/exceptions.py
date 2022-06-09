@@ -1,4 +1,3 @@
-import os
 import time
 import json
 import string
@@ -10,13 +9,14 @@ from pydantic.main import BaseModel
 
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot.message import run_postprocessor
+from nonebot.exception import ActionFailed
 
 from .log import logger
 from .config import BotSelfConfig
 
 
 ERROR_DIR = Path(".") / "data" / "errors"
-os.makedirs(ERROR_DIR, exist_ok=True)
+ERROR_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class ErrorInfo(BaseModel):
@@ -96,14 +96,17 @@ async def _track_error(
 
     try:
         raise exception
-    except BaseBotException as Error:
-        prompt = Error.prompt or Error.__class__.__name__
-        track_id = Error.track_id
-    except Exception as Error:
-        prompt = "Unknown ERROR->" + Error.__class__.__name__
+    except BaseBotException as err:
+        prompt = err.prompt or err.__class__.__name__
+        track_id = err.track_id
+    except ActionFailed as err:
+        prompt = "请参考协议端输出"
+        track_id = _save_error(prompt, format_exc())
+    except Exception as err:
+        prompt = "Unknown ERROR->" + err.__class__.__name__
         track_id = _save_error(prompt, format_exc())
 
-    logger.debug(f"A bug has been cumming!!! Track ID: {track_id}")
+    logger.debug(f"Error Track ID: {track_id}")
     msg = f"呜——出错了...追踪: {track_id}"
 
     for superusers in BotSelfConfig.superusers:
