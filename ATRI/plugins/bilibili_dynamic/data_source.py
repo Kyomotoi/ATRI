@@ -11,7 +11,6 @@ import asyncio
 from typing import Any
 from operator import itemgetter
 
-
 __session_pool = {}
 
 
@@ -55,13 +54,13 @@ def get_session():
 
 
 async def bilibili_request(
-    method: str,
-    url: str,
-    params: dict = dict(),
-    data: Any = None,
-    no_csrf: bool = False,
-    json_body: bool = False,
-    **kwargs,
+        method: str,
+        url: str,
+        params: dict = dict(),
+        data: Any = None,
+        no_csrf: bool = False,
+        json_body: bool = False,
+        **kwargs,
 ) -> dict:
     """
     向接口发送请求。
@@ -337,11 +336,12 @@ class BilibiliDynamicSubscriptor(Service):
     def generate_output(self, pattern: dict) -> tuple:
         # 限制摘要的字数
         abstractLimit = 40
-        text_part = """【UP名称】{name}\n【动态类型】{dynamic_type}\n【时间】{time}\n【内容摘要】{content}\n""".format(
+        text_part = """【UP名称】{name}\n【动态类型】{dynamic_type}\n【时间】{time}\n【内容摘要】{content}\n【链接】{url}\n""".format(
             name=pattern["name"],
             dynamic_type=pattern["type_zh"],
             time=pattern["time"],
             content=pattern["content"][:abstractLimit],
+            url="https://t.bilibili.com/" + str(pattern["dynamic_id"]),
         )
         pic_part = pattern["pic"]
         return text_part, pic_part
