@@ -1,4 +1,3 @@
-import os
 import json
 import random
 import asyncio
@@ -17,7 +16,8 @@ from ATRI.rule import to_bot
 
 
 BC_PATH = Path(".") / "data" / "database" / "broadcast"
-os.makedirs(BC_PATH, exist_ok=True)
+BC_PATH.mkdir(parents=True, exist_ok=True)
+
 
 _BROADCAST_BACK = """
 广播报告：

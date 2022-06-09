@@ -1,4 +1,3 @@
-import os
 import json
 from pathlib import Path
 from datetime import datetime
@@ -9,8 +8,9 @@ from ATRI.exceptions import ReadFileError, load_error
 
 MANAGE_DIR = Path(".") / "data" / "database" / "manege"
 ESSENTIAL_DIR = Path(".") / "data" / "database" / "essential"
-os.makedirs(MANAGE_DIR, exist_ok=True)
-os.makedirs(ESSENTIAL_DIR, exist_ok=True)
+MANAGE_DIR.mkdir(parents=True, exist_ok=True)
+ESSENTIAL_DIR.mkdir(parents=True, exist_ok=True)
+
 
 TRACK_BACK_FORMAT = """Track ID：{track_id}
 Prompt: {prompt}

@@ -1,5 +1,4 @@
-import asyncio
-
+from ATRI import driver
 from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.utils import request
@@ -56,5 +55,4 @@ async def init_source():
                 raise WriteFileError("装载资源失败")
 
 
-loop = asyncio.get_event_loop()
-loop.create_task(init_source())
+driver().on_startup(init_source)

@@ -1,4 +1,3 @@
-import os
 import json
 from random import choice
 from pathlib import Path
@@ -9,7 +8,7 @@ from ATRI.rule import is_in_service
 
 
 WIFE_DIR = Path(".") / "data" / "database" / "wife"
-os.makedirs(WIFE_DIR, exist_ok=True)
+WIFE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class Wife(Service):
@@ -38,7 +37,7 @@ class Wife(Service):
                 ),
             ]
         )
-        result = MessageSegment.at(user_id) + content
+        result = MessageSegment.at(user_id) + content  # type: ignore
         return result
 
     @staticmethod

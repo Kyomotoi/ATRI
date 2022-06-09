@@ -1,8 +1,8 @@
-from nonebot import get_driver
 from nonebot.drivers.fastapi import Driver
 
 from fastapi.middleware.cors import CORSMiddleware
 
+from ATRI import driver
 from .view import (
     handle_auther,
     handle_base_uri,
@@ -52,5 +52,4 @@ def register_routes(driver: Driver):
 
 
 def init():
-    driver = get_driver()
     register_routes(driver)  # type: ignore

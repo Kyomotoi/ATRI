@@ -8,7 +8,7 @@ from .config import BotSelfConfig
 
 
 LOGGER_DIR = Path(".") / "data" / "logs"
-LOGGER_DIR.parent.mkdir(exist_ok=True, parents=True)
+LOGGER_DIR.mkdir(exist_ok=True, parents=True)
 
 NOW_TIME = datetime.now().strftime("%Y%m%d-%H")
 

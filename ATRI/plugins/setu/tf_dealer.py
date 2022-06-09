@@ -1,5 +1,4 @@
 import io
-import os
 import re
 import asyncio
 import skimage
@@ -18,8 +17,8 @@ from ATRI.exceptions import RequestError, WriteFileError
 
 SETU_PATH = Path(".") / "data" / "database" / "setu"
 TEMP_PATH = Path(".") / "data" / "temp"
-os.makedirs(SETU_PATH, exist_ok=True)
-os.makedirs(TEMP_PATH, exist_ok=True)
+SETU_PATH.mkdir(parents=True, exist_ok=True)
+TEMP_PATH.mkdir(parents=True, exist_ok=True)
 
 
 MODULE_URL = "https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/nsfw.tflite"

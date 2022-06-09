@@ -1,4 +1,3 @@
-import os
 import re
 import json
 from pathlib import Path
@@ -20,10 +19,8 @@ from nonebot.rule import Rule, command, keyword, regex
 from ATRI.exceptions import ReadFileError, WriteFileError
 
 
-SERVICE_DIR = Path(".") / "data" / "service"
-SERVICES_DIR = SERVICE_DIR / "services"
-os.makedirs(SERVICE_DIR, exist_ok=True)
-os.makedirs(SERVICES_DIR, exist_ok=True)
+SERVICES_DIR = Path(".") / "data" / "services"
+SERVICES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class ServiceInfo(BaseModel):

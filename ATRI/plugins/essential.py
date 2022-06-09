@@ -1,4 +1,3 @@
-import os
 import json
 import shutil
 import asyncio
@@ -44,9 +43,9 @@ bots = nonebot.get_bots()
 ESSENTIAL_DIR = Path(".") / "data" / "database" / "essential"
 MANEGE_DIR = Path(".") / "data" / "database" / "manege"
 TEMP_PATH = Path(".") / "data" / "temp"
-os.makedirs(ESSENTIAL_DIR, exist_ok=True)
-os.makedirs(MANEGE_DIR, exist_ok=True)
-os.makedirs(TEMP_PATH, exist_ok=True)
+ESSENTIAL_DIR.mkdir(parents=True, exist_ok=True)
+MANEGE_DIR.mkdir(parents=True, exist_ok=True)
+TEMP_PATH.mkdir(parents=True, exist_ok=True)
 
 
 @driver.on_startup
@@ -368,7 +367,7 @@ async def _():
 async def _clear_cache():
     try:
         shutil.rmtree(TEMP_PATH)
-        os.makedirs(TEMP_PATH, exist_ok=True)
+        TEMP_PATH.mkdir(parents=True, exist_ok=True)
     except Exception:
         log.warning("清除缓存失败，请手动清除：data/temp")
 

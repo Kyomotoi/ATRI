@@ -9,6 +9,7 @@ from ATRI.service import Service, SERVICES_DIR, ServiceTools
 from ATRI.config import BotSelfConfig
 from ATRI.exceptions import ReadFileError
 
+
 SERVICE_INFO_FORMAT = """
 服务名：{service}
 说明：{docs}

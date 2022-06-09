@@ -1,4 +1,3 @@
-import os
 import json
 from pathlib import Path
 from jieba import posseg
@@ -12,7 +11,7 @@ from ATRI.exceptions import ReadFileError, WriteFileError
 
 
 CHAT_PATH = Path(".") / "data" / "database" / "kimo"
-os.makedirs(CHAT_PATH, exist_ok=True)
+CHAT_PATH.mkdir(parents=True, exist_ok=True)
 KIMO_URL = "https://cdn.jsdelivr.net/gh/Kyomotoi/AnimeThesaurus/data.json"
 
 
