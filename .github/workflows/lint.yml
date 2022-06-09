@@ -22,7 +22,7 @@ jobs:
       - name: Setup Python 🐍
         uses: actions/setup-python@v3.1.2
         with:
-          python-version: 3.8
+          python-version: 3.8.5
 
       - uses: Gr1N/setup-poetry@v7
 
