@@ -7,9 +7,6 @@ from ATRI.config import BotSelfConfig
 from ATRI.exceptions import WriteFileError, ReadFileError
 from .data_source import Console, CONSOLE_DIR
 from .models import AuthData
-from .driver import init
-
-init()
 
 
 gen_console_key = Console().cmd_as_group("auth", "获取进入网页后台的凭证")

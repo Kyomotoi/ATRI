@@ -53,3 +53,6 @@ def register_routes(driver: Driver):
 
 def init():
     register_routes(driver)  # type: ignore
+
+
+driver().on_startup(init)
