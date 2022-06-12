@@ -12,7 +12,7 @@ from ATRI.exceptions import ReadFileError, WriteFileError
 
 CHAT_PATH = Path(".") / "data" / "database" / "kimo"
 CHAT_PATH.mkdir(parents=True, exist_ok=True)
-KIMO_URL = "https://cdn.jsdelivr.net/gh/Kyomotoi/AnimeThesaurus/data.json"
+KIMO_URL = "https://fastly.jsdelivr.net/gh/Kyomotoi/AnimeThesaurus/data.json"
 
 
 class Kimo(Service):

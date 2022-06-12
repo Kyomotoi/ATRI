@@ -21,7 +21,9 @@ SETU_PATH.mkdir(parents=True, exist_ok=True)
 TEMP_PATH.mkdir(parents=True, exist_ok=True)
 
 
-MODULE_URL = "https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/nsfw.tflite"
+MODULE_URL = (
+    "https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/nsfw.tflite"
+)
 VGG_MEAN = [104, 117, 123]
 
 

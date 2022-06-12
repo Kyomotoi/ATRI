@@ -23,7 +23,7 @@ async def test_saucenao(app: App):
 
         msg = Message(
             MessageSegment.image(
-                "https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/noting/88674944_p0.png"
+                "https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/noting/88674944_p0.png"
             )
         )
         event = make_fake_event(_message=msg)()

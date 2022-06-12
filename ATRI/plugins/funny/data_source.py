@@ -28,9 +28,7 @@ class Funny(Service):
         path = FUNNY_DIR / file_name
         if not path.is_file():
             logger.warning("未发现笑话相关数据，正在下载并保存...")
-            url = (
-                "https://cdn.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/laugh.txt"
-            )
+            url = "https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/laugh.txt"
             res = await request.get(url)
             context = res.text
             with open(path, "w", encoding="utf-8") as w:
