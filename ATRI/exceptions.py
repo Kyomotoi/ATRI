@@ -7,7 +7,7 @@ from typing import Optional
 from traceback import format_exc
 from pydantic.main import BaseModel
 
-from nonebot.adapters.onebot.v11 import Bot
+from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent
 from nonebot.message import run_postprocessor
 from nonebot.exception import ActionFailed
 
@@ -86,11 +86,12 @@ class ServiceRegisterError(BaseBotException):
     prompt = "服务注册错误"
 
 
+class BilibiliDynamicError(BaseBotException):
+    prompt = "b站动态订阅错误"
+
+
 @run_postprocessor
-async def _track_error(
-    exception: Optional[Exception],
-    bot: Bot,
-) -> None:
+async def _track_error(exception: Optional[Exception], bot: Bot, event) -> None:
     if not exception:
         return
 
@@ -106,8 +107,15 @@ async def _track_error(
         prompt = "Unknown ERROR->" + err.__class__.__name__
         track_id = _save_error(prompt, format_exc())
 
+    if isinstance(event, PrivateMessageEvent):
+        _id = "用户" + event.get_user_id()
+    elif isinstance(event, GroupMessageEvent):
+        _id = "群" + str(event.group_id)
+    else:
+        _id = "unknown"
+
     logger.debug(f"Error Track ID: {track_id}")
-    msg = f"呜——出错了...追踪: {track_id}"
+    msg = f"呜——出错了...追踪: {track_id}\n来自: {_id}"
 
     for superusers in BotSelfConfig.superusers:
         try:
