@@ -132,7 +132,7 @@ class BilibiliDynamicChecker(BaseTrigger):
     max_instances=3,  # type: ignore
     misfire_grace_time=60,  # type: ignore
 )
-async def _check_dynamic_rebu():
+async def _check_dynamic():
     sub = BilibiliDynamicSubscriptor()
     all_dy = await sub.get_all_subs()
     if tq.empty():
