@@ -9,7 +9,7 @@ from ATRI.rule import is_in_service
 from ATRI.utils import timestamp2datetime
 from ATRI.exceptions import BilibiliDynamicError
 
-from .database import DB
+from .db import DB
 from .api import API
 
 

@@ -4,6 +4,7 @@ import nonebot
 from nonebot.adapters.onebot.v11 import Adapter
 
 from .config import RUNTIME_CONFIG, InlineGoCQHTTP
+from .database import init_database
 
 __version__ = "YHN-001-A05.fix1"
 
@@ -22,6 +23,7 @@ def init():
     nonebot.load_plugins("ATRI/plugins")
     if InlineGoCQHTTP.enabled:
         nonebot.load_plugin("nonebot_plugin_gocqhttp")
+    init_database()
     sleep(3)
 
 

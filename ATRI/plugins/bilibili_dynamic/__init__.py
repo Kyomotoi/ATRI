@@ -16,9 +16,9 @@ from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
 from ATRI.log import logger as log
 from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
+from ATRI.database import BilibiliSubscription
 
 from .data_source import BilibiliDynamicSubscriptor
-from .database.models import Subscription
 
 
 add_sub = BilibiliDynamicSubscriptor().cmd_as_group("add", "添加b站up主订阅")
@@ -121,7 +121,7 @@ tq = asyncio.Queue()
 class BilibiliDynamicChecker(BaseTrigger):
     def get_next_fire_time(self, previous_fire_time, now):
         sub = BilibiliDynamicSubscriptor()
-        conf = sub.load_service("b站动态订阅-rebu")
+        conf = sub.load_service("b站动态订阅")
         if conf.get("enabled"):
             return now
 
@@ -132,14 +132,19 @@ class BilibiliDynamicChecker(BaseTrigger):
     max_instances=3,  # type: ignore
     misfire_grace_time=60,  # type: ignore
 )
-async def _check_dynamic():
+async def _check_bd():
     sub = BilibiliDynamicSubscriptor()
-    all_dy = await sub.get_all_subs()
+    try:
+        all_dy = await sub.get_all_subs()
+    except Exception:
+        log.debug("b站订阅列表为空 跳过")
+        return
+    
     if tq.empty():
         for i in all_dy:
             await tq.put(i)
     else:
-        m: Subscription = tq.get_nowait()
+        m: BilibiliSubscription = tq.get_nowait()
         log.info(f"准备查询up主[{m.up_nickname}]的动态，队列剩余 {tq.qsize()}")
 
         ts = int(m.last_update.timestamp())
@@ -149,6 +154,7 @@ async def _check_dynamic():
             result = sub.extract_dyanmic(info["cards"])
         if not result:
             log.warning(f"无法获取up主[{m.up_nickname}]的动态")
+            return
 
         for i in result:
             i["name"] = m.up_nickname
