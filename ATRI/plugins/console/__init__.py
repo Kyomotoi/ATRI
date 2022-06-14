@@ -197,3 +197,10 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
     一定要保管好哦！切勿告诉他人哦！
     """.strip()
     await res_console_key.finish(msg)
+
+
+from ATRI import driver as dr
+from .driver import init
+
+
+dr().on_startup(init)
