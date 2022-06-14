@@ -2,6 +2,7 @@ from nonebot.drivers.fastapi import Driver
 
 from fastapi.middleware.cors import CORSMiddleware
 
+from ATRI import driver
 from .view import (
     handle_auther,
     handle_base_uri,
