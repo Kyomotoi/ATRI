@@ -90,6 +90,10 @@ class BilibiliDynamicError(BaseBotException):
     prompt = "b站动态订阅错误"
 
 
+class TwitterDynamicError(BaseBotException):
+    prompt = "Twitter动态订阅错误"
+
+
 @run_postprocessor
 async def _track_error(exception: Optional[Exception], bot: Bot, event) -> None:
     if not exception:
