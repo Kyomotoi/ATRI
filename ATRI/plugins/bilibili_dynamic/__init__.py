@@ -11,6 +11,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from nonebot import get_bot
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
+from nonebot.permission import Permission
 from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
 
 from ATRI.log import logger as log
@@ -92,7 +93,9 @@ async def _bd_deal_del_sub(
     await del_sub.finish(f"成功取消该up主[{up_nickname}]的订阅～")
 
 
-get_sub_list = BilibiliDynamicSubscriptor().cmd_as_group("list", "获取b站up主订阅列表")
+get_sub_list = BilibiliDynamicSubscriptor().cmd_as_group(
+    "list", "获取b站up主订阅列表", permission=Permission()
+)
 
 
 @get_sub_list.handle()
@@ -139,7 +142,7 @@ async def _check_bd():
     except Exception:
         log.debug("b站订阅列表为空 跳过")
         return
-    
+
     if tq.empty():
         for i in all_dy:
             await tq.put(i)

@@ -1,6 +1,7 @@
 import json
 from operator import itemgetter
 
+from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 
@@ -29,7 +30,7 @@ class BilibiliDynamicSubscriptor(Service):
             "b站动态订阅",
             "b站动态订阅助手～",
             rule=is_in_service("b站动态订阅"),
-            permission=GROUP_OWNER | GROUP_ADMIN,
+            permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
             main_cmd="/bd",
         )
 
