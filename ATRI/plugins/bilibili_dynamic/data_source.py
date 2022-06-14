@@ -15,6 +15,7 @@ from .api import API
 
 _OUTPUT_FORMAT = """
 {up_nickname} 的{up_dy_type}更新了！
+（限制 {limit_content} 字）
 {up_dy_content}
 {up_dy_media}
 链接: {up_dy_link}
@@ -44,7 +45,7 @@ class BilibiliDynamicSubscriptor(Service):
             async with DB() as db:
                 await db.update_sub(uid, update_map)
         except BilibiliDynamicError:
-            BilibiliDynamicError("更新订阅失败")
+            raise BilibiliDynamicError("更新订阅失败")
 
     async def del_sub(self, uid: int, group_id: int):
         try:
@@ -158,7 +159,8 @@ class BilibiliDynamicSubscriptor(Service):
         return _OUTPUT_FORMAT.format(
             up_nickname=data["name"],
             up_dy_type=data["type_zh"],
-            up_dy_content=str(data["content"][:limit_content] + "...")
+            limit_content=limit_content,
+            up_dy_content=str(data["content"][:limit_content])
             .replace("https://", str())
             .replace("http://", str()),
             up_dy_media=MessageSegment.image(data["pic"]) if data.get("pic") else str(),
