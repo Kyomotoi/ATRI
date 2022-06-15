@@ -44,6 +44,7 @@
 - ATRI语（加密、解密，改自[`rcnb`](https://github.com/rcnbapp/RCNB.js)）
 - 简单骰子
 - b站动态订阅
+- Twitter 动态订阅
 </details>
 
 <details markdown='1'><summary>娱乐</summary>
@@ -64,11 +65,9 @@
 > 被勾上的即已大致完成，但仍需优化
 - [x] 网页控制台
 - [ ] RSS订阅
-- [x] B站动态订阅
 - [ ] 冷重启
 - [ ] 进裙验证（问题可自定义）
 - [ ] 好感度系统
-- [ ] 模拟韭菜
 </details>
 
 ## 🚀 开始部署 | Getting Started
