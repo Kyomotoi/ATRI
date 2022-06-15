@@ -11,8 +11,10 @@ class DB:
     async def add_sub(self, uid: int, group_id: int):
         await BilibiliSubscription.create(uid=uid, group_id=group_id)
 
-    async def update_sub(self, uid: int, update_map: dict):
-        await BilibiliSubscription.filter(uid=uid).update(**update_map)
+    async def update_sub(self, uid: int, group_id: int, update_map: dict):
+        await BilibiliSubscription.filter(uid=uid, group_id=group_id).update(
+            **update_map
+        )
 
     async def del_sub(self, query_map: dict):
         await BilibiliSubscription.filter(**query_map).delete()

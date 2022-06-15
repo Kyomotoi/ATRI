@@ -41,10 +41,10 @@ class BilibiliDynamicSubscriptor(Service):
         except BilibiliDynamicError:
             raise BilibiliDynamicError("添加订阅失败")
 
-    async def update_sub(self, uid: int, update_map: dict):
+    async def update_sub(self, uid: int, group_id: int, update_map: dict):
         try:
             async with DB() as db:
-                await db.update_sub(uid, update_map)
+                await db.update_sub(uid, group_id, update_map)
         except BilibiliDynamicError:
             raise BilibiliDynamicError("更新订阅失败")
 

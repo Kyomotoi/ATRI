@@ -54,7 +54,7 @@ async def _bd_deal_add_sub(
 
     await sub.add_sub(__id, group_id)
     await sub.update_sub(
-        __id, {"up_nickname": up_nickname, "last_update": datetime.utcnow()}
+        __id, group_id, {"up_nickname": up_nickname, "last_update": datetime.utcnow()}
     )
     await add_sub.finish(f"成功订阅名为[{up_nickname}]up主的动态～！")
 
@@ -168,8 +168,8 @@ async def _check_bd():
                 await bot.send_group_msg(group_id=m.group_id, message=content)
                 await sub.update_sub(
                     m.uid,
+                    m.group_id,
                     {
-                        "group_id": m.group_id,
                         "last_update": timestamp2datetime(i["timestamp"]),
                     },
                 )
