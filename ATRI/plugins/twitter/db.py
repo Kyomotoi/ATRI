@@ -11,8 +11,10 @@ class DB:
     async def add_sub(self, tid: int, group_id: int):
         await TwitterSubscription.create(tid=tid, group_id=group_id)
 
-    async def update_sub(self, tid: int, update_map: dict):
-        await TwitterSubscription.filter(tid=tid).update(**update_map)
+    async def update_sub(self, tid: int, group_id: int, update_map: dict):
+        await TwitterSubscription.filter(tid=tid, group_id=group_id).update(
+            **update_map
+        )
 
     async def del_sub(self, query_map: dict):
         await TwitterSubscription.filter(**query_map).delete()

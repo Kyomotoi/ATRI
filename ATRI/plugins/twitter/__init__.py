@@ -51,6 +51,7 @@ async def _td_deal_add_sub(
     await sub.add_sub(tid, group_id)
     await sub.update_sub(
         tid,
+        group_id,
         {
             "name": t_name,
             "screen_name": t_screen_name,
@@ -149,7 +150,7 @@ async def _check_td():
         m: TwitterSubscription = tq.get_nowait()
         log.info(f"准备查询推主 {m.name}@{m.screen_name} 的动态，队列剩余 {tq.qsize()}")
 
-        ts = int(m.last_update.timestamp())
+        ts = m.last_update.timestamp()
         info: dict = await sub.get_twitter_user_info(m.screen_name)
         if not info.get("status", list()):
             log.warning(f"无法获取推主 {m.name}@{m.screen_name} 的动态")
@@ -159,17 +160,27 @@ async def _check_td():
 
         t_time = info["status"]["created_at"]
         time_patt = "%a %b %d %H:%M:%S +0000 %Y"
-        ts_t = datetime.strptime(t_time, time_patt).timestamp()
 
+        raw_t = datetime.strptime(t_time, time_patt) + timedelta(hours=8)
+        ts_t = raw_t.timestamp()
         if ts < ts_t:
+
+            raw_media = info["status"]["entities"].get("media", dict())
+            if raw_media:
+                pic = raw_media[0]["media_url"]
+                url = raw_media[0]["url"]
+            else:
+                pic = str()
+                url = str()
+
             data = {
                 "name": info["name"],
                 "content": info["status"]["text"],
-                "pic": info["status"]["media"]["media_url"],
-                "s_id": info["status"]["id"],
+                "pic": pic,
+                "to_url": url,
             }
             content = sub.gen_output(data)
 
             bot = get_bot()
             await bot.send_group_msg(group_id=m.group_id, message=content)
-            await sub.update_sub(tid, {"group_id": m.group_id, "last_update": ts_t})
+            await sub.update_sub(tid, m.group_id, {"last_update": raw_t})

@@ -37,10 +37,10 @@ class TwitterDynamicSubscriptor(Service):
         except TwitterDynamicError:
             raise TwitterDynamicError("添加订阅失败")
 
-    async def update_sub(self, tid: int, update_map: dict):
+    async def update_sub(self, tid: int, group_id: int, update_map: dict):
         try:
             async with DB() as db:
-                await db.update_sub(tid, update_map)
+                await db.update_sub(tid, group_id, update_map)
         except TwitterDynamicError:
             raise TwitterDynamicError("更新订阅失败")
 
@@ -81,7 +81,7 @@ class TwitterDynamicSubscriptor(Service):
         screen_name = data.get("screen_name", None)
         return _name, screen_name
 
-    async def gen_output(self, data: dict, limit_content: int = 100) -> str:
+    def gen_output(self, data: dict, limit_content: int = 100) -> str:
         """生成动态信息
 
         Args:
@@ -98,7 +98,7 @@ class TwitterDynamicSubscriptor(Service):
             .replace("https://", str())
             .replace("http://", str()),
             t_dy_media=MessageSegment.image(data["pic"]) if data.get("pic") else str(),
-            t_dy_link="twitter.com/nihui/status/" + data["s_id"],
+            t_dy_link=str(data["to_url"]).replace("https://", str()),
         )
 
 
