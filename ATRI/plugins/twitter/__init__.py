@@ -1,3 +1,4 @@
+import re
 import pytz
 import asyncio
 from tabulate import tabulate
@@ -9,15 +10,18 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 from nonebot import get_bot
 from nonebot.matcher import Matcher
-from nonebot.permission import Permission
 from nonebot.params import CommandArg, ArgPlainText
-from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
+from nonebot.permission import Permission, SUPERUSER
+from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent
 
 from ATRI.log import logger as log
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import TwitterSubscription
 
 from .data_source import TwitterDynamicSubscriptor
+
+
+_CONTENT_LIMIT: int = 0
 
 
 add_sub = TwitterDynamicSubscriptor().cmd_as_group("add", "添加推主订阅")
@@ -99,7 +103,7 @@ get_sub_list = TwitterDynamicSubscriptor().cmd_as_group(
 
 
 @get_sub_list.handle()
-async def _get_sub_list(event: GroupMessageEvent):
+async def _td_get_sub_list(event: GroupMessageEvent):
     group_id = event.group_id
     sub = TwitterDynamicSubscriptor()
 
@@ -116,6 +120,31 @@ async def _get_sub_list(event: GroupMessageEvent):
         subs, headers=["推主", "tid", "最后更新时间"], tablefmt="plain", showindex=True
     )
     await get_sub_list.finish(output)
+
+
+limit_content = TwitterDynamicSubscriptor().cmd_as_group(
+    "limit", "设置订阅内容字数限制", permission=SUPERUSER
+)
+
+
+@limit_content.handle()
+async def _td_get_limit(matcher: Matcher, args: Message = CommandArg()):
+    msg = args.extract_plain_text()
+    if msg:
+        matcher.set_arg("td_limit_int", args)
+
+
+@limit_content.got("td_limit_int", "要限制内容在多少字以内呢？(默认200，0=不限制)")
+async def _td_deal_limit(
+    event: GroupMessageEvent, _limit: str = ArgPlainText("td_limit_int")
+):
+    patt = r"^\d+$"
+    if not re.match(patt, _limit):
+        await limit_content.reject("请键入阿拉伯数字:")
+
+    global _CONTENT_LIMIT
+    _CONTENT_LIMIT = int(_limit)
+    await limit_content.finish(f"成功！订阅内容展示将限制在 {_CONTENT_LIMIT} 以内！")
 
 
 tq = asyncio.Queue()
@@ -167,20 +196,24 @@ async def _check_td():
 
             raw_media = info["status"]["entities"].get("media", dict())
             if raw_media:
-                pic = raw_media[0]["media_url"]
-                url = raw_media[0]["url"]
+                _pic = raw_media[0]["media_url"]
             else:
-                pic = str()
-                url = str()
+                _pic = str()
 
             data = {
                 "name": info["name"],
                 "content": info["status"]["text"],
-                "pic": pic,
-                "to_url": url,
             }
-            content = sub.gen_output(data)
+            content = sub.gen_output(data, _CONTENT_LIMIT)
+            pic = Message(MessageSegment.image(_pic))
 
             bot = get_bot()
             await bot.send_group_msg(group_id=m.group_id, message=content)
+            if pic:
+                try:
+                    await bot.send_group_msg(group_id=m.group_id, message=pic)
+                except Exception:
+                    repo = "图片发送失败了..."
+                    await bot.send_group_msg(group_id=m.group_id, message=repo)
+
             await sub.update_sub(tid, m.group_id, {"last_update": raw_t})

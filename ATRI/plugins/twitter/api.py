@@ -1,12 +1,7 @@
 import re
-from time import sleep
 
-from ATRI import driver
-from ATRI.log import logger as log
 from ATRI.utils import request
-from ATRI.service import ServiceTools
 from ATRI.exceptions import RequestError
-from ATRI.utils.apscheduler import scheduler
 
 
 _GUEST_TOKEN: str = str()
@@ -47,7 +42,7 @@ class API:
         url = "https://api.twitter.com/1.1/guest/activate.json"
         try:
             resp = await request.post(url, headers=headers)
-        except RequestError:
+        except Exception:
             raise RequestError("Request failed!")
 
         data: dict = resp.json()
@@ -63,7 +58,7 @@ class API:
         url = "https://twitter.com/explore"
         try:
             resp = await request.get(url, headers=headers)
-        except RequestError:
+        except Exception:
             raise RequestError("Request failed!")
 
         data = str(resp.headers)
@@ -94,7 +89,7 @@ class API:
         headers = self._gen_headers()
         try:
             resp = await request.get(url, params=params, headers=headers)
-        except RequestError:
+        except Exception:
             raise RequestError("Request failed!")
         return resp.json()
 
@@ -114,8 +109,23 @@ class API:
             return dict()
         return data[0]
 
+    async def get_user_info(self, tid: int) -> dict:
+        """通过提供的信息获取对应用户信息
+
+        Args:
+            tid (int): 用户ID
+
+        Returns:
+            dict: 用户信息.
+        """
+        url = f"https://api.twitter.com/2/users/{tid}"
+        data = await self._request(url)
+        if not data:
+            return dict()
+        return data
+
     async def get_conversation(self, tweet_id: int) -> dict:
-        """通过传入的值获取推文信息（无法工作）
+        """通过传入的值获取推文信息
 
         Args:
             tweet_id (int): 推文id
@@ -125,37 +135,9 @@ class API:
         """
         url = f"https://twitter.com/i/api/2/timeline/conversation/{tweet_id}.json"
         params = {
-            "simple_quoted_tweet": "true",
+            "simple_quoted_tweet": True,
             "tweet_mode": "extended",
-            "trim_user": "true",
+            "trim_user": True,
         }
         data = await self._request(url, params)
         return data
-
-
-async def _regot_token():
-    api = API()
-    await api.get_token()
-    # await api.get_cookie()
-
-
-async def _check_status():
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
-    }
-    try:
-        await request.get("https://twitter.com/", headers=headers)
-        log.success("已成功连接: Twitter")
-    except RequestError:
-        data = ServiceTools.load_service("推特动态订阅")
-        data["enabled"] = False
-        ServiceTools.save_service(data, "推特动态订阅")
-        log.warning("无法连接至 Twitter，这将导致相关插件无法工作. 已自动禁用. 3s后继续...")
-        sleep(3)
-
-
-scheduler.add_job(_regot_token, "interval", name="刷新推特凭据", minutes=30, misfire_grace_time=10)  # type: ignore
-
-
-driver().on_startup(_regot_token)
-driver().on_startup(_check_status)
