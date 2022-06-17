@@ -5,7 +5,7 @@ from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.utils import request
 from ATRI.config import Setu as ST
-from .tf_dealer import detect_image
+from .tf_dealer import detect_image, init_module
 
 
 LOLICON_URL = "https://api.lolicon.app/setu/v2"
@@ -81,3 +81,8 @@ class Setu(Service):
     async def async_recall(bot: Bot, event_id):
         await asyncio.sleep(30)
         await bot.delete_msg(message_id=event_id)
+
+
+from ATRI import driver
+
+driver().on_startup(init_module)

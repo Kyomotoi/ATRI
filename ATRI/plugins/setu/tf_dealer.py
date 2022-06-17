@@ -1,6 +1,5 @@
 import io
 import re
-import asyncio
 import skimage
 import skimage.io
 import numpy as np
@@ -48,7 +47,7 @@ def prepare_image(img):
 async def detect_image(url: str, file_size: int) -> list:
     try:
         req = await request.get(url)
-    except RequestError:
+    except Exception:
         raise RequestError("Get info from download image failed!")
 
     img_byte = getsizeof(req.read()) // 1024
@@ -61,7 +60,7 @@ async def detect_image(url: str, file_size: int) -> list:
         path = TEMP_PATH / f"{file_name}.jpg"
         with open(path, "wb") as f:
             f.write(req.read())
-    except WriteFileError:
+    except Exception:
         raise WriteFileError("Writing file failed!")
 
     await init_module()
@@ -110,7 +109,3 @@ async def init_module():
             log.info("模型装载完成")
         except WriteFileError:
             raise WriteFileError("NSFW TF module init failed!")
-
-
-loop = asyncio.get_event_loop()
-loop.create_task(init_module())
