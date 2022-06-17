@@ -34,14 +34,14 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
         ca = d.get("data", None)
         if ca:
             # 此处原本想用 matcher.finish 但这是在 try 里啊！
-            await gen_console_key.send("咱已经告诉你了嗷！啊！忘了.../gauth 获取吧")
+            await gen_console_key.send("咱已经告诉你了嗷！啊！忘了.../con.load 获取吧")
             return
 
         d["data"] = AuthData(ip=ip, port=str(p), token=rs).dict()
 
         with open(df, "w", encoding="utf-8") as w:
             w.write(json.dumps(d))
-    except WriteFileError:
+    except Exception:
         msg = f"""
         哦吼！写入文件失败了...还请自行记下哦...
         IP: {ip}
@@ -75,11 +75,11 @@ load_console_key = Console().cmd_as_group("load", "获取已生成的后台凭�
 async def _(event: PrivateMessageEvent):
     df = CONSOLE_DIR / "data.json"
     if not df.is_file():
-        await load_console_key.finish("你还没有问咱索要奥！/auth 以获取")
+        await load_console_key.finish("你还没有问咱索要奥！/con.auth 以获取")
 
     try:
         d = json.loads(df.read_bytes())
-    except ReadFileError:
+    except Exception:
         await load_console_key.send("获取数据失败了...请自行打开文件查看吧:\n" + str(df))
         raise ReadFileError("Reading file: " + str(df) + " failed!")
 
@@ -109,7 +109,7 @@ async def _(is_sure: str = ArgPlainText("is_sure_d")):
 
     df = CONSOLE_DIR / "data.json"
     if not df.is_file():
-        await del_console_key.finish("你还没向咱索取凭证呢.../auth 以获取")
+        await del_console_key.finish("你还没向咱索取凭证呢.../con.auth 以获取")
 
     try:
         data: dict = json.loads(df.read_bytes())
@@ -118,11 +118,11 @@ async def _(is_sure: str = ArgPlainText("is_sure_d")):
 
         with open(df, "w", encoding="utf-8") as w:
             w.write(json.dumps(data))
-    except WriteFileError:
+    except Exception:
         await del_console_key.send("销毁失败了...请至此处自行删除文件:\n" + str(df))
         raise WriteFileError("Writing / Reading file: " + str(df) + " failed!")
 
-    await del_console_key.finish("销毁成功！如需再次获取: /auth")
+    await del_console_key.finish("销毁成功！如需再次获取: /con.auth")
 
 
 res_console_key = Console().cmd_as_group("reauth", "重置进入网页后台的凭证")
@@ -135,7 +135,7 @@ async def _(is_sure: str = ArgPlainText("is_sure_r")):
 
     df = CONSOLE_DIR / "data.json"
     if not df.is_file():
-        await del_console_key.finish("你还没向咱索取凭证呢.../auth 以获取")
+        await del_console_key.finish("你还没向咱索取凭证呢.../con.auth 以获取")
 
     try:
         data: dict = json.loads(df.read_bytes())
@@ -144,7 +144,7 @@ async def _(is_sure: str = ArgPlainText("is_sure_r")):
 
         with open(df, "w", encoding="utf-8") as w:
             w.write(json.dumps(data))
-    except WriteFileError:
+    except Exception:
         await del_console_key.send("销毁失败了...请至此处自行删除文件:\n" + str(df))
         raise WriteFileError("Writing / Reading file: " + str(df) + " failed!")
 
@@ -170,14 +170,14 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
 
         ca = d.get("data", None)
         if ca:
-            await res_console_key.send("咱已经告诉你了嗷！啊！忘了.../gauth 获取吧")
+            await res_console_key.send("咱已经告诉你了嗷！啊！忘了.../con.load 获取吧")
             return
 
         d["data"] = AuthData(ip=ip, port=str(p), token=rs).dict()
 
         with open(df, "w", encoding="utf-8") as w:
             w.write(json.dumps(d))
-    except WriteFileError:
+    except Exception:
         msg = f"""
         哦吼！写入文件失败了...还请自行记下哦...
         IP: {ip}
@@ -190,7 +190,7 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
         raise WriteFileError("Writing file: " + str(df) + " failed!")
 
     msg = f"""
-    该信息已保存！可通过 /gauth 获取~
+    该信息已保存！可通过 /con.load 获取~
     IP: {ip}
     PORT: {p}
     TOKEN: {rs}
