@@ -79,7 +79,7 @@ class Funny(Service):
             try:
                 data = await request.post(url, params=params)
                 data = data.json()
-            except RequestError:
+            except Exception:
                 raise RequestError("Request failed!")
 
             text = Translate(data["text"]).to_simple().replace("今天", day)
@@ -92,7 +92,7 @@ class Funny(Service):
             try:
                 data = await request.post(url, params=params)
                 data = data.json()
-            except RequestError:
+            except Exception:
                 raise RequestError("Request failed!")
 
             result = Translate(data["text"]).to_simple().replace("今天", day)
@@ -108,7 +108,7 @@ class Funny(Service):
                 try:
                     data = await request.post(url, params=params)
                     data = data.json()
-                except RequestError:
+                except Exception:
                     raise RequestError("Request failed!")
 
                 text = Translate(data["text"]).to_simple().replace("今天", day)

@@ -24,7 +24,7 @@ class Anime(Service):
         aim = URL + url
         try:
             res = await request.get(aim)
-        except RequestError:
+        except Exception:
             raise RequestError("Request failed!")
         result = res.json()
         return result
@@ -34,7 +34,7 @@ class Anime(Service):
         data = await cls._request(url)
         try:
             data = data["result"]
-        except:
+        except Exception:
             return "没有相似的结果呢..."
 
         d = dict()

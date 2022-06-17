@@ -81,7 +81,7 @@ async def _(bot: Bot, event: MessageEvent, s_msg: str = ArgPlainText("bc_msg")):
         try:
             await bot.send_group_msg(group_id=group_id, message=w_msg)
             su_g.append(group_id)
-        except:
+        except Exception:
             fl_g.append(group_id)
 
         await asyncio.sleep(random.randint(2, 3))

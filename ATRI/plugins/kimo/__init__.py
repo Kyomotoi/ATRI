@@ -56,5 +56,5 @@ async def _deal_name(event: MessageEvent, new_name: str = ArgPlainText("name")):
 async def _check_kimo():
     try:
         await Kimo().update_data()
-    except BaseException:
+    except Exception:
         pass

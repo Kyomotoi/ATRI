@@ -34,7 +34,7 @@ class SauceNao(Service):
         self.params["url"] = url
         try:
             res = await request.get(URL, params=self.params)
-        except RequestError:
+        except Exception:
             raise RequestError("Request failed!")
         data = res.json()
         return data
@@ -43,7 +43,7 @@ class SauceNao(Service):
         data = await self._request(url)
         try:
             res = data.get("results", "result")
-        except:
+        except Exception:
             return "没有相似的结果呢..."
 
         r = list()

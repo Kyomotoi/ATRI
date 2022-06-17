@@ -19,7 +19,7 @@ class Polaroid(Service):
     async def _request(cls, user_id: str) -> bytes:
         try:
             res = await request.get(TENCENT_AVATER_URL.format(user_id=user_id))
-        except RequestError:
+        except Exception:
             raise RequestError("Request failed!")
         data = res.read()
         return data
@@ -51,7 +51,7 @@ async def init_source():
                 with open(path, "wb") as w:
                     w.write(data.read())
                 log.info("所需资源装载完成")
-            except WriteFileError:
+            except Exception:
                 raise WriteFileError("装载资源失败")
 
 

@@ -36,7 +36,7 @@ async def _ready_service_info(event: MessageEvent):
 
     try:
         service = msg[1]
-    except:
+    except Exception:
         service = "idk"
 
     try:

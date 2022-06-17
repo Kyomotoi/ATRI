@@ -290,7 +290,7 @@ async def _deal_approve_friend_add(
 
     try:
         await bot.set_friend_add_request(flag=apply_code, approve=True)
-    except BaseException:
+    except Exception:
         await approve_friend_add.finish("同意失败...尝试下手动？")
     data = Manage().load_friend_apply_list()
     data.pop(apply_code)
@@ -320,7 +320,7 @@ async def _deal_refuse_friend_add(
 
     try:
         await bot.set_friend_add_request(flag=apply_code, approve=False)
-    except BaseException:
+    except Exception:
         await refuse_friend_add.finish("拒绝失败...尝试下手动？")
     data = Manage().load_friend_apply_list()
     data.pop(apply_code)
@@ -371,7 +371,7 @@ async def _deal_approve_group_invite(
         await bot.set_group_add_request(
             flag=apply_code, sub_type="invite", approve=True
         )
-    except BaseException:
+    except Exception:
         await approve_group_invite.finish("同意失败...尝试下手动？")
     data = Manage().load_invite_apply_list()
     data.pop(apply_code)
@@ -403,7 +403,7 @@ async def _deal_refuse_group_invite(
         await bot.set_group_add_request(
             flag=apply_code, sub_type="invite", approve=False
         )
-    except BaseException:
+    except Exception:
         await refuse_group_invite.finish("拒绝失败...（可能是小群免验证）尝试下手动？")
     data = Manage().load_invite_apply_list()
     data.pop(apply_code)

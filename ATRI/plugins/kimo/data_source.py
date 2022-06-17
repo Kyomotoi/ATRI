@@ -38,7 +38,7 @@ class Kimo(Service):
                 with open(path, "w", encoding="utf-8") as w:
                     w.write(json.dumps(data, indent=4))
                 log.info("生成完成")
-            except WriteFileError:
+            except Exception:
                 raise WriteFileError("Writing kimo words failed!")
 
     @classmethod
@@ -84,7 +84,7 @@ class Kimo(Service):
         try:
             with open(path, "w", encoding="utf-8") as w:
                 w.write(json.dumps(data, indent=4))
-        except ReadFileError:
+        except Exception:
             raise ReadFileError("Update user name failed!")
 
     @staticmethod
@@ -99,7 +99,7 @@ class Kimo(Service):
         data = json.loads(path.read_bytes())
         try:
             result = data[user_id]
-        except BaseException:
+        except Exception:
             result = "你"
         return result
 
@@ -117,7 +117,7 @@ class Kimo(Service):
             try:
                 if b[0] == b[1]:
                     a = b[0]
-            except BaseException:
+            except Exception:
                 pass
             if a in data:
                 repo = data.get(a, str())

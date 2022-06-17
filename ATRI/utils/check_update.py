@@ -22,7 +22,7 @@ class CheckUpdate:
     async def show_latest_commit_info(cls) -> str:
         try:
             data = await cls._get_commits_info()
-        except RequestError:
+        except Exception:
             raise RequestError("Getting commit info timeout...")
 
         try:
@@ -41,7 +41,7 @@ class CheckUpdate:
     async def show_latest_version(cls) -> tuple:
         try:
             data = await cls._get_release_info()
-        except RequestError:
+        except Exception:
             raise RequestError("Getting release list timeout...")
 
         try:

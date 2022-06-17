@@ -14,7 +14,7 @@ class API:
 
         try:
             resp = await request.get(url, params=params, headers=headers)
-        except RequestError:
+        except Exception:
             raise RequestError("Request failed!")
 
         return resp.json()

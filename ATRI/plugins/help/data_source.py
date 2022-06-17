@@ -7,7 +7,6 @@ from ATRI import __version__
 from ATRI.rule import to_bot
 from ATRI.service import Service, SERVICES_DIR, ServiceTools
 from ATRI.config import BotSelfConfig
-from ATRI.exceptions import ReadFileError
 
 
 SERVICE_INFO_FORMAT = """
@@ -84,7 +83,7 @@ class Helper(Service):
     def service_info(service: str) -> str:
         try:
             data = ServiceTools().load_service(service)
-        except ReadFileError:
+        except Exception:
             return "请检查是否输入错误呢...@bot 帮助 [服务]"
 
         service_name = data.get("service", "error")
@@ -106,7 +105,7 @@ class Helper(Service):
     def cmd_info(service: str, cmd: str) -> str:
         try:
             data = ServiceTools().load_service(service)
-        except ReadFileError:
+        except Exception:
             return "请检查是否输入错误..."
 
         cmd_list: dict = data["cmd_list"]

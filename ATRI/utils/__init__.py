@@ -122,7 +122,7 @@ class FileDealer:
     async def _reader(self) -> AsyncTextIOWrapper:
         try:
             tar = await aiofiles.open(self.path, "r", encoding=self.encoding)
-        except FileNotFoundError:
+        except Exception:
             raise FileNotFoundError(f"File({self.path}) not find!")
         return tar
 

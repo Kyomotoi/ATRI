@@ -56,7 +56,7 @@ class Status(Service):
                 datetime.utcfromtimestamp(now).replace(microsecond=0)
                 - datetime.utcfromtimestamp(b).replace(microsecond=0)
             )
-        except GetStatusError:
+        except Exception:
             raise GetStatusError("Failed to get status.")
 
         msg = "アトリは、高性能ですから！"

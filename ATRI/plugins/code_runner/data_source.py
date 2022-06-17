@@ -64,7 +64,7 @@ class CodeRunner(Service):
 
         try:
             _ = args[1]
-        except:
+        except Exception:
             return "请检查键入内容...需要帮助：/code help"
 
         lang = args[0].replace("\r", "")
@@ -90,7 +90,7 @@ class CodeRunner(Service):
 
         try:
             res = await request.post(url, json=js)
-        except RequestError:
+        except Exception:
             raise RequestError("Request failed!")
 
         payload = res.json()

@@ -6,7 +6,7 @@ from pathlib import Path
 from datetime import datetime
 
 from ATRI.service import ServiceTools, SERVICES_DIR
-from ATRI.exceptions import GetStatusError, ReadFileError, WriteFileError
+from ATRI.exceptions import GetStatusError
 from ..models import PlatformRuntimeInfo, BotRuntimeInfo, ServiceInfo
 
 
@@ -33,7 +33,7 @@ def get_processing_data() -> tuple:
             datetime.utcfromtimestamp(now).replace(microsecond=0)
             - datetime.utcfromtimestamp(b).replace(microsecond=0)
         )
-    except GetStatusError:
+    except Exception:
         raise GetStatusError("Getting runtime failed.")
 
     if p_cpu > 90:  # type: ignore
@@ -97,7 +97,7 @@ def control_service(
 ) -> tuple:
     try:
         serv_data = ServiceTools().load_service(serv_name)
-    except ReadFileError:
+    except Exception:
         return False, dict()
 
     if is_enab != 1:
@@ -128,7 +128,7 @@ def control_service(
 
     try:
         ServiceTools().save_service(serv_data, serv_name)
-    except WriteFileError:
+    except Exception:
         return False, dict()
 
     return True, serv_data
@@ -187,7 +187,7 @@ def edit_block_list(is_enab: bool, user_id: str, group_id: str) -> tuple:
         path = MANEGE_DIR / g_f
         with open(path, "w", encoding="utf-8") as w:
             w.write(json.dumps(g_d))
-    except WriteFileError:
+    except Exception:
         return False, dict()
 
     return True, {"user": u_d, "group": g_d}

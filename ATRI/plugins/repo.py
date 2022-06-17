@@ -45,7 +45,7 @@ async def _deal_repo(
     for superuser in BotSelfConfig.superusers:
         try:
             await bot.send_private_msg(user_id=superuser, message=repo_0)
-        except BaseException:
+        except Exception:
             await reporter.finish("发送失败了呢...")
 
     await reporter.finish("吾辈的心愿已由咱转告维护者！")

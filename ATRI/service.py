@@ -98,7 +98,7 @@ class Service:
         try:
             with open(path, "w", encoding="utf-8") as w:
                 w.write(json.dumps(data.dict(), indent=4))
-        except WriteFileError:
+        except Exception:
             raise WriteFileError("Write service info failed!")
 
     def save_service(self, service_data: dict, service: str) -> None:
@@ -119,7 +119,7 @@ class Service:
 
         try:
             data = json.loads(path.read_bytes())
-        except ReadFileError:
+        except Exception:
             with open(path, "w", encoding="utf-8") as w:
                 w.write(json.dumps({}))
             self._generate_service_config(service, self.docs)

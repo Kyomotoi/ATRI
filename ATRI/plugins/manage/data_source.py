@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 
 from ATRI.service import Service, ServiceTools
-from ATRI.exceptions import ReadFileError, load_error
+from ATRI.exceptions import load_error
 
 
 MANAGE_DIR = Path(".") / "data" / "database" / "manege"
@@ -41,7 +41,7 @@ class Manage(Service):
             return dict()
         try:
             data = json.loads(path.read_bytes())
-        except BaseException:
+        except Exception:
             data = dict()
         return data
 
@@ -75,7 +75,7 @@ class Manage(Service):
 
         try:
             data = json.loads(path.read_bytes())
-        except BaseException:
+        except Exception:
             data = dict()
         return data
 
@@ -98,7 +98,7 @@ class Manage(Service):
         try:
             cls._save_block_user_list(data)
             return True
-        except BaseException:
+        except Exception:
             return False
 
     @classmethod
@@ -111,7 +111,7 @@ class Manage(Service):
             data.pop(user_id)
             cls._save_block_user_list(data)
             return True
-        except BaseException:
+        except Exception:
             return False
 
     @classmethod
@@ -122,7 +122,7 @@ class Manage(Service):
         try:
             cls._save_block_group_list(data)
             return True
-        except BaseException:
+        except Exception:
             return False
 
     @classmethod
@@ -135,7 +135,7 @@ class Manage(Service):
             data.pop(group_id)
             cls._save_block_group_list(data)
             return True
-        except BaseException:
+        except Exception:
             return False
 
     @staticmethod
@@ -145,7 +145,7 @@ class Manage(Service):
         """
         try:
             data = ServiceTools().load_service(service)
-        except BaseException:
+        except Exception:
             return False
         data["enabled"] = is_enabled
         ServiceTools().save_service(data, service)
@@ -158,14 +158,14 @@ class Manage(Service):
         """
         try:
             data = ServiceTools().load_service(service)
-        except BaseException:
+        except Exception:
             return False
         temp_list: list = data.get("disable_user", list())
 
         if is_enabled:
             try:
                 temp_list.remove(user_id)
-            except BaseException:
+            except Exception:
                 return False
         else:
             if user_id in temp_list:
@@ -185,14 +185,14 @@ class Manage(Service):
         """
         try:
             data = ServiceTools().load_service(service)
-        except:
+        except Exception:
             return False
         temp_list: list = data.get("disable_group", list())
 
         if is_enabled:
             try:
                 temp_list.remove(group_id)
-            except:
+            except Exception:
                 return False
         else:
             if group_id in temp_list:
@@ -215,7 +215,7 @@ class Manage(Service):
 
         try:
             data = json.loads(path.read_bytes())
-        except:
+        except Exception:
             data = dict()
         return data
 
@@ -241,7 +241,7 @@ class Manage(Service):
 
         try:
             data = json.loads(path.read_bytes())
-        except BaseException:
+        except Exception:
             data = dict()
         return data
 
@@ -260,7 +260,7 @@ class Manage(Service):
     async def track_error(track_id: str) -> str:
         try:
             data = load_error(track_id)
-        except ReadFileError:
+        except Exception:
             return "请检查ID是否正确..."
 
         prompt = data.get("prompt", "ignore")

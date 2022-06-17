@@ -48,7 +48,7 @@ class Console(Service):
             try:
                 with open(df, "w", encoding="utf-8") as w:
                     w.write(json.dumps({}))
-            except WriteFileError:
+            except Exception:
                 raise WriteFileError("Writing file: " + str(df) + " failed!")
 
         base_data: dict = json.loads(df.read_bytes())
