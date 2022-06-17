@@ -18,7 +18,6 @@ _OUTPUT_FORMAT = """
 {up_nickname} 的{up_dy_type}更新了！
 （限制 {limit_content} 字）
 {up_dy_content}
-{up_dy_media}
 链接: {up_dy_link}
 """.strip()
 
@@ -38,21 +37,21 @@ class BilibiliDynamicSubscriptor(Service):
         try:
             async with DB() as db:
                 await db.add_sub(uid, group_id)
-        except BilibiliDynamicError:
+        except Exception:
             raise BilibiliDynamicError("添加订阅失败")
 
     async def update_sub(self, uid: int, group_id: int, update_map: dict):
         try:
             async with DB() as db:
                 await db.update_sub(uid, group_id, update_map)
-        except BilibiliDynamicError:
+        except Exception:
             raise BilibiliDynamicError("更新订阅失败")
 
     async def del_sub(self, uid: int, group_id: int):
         try:
             async with DB() as db:
                 await db.del_sub({"uid": uid, "group_id": group_id})
-        except BilibiliDynamicError:
+        except Exception:
             raise BilibiliDynamicError("删除订阅失败")
 
     async def get_sub_list(self, uid: int = int(), group_id: int = int()) -> list:
@@ -64,14 +63,14 @@ class BilibiliDynamicSubscriptor(Service):
         try:
             async with DB() as db:
                 return await db.get_sub_list(query_map)
-        except BilibiliDynamicError:
+        except Exception:
             raise BilibiliDynamicError("获取订阅列表失败")
 
     async def get_all_subs(self) -> list:
         try:
             async with DB() as db:
                 return await db.get_all_subs()
-        except BilibiliDynamicError:
+        except Exception:
             raise BilibiliDynamicError("获取全部订阅列表失败")
 
     async def get_up_nickname(self, uid: int) -> str:
@@ -147,23 +146,27 @@ class BilibiliDynamicSubscriptor(Service):
             result.append(pattern)
         return sorted(result, key=itemgetter("timestamp"))
 
-    def gen_output(self, data: dict, limit_content: int = 100) -> str:
+    def gen_output(self, data: dict, content_limit) -> str:
         """生成动态信息
 
         Args:
             data (dict): dict形式的动态数据.
-            limit_content (int, optional): 内容字数限制. 默认 100.
+            limit_content (int, optional): 内容字数限制.
 
         Returns:
             str: 动态信息
         """
+        if not content_limit:
+            content = data["content"]
+        else:
+            content = data["content"][:content_limit]
+
         return _OUTPUT_FORMAT.format(
             up_nickname=data["name"],
             up_dy_type=data["type_zh"],
-            limit_content=limit_content,
-            up_dy_content=str(data["content"][:limit_content])
+            limit_content=content_limit,
+            up_dy_content=str(content)
             .replace("https://", str())
             .replace("http://", str()),
-            up_dy_media=MessageSegment.image(data["pic"]) if data.get("pic") else str(),
             up_dy_link="https://t.bilibili.com/" + str(data["dynamic_id"]),
         )

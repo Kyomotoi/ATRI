@@ -11,7 +11,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from nonebot import get_bot
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
-from nonebot.permission import Permission
+from nonebot.permission import Permission, SUPERUSER
 from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
 
 from ATRI.log import logger as log
@@ -20,6 +20,9 @@ from ATRI.utils.apscheduler import scheduler
 from ATRI.database import BilibiliSubscription
 
 from .data_source import BilibiliDynamicSubscriptor
+
+
+_CONTENT_LIMIT: int = 0
 
 
 add_sub = BilibiliDynamicSubscriptor().cmd_as_group("add", "添加b站up主订阅")
@@ -99,7 +102,7 @@ get_sub_list = BilibiliDynamicSubscriptor().cmd_as_group(
 
 
 @get_sub_list.handle()
-async def _get_sub_list(event: GroupMessageEvent):
+async def _bd_get_sub_list(event: GroupMessageEvent):
     group_id = event.group_id
     sub = BilibiliDynamicSubscriptor()
 
@@ -116,6 +119,31 @@ async def _get_sub_list(event: GroupMessageEvent):
         subs, headers=["up主", "uid", "最后更新时间"], tablefmt="plain", showindex=True
     )
     await get_sub_list.finish(output)
+
+
+limit_content = BilibiliDynamicSubscriptor().cmd_as_group(
+    "limit", "设置订阅内容字数限制", permission=SUPERUSER
+)
+
+
+@limit_content.handle()
+async def _bd_get_limit(matcher: Matcher, args: Message = CommandArg()):
+    msg = args.extract_plain_text()
+    if msg:
+        matcher.set_arg("bd_limit_int", args)
+
+
+@limit_content.got("bd_limit_int", "要限制内容在多少字以内呢？(默认200，0=不限制)")
+async def _td_deal_limit(
+    event: GroupMessageEvent, _limit: str = ArgPlainText("bd_limit_int")
+):
+    patt = r"^\d+$"
+    if not re.match(patt, _limit):
+        await limit_content.reject("请键入阿拉伯数字:")
+
+    global _CONTENT_LIMIT
+    _CONTENT_LIMIT = int(_limit)
+    await limit_content.finish(f"成功！订阅内容展示将限制在 {_CONTENT_LIMIT} 以内！")
 
 
 tq = asyncio.Queue()
@@ -162,10 +190,18 @@ async def _check_bd():
         for i in result:
             i["name"] = m.up_nickname
             if ts < i["timestamp"]:
-                content = Message(sub.gen_output(i))
+                content = Message(sub.gen_output(i, _CONTENT_LIMIT))
+                pic = i.get("pic", None)
 
                 bot = get_bot()
                 await bot.send_group_msg(group_id=m.group_id, message=content)
+                if pic:
+                    try:
+                        await bot.send_group_msg(group_id=m.group_id, message=pic)
+                    except Exception:
+                        repo = "图片发送失败了..."
+                        await bot.send_group_msg(group_id=m.group_id, message=repo)
+
                 await sub.update_sub(
                     m.uid,
                     m.group_id,
