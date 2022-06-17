@@ -1,5 +1,5 @@
 from pathlib import Path
-from tortoise import Tortoise, run_async
+from tortoise import Tortoise
 
 from ATRI.log import logger as log
 
@@ -21,7 +21,13 @@ async def run():
     await Tortoise.generate_schemas()
 
 
-def init_database():
+async def init_database():
     log.info("正在初始化数据库...")
-    run_async(run())
+    await run()
     log.success("数据库初始化完成")
+
+
+async def close_database_connection():
+    log.info("正在关闭数据库连接...")
+    await Tortoise.close_connections()
+    log.info("数据库成功关闭")

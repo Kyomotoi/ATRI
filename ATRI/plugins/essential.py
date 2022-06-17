@@ -31,6 +31,7 @@ import ATRI
 from ATRI.service import Service
 from ATRI.log import logger as log
 from ATRI.config import BotSelfConfig
+from ATRI.database import init_database, close_database_connection
 from ATRI.utils import MessageChecker
 from ATRI.utils.apscheduler import scheduler
 from ATRI.utils.check_update import CheckUpdate
@@ -77,6 +78,10 @@ async def shutdown():
     log.info("Thanks for using.")
 
 
+driver.on_startup(init_database)
+driver.on_shutdown(close_database_connection)
+
+
 @run_preprocessor
 async def _check_block(event: MessageEvent):
     user_file = "block_user.json"
@@ -87,7 +92,7 @@ async def _check_block(event: MessageEvent):
 
     try:
         data = json.loads(path.read_bytes())
-    except BaseException:
+    except Exception:
         data = dict()
 
     user_id = event.get_user_id()
@@ -103,7 +108,7 @@ async def _check_block(event: MessageEvent):
 
         try:
             data = json.loads(path.read_bytes())
-        except BaseException:
+        except Exception:
             data = dict()
 
         group_id = str(event.group_id)
@@ -290,7 +295,7 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
 
     try:
         repo = await bot.get_msg(message_id=event.message_id)
-    except BaseException:
+    except Exception:
         return
 
     log.debug(f"Recall raw msg:\n{repo}")
@@ -300,7 +305,7 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
 
     try:
         m = recall_msg_dealer(repo)
-    except:
+    except Exception:
         check = MessageChecker(repo).check_cq_code
         if not check:
             m = repo
@@ -322,7 +327,7 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
 
     try:
         repo = await bot.get_msg(message_id=event.message_id)
-    except BaseException:
+    except Exception:
         return
 
     log.debug(f"Recall raw msg:\n{repo}")
@@ -331,7 +336,7 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
 
     try:
         m = recall_msg_dealer(repo)
-    except:
+    except Exception:
         check = MessageChecker(repo).check_cq_code
         if not check:
             m = repo
