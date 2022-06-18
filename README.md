@@ -25,7 +25,7 @@
 - 易于上手的 [可视化界面](https://github.com/Kyomotoi/Project-ATRI-Console).
 - Comming soon...
 
-## 📱 功能概览 | Service Overview
+## 📱 功能概览 | Services Overview
 
 <details markdown='1'><summary>涩涩</summary>
 
@@ -64,6 +64,8 @@
 
 > 被勾上的即已大致完成，但仍需优化
 - [x] 网页控制台
+- [ ] Twitter助手
+- [ ] 自定义词库（多种方式匹配）
 - [ ] RSS订阅
 - [ ] 冷重启
 - [ ] 进裙验证（问题可自定义）
@@ -72,10 +74,10 @@
 
 ## 🚀 开始部署 | Getting Started
 
-请参考文档: [部署项目](https://atri.kyomotoi.moe/install/installation/)
+请参考文档: [部署项目](https://atri.imki.moe/install/installation/)
 
 ## 📖 文档 | Documentation
-所有公开的信息都可在 [atri.kyomotoi.moe](https://atri.kyomotoi.moe) 获取. 使用 [MkDocs](https://github.com/mkdocs/mkdocs/) 构建. 
+所有公开的信息都可在 [atri.imki.moe](https://atri.imki.moe) 获取. 使用 [MkDocs](https://github.com/mkdocs/mkdocs/) 构建. 
 
 对于 Mainland 用户**无法**访问: [文档](https://project-atri-docs.vercel.app/).
 
