@@ -51,20 +51,21 @@ TEMP_PATH.mkdir(parents=True, exist_ok=True)
 
 @driver.on_startup
 async def startup():
+    await init_database()
+
     log.info(f"Now running: {ATRI.__version__}")
 
-    try:
-        log.info("Starting to check update...")
-        log.info(await CheckUpdate.show_latest_commit_info())
-        sleep(1)
+    log.info("Starting to check update...")
+    commit_info = await CheckUpdate.show_latest_commit_info()
+    if commit_info:
+        log.info(commit_info)
 
-        l_v, l_v_t = await CheckUpdate.show_latest_version()
+    l_v, l_v_t = await CheckUpdate.show_latest_version()
+    if l_v and l_v_t:
         if l_v != ATRI.__version__:
-            log.warning("New version has been released, please update.")
-            log.warning(f"Latest version: {l_v} Update time: {l_v_t}")
+            log.warning("新版本已发布, 请更新.")
+            log.warning(f"最新版本: {l_v} 更新时间: {l_v_t}")
             sleep(3)
-    except Exception:
-        log.error("检查 更新/最新推送 失败...")
 
     if not scheduler.running:
         scheduler.start()
@@ -75,11 +76,9 @@ async def startup():
 
 @driver.on_shutdown
 async def shutdown():
+    await close_database_connection()
+
     log.info("Thanks for using.")
-
-
-driver.on_startup(init_database)
-driver.on_shutdown(close_database_connection)
 
 
 @run_preprocessor
