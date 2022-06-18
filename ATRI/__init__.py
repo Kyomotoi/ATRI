@@ -5,7 +5,7 @@ from nonebot.adapters.onebot.v11 import Adapter
 
 from .config import RUNTIME_CONFIG, InlineGoCQHTTP
 
-__version__ = "YHN-001-A05.fix1"
+__version__ = "YHN-001-A06"
 
 
 def asgi():
