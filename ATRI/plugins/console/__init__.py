@@ -48,6 +48,7 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
         PORT: {p}
         TOKEN: {rs}
         一定要保管好哦！切勿告诉他人哦！
+        入口: atri-console.imki.moe
         """.strip()
         await gen_console_key.send(msg)
 
