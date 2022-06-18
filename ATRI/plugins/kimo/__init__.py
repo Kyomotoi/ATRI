@@ -12,7 +12,7 @@ from .data_source import Kimo
 _chat_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~", "我开始为你以后的伴侣担心了..."])
 
 
-kimo = Kimo().on_message("文爱", "闲聊（文爱")
+kimo = Kimo().on_message("文爱", "闲聊（文爱", priority=4)
 
 
 @kimo.handle([Cooldown(3, prompt=_chat_flmt_notice)])
