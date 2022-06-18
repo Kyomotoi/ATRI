@@ -78,6 +78,8 @@ async def startup():
 async def shutdown():
     await close_database_connection()
 
+    scheduler.shutdown(False)
+
     log.info("Thanks for using.")
 
 
