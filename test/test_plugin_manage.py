@@ -1,7 +1,6 @@
 import pytest
 from nonebug import App
 
-from ATRI.config import RUNTIME_CONFIG
 from .utils import make_fake_message, make_fake_event
 
 

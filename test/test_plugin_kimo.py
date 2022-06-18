@@ -1,6 +1,5 @@
 import pytest
 from nonebug import App
-from nonebot.adapters.onebot.v11 import MessageSegment
 
 from .utils import make_fake_message, make_fake_event
 
