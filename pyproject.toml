@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ATRI"
-version = "001.106.00"
+version = "001.106.01"
 description = "A project for ATRI, Usage go-CQHTTP + Nonebot2."
 authors = ["Kyomotoi <kyomotoiowo@gmail.com>"]
 license = "GPLv3"
