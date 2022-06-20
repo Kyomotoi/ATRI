@@ -12,7 +12,7 @@ from nonebot import get_bot
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.permission import Permission, SUPERUSER
-from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent
 
 from ATRI.log import logger as log
 from ATRI.utils import timestamp2datetime
@@ -190,12 +190,13 @@ async def _check_bd():
         for i in result:
             i["name"] = m.up_nickname
             if ts < i["timestamp"]:
-                content = Message(sub.gen_output(i, _CONTENT_LIMIT))
-                pic = i.get("pic", None)
+                content = sub.gen_output(i, _CONTENT_LIMIT)
+                _pic = i.get("pic", None)
 
                 bot = get_bot()
                 await bot.send_group_msg(group_id=m.group_id, message=content)
-                if pic:
+                if _pic:
+                    pic = Message(MessageSegment.image(_pic))
                     try:
                         await bot.send_group_msg(group_id=m.group_id, message=pic)
                     except Exception:

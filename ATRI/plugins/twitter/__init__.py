@@ -195,21 +195,18 @@ async def _check_td():
         if ts < ts_t:
 
             raw_media = info["status"]["entities"].get("media", dict())
-            if raw_media:
-                _pic = raw_media[0]["media_url"]
-            else:
-                _pic = str()
+            _pic = raw_media[0]["media_url"] if raw_media else str()
 
             data = {
                 "name": info["name"],
                 "content": info["status"]["text"],
             }
             content = sub.gen_output(data, _CONTENT_LIMIT)
-            pic = Message(MessageSegment.image(_pic))
 
             bot = get_bot()
             await bot.send_group_msg(group_id=m.group_id, message=content)
-            if pic:
+            if _pic:
+                pic = Message(MessageSegment.image(_pic))
                 try:
                     await bot.send_group_msg(group_id=m.group_id, message=pic)
                 except Exception:
