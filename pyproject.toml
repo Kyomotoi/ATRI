@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "ATRI"
-version = "001.105.01"
-description = "A project for ATRI, Usage go-CQHTTP + Nonebot."
+version = "001.106.00"
+description = "A project for ATRI, Usage go-CQHTTP + Nonebot2."
 authors = ["Kyomotoi <kyomotoiowo@gmail.com>"]
 license = "GPLv3"
 readme = "README.md"
-homepage = "https://atri.kyomotoi.moe/"
+homepage = "https://atri.imki.moe/"
 repository = "https://github.com/Kyomotoi/ATRI"
-documentation = "https://atri.kyomotoi.moe/"
+documentation = "https://atri.imki.moe/"
 
 [tool.poetry.dependencies]
 python = "3.8.5"
