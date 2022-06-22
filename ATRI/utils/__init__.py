@@ -17,7 +17,7 @@ def timestamp2datetimestr(timestamp: int) -> str:
     return dt
 
 
-def timestamp2datetime(value: int) -> datetime:
+def timestamp2datetime(value: float) -> datetime:
     tz = pytz.timezone("Asia/Shanghai")
     return datetime.fromtimestamp(value, tz=tz)
 
