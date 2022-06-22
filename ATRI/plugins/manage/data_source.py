@@ -2,12 +2,14 @@ import json
 from pathlib import Path
 from datetime import datetime
 
+from nonebot.permission import SUPERUSER
+
 from ATRI.service import Service, ServiceTools
 from ATRI.exceptions import load_error
 
 
-MANAGE_DIR = Path(".") / "data" / "database" / "manege"
-ESSENTIAL_DIR = Path(".") / "data" / "database" / "essential"
+MANAGE_DIR = Path(".") / "data" / "plugins" / "manege"
+ESSENTIAL_DIR = Path(".") / "data" / "plugins" / "essential"
 MANAGE_DIR.mkdir(parents=True, exist_ok=True)
 ESSENTIAL_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -21,7 +23,7 @@ Time: {time}
 
 class Manage(Service):
     def __init__(self):
-        Service.__init__(self, "管理", "控制bot的各项服务", True)
+        Service.__init__(self, "管理", "控制bot的各项服务", True, permission=SUPERUSER)
 
     @staticmethod
     def _load_block_user_list() -> dict:
