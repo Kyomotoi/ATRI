@@ -28,4 +28,6 @@ async def _():
     log.info("开始检查资源消耗...")
     msg, stat = Status().get_status()
     if not stat:
+        log.warning(msg)
         await status.finish(msg)
+    log.info("资源消耗正常")
