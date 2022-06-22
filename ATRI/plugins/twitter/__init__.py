@@ -15,6 +15,7 @@ from nonebot.permission import Permission, SUPERUSER
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent
 
 from ATRI.log import logger as log
+from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import TwitterSubscription
 
@@ -41,60 +42,49 @@ async def _td_deal_add_sub(
     group_id = event.group_id
     sub = TwitterDynamicSubscriptor()
 
-    t_name, t_screen_name = await sub.get_twitter_username(_name)
-    if not t_name or not t_screen_name:
-        await add_sub.finish(f"无法获取名为 {_name} 的推主的信息...操作失败了")
-
-    res = await sub.get_twitter_user_info(_name)
-    tid = res["id"]
-
-    query_result = await sub.get_sub_list(tid, group_id)
-    if len(query_result):
-        await add_sub.finish(f"该推主 {t_name}@{t_screen_name}\n已在本群订阅列表中啦！")
-
-    await sub.add_sub(tid, group_id)
-    await sub.update_sub(
-        tid,
-        group_id,
-        {
-            "name": t_name,
-            "screen_name": t_screen_name,
-            "last_update": datetime.utcnow(),
-        },
-    )
-    await add_sub.finish(f"成功订阅名为 {t_name}@{t_screen_name} 推主的动态～！")
+    result = await sub.add_sub(_name, group_id)
+    await add_sub.finish(result)
 
 
 del_sub = TwitterDynamicSubscriptor().cmd_as_group("del", "删除推主订阅")
 
 
 @del_sub.handle()
-async def _td_del_sub(matcher: Matcher, args: Message = CommandArg()):
-    msg = args.extract_plain_text()
-    if msg:
-        matcher.set_arg("td_del_sub_name", args)
-
-
-@del_sub.got("td_del_sub_name", "推主名呢？速速")
-async def _td_deal_del_sub(
-    event: GroupMessageEvent, _name: str = ArgPlainText("td_del_sub_name")
-):
+async def _td_del_sub(event: GroupMessageEvent):
     group_id = event.group_id
     sub = TwitterDynamicSubscriptor()
 
-    t_name, t_screen_name = await sub.get_twitter_username(_name)
-    if not t_name or not t_screen_name:
-        await add_sub.finish(f"无法获取名为 {_name} 的推主的信息...操作失败了")
-
-    res = await sub.get_twitter_user_info(_name)
-    tid = res["id"]
-
-    query_result = await sub.get_sub_list(tid=tid, group_id=group_id)
+    query_result = await sub.get_sub_list(group_id=group_id)
     if not query_result:
-        await del_sub.finish(f"取消订阅失败...该推主 {t_name}@{t_screen_name} 不在本群订阅列表中")
+        await del_sub.finish("本群还没有订阅任何推主呢...")
 
-    await sub.del_sub(t_screen_name, group_id)
-    await del_sub.finish(f"成功取消该推主 {t_name}@{t_screen_name} 的订阅～")
+    subs = list()
+    for i in query_result:
+        subs.append([i.name, i.tid])
+
+    output = "本群订阅的推主列表如下～\n" + tabulate(
+        subs, headers=["推主名", "tid"], tablefmt="plain", showindex=True
+    )
+    await del_sub.send(output)
+
+
+@del_sub.got("td_del_sub_tid", "要取消的tid呢？速速\n(键入 1 以取消)")
+async def _td_deal_del_sub(
+    event: GroupMessageEvent, _tid: str = ArgPlainText("td_del_sub_tid")
+):
+    patt = r"^\d+$"
+    if not re.match(patt, _tid):
+        await del_sub.reject("这似乎不是tid呢，请重新输入:")
+
+    if _tid == "1":
+        await del_sub.finish("已取消操作～")
+
+    group_id = event.group_id
+    tid = int(_tid)
+    sub = TwitterDynamicSubscriptor()
+
+    result = await sub.del_sub(int(tid), group_id)
+    await del_sub.finish(result)
 
 
 get_sub_list = TwitterDynamicSubscriptor().cmd_as_group(
@@ -113,11 +103,15 @@ async def _td_get_sub_list(event: GroupMessageEvent):
 
     subs = list()
     for i in query_result:
-        tm = i.last_update.replace(tzinfo=pytz.timezone("Asia/Shanghai"))
-        subs.append([i.name, i.tid, tm + timedelta(hours=8)])
+        raw_tm = (
+            i.last_update.replace(tzinfo=pytz.timezone("Asia/Shanghai"))
+            + timedelta(hours=8, minutes=8)
+        ).timestamp()
+        tm = datetime.fromtimestamp(raw_tm).strftime("%m-%d %H:%M:%S")
+        subs.append([i.name, tm])
 
     output = "本群订阅的推主列表如下～\n" + tabulate(
-        subs, headers=["推主", "tid", "最后更新时间"], tablefmt="plain", showindex=True
+        subs, headers=["推主", "最后更新时间"], tablefmt="plain", showindex=True
     )
     await get_sub_list.finish(output)
 
@@ -179,13 +173,14 @@ async def _check_td():
         m: TwitterSubscription = tq.get_nowait()
         log.info(f"准备查询推主 {m.name}@{m.screen_name} 的动态，队列剩余 {tq.qsize()}")
 
-        ts = m.last_update.timestamp()
+        raw_ts = m.last_update.replace(
+            tzinfo=pytz.timezone("Asia/Shanghai")
+        ) + timedelta(hours=8, minutes=8)
+        ts = raw_ts.timestamp()
         info: dict = await sub.get_twitter_user_info(m.screen_name)
         if not info.get("status", list()):
             log.warning(f"无法获取推主 {m.name}@{m.screen_name} 的动态")
             return
-
-        tid = info["id"]
 
         t_time = info["status"]["created_at"]
         time_patt = "%a %b %d %H:%M:%S +0000 %Y"
@@ -205,6 +200,9 @@ async def _check_td():
 
             bot = get_bot()
             await bot.send_group_msg(group_id=m.group_id, message=content)
+            await sub.update_sub(
+                m.tid, m.group_id, {"last_update": timestamp2datetime(ts_t)}
+            )
             if _pic:
                 pic = Message(MessageSegment.image(_pic))
                 try:
@@ -212,5 +210,3 @@ async def _check_td():
                 except Exception:
                     repo = "图片发送失败了..."
                     await bot.send_group_msg(group_id=m.group_id, message=repo)
-
-            await sub.update_sub(tid, m.group_id, {"last_update": raw_t})

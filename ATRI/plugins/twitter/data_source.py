@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 
@@ -30,7 +32,7 @@ class TwitterDynamicSubscriptor(Service):
             main_cmd="/td",
         )
 
-    async def add_sub(self, tid: int, group_id: int):
+    async def __add_sub(self, tid: int, group_id: int):
         try:
             async with DB() as db:
                 await db.add_sub(tid, group_id)
@@ -44,10 +46,10 @@ class TwitterDynamicSubscriptor(Service):
         except Exception:
             raise TwitterDynamicError("更新订阅失败")
 
-    async def del_sub(self, screen_name: str, group_id: int):
+    async def __del_sub(self, tid: int, group_id: int):
         try:
             async with DB() as db:
-                await db.del_sub({"screen_name": screen_name, "group_id": group_id})
+                await db.del_sub({"tid": tid, "group_id": group_id})
         except Exception:
             raise TwitterDynamicError("删除订阅失败")
 
@@ -102,6 +104,38 @@ class TwitterDynamicSubscriptor(Service):
             .replace("https://", str())
             .replace("http://", str()),
         )
+
+    async def add_sub(self, name: str, group_id: int) -> str:
+        t_name, t_screen_name = await self.get_twitter_username(name)
+        if not t_name or not t_screen_name:
+            return f"无法获取名为 {name} 的推主的信息...操作失败了"
+
+        res = await self.get_twitter_user_info(name)
+        tid = res["id"]
+
+        query_result = await self.get_sub_list(tid, group_id)
+        if query_result:
+            return f"该推主 {t_name}@{t_screen_name}\n已在本群订阅列表中啦！"
+
+        await self.__add_sub(tid, group_id)
+        await self.update_sub(
+            tid,
+            group_id,
+            {
+                "name": t_name,
+                "screen_name": t_screen_name,
+                "last_update": datetime.utcnow(),
+            },
+        )
+        return f"成功订阅名为 {t_name}@{t_screen_name} 推主的动态～！"
+
+    async def del_sub(self, tid: int, group_id: int) -> str:
+        query_result = await self.get_sub_list(tid, group_id)
+        if not query_result:
+            return f"取消订阅失败...该tid: {tid} 不在本群订阅列表中"
+
+        await self.__del_sub(tid, group_id)
+        return f"成功取消tid为 {tid} 推主的订阅～"
 
 
 # TODO
