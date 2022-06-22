@@ -1,8 +1,8 @@
 import json
+from datetime import datetime
 from operator import itemgetter
 
 from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 
 from ATRI.service import Service
@@ -33,7 +33,7 @@ class BilibiliDynamicSubscriptor(Service):
             main_cmd="/bd",
         )
 
-    async def add_sub(self, uid: int, group_id: int):
+    async def __add_sub(self, uid: int, group_id: int):
         try:
             async with DB() as db:
                 await db.add_sub(uid, group_id)
@@ -47,7 +47,7 @@ class BilibiliDynamicSubscriptor(Service):
         except Exception:
             raise BilibiliDynamicError("更新订阅失败")
 
-    async def del_sub(self, uid: int, group_id: int):
+    async def __del_sub(self, uid: int, group_id: int):
         try:
             async with DB() as db:
                 await db.del_sub({"uid": uid, "group_id": group_id})
@@ -73,7 +73,7 @@ class BilibiliDynamicSubscriptor(Service):
         except Exception:
             raise BilibiliDynamicError("获取全部订阅列表失败")
 
-    async def get_up_nickname(self, uid: int) -> str:
+    async def __get_up_nickname(self, uid: int) -> str:
         api = API(uid)
         resp = await api.get_user_info()
         data = resp.get("data", dict())
@@ -170,3 +170,28 @@ class BilibiliDynamicSubscriptor(Service):
             .replace("http://", str()),
             up_dy_link="https://t.bilibili.com/" + str(data["dynamic_id"]),
         )
+
+    async def add_sub(self, uid: int, group_id: int) -> str:
+        up_nickname = await self.__get_up_nickname(uid)
+        if not up_nickname:
+            return f"无法获取id为 {uid} 的up主信息...操作失败了"
+
+        query_result = await self.get_sub_list(uid, group_id)
+        if query_result:
+            return f"该up主 {up_nickname} 已在本群订阅列表中啦！"
+
+        await self.__add_sub(uid, group_id)
+        await self.update_sub(
+            uid,
+            group_id,
+            {"up_nickname": up_nickname, "last_update": datetime.utcnow()},
+        )
+        return f"成功订阅名为 {up_nickname} up主的动态～！"
+
+    async def del_sub(self, uid: int, group_id: int) -> str:
+        query_result = await self.get_sub_list(uid, group_id)
+        if not query_result:
+            return f"该uid: {uid} 未在本群订阅列表中啦！"
+
+        await self.__del_sub(uid, group_id)
+        return f"成功取消订阅uid为 {uid} up主的动态～！"

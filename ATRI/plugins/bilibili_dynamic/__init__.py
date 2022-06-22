@@ -45,55 +45,49 @@ async def _bd_deal_add_sub(
 
     __id = int(_id)
     group_id = event.group_id
-    sub = BilibiliDynamicSubscriptor()
 
-    up_nickname = await sub.get_up_nickname(__id)
-    if not up_nickname:
-        await add_sub.finish(f"无法获取id为 {_id} 的up主信息...操作失败了")
-
-    query_result = await sub.get_sub_list(__id, group_id)
-    if len(query_result):
-        await add_sub.finish(f"该up主[{up_nickname}]已在本群订阅列表中啦！")
-
-    await sub.add_sub(__id, group_id)
-    await sub.update_sub(
-        __id, group_id, {"up_nickname": up_nickname, "last_update": datetime.utcnow()}
-    )
-    await add_sub.finish(f"成功订阅名为[{up_nickname}]up主的动态～！")
+    result = await BilibiliDynamicSubscriptor().add_sub(__id, group_id)
+    await add_sub.finish(result)
 
 
 del_sub = BilibiliDynamicSubscriptor().cmd_as_group("del", "删除b站up主订阅")
 
 
 @del_sub.handle()
-async def _bd_del_sub(matcher: Matcher, args: Message = CommandArg()):
-    msg = args.extract_plain_text()
-    if msg:
-        matcher.set_arg("bd_del_sub_id", args)
+async def _bd_del_sub(event: GroupMessageEvent):
+    group_id = event.group_id
+    sub = BilibiliDynamicSubscriptor()
+
+    query_result = await sub.get_sub_list(group_id=group_id)
+    if not query_result:
+        await del_sub.finish("本群还未订阅任何up主呢...")
+
+    subs = list()
+    for i in query_result:
+        subs.append([i.up_nickname, i.uid])
+
+    output = "本群订阅的up列表如下～\n" + tabulate(
+        subs, headers=["up主", "uid"], tablefmt="plain", showindex=True
+    )
+    await del_sub.send(output)
 
 
-@del_sub.got("bd_del_sub_id", "up主id呢？速速")
+@del_sub.got("bd_del_sub_id", "取消订阅的up主uid呢？速速\n(键入 1 以取消)")
 async def _bd_deal_del_sub(
     event: GroupMessageEvent, _id: str = ArgPlainText("bd_del_sub_id")
 ):
     patt = r"^\d+$"
     if not re.match(patt, _id):
-        await add_sub.reject("这似乎不是id呢，请重新输入:")
+        await add_sub.reject("这似乎不是uid呢，请重新输入:")
+
+    if _id == "1":
+        await del_sub.finish("已取消操作～")
 
     __id = int(_id)
     group_id = event.group_id
-    sub = BilibiliDynamicSubscriptor()
 
-    up_nickname = await sub.get_up_nickname(__id)
-    if not up_nickname:
-        await add_sub.finish(f"无法获取id为 {__id} 的up主信息...操作失败了")
-
-    query_result = await sub.get_sub_list(__id, group_id)
-    if not query_result:
-        await del_sub.finish(f"取消订阅失败...该up主[{up_nickname}]并不在本群订阅列表中")
-
-    await sub.del_sub(__id, group_id)
-    await del_sub.finish(f"成功取消该up主[{up_nickname}]的订阅～")
+    result = await BilibiliDynamicSubscriptor().del_sub(__id, group_id)
+    await del_sub.finish(result)
 
 
 get_sub_list = BilibiliDynamicSubscriptor().cmd_as_group(
@@ -112,11 +106,15 @@ async def _bd_get_sub_list(event: GroupMessageEvent):
 
     subs = list()
     for i in query_result:
-        tm = i.last_update.replace(tzinfo=pytz.timezone("Asia/Shanghai"))
-        subs.append([i.up_nickname, i.uid, tm + timedelta(hours=8)])
+        raw_tm = (
+            i.last_update.replace(tzinfo=pytz.timezone("Asia/Shanghai"))
+            + timedelta(hours=8)
+        ).timestamp()
+        tm = datetime.fromtimestamp(raw_tm).strftime("%m-%d %H:%M:%S")
+        subs.append([i.up_nickname, tm])
 
     output = "本群订阅的up列表如下～\n" + tabulate(
-        subs, headers=["up主", "uid", "最后更新时间"], tablefmt="plain", showindex=True
+        subs, headers=["up主", "最后更新时间"], tablefmt="plain", showindex=True
     )
     await get_sub_list.finish(output)
 
@@ -176,15 +174,15 @@ async def _check_bd():
             await tq.put(i)
     else:
         m: BilibiliSubscription = tq.get_nowait()
-        log.info(f"准备查询up主[{m.up_nickname}]的动态，队列剩余 {tq.qsize()}")
+        log.info(f"准备查询up主 {m.up_nickname} 的动态，队列剩余 {tq.qsize()}")
 
-        ts = int(m.last_update.timestamp())
+        ts = m.last_update.timestamp()
         info: dict = await sub.get_up_recent_dynamic(m.uid)
         result = list()
         if info.get("cards", list()):
             result = sub.extract_dyanmic(info["cards"])
         if not result:
-            log.warning(f"无法获取up主[{m.up_nickname}]的动态")
+            log.warning(f"无法获取up主 {m.up_nickname} 的动态")
             return
 
         for i in result:
@@ -195,14 +193,6 @@ async def _check_bd():
 
                 bot = get_bot()
                 await bot.send_group_msg(group_id=m.group_id, message=content)
-                if _pic:
-                    pic = Message(MessageSegment.image(_pic))
-                    try:
-                        await bot.send_group_msg(group_id=m.group_id, message=pic)
-                    except Exception:
-                        repo = "图片发送失败了..."
-                        await bot.send_group_msg(group_id=m.group_id, message=repo)
-
                 await sub.update_sub(
                     m.uid,
                     m.group_id,
@@ -210,4 +200,11 @@ async def _check_bd():
                         "last_update": timestamp2datetime(i["timestamp"]),
                     },
                 )
+                if _pic:
+                    pic = Message(MessageSegment.image(_pic))
+                    try:
+                        await bot.send_group_msg(group_id=m.group_id, message=pic)
+                    except Exception:
+                        repo = "图片发送失败了..."
+                        await bot.send_group_msg(group_id=m.group_id, message=repo)
                 break
