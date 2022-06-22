@@ -11,7 +11,7 @@ from ATRI.utils import request
 from ATRI.exceptions import WriteFileError
 
 
-CONSOLE_DIR = Path(".") / "data" / "database" / "console"
+CONSOLE_DIR = Path(".") / "data" / "plugins" / "console"
 CONSOLE_DIR.mkdir(exist_ok=True)
 
 

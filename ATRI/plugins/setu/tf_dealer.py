@@ -14,7 +14,7 @@ from ATRI.utils import request
 from ATRI.exceptions import RequestError, WriteFileError
 
 
-SETU_PATH = Path(".") / "data" / "database" / "setu"
+SETU_PATH = Path(".") / "data" / "plugins" / "setu"
 TEMP_PATH = Path(".") / "data" / "temp"
 SETU_PATH.mkdir(parents=True, exist_ok=True)
 TEMP_PATH.mkdir(parents=True, exist_ok=True)

@@ -41,8 +41,8 @@ driver = ATRI.driver()
 bots = nonebot.get_bots()
 
 
-ESSENTIAL_DIR = Path(".") / "data" / "database" / "essential"
-MANEGE_DIR = Path(".") / "data" / "database" / "manege"
+ESSENTIAL_DIR = Path(".") / "data" / "plugins" / "essential"
+MANEGE_DIR = Path(".") / "data" / "plugins" / "manege"
 TEMP_PATH = Path(".") / "data" / "temp"
 ESSENTIAL_DIR.mkdir(parents=True, exist_ok=True)
 MANEGE_DIR.mkdir(parents=True, exist_ok=True)

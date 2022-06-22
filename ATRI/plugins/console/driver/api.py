@@ -134,7 +134,7 @@ def control_service(
     return True, serv_data
 
 
-MANEGE_DIR = Path(".") / "data" / "database" / "manege"
+MANEGE_DIR = Path(".") / "data" / "plugins" / "manege"
 
 
 def get_block_list() -> dict:

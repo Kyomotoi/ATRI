@@ -15,7 +15,7 @@ from ATRI.service import Service
 from ATRI.rule import to_bot
 
 
-BC_PATH = Path(".") / "data" / "database" / "broadcast"
+BC_PATH = Path(".") / "data" / "plugins" / "broadcast"
 BC_PATH.mkdir(parents=True, exist_ok=True)
 
 

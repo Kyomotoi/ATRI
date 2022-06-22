@@ -5,7 +5,7 @@ from datetime import datetime
 from PIL import Image, ImageFont, ImageDraw
 
 
-POLAROID_DIR = Path(".") / "data" / "database" / "polaroid"
+POLAROID_DIR = Path(".") / "data" / "plugins" / "polaroid"
 TEMP_PATH = Path(".") / "data" / "temp"
 POLAROID_DIR.mkdir(exist_ok=True)
 

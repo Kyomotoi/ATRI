@@ -7,7 +7,7 @@ from ATRI.service import Service
 from ATRI.rule import is_in_service
 
 
-WIFE_DIR = Path(".") / "data" / "database" / "wife"
+WIFE_DIR = Path(".") / "data" / "plugins" / "wife"
 WIFE_DIR.mkdir(parents=True, exist_ok=True)
 
 
