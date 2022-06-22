@@ -7,11 +7,11 @@ from typing import Optional
 from traceback import format_exc
 from pydantic.main import BaseModel
 
+from nonebot.adapters.onebot.v11 import ActionFailed
 from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent
 from nonebot.message import run_postprocessor
-from nonebot.exception import ActionFailed
 
-from .log import logger
+from .log import logger as log
 from .config import BotSelfConfig
 
 
@@ -118,7 +118,7 @@ async def _track_error(exception: Optional[Exception], bot: Bot, event) -> None:
     else:
         _id = "unknown"
 
-    logger.debug(f"Error Track ID: {track_id}")
+    log.error(f"Error Track ID: {track_id}")
     msg = f"呜——出错了...追踪: {track_id}\n来自: {_id}"
 
     for superusers in BotSelfConfig.superusers:
