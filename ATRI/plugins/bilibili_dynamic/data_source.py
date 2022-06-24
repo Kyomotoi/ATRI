@@ -83,6 +83,9 @@ class BilibiliDynamicSubscriptor(Service):
         api = API(uid)
         resp = await api.get_user_dynamics()
         data = resp.get("data", dict())
+        if not data:
+            return dict()
+
         if "cards" in data:
             for card in data["cards"]:
                 card["card"] = json.loads(card["card"])
