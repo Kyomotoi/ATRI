@@ -46,13 +46,13 @@ async def init_source():
             log.warning("插件 polaroid 缺少所需资源，装载中")
 
             url = SOURCE_URL + i
-            data = await request.get(url)
             try:
+                data = await request.get(url)
                 with open(path, "wb") as w:
                     w.write(data.read())
                 log.info("所需资源装载完成")
             except Exception:
-                raise WriteFileError("装载资源失败")
+                log.error("装载资源失败")
 
 
 driver().on_startup(init_source)
