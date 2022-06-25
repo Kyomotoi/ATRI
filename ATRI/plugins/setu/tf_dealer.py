@@ -102,10 +102,10 @@ async def init_module():
     path = SETU_PATH / file_name
     if not path.is_file():
         log.warning("缺少模型文件，装载中")
-        data = await request.get(MODULE_URL)
         try:
+            data = await request.get(MODULE_URL)
             with open(path, "wb") as w:
                 w.write(data.read())
             log.info("模型装载完成")
-        except WriteFileError:
-            raise WriteFileError("NSFW TF module init failed!")
+        except Exception:
+            log.error("装载模型失败")
