@@ -12,7 +12,7 @@ from ATRI.exceptions import WriteFileError
 
 
 CONSOLE_DIR = Path(".") / "data" / "plugins" / "console"
-CONSOLE_DIR.mkdir(exist_ok=True)
+CONSOLE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class Console(Service):
