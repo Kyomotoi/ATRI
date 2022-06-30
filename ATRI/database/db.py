@@ -15,8 +15,40 @@ async def run():
     from ATRI.database import models
 
     await Tortoise.init(
-        db_url=f"sqlite://{DB_DIR}/db.sqlite3",
-        modules={"models": [locals()["models"]]},
+        {
+            "connections": {
+                "bilibili": {
+                    "engine": "tortoise.backends.sqlite",
+                    "credentials": {"file_path": f"{DB_DIR}/bilibili.sqlite3"},
+                },
+                "twitter": {
+                    "engine": "tortoise.backends.sqlite",
+                    "credentials": {"file_path": f"{DB_DIR}/twitter.sqlite3"},
+                },
+                "ts": {
+                    "engine": "tortoise.backends.sqlite",
+                    "credentials": {"file_path": f"{DB_DIR}/thesaurusstoragor.sqlite3"},
+                },
+                "tal": {
+                    "engine": "tortoise.backends.sqlite",
+                    "credentials": {
+                        "file_path": f"{DB_DIR}/thesaurusauditlist.sqlite3"
+                    },
+                },
+            },
+            "apps": {
+                "bilibili": {
+                    "models": [locals()["models"]],
+                    "default_connection": "bilibili",
+                },
+                "twitter": {
+                    "models": [locals()["models"]],
+                    "default_connection": "twitter",
+                },
+                "ts": {"models": [locals()["models"]], "default_connection": "ts"},
+                "tal": {"models": [locals()["models"]], "default_connection": "tal"},
+            },
+        }
     )
     await Tortoise.generate_schemas()
 
