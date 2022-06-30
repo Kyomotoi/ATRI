@@ -1,10 +1,12 @@
 import os
 import re
+import string
 import pytz
 import yaml
 import aiofiles
 import time
 from pathlib import Path
+from random import sample
 from datetime import datetime
 from PIL import Image, ImageFile
 from aiofiles.threadpool.text import AsyncTextIOWrapper
@@ -42,6 +44,10 @@ def safe_string(value):
     if isinstance(value, bytes):
         return value.decode()
     return str(value)
+
+
+def gen_random_str(k: int) -> str:
+    return str().join(sample(string.ascii_letters + string.digits, k))
 
 
 class ListDealer:
