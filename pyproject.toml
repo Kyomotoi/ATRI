@@ -25,7 +25,6 @@ tensorflow = "^2.9.1"
 jieba = "^0.42.1"
 tabulate = "^0.8.9"
 wcwidth = "^0.2.5"
-aiohttp = "^3.8.1"
 tortoise-orm = "^0.19.1"
 httpx = "^0.23.0"
 
