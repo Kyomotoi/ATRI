@@ -62,9 +62,7 @@ async def _td_del_sub(event: GroupMessageEvent):
     for i in query_result:
         subs.append([i.name, i.tid])
 
-    output = "本群订阅的推主列表如下～\n" + tabulate(
-        subs, headers=["推主名", "tid"], tablefmt="plain", showindex=True
-    )
+    output = "本群订阅的推主列表如下～\n" + tabulate(subs, headers=["推主名", "tid"], tablefmt="plain")
     await del_sub.send(output)
 
 
@@ -111,7 +109,7 @@ async def _td_get_sub_list(event: GroupMessageEvent):
         subs.append([i.name, tm])
 
     output = "本群订阅的推主列表如下～\n" + tabulate(
-        subs, headers=["推主", "最后更新时间"], tablefmt="plain", showindex=True
+        subs, headers=["推主", "最后更新时间"], tablefmt="plain"
     )
     await get_sub_list.finish(output)
 

@@ -66,9 +66,7 @@ async def _bd_del_sub(event: GroupMessageEvent):
     for i in query_result:
         subs.append([i.up_nickname, i.uid])
 
-    output = "本群订阅的up列表如下～\n" + tabulate(
-        subs, headers=["up主", "uid"], tablefmt="plain", showindex=True
-    )
+    output = "本群订阅的up列表如下～\n" + tabulate(subs, headers=["up主", "uid"], tablefmt="plain")
     await del_sub.send(output)
 
 
@@ -114,7 +112,7 @@ async def _bd_get_sub_list(event: GroupMessageEvent):
         subs.append([i.up_nickname, tm])
 
     output = "本群订阅的up列表如下～\n" + tabulate(
-        subs, headers=["up主", "最后更新时间"], tablefmt="plain", showindex=True
+        subs, headers=["up主", "最后更新时间"], tablefmt="plain"
     )
     await get_sub_list.finish(output)
 

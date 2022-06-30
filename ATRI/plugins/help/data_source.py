@@ -74,7 +74,6 @@ class Helper(Service):
             services,
             headers=["服务名称", "开启状态(全局)", "仅支持管理员"],
             tablefmt="plain",
-            showindex=True,
         )
         repo = f"咱搭载了以下服务~\n{table}\n@bot 帮助 [服务] -以查看对应服务帮助"
         return repo

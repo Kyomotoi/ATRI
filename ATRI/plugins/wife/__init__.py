@@ -21,6 +21,7 @@ tietie_superuser = Wife().on_message(
     rule=Rule(),
     permission=SUPERUSER,
     block=False,
+    priority=11,
 )
 
 

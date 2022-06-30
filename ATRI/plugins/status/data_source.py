@@ -11,8 +11,8 @@ from ATRI.exceptions import GetStatusError
 _status_msg = """
 > Status Overview
 
-[CPU: {p_cpu}% of {b_cpu}]
-[Memory: {p_mem}% of {b_mem}]
+[CPU: {b_cpu}% of {p_cpu}%]
+[Memory: {b_mem} of {p_mem}%]
 [Disk usage: {p_disk}%]
 
 [Net sent: {inteSENT}MB]
@@ -79,7 +79,7 @@ class Status(Service):
             p_cpu=cpu,
             p_mem=mem,
             p_disk=disk,
-            b_cpu=f"{b_cpu}%",
+            b_cpu=b_cpu,
             b_mem="%.1f%%" % b_mem,
             inteSENT=inte_send,
             inteRECV=inte_recv,
