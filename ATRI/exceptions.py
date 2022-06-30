@@ -1,18 +1,18 @@
 import time
 import json
-import string
 from pathlib import Path
-from random import sample
 from typing import Optional
 from traceback import format_exc
 from pydantic.main import BaseModel
 
+from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import ActionFailed
 from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent
 from nonebot.message import run_postprocessor
 
 from .log import logger as log
 from .config import BotSelfConfig
+from .utils import gen_random_str
 
 
 ERROR_DIR = Path(".") / "data" / "errors"
@@ -27,7 +27,7 @@ class ErrorInfo(BaseModel):
 
 
 def _save_error(prompt: str, content: str) -> str:
-    track_id = "".join(sample(string.ascii_letters + string.digits, 8))
+    track_id = gen_random_str(8)
     data = ErrorInfo(
         track_id=track_id,
         prompt=prompt,
@@ -94,8 +94,14 @@ class TwitterDynamicError(BaseBotException):
     prompt = "Twitter动态订阅错误"
 
 
+class ThesaurusError(BaseBotException):
+    prompt = "词库相关错误"
+
+
 @run_postprocessor
-async def _track_error(exception: Optional[Exception], bot: Bot, event) -> None:
+async def _track_error(
+    bot: Bot, event, matcher: Matcher, exception: Optional[Exception]
+) -> None:
     if not exception:
         return
 
