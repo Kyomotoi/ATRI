@@ -1,5 +1,9 @@
+from nonebot import get_bot
+
 from ATRI.log import logger as log
+from ATRI.config import BotSelfConfig
 from ATRI.utils.apscheduler import scheduler
+
 from .data_source import Status
 
 
@@ -29,5 +33,9 @@ async def _():
     msg, stat = Status().get_status()
     if not stat:
         log.warning(msg)
-        await status.finish(msg)
+
+        bot = get_bot()
+        for super in BotSelfConfig.superusers:
+            await bot.send_private_msg(user_id=super, message=msg)
+
     log.info("资源消耗正常")
