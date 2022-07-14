@@ -33,7 +33,7 @@ async def _thesaurus_vote_listener():
     for i in all_items:
         data: ThesaurusStoragor = i
         item_vote_list = data.vote_list
-        if len(item_vote_list) == 10:
+        if len(item_vote_list) >= 10:
             t = data.m_type
 
             if t == 0:
@@ -81,41 +81,46 @@ async def _tl_listener(event: MessageEvent):
     tl = ThesaurusListener()
     msg = event.get_message().extract_plain_text()
 
-    group_id = 0
+    group_id = int()
     if isinstance(event, GroupMessageEvent):
         group_id = event.group_id
 
     query_result = await tl.get_item_list(group_id)
-    shuffle(query_result)
-    if query_result:
-        for item in query_result:
-            item_info: ThesaurusStoragor = item
+    if not query_result:
+        query_result = await tl.get_item_list(int())
+        if not query_result:
+            return
 
-            if item_info.m_type == 1:
-                if item_info.matcher in msg:
-                    if item_info.need_at:
-                        if event.is_tome():
-                            await main_listener.finish(choice(item_info.result))
-                        else:
-                            return
-                    else:
+    shuffle(query_result)
+
+    for item in query_result:
+        item_info: ThesaurusStoragor = item
+
+        if item_info.m_type == 1:
+            if item_info.matcher in msg:
+                if item_info.need_at:
+                    if event.is_tome():
                         await main_listener.finish(choice(item_info.result))
-            elif item_info.m_type == 2:
-                patt = item_info.matcher
-                if re.findall(patt, msg):
-                    if item_info.need_at:
-                        if event.is_tome():
-                            await main_listener.finish(choice(item_info.result))
-                        else:
-                            return
                     else:
+                        return
+                else:
+                    await main_listener.finish(choice(item_info.result))
+        elif item_info.m_type == 2:
+            patt = item_info.matcher
+            if re.findall(patt, msg):
+                if item_info.need_at:
+                    if event.is_tome():
                         await main_listener.finish(choice(item_info.result))
-            else:
-                if item_info.matcher == msg:
-                    if item_info.need_at:
-                        if event.is_tome():
-                            await main_listener.finish(choice(item_info.result))
-                        else:
-                            return
                     else:
+                        return
+                else:
+                    await main_listener.finish(choice(item_info.result))
+        else:
+            if item_info.matcher == msg:
+                if item_info.need_at:
+                    if event.is_tome():
                         await main_listener.finish(choice(item_info.result))
+                    else:
+                        return
+                else:
+                    await main_listener.finish(choice(item_info.result))
