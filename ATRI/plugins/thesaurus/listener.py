@@ -2,7 +2,7 @@ import re
 from random import choice, shuffle
 
 from nonebot import get_bot
-from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Message, MessageEvent, GroupMessageEvent
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
 from apscheduler.triggers.base import BaseTrigger
@@ -100,27 +100,27 @@ async def _tl_listener(event: MessageEvent):
             if item_info.matcher in msg:
                 if item_info.need_at:
                     if event.is_tome():
-                        await main_listener.finish(choice(item_info.result))
+                        await main_listener.finish(Message(choice(item_info.result)))
                     else:
                         return
                 else:
-                    await main_listener.finish(choice(item_info.result))
+                    await main_listener.finish(Message(choice(item_info.result)))
         elif item_info.m_type == 2:
             patt = item_info.matcher
             if re.findall(patt, msg):
                 if item_info.need_at:
                     if event.is_tome():
-                        await main_listener.finish(choice(item_info.result))
+                        await main_listener.finish(Message(choice(item_info.result)))
                     else:
                         return
                 else:
-                    await main_listener.finish(choice(item_info.result))
+                    await main_listener.finish(Message(choice(item_info.result)))
         else:
             if item_info.matcher == msg:
                 if item_info.need_at:
                     if event.is_tome():
-                        await main_listener.finish(choice(item_info.result))
+                        await main_listener.finish(Message(choice(item_info.result)))
                     else:
                         return
                 else:
-                    await main_listener.finish(choice(item_info.result))
+                    await main_listener.finish(Message(choice(item_info.result)))

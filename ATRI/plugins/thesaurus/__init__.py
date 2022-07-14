@@ -3,7 +3,7 @@ from tabulate import tabulate
 
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
-from nonebot.params import ArgPlainText, CommandArg
+from nonebot.params import ArgPlainText, CommandArg, ArgStr
 from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent, GroupMessageEvent
 
@@ -17,7 +17,7 @@ add_item = ThesaurusManager().cmd_as_group("add", "添加本群词条，需审�
 
 @add_item.handle()
 async def _get_normal_item(matcher: Matcher, args: Message = CommandArg()):
-    raw_msg = args.extract_plain_text()
+    raw_msg = str(args)
     msg_data = raw_msg.split(" ")
     data = dict(enumerate(msg_data))
     if data.get(0):
@@ -31,7 +31,7 @@ async def _get_normal_item(matcher: Matcher, args: Message = CommandArg()):
 
 
 @add_item.got("ts_normal_item_q", "有人问:")
-@add_item.got("ts_normal_item_a", "我答: \n(支持多个回复，用','[小写]隔开)")
+@add_item.got("ts_normal_item_a", "我答: \n(支持多个回复，用',,'[小写]隔开)")
 @add_item.got("ts_normal_item_is_need_at", "是否需要at: (y/n)")
 async def _deal_noraml_is_need_at(
     need_at: str = ArgPlainText("ts_normal_item_is_need_at"),
@@ -46,8 +46,8 @@ async def _deal_noraml_is_need_at(
 async def _add_normal_item(
     bot: Bot,
     event: GroupMessageEvent,
-    item_q: str = ArgPlainText("ts_normal_item_q"),
-    item_a: str = ArgPlainText("ts_normal_item_a"),
+    item_q: str = ArgStr("ts_normal_item_q"),
+    item_a: str = ArgStr("ts_normal_item_a"),
     _need_at: str = ArgPlainText("ts_normal_item_is_need_at"),
     item_t: str = ArgPlainText("ts_normal_item_t"),
 ):
@@ -70,7 +70,7 @@ async def _add_normal_item(
     )
     operator = operator_info.get("card", "unknown")
     item_id = gen_random_str(6)
-    ans = item_a.split(",")
+    ans = item_a.split(",,")
     ts = ThesaurusManager()
 
     result = await ts.add_item(
@@ -96,7 +96,7 @@ add_item_as_group_admin = ThesaurusManager().cmd_as_group(
 
 @add_item_as_group_admin.handle()
 async def _get_group_item(matcher: Matcher, args: Message = CommandArg()):
-    raw_msg = args.extract_plain_text()
+    raw_msg = str(args)
     msg_data = raw_msg.split(" ")
     data = dict(enumerate(msg_data))
     if data.get(0):
@@ -110,7 +110,7 @@ async def _get_group_item(matcher: Matcher, args: Message = CommandArg()):
 
 
 @add_item_as_group_admin.got("ts_group_item_q", "有人问:")
-@add_item_as_group_admin.got("ts_group_item_a", "我答: \n(支持多个回复，用','[小写]隔开)")
+@add_item_as_group_admin.got("ts_group_item_a", "我答: \n(支持多个回复，用',,'[小写]隔开)")
 @add_item_as_group_admin.got("ts_group_item_is_need_at", "是否需要at: (y/n)")
 async def _deal_group_is_need_at(
     need_at: str = ArgPlainText("ts_group_item_is_need_at"),
@@ -125,8 +125,8 @@ async def _deal_group_is_need_at(
 async def _add_group_item(
     bot: Bot,
     event: GroupMessageEvent,
-    item_q: str = ArgPlainText("ts_group_item_q"),
-    item_a: str = ArgPlainText("ts_group_item_a"),
+    item_q: str = ArgStr("ts_group_item_q"),
+    item_a: str = ArgStr("ts_group_item_a"),
     _need_at: str = ArgPlainText("ts_group_item_is_need_at"),
     item_t: str = ArgPlainText("ts_group_item_t"),
 ):
@@ -149,7 +149,7 @@ async def _add_group_item(
     )
     operator = operator_info.get("card", "unknown")
     item_id = gen_random_str(6)
-    ans = item_a.split(",")
+    ans = item_a.split(",,")
     ts = ThesaurusManager()
 
     result = await ts.add_item(
@@ -175,7 +175,7 @@ add_item_for_global = ThesaurusManager().cmd_as_group(
 
 @add_item_for_global.handle()
 async def _get_global_item(matcher: Matcher, args: Message = CommandArg()):
-    raw_msg = args.extract_plain_text()
+    raw_msg = str(args)
     msg_data = raw_msg.split(" ")
     data = dict(enumerate(msg_data))
 
@@ -190,10 +190,10 @@ async def _get_global_item(matcher: Matcher, args: Message = CommandArg()):
 
 
 @add_item_for_global.got("ts_global_item_q", "有人问:")
-@add_item_for_global.got("ts_global_item_a", "我答: \n(支持多个回复，用','[小写]隔开)")
+@add_item_for_global.got("ts_global_item_a", "我答: \n(支持多个回复，用',,'隔开)")
 @add_item_for_global.got("ts_global_item_is_need_at", "是否需要at: (y/n)")
 async def _deal_global_is_need_at(
-    event: MessageEvent, need_at: str = ArgPlainText("ts_global_item_is_need_at")
+    need_at: str = ArgPlainText("ts_global_item_is_need_at"),
 ):
     agree_list = ["y", "Y", "是", "同意", "赞成"]
     disagree_list = ["n", "N", "否", "不", "不同意", "不赞成"]
@@ -204,8 +204,8 @@ async def _deal_global_is_need_at(
 @add_item_for_global.got("ts_global_item_type", "问答匹配模式: \n(全匹配、模糊匹配、正则)")
 async def _add_global_item(
     event: MessageEvent,
-    item_q: str = ArgPlainText("ts_global_item_q"),
-    item_a: str = ArgPlainText("ts_global_item_a"),
+    item_q: str = ArgStr("ts_global_item_q"),
+    item_a: str = ArgStr("ts_global_item_a"),
     _need_at: str = ArgPlainText("ts_global_item_is_need_at"),
     item_t: str = ArgPlainText("ts_global_item_type"),
 ):
@@ -219,7 +219,7 @@ async def _add_global_item(
     operator = "SUPERUSER"
     opeartor_id = event.user_id
     item_id = gen_random_str(6)
-    ans = item_a.split(",")
+    ans = item_a.split(",,")
     tm = ThesaurusManager()
 
     result = await tm.add_item(
@@ -733,7 +733,7 @@ async def _info_normal_get_item_info(
         is_vote="是" if item_info.is_vote else "否",
         vote_list=item_info.vote_list,
     )
-    await get_normal_item_info.finish(result)
+    await get_normal_item_info.finish(Message(result))
 
 
 get_global_item_info = ThesaurusManager().cmd_as_group("i.g", "查看全局的词条详情")
@@ -777,7 +777,7 @@ async def _info_global_get_item_info(_id: str = ArgPlainText("info_global_item_i
         is_vote="是" if item_info.is_vote else "否",
         vote_list=item_info.vote_list,
     )
-    await get_global_item_info.finish(result)
+    await get_global_item_info.finish(Message(result))
 
 
 get_vote_item_info = ThesaurusManager().cmd_as_group("i.v", "查看本群的待审核/投票的词条详情")
@@ -824,7 +824,7 @@ async def _info_vote_get_item_info(
         is_vote="是" if item_info.is_vote else "否",
         vote_list=item_info.vote_list,
     )
-    await get_vote_item_info.finish(result)
+    await get_vote_item_info.finish(Message(result))
 
 
 from ATRI import driver
