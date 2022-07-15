@@ -96,6 +96,9 @@ async def _tl_listener(event: MessageEvent):
     for item in query_result:
         item_info: ThesaurusStoragor = item
 
+        if not item_info.result:
+            continue
+
         if item_info.m_type == 1:
             if item_info.matcher in msg:
                 if item_info.need_at:

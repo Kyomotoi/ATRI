@@ -326,9 +326,7 @@ async def _get_del_global_item_info(matcher: Matcher, args: Message = CommandArg
 
 
 @del_global_item.got("ts_del_global_item_id", "要删除词条的id是？")
-async def _deal_del_global_item(
-    event: GroupMessageEvent, item_id: str = ArgPlainText("ts_del_global_item_id")
-):
+async def _deal_del_global_item(item_id: str = ArgPlainText("ts_del_global_item_id")):
     tm = ThesaurusManager()
 
     result = await tm.del_item(item_id, 0, True)
