@@ -127,3 +127,44 @@ async def _tl_listener(event: MessageEvent):
                         return
                 else:
                     await main_listener.finish(Message(choice(item_info.result)))
+
+    query_result = await tl.get_item_list(int())
+    if not query_result:
+        return
+
+    shuffle(query_result)
+
+    for item in query_result:
+        item_info: ThesaurusStoragor = item
+
+        if not item_info.result:
+            continue
+
+        if item_info.m_type == 1:
+            if item_info.matcher in msg:
+                if item_info.need_at:
+                    if event.is_tome():
+                        await main_listener.finish(Message(choice(item_info.result)))
+                    else:
+                        return
+                else:
+                    await main_listener.finish(Message(choice(item_info.result)))
+        elif item_info.m_type == 2:
+            patt = item_info.matcher
+            if re.findall(patt, msg):
+                if item_info.need_at:
+                    if event.is_tome():
+                        await main_listener.finish(Message(choice(item_info.result)))
+                    else:
+                        return
+                else:
+                    await main_listener.finish(Message(choice(item_info.result)))
+        else:
+            if item_info.matcher == msg:
+                if item_info.need_at:
+                    if event.is_tome():
+                        await main_listener.finish(Message(choice(item_info.result)))
+                    else:
+                        return
+                else:
+                    await main_listener.finish(Message(choice(item_info.result)))
