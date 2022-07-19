@@ -74,7 +74,7 @@ async def _check_rank_today(event: GroupMessageEvent):
     table = [
         [
             f"{i + 1}",
-            f"{x['w_user_name']}",
+            f"{x['user_nickname']}",
             f"{round(x['recent_count'], 2)}",
         ]
         for i, x in enumerate(data)
@@ -108,7 +108,7 @@ async def _check_rank_recent_week(event: GroupMessageEvent):
     table = [
         [
             f"{i + 1}",
-            f"{x['w_user_name']}",
+            f"{x['user_nickname']}",
             f"{round(x['last_7_days_count'], 2)}",
         ]
         for i, x in enumerate(data)
