@@ -85,8 +85,8 @@ async def _check_rank_today(event: GroupMessageEvent):
     ]
     table.insert(0, ["Rank", "Member", "Today"])
     result = tabulate(table, tablefmt="plain")
-    now_time = datetime.now().strftime("%Y/%m/%d - %H:%M:%S")
-    repo = f"《今日卷王》 单位: 小时\nDate: {now_time}\n{result}"
+    now_time = datetime.now().strftime("%Y/%m/%d")
+    repo = f"《今日卷王》 单位: 小时\nRank Date: {now_time}\n{result}"
     await check_rank_today.finish(repo)
 
 
@@ -119,6 +119,6 @@ async def _check_rank_recent_week(event: GroupMessageEvent):
     ]
     table.insert(0, ["Rank", "Member", "Last 7 Days"])
     result = tabulate(table, tablefmt="plain")
-    now_time = datetime.now().strftime("%Y/%m/%d - %H:%M:%S")
-    repo = f"《近一周卷王》 单位: 小时\nDate: {now_time}\n{result}"
+    now_time = datetime.now().strftime("%Y/%m/%d")
+    repo = f"《近一周卷王》 单位: 小时\nRank Date: {now_time}\n{result}"
     await check_rank_recent_week.finish(repo)
