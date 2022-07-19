@@ -31,6 +31,7 @@ async def _add_user(matcher: Matcher, args: Message = CommandArg()):
 
 
 @add_user.got("waka_url", _GET_URL_MSG)
+@add_user_cmd.got("waka_url", _GET_URL_MSG)
 async def _deal_add_user(
     event: GroupMessageEvent, _url: str = ArgPlainText("waka_url")
 ):
@@ -41,10 +42,12 @@ async def _deal_add_user(
     await add_user.finish(result)
 
 
-user_leave = AntiEffort().cmd_as_group("leave", "退出卷王统计榜")
+user_leave = AntiEffort().on_command("!我不卷了", "退出卷王统计榜")
+user_leave_cmd = AntiEffort().cmd_as_group("leave", "退出卷王统计榜")
 
 
 @user_leave.handle()
+@user_leave_cmd.handle()
 async def _user_leave(event: GroupMessageEvent):
     group_id = event.group_id
     user_id = event.user_id
