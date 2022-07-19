@@ -45,6 +45,7 @@
 - 简单骰子
 - b站动态订阅
 - Twitter 动态订阅
+- 谁是卷王
 </details>
 
 <details markdown='1'><summary>娱乐</summary>
