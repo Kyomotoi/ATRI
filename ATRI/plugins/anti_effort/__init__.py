@@ -22,23 +22,19 @@ add_user = AntiEffort().on_command("!我也要卷", "加入卷王统计榜")
 add_user_cmd = AntiEffort().cmd_as_group("join", "加入卷王统计榜")
 
 
-@add_user.handle()
-@add_user_cmd.handle()
-async def _add_user(matcher: Matcher, args: Message = CommandArg()):
-    msg = args.extract_plain_text()
-    if msg:
-        matcher.set_arg("waka_url", args)
-
-
 @add_user.got("waka_url", _GET_URL_MSG)
 @add_user_cmd.got("waka_url", _GET_URL_MSG)
+@add_user.got("rank_nickname", "如何在排行榜中称呼你捏")
+@add_user_cmd.got("rank_nickname", "如何在排行榜中称呼你捏")
 async def _deal_add_user(
-    event: GroupMessageEvent, _url: str = ArgPlainText("waka_url")
+    event: GroupMessageEvent,
+    _url: str = ArgPlainText("waka_url"),
+    user_nickname: str = ArgPlainText("rank_nickname"),
 ):
     group_id = event.group_id
     user_id = event.user_id
 
-    result = AntiEffort().add_user(group_id, user_id, (_url))
+    result = AntiEffort().add_user(group_id, user_id, user_nickname, _url)
     await add_user.finish(result)
 
 
