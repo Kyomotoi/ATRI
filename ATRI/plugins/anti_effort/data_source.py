@@ -234,7 +234,7 @@ class AntiEffort(Service):
             [
                 f"{i + 1}",
                 f"{x['user_nickname']}",
-                f"{round(x['recent_count'], 2)} hrs",
+                f"{round(x[sort_type], 2)} hrs",
             ]
             for i, x in enumerate(data)
         ][:10]
