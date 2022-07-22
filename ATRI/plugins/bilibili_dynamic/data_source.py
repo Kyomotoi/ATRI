@@ -137,7 +137,7 @@ class BilibiliDynamicSubscriptor(Service):
 
             elif type == 8:  # 视频动态
                 pattern["type_zh"] = "视频动态"
-                pattern["content"] = card["title"] + card["dynamic"]
+                pattern["content"] = card["dynamic"] + "\n视频标题: " + card["title"]
                 pattern["pic"] = card["pic"]
 
             elif type == 64:  # 文章
