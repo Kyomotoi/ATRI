@@ -160,9 +160,7 @@ async def _check_status():
         await _regot_in_need()
         scheduler.add_job(_regot_in_need, "interval", name="刷新推特凭据", minutes=30, misfire_grace_time=10)  # type: ignore
     except Exception:
-        data = ServiceTools.load_service("推特动态订阅")
-        data["enabled"] = False
-        ServiceTools.save_service(data, "推特动态订阅")
+        ServiceTools.service_controller("推特动态订阅", False)
         log.warning("无法连接至 Twitter，这将导致相关插件无法工作. 已自动禁用.")
 
 

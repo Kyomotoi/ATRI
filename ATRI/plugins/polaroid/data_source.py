@@ -1,9 +1,10 @@
 from ATRI import driver
-from ATRI.service import Service
+from ATRI.service import Service, ServiceTools
 from ATRI.rule import is_in_service
 from ATRI.utils import request
 from ATRI.log import logger as log
 from ATRI.exceptions import RequestError
+
 from .image_dealer import image_dealer
 
 
@@ -21,7 +22,7 @@ class Polaroid(Service):
             res = await request.get(TENCENT_AVATER_URL.format(user_id=user_id))
         except Exception:
             raise RequestError("Request failed!")
-        data = res.read()
+        data = res.read()  # type: ignore
         return data
 
     @classmethod
@@ -40,19 +41,20 @@ from .image_dealer import TEMP_PATH, POLAROID_DIR
 async def init_source():
     files = ["frame-0.PNG", "frame-1.PNG", "font-0.ttf"]
 
-    for i in files:
-        path = POLAROID_DIR / i
-        if not path.is_file():
-            log.warning("插件 polaroid 缺少所需资源，装载中")
-
-            url = SOURCE_URL + i
-            try:
+    try:
+        for i in files:
+            path = POLAROID_DIR / i
+            if not path.is_file():
+                log.warning("插件 polaroid 缺少所需资源，装载中")
+                url = SOURCE_URL + i
                 data = await request.get(url)
                 with open(path, "wb") as w:
-                    w.write(data.read())
-                log.info("所需资源装载完成")
-            except Exception:
-                log.error("装载资源失败")
+                    w.write(data.read())  # type: ignore
+    except Exception:
+        ServiceTools.service_controller("拍立得", False)
+        log.error(f"插件 polaroid 装载资源失败. 已自动禁用")
+
+    log.success("插件 polaroid 装载资源完成")
 
 
 driver().on_startup(init_source)

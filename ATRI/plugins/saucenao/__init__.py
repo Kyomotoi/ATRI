@@ -20,9 +20,7 @@ async def _deal_search(event: MessageEvent):
 
     # cache fix
     if not sn.key:
-        data = ServiceTools.load_service("以图搜图")
-        data["enabled"] = False
-        ServiceTools.save_service(data, "以图搜图")
+        ServiceTools.service_controller("以图搜图", False)
         log.warning("插件 SauceNao 所需的 key 未配置，将被全局禁用，后续填写请手动启用")
 
     user_id = event.get_user_id()
