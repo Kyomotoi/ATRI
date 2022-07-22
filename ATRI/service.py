@@ -297,7 +297,7 @@ class Service:
 
 class ServiceTools(object):
     @staticmethod
-    def save_service(service_data: dict, service: str) -> None:
+    def save_service(service_data: dict, service: str):
         path = SERVICES_DIR / f"{service}.json"
         if not path.is_file():
             raise ReadFileError(
@@ -345,3 +345,9 @@ class ServiceTools(object):
             return False
         else:
             return True
+
+    @classmethod
+    def service_controller(cls, service: str, is_enabled: bool):
+        data = cls.load_service(service)
+        data["enabled"] = is_enabled
+        cls.save_service(data, service)
