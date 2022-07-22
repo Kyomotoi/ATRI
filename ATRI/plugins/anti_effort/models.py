@@ -1,6 +1,11 @@
 from pydantic import BaseModel
 
 
+class AntiEffortModel(BaseModel):
+    update_time: str
+    data: list
+
+
 class AntiEffortUserModel(BaseModel):
     user_id: int
     user_nickname: str
