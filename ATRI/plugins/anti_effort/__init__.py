@@ -234,6 +234,9 @@ async def _():
 
     bot = get_bot()
     for g in eb_g:
+        if not int(g):
+            continue
+
         file_path = PLUGIN_DIR / f"{g}-ld.json"
         raw_data = json.loads(file_path.read_bytes())
         data = raw_data["data"]
@@ -246,5 +249,8 @@ async def _():
         img = await AntiEffort().gen_img(winner_id, winner_nickname, coding_time)
         result = MessageSegment.image(img)
 
-        await bot.send_group_msg(group_id=g, message="昨日卷王已经产生！")
-        await bot.send_group_msg(group_id=g, message=Message(result))
+        try:
+            await bot.send_group_msg(group_id=g, message="昨日卷王已经产生！")
+            await bot.send_group_msg(group_id=g, message=Message(result))
+        except Exception:
+            continue
