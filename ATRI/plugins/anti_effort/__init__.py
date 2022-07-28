@@ -76,7 +76,9 @@ async def _join_global_rank(event: GroupMessageEvent):
 
 
 @join_global_rank.got("waka_url", _GET_URL_MSG)
-@join_global_rank.got("rank_nickname", "如何在排行榜中称呼你捏")
+@join_global_rank.got(
+    "rank_nickname", "如何在排行榜中称呼你捏", [Cooldown(60, prompt=_lmt_notice)]
+)
 async def _(
     event: GroupMessageEvent,
     url: str = ArgPlainText("waka_url"),
@@ -89,11 +91,9 @@ async def _(
 
 
 user_leave = AntiEffort().on_command("!我不卷了", "退出卷王统计榜")
-user_leave_cmd = AntiEffort().cmd_as_group("leave", "退出卷王统计榜")
 
 
 @user_leave.handle([Cooldown(60, prompt=_lmt_notice)])
-@user_leave_cmd.handle([Cooldown(60, prompt=_lmt_notice)])
 async def _user_leave(event: GroupMessageEvent):
     group_id = event.group_id
     user_id = event.user_id
