@@ -56,7 +56,7 @@ async def _deal_add_user(
     await add_user.finish(result)
 
 
-join_global_rank = AntiEffort().on_command("!参加公共卷王", "加入公共卷王榜")
+join_global_rank = AntiEffort().on_command("!参加公共卷", "加入公共卷王榜")
 
 
 @join_global_rank.handle()
