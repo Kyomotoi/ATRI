@@ -246,7 +246,7 @@ class AntiEffort(Service):
         table.insert(0, ["Rank", "Member", table_type])
         result = tabulate(table, tablefmt="plain")
         update_time = raw_data["update_time"]
-        rank = f"\n你位于第 {user_rank} 名: {user_recent_count}" if user_rank else str()
+        rank = f"\n你位于第 {user_rank} 名: {user_recent_count} hrs" if user_rank else str()
         repo = f"《{rank_type}十佳卷王》\nUpdate Time: {update_time}\n{result}{rank}"
         return repo
 
