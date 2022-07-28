@@ -225,10 +225,15 @@ class AntiEffort(Service):
         data = sorted(data, key=lambda x: x[sort_type], reverse=True)
 
         user_rank = 0
+        user_recent_count = 0
         for i, user in enumerate(data):
             if user["user_id"] == user_id:
                 user_rank = i + 1
+                user_recent_count = user["recent_count"]
                 break
+
+        if not user_recent_count:
+            user_rank = 0
 
         table = [
             [
@@ -241,7 +246,7 @@ class AntiEffort(Service):
         table.insert(0, ["Rank", "Member", table_type])
         result = tabulate(table, tablefmt="plain")
         update_time = raw_data["update_time"]
-        rank = f"\n你位于第 {user_rank} 名" if user_rank else str()
+        rank = f"\n你位于第 {user_rank} 名: {user_recent_count}" if user_rank else str()
         repo = f"《{rank_type}十佳卷王》\nUpdate Time: {update_time}\n{result}{rank}"
         return repo
 

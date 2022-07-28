@@ -32,21 +32,14 @@ _GET_URL_MSG = """请键入wakatime share embed URL:
 
 
 add_user = AntiEffort().on_command("!我也要卷", "加入卷王统计榜")
-add_user_cmd = AntiEffort().cmd_as_group("join", "加入卷王统计榜")
 
 
 @add_user.got(
     "waka_url",
     _GET_URL_MSG,
 )
-@add_user_cmd.got(
-    "waka_url",
-    _GET_URL_MSG,
-)
 @add_user.got("rank_nickname", "如何在排行榜中称呼你捏")
-@add_user_cmd.got("rank_nickname", "如何在排行榜中称呼你捏")
 @add_user.got("to_global", "你希望加入公共排行榜吗？(y/n)", [Cooldown(60, prompt=_lmt_notice)])
-@add_user_cmd.got("to_global", "你希望加入公共排行榜吗？(y/n)", [Cooldown(60, prompt=_lmt_notice)])
 async def _deal_add_user(
     event: GroupMessageEvent,
     url: str = ArgPlainText("waka_url"),
@@ -64,11 +57,9 @@ async def _deal_add_user(
 
 
 join_global_rank = AntiEffort().on_command("!参加公共卷王", "加入公共卷王榜")
-join_global_rank_cmd = AntiEffort().cmd_as_group("join.global", "加入公共卷王榜")
 
 
 @join_global_rank.handle()
-@join_global_rank_cmd.handle()
 async def _join_global_rank(event: GroupMessageEvent):
     group_id = event.group_id
     user_id = event.user_id
@@ -85,9 +76,7 @@ async def _join_global_rank(event: GroupMessageEvent):
 
 
 @join_global_rank.got("waka_url", _GET_URL_MSG)
-@join_global_rank_cmd.got("waka_url", _GET_URL_MSG)
 @join_global_rank.got("rank_nickname", "如何在排行榜中称呼你捏")
-@join_global_rank_cmd.got("rank_nickname", "如何在排行榜中称呼你捏")
 async def _(
     event: GroupMessageEvent,
     url: str = ArgPlainText("waka_url"),
@@ -114,12 +103,10 @@ async def _user_leave(event: GroupMessageEvent):
     await user_leave.finish(result)
 
 
-check_rank_today = AntiEffort().on_command("今日卷王", "查看今日卷王榜")
-check_rank_today_cmd = AntiEffort().cmd_as_group("rank.today", "查看今日卷王榜")
+check_rank_today = AntiEffort().on_command("今日卷王", "查看今日卷王榜", aliases={"日卷王"})
 
 
 @check_rank_today.handle([Cooldown(15, prompt=_lmt_notice)])
-@check_rank_today_cmd.handle([Cooldown(15, prompt=_lmt_notice)])
 async def _check_rank_today(event: GroupMessageEvent):
     await check_rank_today.send("别急！正在统计！")
 
@@ -134,11 +121,9 @@ async def _check_rank_today(event: GroupMessageEvent):
 
 
 check_rank_recent_week = AntiEffort().on_command("周卷王", "查看近一周卷王榜")
-check_rank_recent_week_cmd = AntiEffort().cmd_as_group("rank.week", "查看近一周卷王榜")
 
 
 @check_rank_recent_week.handle([Cooldown(15, prompt=_lmt_notice)])
-@check_rank_recent_week_cmd.handle([Cooldown(15, prompt=_lmt_notice)])
 async def _check_rank_recent_week(event: GroupMessageEvent):
     await check_rank_recent_week.send("别急！正在统计！")
 
@@ -153,11 +138,9 @@ async def _check_rank_recent_week(event: GroupMessageEvent):
 
 
 check_rank_global_today = AntiEffort().on_command("公共卷王", "查看公共卷王榜")
-check_rank_global_today_cmd = AntiEffort().cmd_as_group("rank.global", "查看公共卷王榜")
 
 
 @check_rank_global_today.handle([Cooldown(15, prompt=_lmt_notice)])
-@check_rank_global_today_cmd.handle([Cooldown(15, prompt=_lmt_notice)])
 async def _check_rank_global_today(event: MessageEvent):
     await check_rank_global_today.send("别急！正在统计！")
 
@@ -171,13 +154,9 @@ async def _check_rank_global_today(event: MessageEvent):
 
 
 check_rank_global_recent_week = AntiEffort().on_command("公共周卷王", "查看公共卷王榜")
-check_rank_global_recent_week_cmd = AntiEffort().cmd_as_group(
-    "rank.global.week", "查看公共卷王榜"
-)
 
 
 @check_rank_global_recent_week.handle([Cooldown(15, prompt=_lmt_notice)])
-@check_rank_global_recent_week_cmd.handle([Cooldown(15, prompt=_lmt_notice)])
 async def _check_rank_global_recent_week(event: MessageEvent):
     await check_rank_global_recent_week.send("别急！正在统计！")
 
