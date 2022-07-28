@@ -45,7 +45,8 @@
 - 简单骰子
 - b站动态订阅
 - Twitter 动态订阅
-- 谁是卷王
+- 谁是卷王 (基于 wakatime)
+- 自定义词库（多种方式匹配）
 </details>
 
 <details markdown='1'><summary>娱乐</summary>
@@ -66,7 +67,6 @@
 > 被勾上的即已大致完成，但仍需优化
 - [x] 网页控制台
 - [ ] Twitter助手
-- [x] 自定义词库（多种方式匹配）
 - [ ] RSS订阅
 - [ ] 冷重启
 - [ ] 进裙验证（问题可自定义）
@@ -109,7 +109,7 @@
 
 <details markdown='1'><summary>以及以下朋友们！</summary>
 
->排名不分现后
+>排名不分先后
 - 50861735 11.00 CNY
 - 1072324725 17.00 CNY
 - AfdianUser_quGy 5.00 CNY
