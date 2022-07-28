@@ -137,7 +137,7 @@ async def _check_rank_recent_week(event: GroupMessageEvent):
     await check_rank_recent_week.finish(result)
 
 
-check_rank_global_today = AntiEffort().on_command("公共卷王", "查看公共卷王榜")
+check_rank_global_today = AntiEffort().on_command("公共卷王", "查看今日公共卷王榜")
 
 
 @check_rank_global_today.handle([Cooldown(15, prompt=_lmt_notice)])
