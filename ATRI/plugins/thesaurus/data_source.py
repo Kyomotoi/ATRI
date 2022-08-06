@@ -1,9 +1,6 @@
 import pytz
 from datetime import datetime
 
-from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
-
 from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.exceptions import ThesaurusError
@@ -19,7 +16,6 @@ class ThesaurusManager(Service):
             "词库管理",
             "支持模糊匹配、全匹配、正则的自定义回复～\n支持分群、全局管理，支持群内投票添加",
             rule=is_in_service("词库管理"),
-            permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
             main_cmd="/ts",
         )
 
