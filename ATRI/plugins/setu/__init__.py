@@ -34,6 +34,7 @@ async def _random_setu(bot: Bot, event: MessageEvent):
 
     event_id = msg_1["message_id"]
     loop.create_task(Setu().async_recall(bot, event_id))
+    loop.close()
 
 
 @random_setu.got("r_rush_after_think", prompt="看完不来点感想么-w-")
@@ -68,6 +69,7 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
 
     event_id = msg_1["message_id"]
     loop.create_task(Setu().async_recall(bot, event_id))
+    loop.close()
 
 
 @tag_setu.got("t_rush_after_think", prompt="看完不来点感想么-w-")
