@@ -119,7 +119,6 @@ class BilibiliDynamicSubscriptor(Service):
             if type == 1:  # 转发动态
                 pattern["type_zh"] = "转发动态"
                 pattern["content"] = card["item"]["content"]
-                pattern["pic"] = card["user"]["face"]
 
             elif type == 2:  # 普通动态（带多张图片）
                 pattern["type_zh"] = "普通动态（附图）"
