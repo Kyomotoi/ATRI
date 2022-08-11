@@ -16,7 +16,7 @@ from .models import AntiEffortModel, AntiEffortUserModel
 
 
 TENCENT_AVATER_URL = "https://q1.qlogo.cn/g?b=qq&nk={user_id}&s=640"
-SOURCE_URL = "https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/"
+SOURCE_URL = "https://jsd.imki.moe/gh/Kyomotoi/CDN@master/project/ATRI/"
 
 PLUGIN_DIR = Path(".") / "data" / "plugins" / "anti_effort"
 PLUGIN_DIR.mkdir(parents=True, exist_ok=True)

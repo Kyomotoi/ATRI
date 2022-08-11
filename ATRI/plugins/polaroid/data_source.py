@@ -9,7 +9,7 @@ from .image_dealer import image_dealer
 
 
 TENCENT_AVATER_URL = "https://q1.qlogo.cn/g?b=qq&nk={user_id}&s=640"
-SOURCE_URL = "https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/"
+SOURCE_URL = "https://jsd.imki.moe/gh/Kyomotoi/CDN@master/project/ATRI/"
 
 
 class Polaroid(Service):

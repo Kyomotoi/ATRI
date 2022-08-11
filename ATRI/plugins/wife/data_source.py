@@ -24,16 +24,16 @@ class Wife(Service):
                 "mua！",
                 "贴贴！",
                 MessageSegment.image(
-                    file="https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/wife0.jpg"
+                    file="https://jsd.imki.moe/gh/Kyomotoi/CDN@master/project/ATRI/wife0.jpg"
                 ),
                 MessageSegment.image(
-                    file="https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/wife1.jpg"
+                    file="https://jsd.imki.moe/gh/Kyomotoi/CDN@master/project/ATRI/wife1.jpg"
                 ),
                 MessageSegment.image(
-                    file="https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/wife2.jpg"
+                    file="https://jsd.imki.moe/gh/Kyomotoi/CDN@master/project/ATRI/wife2.jpg"
                 ),
                 MessageSegment.image(
-                    file="https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/project/ATRI/wife3.jpg"
+                    file="https://jsd.imki.moe/gh/Kyomotoi/CDN@master/project/ATRI/wife3.jpg"
                 ),
             ]
         )
