@@ -176,7 +176,7 @@ async def _friend_add(bot: Bot, event: FriendRequestEvent):
         f"请求人：{user_id}\n"
         f"申请信息：{apply_comment}\n"
         f"申请码：{apply_code}\n"
-        "Tip：好友申请 帮助"
+        "Tip: 获取好友申请"
     )
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=superuser, message=repo)
@@ -218,11 +218,11 @@ async def _group_invite(bot: Bot, event: GroupRequestEvent):
         w.write(json.dumps(data, indent=4))
 
     repo = (
-        "咱收到一条群聊邀请请求...\n"
+        "咱收到一条群聊请求...\n"
         f"请求人：{user_id}\n"
         f"申请信息：{apply_comment}\n"
         f"申请码：{apply_code}\n"
-        "Tip：群聊邀请 帮助"
+        "Tip: 获取邀请列表"
     )
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=superuser, message=repo)
