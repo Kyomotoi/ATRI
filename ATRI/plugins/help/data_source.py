@@ -50,7 +50,7 @@ class Helper(Service):
             f"可以称呼咱：{nickname}\n"
             f"咱的型号是：{__version__}\n"
             "想进一步了解：\n"
-            "atri.kyomotoi.moe\n"
+            "atri.imki.moe\n"
             "进不去: project-atri-docs.vercel.app"
         )
 
