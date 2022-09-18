@@ -35,6 +35,18 @@ async def run():
                         "file_path": f"{DB_DIR}/thesaurusauditlist.sqlite3"
                     },
                 },
+                "rrs": {
+                    "engine": "tortoise.backends.sqlite",
+                    "credentials": {
+                        "file_path": f"{DB_DIR}/rssrsshubsubscription.sqlite3"
+                    },
+                },
+                "rms": {
+                    "engine": "tortoise.backends.sqlite",
+                    "credentials": {
+                        "file_path": f"{DB_DIR}/rssmikananisubscription.sqlite3"
+                    },
+                },
             },
             "apps": {
                 "bilibili": {
@@ -47,6 +59,8 @@ async def run():
                 },
                 "ts": {"models": [locals()["models"]], "default_connection": "ts"},
                 "tal": {"models": [locals()["models"]], "default_connection": "tal"},
+                "rrs": {"models": [locals()["models"]], "default_connection": "rrs"},
+                "rms": {"models": [locals()["models"]], "default_connection": "rms"},
             },
         }
     )

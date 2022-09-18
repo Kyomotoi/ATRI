@@ -98,6 +98,10 @@ class ThesaurusError(BaseBotException):
     prompt = "词库相关错误"
 
 
+class RssError(BaseBotException):
+    prompt = "RSS订阅错误"
+
+
 @run_postprocessor
 async def _track_error(
     bot: Bot, event, matcher: Matcher, exception: Optional[Exception]
