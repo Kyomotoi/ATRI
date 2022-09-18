@@ -5,7 +5,7 @@ from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.utils import request
 from ATRI.config import Setu as ST
-from .tf_dealer import detect_image, init_module
+from .nsfw_checker import detect_image, init_model
 
 
 LOLICON_URL = "https://api.lolicon.app/setu/v2"
@@ -70,7 +70,7 @@ class Setu(Service):
         return repo, setu
 
     @staticmethod
-    async def detecter(url: str, file_size: int) -> list:
+    async def detecter(url: str, file_size: int) -> float:
         """
         涩值检测.
         """
@@ -85,4 +85,4 @@ class Setu(Service):
 
 from ATRI import driver
 
-driver().on_startup(init_module)
+driver().on_startup(init_model)

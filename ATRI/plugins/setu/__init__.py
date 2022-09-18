@@ -99,8 +99,8 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
                 data = await Setu().detecter(i, _catcher_max_file_size)
             except Exception:
                 return
-            if data[1] > 0.7:
-                hso.append(data[1])
+            if data > 0.7:
+                hso.append(data)
 
         hso.sort(reverse=True)
 
@@ -135,8 +135,7 @@ async def _deal_check(bot: Bot, event: MessageEvent):
     if not args:
         await nsfw_checker.reject("请发送图片而不是其他东西！！")
 
-    data = await Setu().detecter(args[0], _catcher_max_file_size)
-    hso = data[1]
+    hso = await Setu().detecter(args[0], _catcher_max_file_size)
     if not hso:
         await nsfw_checker.finish("图太小了！不测！")
 
