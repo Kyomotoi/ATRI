@@ -66,7 +66,7 @@ async def _td_del_sub(event: GroupMessageEvent):
     await del_sub.send(output)
 
 
-@del_sub.got("td_del_sub_tid", "要取消的tid呢？速速\n(键入 1 以取消)")
+@del_sub.got("td_del_sub_tid", "要取消的tid呢？速速\n(键入 q 以取消)")
 async def _td_deal_del_sub(
     event: GroupMessageEvent, _tid: str = ArgPlainText("td_del_sub_tid")
 ):
@@ -74,7 +74,7 @@ async def _td_deal_del_sub(
     if not re.match(patt, _tid):
         await del_sub.reject("这似乎不是tid呢，请重新输入:")
 
-    if _tid == "1":
+    if _tid == "q":
         await del_sub.finish("已取消操作～")
 
     group_id = event.group_id
@@ -175,6 +175,7 @@ async def _check_td():
             tzinfo=pytz.timezone("Asia/Shanghai")
         ) + timedelta(hours=8, minutes=8)
         ts = raw_ts.timestamp()
+
         info: dict = await sub.get_twitter_user_info(m.screen_name)
         if not info.get("status", list()):
             log.warning(f"无法获取推主 {m.name}@{m.screen_name} 的动态")
@@ -185,8 +186,8 @@ async def _check_td():
 
         raw_t = datetime.strptime(t_time, time_patt) + timedelta(hours=8)
         ts_t = raw_t.timestamp()
-        if ts < ts_t:
 
+        if ts < ts_t:
             raw_media = info["status"]["entities"].get("media", dict())
             _pic = raw_media[0]["media_url"] if raw_media else str()
 
