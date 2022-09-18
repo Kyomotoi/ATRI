@@ -21,16 +21,23 @@ psutil = "^5.9.1"
 pytz = "^2022.1"
 PyYAML = "^6.0"
 scikit-image = "^0.19.2"
-tensorflow = "^2.9.1"
 jieba = "^0.42.1"
 tabulate = "^0.8.9"
 wcwidth = "^0.2.5"
 tortoise-orm = "^0.19.1"
 httpx = "^0.23.0"
+xmltodict = "^0.13.0"
+parsel = "^1.6.0"
+onnxruntime = "^1.12.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3"
 nonebug = "^0.2.1"
+
+[[tool.poetry.source]]
+name = "tsinghua-mirror"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
 
 [tool.pytest.ini_options]
 addopts = '-p no:warnings'
