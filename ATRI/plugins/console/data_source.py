@@ -69,7 +69,9 @@ class Console(Service):
 
 FRONTEND_DIR = CONSOLE_DIR / "frontend"
 FRONTEND_DIR.mkdir(parents=True, exist_ok=True)
-CONSOLE_RESOURCE_URL = "https://jsd.imki.moe/gh/kyomotoi/Project-ATRI-Console@main/archive/dist.zip"
+CONSOLE_RESOURCE_URL = (
+    "https://jsd.imki.moe/gh/kyomotoi/Project-ATRI-Console@main/archive/dist.zip"
+)
 
 
 async def init_resource():
@@ -84,8 +86,8 @@ async def init_resource():
     file_path = CONSOLE_DIR / "dist.zip"
     with open(file_path, "wb") as w:
         w.write(resp.read())
-    
+
     with zipfile.ZipFile(file_path, "r") as zr:
         zr.extractall(FRONTEND_DIR)
-    
+
     log.success("控制台初始化完成")

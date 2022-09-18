@@ -157,4 +157,6 @@ async def _():
 
             bot = get_bot()
             await bot.send_group_msg(group_id=m.group_id, message=repo)
-            await sub.update_sub(m._id, m.group_id, {"update_time": timestamp2datetime(ts_t)})
+            await sub.update_sub(
+                m._id, m.group_id, {"update_time": timestamp2datetime(ts_t)}
+            )
