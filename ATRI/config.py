@@ -28,6 +28,7 @@ class BotSelfConfig:
         seconds=config.get("session_expire_timeout", 60)
     )
     proxy: str = config.get("proxy", None)
+    request_timeout = config.get("timeout", None)
 
 
 class InlineGoCQHTTP:
