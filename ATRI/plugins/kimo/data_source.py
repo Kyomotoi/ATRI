@@ -32,14 +32,15 @@ class Kimo(Service):
         file_name = "kimo.json"
         path = CHAT_PATH / file_name
         if not path.is_file():
-            log.warning("未检测到词库，生成中")
+            log.warning("插件 kimo 缺少资源, 装载中...")
             data = await cls._request(KIMO_URL)
             try:
                 with open(path, "w", encoding="utf-8") as w:
                     w.write(json.dumps(data, indent=4))
-                log.info("生成完成")
             except Exception:
                 raise WriteFileError("Writing kimo words failed!")
+
+        log.success("插件 kimo 资源装载完成")
 
     @classmethod
     async def _load_data(cls) -> dict:
