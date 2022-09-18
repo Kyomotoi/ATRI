@@ -1,7 +1,9 @@
 from nonebot.drivers.fastapi import Driver
 
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
+from ATRI.plugins.console.data_source import FRONTEND_DIR
 from .view import (
     handle_auther,
     handle_base_uri,
@@ -49,8 +51,15 @@ def register_routes(driver: Driver):
     app.get(CONSOLE_API_BLOCK_LIST_URI)(handle_get_block_list)
     app.get(CONSOLE_API_BLOCK_EDIT_URI)(handle_edit_block)
 
+    static_path = str(FRONTEND_DIR)
+    app.mount(
+        "/",
+        StaticFiles(directory=static_path, html=True),
+        name="atri-console",
+    )
 
-def init():
+
+def init_driver():
     from ATRI import driver
 
     register_routes(driver())  # type: ignore

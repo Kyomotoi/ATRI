@@ -2,8 +2,6 @@ from pydantic import BaseModel
 
 
 class AuthData(BaseModel):
-    ip: str
-    port: str
     token: str
 
 
