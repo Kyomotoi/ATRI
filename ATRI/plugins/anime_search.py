@@ -9,7 +9,7 @@ from ATRI.utils import request, Translate
 from ATRI.exceptions import RequestError
 
 
-URL = "https://api.trace.moe/search?anilistInfo=true&url="
+URL = "https://api.trace.moe/search?anilistInfo=true"
 _anime_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
@@ -21,9 +21,10 @@ class Anime(Service):
 
     @staticmethod
     async def _request(url: str) -> dict:
-        aim = URL + url
         try:
-            res = await request.get(aim)
+            resp = await request.get(url)
+            image_bytes = resp.read()
+            res = await request.post(URL, data=image_bytes,  headers={"Content-Type": "image/jpeg"})
         except Exception:
             raise RequestError("Request failed!")
         result = res.json()

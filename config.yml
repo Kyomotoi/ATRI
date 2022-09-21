@@ -8,6 +8,7 @@ BotSelfConfig:
   command_sep: ["."]
   session_expire_timeout: 60
   proxy: ""  # 请参考文档
+  request_timeout: 5
 
 InlineGoCQHTTP:
   enabled: true
