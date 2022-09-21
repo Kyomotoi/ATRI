@@ -24,7 +24,9 @@ class Anime(Service):
         try:
             resp = await request.get(url)
             image_bytes = resp.read()
-            res = await request.post(URL, data=image_bytes,  headers={"Content-Type": "image/jpeg"})
+            res = await request.post(
+                URL, data=image_bytes, headers={"Content-Type": "image/jpeg"}
+            )
         except Exception:
             raise RequestError("Request failed!")
         result = res.json()
