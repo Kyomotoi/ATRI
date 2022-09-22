@@ -82,7 +82,7 @@ async def init_resource():
     except Exception:
         log.error("控制台资源装载失败, 将无法访问管理界面")
         return
-    print(len(resp.read()))
+
     file_path = CONSOLE_DIR / "dist.zip"
     with open(file_path, "wb") as w:
         w.write(resp.read())
