@@ -105,7 +105,8 @@
 [Richard Chien](https://github.com/richardchien), [Mnixry](https://github.com/mnixry) and go-cqhttp Developers.
 
 [JetBrains](https://www.jetbrains.com/?from=ATRI): 为本项目提供 [PyCharm](https://www.jetbrains.com/pycharm/?from=ATRI) 等 IDE 的授权<br>
-[<img src="https://fastly.jsdelivr.net/gh/Kyomotoi/CDN@master/noting/jetbrains-variant-3.png" width="150"/>](https://www.jetbrains.com/?from=ATRI)
+[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="150"/>](https://www.jetbrains.com/?from=ATRI)
+[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/PyCharm_icon.png" width="130"/>](https://www.jetbrains.com/pycharm/?from=ATRI)
 
 <details markdown='1'><summary>以及以下朋友们！</summary>
 
