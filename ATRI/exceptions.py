@@ -45,7 +45,7 @@ def load_error(track_id: str) -> dict:
     return json.loads(path.read_bytes())
 
 
-class BaseBotException(BaseException):
+class BaseBotException(Exception):
     prompt: Optional[str] = "ignore"
 
     def __init__(self, prompt: Optional[str]) -> None:

@@ -6,6 +6,7 @@ from datetime import datetime
 from pydantic.main import BaseModel
 from random import choice, randint
 from pathlib import Path
+from typing import Union
 
 import nonebot
 from nonebot.permission import SUPERUSER
@@ -27,17 +28,15 @@ from nonebot.adapters.onebot.v11 import (
     Message,
 )
 
-import ATRI
+
 from ATRI.service import Service
 from ATRI.log import logger as log
 from ATRI.config import BotSelfConfig
-from ATRI.database import init_database, close_database_connection
+
 from ATRI.utils import MessageChecker
 from ATRI.utils.apscheduler import scheduler
-from ATRI.utils.check_update import CheckUpdate
 
 
-driver = ATRI.driver()
 bots = nonebot.get_bots()
 
 
@@ -47,40 +46,6 @@ TEMP_PATH = Path(".") / "data" / "temp"
 ESSENTIAL_DIR.mkdir(parents=True, exist_ok=True)
 MANEGE_DIR.mkdir(parents=True, exist_ok=True)
 TEMP_PATH.mkdir(parents=True, exist_ok=True)
-
-
-@driver.on_startup
-async def startup():
-    await init_database()
-
-    log.info(f"Now running: {ATRI.__version__}")
-
-    log.info("Starting to check update...")
-    commit_info = await CheckUpdate.show_latest_commit_info()
-    if commit_info:
-        log.info(commit_info)
-
-    l_v, l_v_t = await CheckUpdate.show_latest_version()
-    if l_v and l_v_t:
-        if l_v != ATRI.__version__:
-            log.warning("新版本已发布, 请更新.")
-            log.warning(f"最新版本: {l_v} 更新时间: {l_v_t}")
-            sleep(3)
-
-    if not scheduler.running:
-        scheduler.start()
-        log.info("Scheduler Started.")
-
-    log.info("アトリは、高性能ですから！")
-
-
-@driver.on_shutdown
-async def shutdown():
-    await close_database_connection()
-
-    scheduler.shutdown(False)
-
-    log.info("Thanks for using.")
 
 
 @run_preprocessor
@@ -312,7 +277,6 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
             m = repo
         else:
             return
-
     msg = f"主人，咱拿到了一条撤回信息！\n{user}@[群:{group}]\n撤回了\n{m}"
     for superuser in BotSelfConfig.superusers:
         await bot.send_private_msg(user_id=int(superuser), message=Message(msg))
@@ -378,9 +342,10 @@ async def _clear_cache():
         log.warning("清除缓存失败，请手动清除：data/temp")
 
 
-def recall_msg_dealer(msg: dict) -> str:
+def recall_msg_dealer(msg: Union[str, dict]) -> str:
+    if isinstance(msg, str):
+        return msg
     temp_m = list()
-
     for i in msg:
         _type = i.get("type", "idk")
         _data = i.get("data", "idk")
