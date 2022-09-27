@@ -1,7 +1,6 @@
 import json
 import shutil
 import asyncio
-from time import sleep
 from datetime import datetime
 from pydantic.main import BaseModel
 from random import choice, randint
