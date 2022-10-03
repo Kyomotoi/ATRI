@@ -16,7 +16,7 @@ gen_console_key = Console().cmd_as_group("auth", "获取进入网页后台的凭
 @gen_console_key.got("is_pub_n", "咱的运行环境是否有公网(y/n)")
 async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")):
     data_path = CONSOLE_DIR / "data.json"
-    if not data_path.is_file:
+    if not data_path.is_file():
         with open(data_path, "w", encoding="utf-8") as w:
             w.write(json.dumps(dict()))
 
