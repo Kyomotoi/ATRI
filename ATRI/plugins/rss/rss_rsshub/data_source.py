@@ -58,17 +58,11 @@ class RssHubSubscriptor(Service):
             raise RssError("rss.rsshub: 获取所有订阅失败")
 
     async def add_sub(self, url: str, group_id: int) -> str:
-        try:
-            resp = await request.get(url)
-        except Exception:
-            raise RssError("rss.rsshub: 请求链接失败")
-
-        if "RSSHub" not in resp.text:
+        data = await self.get_rsshub_info(url)
+        if not data:
             return "该链接不含RSSHub内容"
 
-        xml_data = resp.read()
-        data = xmltodict.parse(xml_data)
-        check_url = data["rss"]["channel"]["link"]
+        check_url = data["link"]
 
         query_result = await self.get_sub_list(
             {"raw_link": check_url, "group_id": group_id}
@@ -78,8 +72,8 @@ class RssHubSubscriptor(Service):
             return f"该链接已经订阅过啦! ID: {_id}"
 
         _id = gen_random_str(6)
-        title = data["rss"]["channel"]["title"]
-        disc = data["rss"]["channel"]["description"]
+        title = data["title"]
+        disc = data["description"]
 
         await self.__add_sub(_id, group_id)
         await self.update_sub(

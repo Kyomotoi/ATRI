@@ -57,7 +57,7 @@ async def _(event: GroupMessageEvent):
         subs.append([i._id, i.title])
 
     output = "本群的 RSSHub 订阅列表如下～\n" + tabulate(
-        subs, headers=["ID", "title"], tablefmt="plain"
+        subs, headers=["ID", "Title"], tablefmt="plain"
     )
     await del_sub.send(output)
 
@@ -95,7 +95,7 @@ async def _(event: GroupMessageEvent):
     output = "本群的 RSSHub 订阅列表如下～\n" + tabulate(
         subs, headers=["最后更新时间", "标题"], tablefmt="plain"
     )
-    await get_sub_list.send(output)
+    await get_sub_list.finish(output)
 
 
 tq = asyncio.Queue()
@@ -104,15 +104,15 @@ tq = asyncio.Queue()
 class RssHubDynamicChecker(BaseTrigger):
     def get_next_fire_time(self, previous_fire_time, now):
         conf = RssHubSubscriptor().load_service("rss.rsshub")
-        if conf["enabled"]:
+        if conf.get("enabled"):
             return now
 
 
 @scheduler.scheduled_job(
     AndTrigger([IntervalTrigger(seconds=120), RssHubDynamicChecker()]),
     name="RssHub 订阅检查",
-    max_instances=3,  # type: ignore
-    misfire_grace_time=60,  # type: ignore
+    max_instances=3,
+    misfire_grace_time=60,
 )
 async def _():
     sub = RssHubSubscriptor()
