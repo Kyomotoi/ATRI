@@ -336,15 +336,9 @@ class ServiceTools(object):
                 return False
 
         if group_id:
-            if group_id in auth_group:
-                return False
-            else:
-                return True
+            return False if group_id in auth_group else True
 
-        if not auth_global:
-            return False
-        else:
-            return True
+        return auth_global
 
     @classmethod
     def service_controller(cls, service: str, is_enabled: bool):
