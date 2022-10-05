@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ATRI"
-version = "001.106.01"
+version = "001.107.01"
 description = "A project for ATRI, Usage go-CQHTTP + Nonebot2."
 authors = ["Kyomotoi <kyomotoiowo@gmail.com>"]
 license = "GPLv3"
@@ -38,6 +38,9 @@ nonebug = "^0.2.1"
 name = "tsinghua-mirror"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 default = true
+
+[tool.poetry.group.dev.dependencies]
+black = {version = "^22.8.0", allow-prereleases = true}
 
 [tool.pytest.ini_options]
 addopts = '-p no:warnings'
