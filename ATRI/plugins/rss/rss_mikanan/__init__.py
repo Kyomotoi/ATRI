@@ -75,7 +75,9 @@ async def _(event: GroupMessageEvent, _id: str = ArgPlainText("rm_del_sub_id")):
     await del_sub.finish(result)
 
 
-get_sub_list = RssMikananSubscriptor().cmd_as_group("list", "获取本群 Mikan 订阅列表", permission=Permission())
+get_sub_list = RssMikananSubscriptor().cmd_as_group(
+    "list", "获取本群 Mikan 订阅列表", permission=Permission()
+)
 
 
 @get_sub_list.handle()
@@ -86,11 +88,11 @@ async def _(event: GroupMessageEvent):
     query_result = await sub.get_sub_list({"group_id": group_id})
     if not query_result:
         await get_sub_list.finish("本群还没有任何订阅呢...")
-    
+
     subs = list()
     for i in query_result:
         subs.append([i.update_time, i.title])
-    
+
     output = "本群的 Mikan 订阅列表如下~\n" + tabulate(
         subs, headers=["最后更新时间", "标题"], tablefmt="plain"
     )
@@ -120,7 +122,7 @@ async def _():
     except Exception:
         log.debug("Mikan 订阅列表为空 跳过")
         return
-    
+
     if tq.empty():
         for i in all_dy:
             await tq.put(i)
@@ -137,7 +139,7 @@ async def _():
         if not info:
             log.warning(f"无法获取 Mikan: {data.rss_link} 的动态")
             return
-        
+
         time_patt = "%Y-%m-%dT%H:%M:%S.%f"
 
         if len(info) == 1:

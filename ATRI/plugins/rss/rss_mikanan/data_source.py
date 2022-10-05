@@ -63,7 +63,7 @@ class RssMikananSubscriptor(Service):
         data = await self.get_mikan_info(url)
         if not data:
             return "该链接不含mikan内容"
-        
+
         rss_link = data["link"]
 
         query_result = await self.get_sub_list(
@@ -87,10 +87,10 @@ class RssMikananSubscriptor(Service):
         query_result = await self.get_sub_list({"_id": _id, "group_id": group_id})
         if not query_result:
             return "没有找到订阅..."
-        
+
         await self.__del_sub(_id, group_id)
         return f"成功取消ID为 {_id} 的订阅"
-    
+
     async def get_mikan_info(self, url: str) -> dict:
         if "mikanani.me" not in url:
             return dict()
