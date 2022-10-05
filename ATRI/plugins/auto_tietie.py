@@ -32,13 +32,16 @@ _tietie_wd = choice(
 tt = Service("贴贴", "全自动贴贴机", True, is_in_service("贴贴"), permission=SUPERUSER)
 
 
-auto_tietie = tt.on_message("贴贴w", "只与维护者贴贴w, '不可以贴'以拒绝贴贴~, '来贴贴'以接受贴贴~", block=False, priority=11)
+auto_tietie = tt.on_message(
+    "贴贴w", "只与维护者贴贴w, '不可以贴'以拒绝贴贴~, '来贴贴'以接受贴贴~", block=False, priority=11
+)
+
 
 @auto_tietie.handle([Cooldown(600)])
 async def _(event: MessageEvent):
     if not _is_tietie:
         await auto_tietie.finish()
-    
+
     user_id = event.get_user_id()
     at = MessageSegment.at(user_id)
     result = at + _tietie_wd
