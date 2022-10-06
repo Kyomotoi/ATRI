@@ -1,0 +1,40 @@
+name: 🚧 Auto Build Docker Image
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+  workflow_dispatch:
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: 🚀 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: 🚀 Run Checkout
+        uses: actions/checkout@v3
+      - name: 🚀 使用 python3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: 🔒️ 登录 DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: 📝 获取 ATRI 版本号
+        id: get-atri-version
+        run: |
+          echo ${{ secrets.DOCKER_SCRIPT }} | base64 -d > auto_docker_ver.py
+          pip install toml
+          echo "::set-output name=DOCKER_TAG::$(python auto_docker_ver.py)"
+      - name: ✅ 构建并推送Dokcer镜像
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/atri:${{ steps.get-atri-version.outputs.DOCKER_TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/atri:latest
