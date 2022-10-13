@@ -6,19 +6,21 @@ from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 from ATRI import driver
 from ATRI.service import Service, ServiceTools
 from ATRI.rule import is_in_service
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.utils import request
 from ATRI.utils.apscheduler import scheduler
+from ATRI.message import MessageBuilder
 from ATRI.exceptions import TwitterDynamicError
 
 from .db import DB
 from .api import API
 
 
-_DYNAMIC_OUTPUT_FORMAT = """
-{t_nickname} 的推更新了！
-{t_dy_content}
-""".strip()
+_DYNAMIC_OUTPUT_FORMAT = (
+    MessageBuilder("{t_nickname} 的推更新了！")
+    .text("{t_dy_content}")
+    .done()
+)
 
 
 class TwitterDynamicSubscriptor(Service):

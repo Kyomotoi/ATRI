@@ -4,6 +4,7 @@ from nonebot.params import ArgPlainText
 from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
 
 from ATRI.config import BotSelfConfig
+from ATRI.message import MessageBuilder
 from ATRI.exceptions import WriteFileError
 
 from .data_source import Console, CONSOLE_DIR
@@ -34,11 +35,13 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
     with open(data_path, "w", encoding="utf-8") as w:
         w.write(json.dumps(data))
 
-    msg = f"""控制台信息已生成！
-    请访问: {host}:{port}
-    Token: {token}
-    该 token 有效时间为 15min
-    """.strip()
+    msg = (
+        MessageBuilder("控制台信息已生成!")
+        .text(f"请访问: {host}:{port}")
+        .text(f"Token: {token}")
+        .text("该 token 有效时间为 15min")
+    )
+    
     await gen_console_key.finish(msg)
 
 

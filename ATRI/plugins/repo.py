@@ -7,15 +7,17 @@ from nonebot.adapters.onebot.v11.helpers import Cooldown
 
 from ATRI.service import Service
 from ATRI.config import BotSelfConfig
+from ATRI.message import MessageBuilder
 
 
 _repo_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
-REPO_FORMAT = """
-来自用户{user}反馈：
-{msg}
-""".strip()
+_REPO_FORMAT = (
+    MessageBuilder("来自用户{user}反馈:")
+    .text("{msg}")
+    .done()
+)
 
 
 class Repo(Service):
@@ -40,7 +42,7 @@ async def _deal_repo(
     repo_msg: str = ArgPlainText("repo"),
 ):
     user_id = event.get_user_id()
-    repo_0 = REPO_FORMAT.format(user=user_id, msg=repo_msg)
+    repo_0 = _REPO_FORMAT.format(user=user_id, msg=repo_msg)
 
     for superuser in BotSelfConfig.superusers:
         try:

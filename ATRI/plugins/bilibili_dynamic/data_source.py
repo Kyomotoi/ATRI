@@ -7,6 +7,7 @@ from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 
 from ATRI.service import Service
 from ATRI.rule import is_in_service
+from ATRI.message import MessageBuilder
 from ATRI.utils import timestamp2datetime
 from ATRI.exceptions import BilibiliDynamicError
 
@@ -14,12 +15,13 @@ from .db import DB
 from .api import API
 
 
-_OUTPUT_FORMAT = """
-{up_nickname} 的{up_dy_type}更新了！
-（限制 {limit_content} 字）
-{up_dy_content}
-链接: {up_dy_link}
-""".strip()
+_OUTPUT_FORMAT = (
+    MessageBuilder("{up_nickname} 的{up_dy_type}更新了!")
+    .text("(限制 {limit_content} 字)")
+    .text("{up_dy_content}")
+    .text("链接: {up_dy_link}")
+    .done()
+)
 
 
 class BilibiliDynamicSubscriptor(Service):

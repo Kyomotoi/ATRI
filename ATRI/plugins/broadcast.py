@@ -10,23 +10,22 @@ from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent
 from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
-
-from ATRI.service import Service
 from ATRI.rule import to_bot
+from ATRI.service import Service
+from ATRI.message import MessageBuilder
 
 
 BC_PATH = Path(".") / "data" / "plugins" / "broadcast"
 BC_PATH.mkdir(parents=True, exist_ok=True)
 
-
-_BROADCAST_BACK = """
-广播报告：
-信息：{msg}
-预计推送个数（群）：{len_g}
-成功：{su_g}
-失败：{fl_g}
-失败列表：{f_g}
-""".strip()
+_BROADCAST_REPO = (
+    MessageBuilder("广播报告:")
+    .text("信息: {msg}")
+    .text("预计推送群:{len_g} 个")
+    .text("成功: {su_g} 失败: {fl_g}")
+    .text("失败群列表: {f_g}")
+    .done()
+)
 
 
 class BroadCast(Service):
@@ -72,7 +71,7 @@ async def _(bot: Bot, event: MessageEvent, s_msg: str = ArgPlainText("bc_msg")):
 
     await bot.send(event, "正在推送...（每个群延迟1～3s）")
 
-    w_msg = f" 来自维护者的信息：\n{s_msg}"
+    w_msg = Message(f"来自维护者的信息：\n{s_msg}")
 
     su_g = list()
     fl_g = list()
@@ -86,12 +85,12 @@ async def _(bot: Bot, event: MessageEvent, s_msg: str = ArgPlainText("bc_msg")):
 
         await asyncio.sleep(random.randint(2, 3))
 
-    repo_msg = _BROADCAST_BACK.format(
+    repo_msg = _BROADCAST_REPO.format(
         msg=s_msg,
         len_g=len(w_group),
         su_g=su_g,
         fl_g=fl_g,
-        f_g="、".join(map(str, fl_g)),
+        f_g=", ".join(map(str, fl_g)),
     )
     await caster.finish(repo_msg)
 

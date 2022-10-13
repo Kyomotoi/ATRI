@@ -14,6 +14,7 @@ from nonebot.adapters.onebot.v11 import (
 )
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
+from ATRI.message import MessageBuilder
 from ATRI.utils.apscheduler import scheduler
 
 from .data_source import AntiEffort, PLUGIN_DIR
@@ -21,14 +22,14 @@ from .data_source import AntiEffort, PLUGIN_DIR
 
 _lmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~", "呜呜...别急"])
 
-_GET_URL_MSG = """请键入wakatime share embed URL:
-获取方法:
-  - 前往 wakatime.com/share/embed
-  - Format 选择 JSON
-  - Chart Type 选择 Coding Activity
-  - Date Range 选择 Last 7 Days
-  - 所需url就在下一栏 HTML 中的 url
-""".strip()
+_GET_URL_MSG = (
+    MessageBuilder("请键入wakatime share embed URL:")
+    .text("- 前往 wakatime.com/share/embed")
+    .text("- Format 选择 JSON")
+    .text("- Chart Type 选择 Coding Activity")
+    .text("- Date Range 选择 Last 7 Days")
+    .text("- 所需url为下一栏 HTML 中的 url")
+)
 
 
 add_user = AntiEffort().on_command("!我也要卷", "加入卷王统计榜")
