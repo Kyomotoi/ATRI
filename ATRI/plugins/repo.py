@@ -14,7 +14,6 @@ from ATRI.message import MessageBuilder
 _repo_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
-<<<<<<< HEAD
 _REPO_FORMAT = (
     MessageBuilder("来自用户{user}反馈:")
     .text("{msg}")
@@ -22,9 +21,7 @@ _REPO_FORMAT = (
     .text("- 无需担心, 关注其它内容即可")
     .done()
 )
-=======
 _REPO_FORMAT = MessageBuilder("来自用户{user}反馈:").text("{msg}").done()
->>>>>>> 83a9fb95251c173b2394b668aab1b63908af5f29
 
 
 repo = Service("反馈", "向维护者发送消息", rule=is_in_service("反馈"))
