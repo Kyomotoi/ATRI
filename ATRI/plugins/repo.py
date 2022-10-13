@@ -6,6 +6,7 @@ from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
 from ATRI import conf
+from ATRI.rule import is_in_service
 from ATRI.service import Service
 from ATRI.message import MessageBuilder
 
@@ -16,16 +17,16 @@ _repo_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~
 _REPO_FORMAT = (
     MessageBuilder("来自用户{user}反馈:")
     .text("{msg}")
+    .text("- 如有类似 CQ 一类关键词出现")
+    .text("- 无需担心, 关注其它内容即可")
     .done()
 )
 
 
-class Repo(Service):
-    def __init__(self):
-        Service.__init__(self, "反馈", "向维护者发送消息")
+repo = Service("反馈", "向维护者发送消息", rule=is_in_service("反馈"))
 
 
-reporter = Repo().on_command("来杯红茶", "向维护者发送消息", aliases={"反馈", "报告"})
+reporter = repo.on_command("来杯红茶", "向维护者发送消息", aliases={"反馈", "报告"})
 
 
 @reporter.handle([Cooldown(120, prompt=_repo_flmt_notice)])

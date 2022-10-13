@@ -92,7 +92,7 @@ async def _(bot: Bot, event: MessageEvent, s_msg: str = ArgPlainText("bc_msg")):
         fl_g=fl_g,
         f_g=", ".join(map(str, fl_g)),
     )
-    await caster.finish(repo_msg)
+    await caster.finish(Message(repo_msg))
 
 
 rej_broadcast = BroadCast().on_command(

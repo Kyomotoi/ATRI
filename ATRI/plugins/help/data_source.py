@@ -5,23 +5,25 @@ from tabulate import tabulate
 
 from ATRI import __version__, conf
 from ATRI.rule import to_bot
+from ATRI.message import MessageBuilder
 from ATRI.service import Service, SERVICES_DIR, ServiceTools
 
 
-SERVICE_INFO_FORMAT = """
-服务名：{service}
-说明：{docs}
-可用命令：\n    {cmd_list}
-是否全局启用：{enabled}
-Tip: @bot 帮助 [服务] [命令] 以查看对应命令详细信息
-""".strip()
-
-COMMAND_INFO_FORMAT = """
-命令：{cmd}
-类型：{cmd_type}
-说明：{docs}
-更多触发方式：{aliases}
-""".strip()
+__SERVICE_INFO_FORMAT = (
+    MessageBuilder("服务名：{service}")
+    .text("说明：{docs}")
+    .text("可用命令：\n{cmd_list}")
+    .text("是否全局启用：{enabled}")
+    .text("Tip: @bot 帮助 [服务] [命令] 以查看对应命令详细信息")
+    .done()
+)
+__COMMAND_INFO_FORMAT = (
+    MessageBuilder("命令：{cmd}")
+    .text("类型：{cmd_type}")
+    .text("说明：{docs}")
+    .text("更多触发方式：{aliases}")
+    .done()
+)
 
 
 class Helper(Service):
@@ -31,11 +33,11 @@ class Helper(Service):
     @staticmethod
     def menu() -> str:
         return (
-            "哦呀？~需要帮助？\n"
-            "关于 -查看bot基本信息\n"
-            "服务列表 -以查看所有可用服务\n"
-            "帮助 [服务] -以查看对应服务帮助\n"
-            "Tip: 均需要at触发。@bot 菜单 以打开此页面"
+            MessageBuilder("哦呀?~需要帮助?")
+            .text("关于 查看bot基本信息")
+            .text("服务列表 -以查看所有可用服务")
+            .text("帮助 [服务] -以查看对应服务帮助")
+            .text("Tip: 均需要at触发。@bot 菜单 以打开此页面")
         )
 
     @staticmethod
@@ -45,12 +47,12 @@ class Helper(Service):
             temp_list.append(i)
         nickname = "、".join(map(str, temp_list))
         return (
-            "唔...是来认识咱的么\n"
-            f"可以称呼咱：{nickname}\n"
-            f"咱的型号是：{__version__}\n"
-            "想进一步了解：\n"
-            "atri.imki.moe\n"
-            "进不去: project-atri-docs.vercel.app"
+            MessageBuilder("唔...是来认识咱的么")
+            .text(f"可以称呼咱：{nickname}")
+            .text(f"咱的型号是：{__version__}")
+            .text("想进一步了解:")
+            .text("atri.imki.moe")
+            .text("进不去: project-atri-docs.vercel.app")
         )
 
     @staticmethod
@@ -75,7 +77,11 @@ class Helper(Service):
             tablefmt="plain",
         )
         repo = f"咱搭载了以下服务~\n{table}\n@bot 帮助 [服务] -以查看对应服务帮助"
-        return repo
+        return (
+            MessageBuilder("咱搭载了以下服务~")
+            .text(table)
+            .text("@bot 帮助 [服务] -以查看对应服务帮助")
+        )
 
     @staticmethod
     def service_info(service: str) -> str:
@@ -91,7 +97,7 @@ class Helper(Service):
         _service_cmd_list = list(data.get("cmd_list", {"error"}))
         service_cmd_list = "\n".join(map(str, _service_cmd_list))
 
-        repo = SERVICE_INFO_FORMAT.format(
+        repo = __SERVICE_INFO_FORMAT.format(
             service=service_name,
             docs=service_docs,
             cmd_list=service_cmd_list,
@@ -114,7 +120,7 @@ class Helper(Service):
         docs = cmd_info.get("docs", "ignore")
         aliases = cmd_info.get("aliases", "ignore")
 
-        repo = COMMAND_INFO_FORMAT.format(
+        repo = __COMMAND_INFO_FORMAT.format(
             cmd=cmd, cmd_type=cmd_type, docs=docs, aliases=aliases
         )
         return repo
