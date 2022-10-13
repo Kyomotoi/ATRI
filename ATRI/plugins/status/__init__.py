@@ -1,6 +1,6 @@
 from nonebot import get_bot
 
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.config import BotSelfConfig
 from ATRI.utils.apscheduler import scheduler
 

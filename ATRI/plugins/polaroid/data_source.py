@@ -2,7 +2,7 @@ from ATRI import driver
 from ATRI.service import Service, ServiceTools
 from ATRI.rule import is_in_service
 from ATRI.utils import request
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.exceptions import RequestError
 
 from .image_dealer import image_dealer

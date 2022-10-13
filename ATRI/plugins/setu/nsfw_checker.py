@@ -7,7 +7,7 @@ from PIL import Image
 from pathlib import Path
 from sys import getsizeof
 
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.utils import request
 from ATRI.exceptions import RequestError, WriteFileError
 

@@ -29,7 +29,7 @@ from nonebot.adapters.onebot.v11 import (
 
 
 from ATRI.service import Service
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.config import BotSelfConfig
 
 from ATRI.utils import MessageChecker

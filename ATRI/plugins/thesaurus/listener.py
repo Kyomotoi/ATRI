@@ -9,7 +9,7 @@ from apscheduler.triggers.base import BaseTrigger
 from apscheduler.triggers.combining import AndTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.utils.apscheduler import scheduler
 
 from .data_source import ThesaurusManager, ThesaurusListener, ThesaurusStoragor

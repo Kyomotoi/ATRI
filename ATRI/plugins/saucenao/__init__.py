@@ -3,7 +3,7 @@ from random import choice
 from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.config import SauceNAO as sn
 from ATRI.service import ServiceTools
 from .data_source import SauceNao

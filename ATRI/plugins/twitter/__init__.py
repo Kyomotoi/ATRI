@@ -14,7 +14,7 @@ from nonebot.params import CommandArg, ArgPlainText
 from nonebot.permission import Permission, SUPERUSER
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent
 
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import TwitterSubscription

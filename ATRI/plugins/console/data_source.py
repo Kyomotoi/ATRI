@@ -11,7 +11,7 @@ from ATRI.service import Service
 from ATRI.utils import request
 from ATRI.rule import is_in_service
 from ATRI.exceptions import WriteFileError
-from ATRI.log import logger as log
+from ATRI.log import log
 
 
 CONSOLE_DIR = Path(".") / "data" / "plugins" / "console"

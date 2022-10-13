@@ -5,7 +5,7 @@ from random import choice, randint
 from nonebot.adapters.onebot.v11 import unescape
 
 from ATRI.service import Service
-from ATRI.log import logger
+from ATRI.log import log
 from ATRI.exceptions import RequestError
 from ATRI.utils import request
 from ATRI.utils import request, Translate
@@ -27,13 +27,13 @@ class Funny(Service):
         file_name = "laugh.txt"
         path = FUNNY_DIR / file_name
         if not path.is_file():
-            logger.warning("未发现笑话相关数据，正在下载并保存...")
+            log.warning("未发现笑话相关数据，正在下载并保存...")
             url = "https://jsd.imki.moe/gh/Kyomotoi/CDN@master/project/ATRI/laugh.txt"
             res = await request.get(url)
             context = res.text
             with open(path, "w", encoding="utf-8") as w:
                 w.write(context)
-            logger.warning("完成")
+            log.warning("完成")
 
         with open(path, "r", encoding="utf-8") as r:
             for line in r:

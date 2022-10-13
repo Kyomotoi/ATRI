@@ -1,4 +1,4 @@
-from ATRI.log import logger as log
+from ATRI.log import log
 
 from . import request
 

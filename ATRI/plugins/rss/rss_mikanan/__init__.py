@@ -13,7 +13,7 @@ from nonebot.params import CommandArg, ArgPlainText
 from nonebot.permission import Permission
 from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
 
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.plugins.rss.rss_rsshub.data_source import RssHubSubscriptor
 from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler

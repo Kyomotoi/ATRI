@@ -3,7 +3,7 @@ from nonebot.drivers.fastapi import Driver
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.log import BotSelfConfig
 from ATRI.plugins.console.data_source import FRONTEND_DIR
 from .view import (

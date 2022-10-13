@@ -5,7 +5,7 @@ from random import choice, shuffle
 
 from ATRI.service import Service
 from ATRI.rule import to_bot, is_in_service
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.utils import request
 from ATRI.exceptions import ReadFileError, WriteFileError
 

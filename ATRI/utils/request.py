@@ -1,7 +1,7 @@
 import httpx
 
 from ATRI.config import BotSelfConfig
-from ATRI.log import logger as log
+from ATRI.log import log
 
 timeout = BotSelfConfig.request_timeout
 if timeout:
