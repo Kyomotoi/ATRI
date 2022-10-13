@@ -34,6 +34,6 @@ class MessageBuilder(Message):
             text = "\n" + text
         self.append(MessageSegment.text(text))
         return self
-    
+
     def done(self) -> str:
         return str().join(map(str, self))

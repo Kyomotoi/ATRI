@@ -17,9 +17,7 @@ from .api import API
 
 
 _DYNAMIC_OUTPUT_FORMAT = (
-    MessageBuilder("{t_nickname} 的推更新了！")
-    .text("{t_dy_content}")
-    .done()
+    MessageBuilder("{t_nickname} 的推更新了！").text("{t_dy_content}").done()
 )
 
 
