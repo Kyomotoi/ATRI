@@ -1,11 +1,10 @@
 name: 🚧 Auto Build Docker Image
+
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+    tags: ["🔖 发布版本*"]
 
-  workflow_dispatch:
 jobs:
   docker:
     runs-on: ubuntu-latest
