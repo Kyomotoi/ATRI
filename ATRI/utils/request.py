@@ -1,16 +1,16 @@
 import httpx
 
-from ATRI.config import BotSelfConfig
+from ATRI import conf
 from ATRI.log import log
 
-timeout = BotSelfConfig.request_timeout
+timeout = conf.BotConfig.request_timeout
 if timeout:
     timeout = httpx.Timeout(timeout)
 
-if not BotSelfConfig.proxy:
+if not conf.BotConfig.proxy:
     proxy = dict()
 else:
-    proxy = {"all://": BotSelfConfig.proxy}
+    proxy = {"all://": conf.BotConfig.proxy}
 
 
 async def get(url: str, **kwargs):

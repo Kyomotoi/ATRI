@@ -3,8 +3,8 @@ from nonebot.drivers.fastapi import Driver
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
+from ATRI import conf
 from ATRI.log import log
-from ATRI.log import BotSelfConfig
 from ATRI.plugins.console.data_source import FRONTEND_DIR
 from .view import (
     handle_auther,
@@ -64,6 +64,6 @@ def register_routes(driver: Driver):
 def init_driver():
     from ATRI import driver
 
-    c_url = f"{BotSelfConfig.host}:{BotSelfConfig.port}"
+    c_url = f"{conf.BotConfig.host}:{conf.BotConfig.port}"
     log.info(f"控制台将运行于: http://{c_url} 对应API节点为: /capi")
     register_routes(driver())  # type: ignore

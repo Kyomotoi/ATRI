@@ -1,10 +1,10 @@
 import asyncio
 from nonebot.adapters.onebot.v11 import Bot, MessageSegment
 
+from ATRI import conf
 from ATRI.service import Service
 from ATRI.rule import is_in_service
 from ATRI.utils import request
-from ATRI.config import Setu as ST
 from .nsfw_checker import detect_image, init_model
 
 
@@ -20,8 +20,8 @@ class Setu(Service):
 
     @staticmethod
     def _use_proxy(url: str) -> str:
-        if ST.reverse_proxy:
-            return url.replace("i.pixiv.cat", ST.reverse_proxy_domain)
+        if conf.Setu.reverse_proxy:
+            return url.replace("i.pixiv.cat", conf.Setu.reverse_proxy_domain)
         else:
             return url
 

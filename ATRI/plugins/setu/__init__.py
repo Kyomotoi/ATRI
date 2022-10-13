@@ -8,7 +8,7 @@ from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message, MessageSegment
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
-from ATRI.config import BotSelfConfig
+from ATRI import conf
 from .data_source import Setu
 
 
@@ -122,7 +122,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
             s_repo = f"多张涩图来咧！\n{ss}\n最涩的达到：{'{:.2%}'.format(hso[0])}"
 
         await bot.send(event, u_repo)
-        for superuser in BotSelfConfig.superusers:
+        for superuser in conf.BotConfig.superusers:
             await bot.send_private_msg(user_id=superuser, message=s_repo)
 
 
@@ -143,7 +143,7 @@ async def _deal_check(bot: Bot, event: MessageEvent):
     if hso >= 0.75:
         resu += "hso！不行我要发给别人看"
         repo = f"涩图来咧！\n{MessageSegment.image(args[0])}\n涩值：{'{:.2%}'.format(hso)}"
-        for superuser in BotSelfConfig.superusers:
+        for superuser in conf.BotConfig.superusers:
             await bot.send_private_msg(user_id=superuser, message=repo)
 
     elif 0.75 > hso >= 0.5:

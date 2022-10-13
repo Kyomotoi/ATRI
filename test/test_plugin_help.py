@@ -32,12 +32,11 @@ async def test_main_help(app: App):
 
 @pytest.mark.asyncio
 async def test_about_me(app: App):
-    from ATRI import __version__
-    from ATRI.config import BotSelfConfig
+    from ATRI import __version__, conf
     from ATRI.plugins.help import about
 
     temp_list = list()
-    for i in BotSelfConfig.nickname:
+    for i in conf.BotConfig.nickname:
         temp_list.append(i)
     nickname = "、".join(map(str, temp_list))
 

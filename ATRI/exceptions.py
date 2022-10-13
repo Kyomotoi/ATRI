@@ -10,8 +10,9 @@ from nonebot.adapters.onebot.v11 import ActionFailed
 from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent
 from nonebot.message import run_postprocessor
 
-from .log import logger as log
-from .config import BotSelfConfig
+from ATRI import conf
+
+from .log import log
 from .utils import gen_random_str
 
 
@@ -103,9 +104,7 @@ class RssError(BaseBotException):
 
 
 @run_postprocessor
-async def _track_error(
-    bot: Bot, event, matcher: Matcher, exception: Optional[Exception]
-) -> None:
+async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
     if not exception:
         return
 
@@ -131,7 +130,7 @@ async def _track_error(
     log.error(f"Error Track ID: {track_id}")
     msg = f"呜——出错了...追踪: {track_id}\n来自: {_id}"
 
-    for superusers in BotSelfConfig.superusers:
+    for superusers in conf.BotConfig.superusers:
         try:
             await bot.send_private_msg(user_id=superusers, message=msg)
         except BaseBotException:

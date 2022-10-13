@@ -5,8 +5,8 @@ from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
+from ATRI import conf
 from ATRI.service import Service
-from ATRI.config import BotSelfConfig
 from ATRI.message import MessageBuilder
 
 
@@ -44,7 +44,7 @@ async def _deal_repo(
     user_id = event.get_user_id()
     repo_0 = _REPO_FORMAT.format(user=user_id, msg=repo_msg)
 
-    for superuser in BotSelfConfig.superusers:
+    for superuser in conf.BotConfig.superusers:
         try:
             await bot.send_private_msg(user_id=superuser, message=repo_0)
         except Exception:

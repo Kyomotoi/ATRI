@@ -3,10 +3,9 @@ import json
 
 from tabulate import tabulate
 
-from ATRI import __version__
+from ATRI import __version__, conf
 from ATRI.rule import to_bot
 from ATRI.service import Service, SERVICES_DIR, ServiceTools
-from ATRI.config import BotSelfConfig
 
 
 SERVICE_INFO_FORMAT = """
@@ -42,7 +41,7 @@ class Helper(Service):
     @staticmethod
     def about() -> str:
         temp_list = list()
-        for i in BotSelfConfig.nickname:
+        for i in conf.BotConfig.nickname:
             temp_list.append(i)
         nickname = "、".join(map(str, temp_list))
         return (

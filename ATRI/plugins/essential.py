@@ -27,11 +27,9 @@ from nonebot.adapters.onebot.v11 import (
     Message,
 )
 
-
+from ATRI import conf
 from ATRI.service import Service
 from ATRI.log import log
-from ATRI.config import BotSelfConfig
-
 from ATRI.utils import MessageChecker
 from ATRI.utils.apscheduler import scheduler
 
@@ -142,7 +140,7 @@ async def _friend_add(bot: Bot, event: FriendRequestEvent):
         f"申请码：{apply_code}\n"
         "Tip: 获取好友申请"
     )
-    for superuser in BotSelfConfig.superusers:
+    for superuser in conf.BotConfig.superusers:
         await bot.send_private_msg(user_id=superuser, message=repo)
 
 
@@ -188,7 +186,7 @@ async def _group_invite(bot: Bot, event: GroupRequestEvent):
         f"申请码：{apply_code}\n"
         "Tip: 获取邀请列表"
     )
-    for superuser in BotSelfConfig.superusers:
+    for superuser in conf.BotConfig.superusers:
         await bot.send_private_msg(user_id=superuser, message=repo)
 
 
@@ -198,7 +196,7 @@ group_member_event = Essential().on_notice("群成员变动", "群成员变动�
 @group_member_event.handle()
 async def _group_member_join(bot: Bot, event: GroupIncreaseNoticeEvent):
     await asyncio.sleep(randint(1, 6))
-    msg = "好欸！事新人！\n" f"在下 {choice(list(BotSelfConfig.nickname))} 哒!w!"
+    msg = "好欸！事新人！\n" f"在下 {choice(list(conf.BotConfig.nickname))} 哒!w!"
     await group_member_event.finish(msg)
 
 
@@ -216,7 +214,7 @@ async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent):
     if not event.is_tome():
         return
 
-    for superuser in BotSelfConfig.superusers:
+    for superuser in conf.BotConfig.superusers:
         await bot.send_private_msg(
             user_id=int(superuser), message=f"好欸！主人！我在群 {event.group_id} 成为了管理！！"
         )
@@ -236,11 +234,11 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent):
             f"咱在群 {event.group_id} 被 {event.operator_id} 塞上了口球...\n"
             f"时长...是 {event.duration} 秒"
         )
-        for superuser in BotSelfConfig.superusers:
+        for superuser in conf.BotConfig.superusers:
             await bot.send_private_msg(user_id=int(superuser), message=msg)
     else:
         msg = "好欸！主人\n" f"咱在群 {event.group_id} 的口球被 {event.operator_id} 解除了！"
-        for superuser in BotSelfConfig.superusers:
+        for superuser in conf.BotConfig.superusers:
             await bot.send_private_msg(user_id=int(superuser), message=msg)
 
 
@@ -277,7 +275,7 @@ async def _recall_group_event(bot: Bot, event: GroupRecallNoticeEvent):
         else:
             return
     msg = f"主人，咱拿到了一条撤回信息！\n{user}@[群:{group}]\n撤回了\n{m}"
-    for superuser in BotSelfConfig.superusers:
+    for superuser in conf.BotConfig.superusers:
         await bot.send_private_msg(user_id=int(superuser), message=Message(msg))
 
 
@@ -308,7 +306,7 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
             return
 
     msg = f"主人，咱拿到了一条撤回信息！\n{user}@[私聊]撤回了\n{m}"
-    for superuser in BotSelfConfig.superusers:
+    for superuser in conf.BotConfig.superusers:
         await bot.send_private_msg(user_id=int(superuser), message=Message(msg))
 
 

@@ -3,7 +3,7 @@ import json
 from nonebot.params import ArgPlainText
 from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
 
-from ATRI.config import BotSelfConfig
+from ATRI import conf
 from ATRI.message import MessageBuilder
 from ATRI.exceptions import WriteFileError
 
@@ -27,7 +27,7 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
     else:
         host = str(await Console().get_host_ip(True))
 
-    port = BotSelfConfig.port
+    port = conf.BotConfig.port
     token = Console().get_random_str(20)
 
     data = json.loads(data_path.read_bytes())
