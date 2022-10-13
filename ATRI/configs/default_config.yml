@@ -1,0 +1,32 @@
+# 设置参考文档: https://atri.imki.moe/install/configuration-bot/
+ConfigVersion: "1.0.0"
+
+BotConfig:
+  host: "127.0.0.1"
+  port: 20000
+  debug: false
+  superusers: {"1234567890"}
+  nickname: {"ATRI", "Atri", "atri", "亚托莉", "アトリ"}
+  command_start: {"", "/"}
+  command_sep: {"."}
+  session_expire_timeout: 60
+  access_token: ""
+  proxy: ""
+  request_timeout: 5
+
+WithGoCQHTTP:
+  enabled: false
+  accounts:
+    - uin: 1234567890
+      password: ""
+      protocol: 5
+  
+  download_domain: "github.com"
+  download_version: "v1.0.0-rc1"
+
+SauceNAO:
+  key: ""
+
+Setu:
+  reverse_proxy: true
+  reverse_proxy_domain: "i.pixiv.re"
