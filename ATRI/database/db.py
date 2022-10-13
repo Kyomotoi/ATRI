@@ -1,7 +1,7 @@
 from pathlib import Path
 from tortoise import Tortoise
 
-from ATRI.log import logger as log
+from ATRI.log import log
 
 
 # 临时的实现，寻求更好的方式！欢迎pr

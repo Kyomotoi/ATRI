@@ -1,5 +1,5 @@
 import ATRI
-from ATRI.log import logger as log
+from ATRI.log import log
 from ATRI.utils.apscheduler import scheduler
 from ATRI.utils.check_update import CheckUpdate
 from ATRI.database import init_database, close_database_connection
