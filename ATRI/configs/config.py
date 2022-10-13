@@ -4,12 +4,7 @@ from pathlib import Path
 
 from ATRI.log import log
 
-from .models import (
-    BotConfig,
-    ConfigModel,
-    WithGoCQHTTP,
-    RuntimeConfig
-)
+from .models import BotConfig, ConfigModel, WithGoCQHTTP, RuntimeConfig
 
 
 _DEFAULT_CONFIG_PATH = Path(".") / "ATRI" / "configs" / "default_config.yml"
@@ -43,7 +38,7 @@ class Config:
 
     def parse(self) -> ConfigModel:
         return ConfigModel.parse_obj(self.config)
-    
+
     def get_runtime_conf(self) -> dict:
         bot_conf = BotConfig.parse_obj(self.config["BotConfig"])
         gocq_conf = WithGoCQHTTP.parse_obj(self.config["WithGoCQHTTP"])
@@ -59,5 +54,5 @@ class Config:
             session_expire_timeout=bot_conf.session_expire_timeout,
             gocq_accoutns=gocq_conf.accounts,
             gocq_download_domain=gocq_conf.download_version,
-            gocq_version=gocq_conf.download_version
+            gocq_version=gocq_conf.download_version,
         ).dict()

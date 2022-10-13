@@ -41,7 +41,7 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
         .text(f"Token: {token}")
         .text("该 token 有效时间为 15min")
     )
-    
+
     await gen_console_key.finish(msg)
 
 

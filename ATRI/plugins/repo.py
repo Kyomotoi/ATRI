@@ -13,11 +13,7 @@ from ATRI.message import MessageBuilder
 _repo_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
-_REPO_FORMAT = (
-    MessageBuilder("来自用户{user}反馈:")
-    .text("{msg}")
-    .done()
-)
+_REPO_FORMAT = MessageBuilder("来自用户{user}反馈:").text("{msg}").done()
 
 
 class Repo(Service):
