@@ -77,11 +77,7 @@ class Helper(Service):
             tablefmt="plain",
         )
         repo = f"咱搭载了以下服务~\n{table}\n@bot 帮助 [服务] -以查看对应服务帮助"
-        return (
-            MessageBuilder("咱搭载了以下服务~")
-            .text(table)
-            .text("@bot 帮助 [服务] -以查看对应服务帮助")
-        )
+        return MessageBuilder("咱搭载了以下服务~").text(table).text("@bot 帮助 [服务] -以查看对应服务帮助")
 
     @staticmethod
     def service_info(service: str) -> str:
