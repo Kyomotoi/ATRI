@@ -78,7 +78,7 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
     )
 
     scheduler.add_job(
-        __del_auth_key(),
+        __del_auth_key,
         name="清除后台验证凭证",
         next_run_time=dead_time,
         misfire_grace_time=15,
