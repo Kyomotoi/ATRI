@@ -1,5 +1,5 @@
 # 设置参考文档: https://atri.imki.moe/install/configuration-bot/
-ConfigVersion: "1.0.0"
+ConfigVersion: "1.1.0"
 
 BotConfig:
   host: "127.0.0.1"
@@ -23,6 +23,9 @@ WithGoCQHTTP:
   
   download_domain: "github.com"
   download_version: "v1.0.0-rc1"
+
+  gocq_webui_username: "ATRI"
+  gocq_webui_password: "ATRI1314000***"
 
 SauceNAO:
   key: ""

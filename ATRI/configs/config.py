@@ -26,13 +26,19 @@ class Config:
         else:
             with open(config_path, "r", encoding="utf-8") as r:
                 if "BotSelfConfig" in r.read():
-                    print("!!! 你的 config.yml 文件已废弃, 请删除并重新启动")
+                    print("!!! 你的 config.yml 文件已废弃, 请 删除/备份 并重新启动")
                     sleep(3)
                     exit(-1)
 
-        self.config_path = config_path
-        with open(self.config_path, "r", encoding="utf-8") as f:
-            self.config = yaml.safe_load(f)
+        raw_conf = yaml.safe_load(_DEFAULT_CONFIG_PATH.read_bytes())
+        conf = yaml.safe_load(config_path.read_bytes())
+
+        if raw_conf["ConfigVersion"] != conf["ConfigVersion"]:
+            print("!!! 你的 config.yml 文件已废弃, 请 删除/备份 并重新启动")
+            sleep(3)
+            exit(-1)
+
+        self.config = conf
 
     def parse(self) -> ConfigModel:
         return ConfigModel.parse_obj(self.config)
@@ -47,10 +53,13 @@ class Config:
             debug=bot_conf.debug,
             superusers=bot_conf.superusers,
             nickname=bot_conf.nickname,
+            onebot_access_token=bot_conf.access_token,
             command_start=bot_conf.command_start,
             command_sep=bot_conf.command_sep,
             session_expire_timeout=bot_conf.session_expire_timeout,
             gocq_accoutns=gocq_conf.accounts,
             gocq_download_domain=gocq_conf.download_version,
             gocq_version=gocq_conf.download_version,
+            gocq_webui_username=gocq_conf.gocq_webui_password,
+            gocq_webui_password=gocq_conf.gocq_webui_password,
         ).dict()

@@ -27,6 +27,8 @@ class WithGoCQHTTP(BaseModel):
     accounts: List[GoCQHTTPAccountList]
     download_domain: str
     download_version: str
+    gocq_webui_username: str
+    gocq_webui_password: str
 
 
 class SauceNAO(BaseModel):
@@ -52,9 +54,12 @@ class RuntimeConfig(BaseModel):
     debug: bool
     superusers: set
     nickname: set
+    onebot_access_token: str
     command_start: set
     command_sep: set
     session_expire_timeout: int
     gocq_accoutns: list
     gocq_download_domain: str
     gocq_version: str
+    gocq_webui_username: str
+    gocq_webui_password: str
