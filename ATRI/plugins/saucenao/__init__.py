@@ -3,8 +3,8 @@ from random import choice
 from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
+from ATRI import conf
 from ATRI.log import log
-from ATRI.config import SauceNAO as sn
 from ATRI.service import ServiceTools
 from .data_source import SauceNao
 
@@ -19,7 +19,7 @@ saucenao = SauceNao().on_command("以图搜图", "透过一张图搜索可能的
 async def _deal_search(event: MessageEvent):
 
     # cache fix
-    if not sn.key:
+    if not conf.SauceNAO.key:
         ServiceTools.service_controller("以图搜图", False)
         log.warning("插件 SauceNao 所需的 key 未配置，将被全局禁用，后续填写请手动启用")
 
@@ -29,7 +29,7 @@ async def _deal_search(event: MessageEvent):
         await saucenao.reject("请发送图片而不是其他东西！！")
 
     try:
-        a = SauceNao(sn.key)
+        a = SauceNao(conf.SauceNAO.key)
     except Exception:
         await saucenao.finish("失败了...")
 
