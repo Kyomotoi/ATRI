@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class AuthData(BaseModel):
     token: str
+    dead_time: float
 
 
 class PlatformRuntimeInfo(BaseModel):

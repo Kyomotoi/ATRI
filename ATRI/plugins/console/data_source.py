@@ -56,7 +56,7 @@ class Console(Service):
         if not df.is_file():
             try:
                 with open(df, "w", encoding="utf-8") as w:
-                    w.write(json.dumps({}))
+                    w.write(json.dumps(dict()))
             except Exception:
                 raise WriteFileError("Writing file: " + str(df) + " failed!")
 
