@@ -43,7 +43,7 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
     else:
         now_time = datetime.now().timestamp()
         data = json.loads(__AUTH_FILE_PATH.read_bytes())["data"]
-        if now_time < data["dead_time"]:
+        if now_time < data["dead_time"] and data.get("dead_time"):
             raw_last_time = data["dead_time"] - now_time
             last_time = datetime.fromtimestamp(raw_last_time).minute
             await gen_console_key.finish(
