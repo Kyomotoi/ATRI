@@ -60,6 +60,6 @@ class Config:
             gocq_accoutns=gocq_conf.accounts,
             gocq_download_domain=gocq_conf.download_version,
             gocq_version=gocq_conf.download_version,
-            gocq_webui_username=gocq_conf.gocq_webui_password,
+            gocq_webui_username=gocq_conf.gocq_webui_username,
             gocq_webui_password=gocq_conf.gocq_webui_password,
         ).dict()
