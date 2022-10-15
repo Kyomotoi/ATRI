@@ -67,7 +67,7 @@
 > 被勾上的即已大致完成，但仍需优化
 - [x] 网页控制台
 - [ ] Twitter助手
-- [ ] RSS订阅
+- [x] RSS订阅
 - [ ] 冷重启
 - [ ] 进裙验证（问题可自定义）
 - [ ] 好感度系统
@@ -135,12 +135,12 @@
 
 如果你喜欢本项目，可以请我[喝杯红茶](https://afdian.net/@Kyomotoi).
 
-如果你有想法，有能力，欢迎:
+如果你有想法、有能力，欢迎:
 - [提交 Issue](https://github.com/Kyomotoi/ATRI/issues)
 - [提交 Pull request](https://github.com/Kyomotoi/ATRI/pulls)
 - [在交流群内进行反馈](https://jq.qq.com/?_wv=1027&k=WoAAYXbJ)
 
-在提交 Issue、Pull request 前，请先阅读[此内容](https://atri.kyomotoi.moe/developer/overview/).
+在提交 Issue、Pull request 前，请先阅读[此内容](https://atri.imki.moe/developer/overview/).
 
 ## 📄 许可 | License
 
