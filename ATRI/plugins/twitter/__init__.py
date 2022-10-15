@@ -12,7 +12,7 @@ from nonebot import get_bot
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.permission import Permission, SUPERUSER
-from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent, Bot
 
 from ATRI.log import log
 from ATRI.utils import timestamp2datetime
@@ -150,6 +150,9 @@ class TwitterDynamicChecker(BaseTrigger):
             return now
 
 
+_bot: Bot = get_bot()
+
+
 @scheduler.scheduled_job(
     AndTrigger([IntervalTrigger(seconds=30), TwitterDynamicChecker()]),
     name="推特动态更新检查",
@@ -169,6 +172,13 @@ async def _check_td():
             await tq.put(i)
     else:
         m: TwitterSubscription = tq.get_nowait()
+
+        group_list = await _bot.get_group_list()
+        gl = [f"{i['group_id']}" for i in group_list]
+        if m.group_id not in gl:
+            await sub.del_sub(m.tid, m.group_id)
+            log.warning(f"群 {m.group_id} 不存在, 已删除订阅 {m.name}@{m.screen_name}")
+
         log.info(f"准备查询推主 {m.name}@{m.screen_name} 的动态，队列剩余 {tq.qsize()}")
 
         raw_ts = m.last_update.replace(
@@ -197,15 +207,17 @@ async def _check_td():
             }
             content = sub.gen_output(data, _CONTENT_LIMIT)
 
-            bot = get_bot()
-            await bot.send_group_msg(group_id=m.group_id, message=content)
+            try:
+                await _bot.send_group_msg(group_id=m.group_id, message=content)
+            except Exception:
+                log.warning("推信息发送失败")
+
             await sub.update_sub(
                 m.tid, m.group_id, {"last_update": timestamp2datetime(ts_t)}
             )
             if _pic:
                 pic = Message(MessageSegment.image(_pic))
                 try:
-                    await bot.send_group_msg(group_id=m.group_id, message=pic)
+                    await _bot.send_group_msg(group_id=m.group_id, message=pic)
                 except Exception:
-                    repo = "图片发送失败了..."
-                    await bot.send_group_msg(group_id=m.group_id, message=repo)
+                    log.warning("推图片发送失败")
