@@ -150,9 +150,6 @@ class TwitterDynamicChecker(BaseTrigger):
             return now
 
 
-_bot: Bot = get_bot()
-
-
 @scheduler.scheduled_job(
     AndTrigger([IntervalTrigger(seconds=30), TwitterDynamicChecker()]),
     name="推特动态更新检查",
@@ -173,6 +170,7 @@ async def _check_td():
     else:
         m: TwitterSubscription = tq.get_nowait()
 
+        _bot: Bot = get_bot()
         group_list = await _bot.get_group_list()
         gl = [f"{i['group_id']}" for i in group_list]
         if m.group_id not in gl:
