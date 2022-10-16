@@ -57,7 +57,7 @@ class Config:
             command_start=bot_conf.command_start,
             command_sep=bot_conf.command_sep,
             session_expire_timeout=bot_conf.session_expire_timeout,
-            gocq_accoutns=gocq_conf.accounts,
+            gocq_accounts=gocq_conf.accounts,
             gocq_download_domain=gocq_conf.download_version,
             gocq_version=gocq_conf.download_version,
             gocq_webui_username=gocq_conf.gocq_webui_username,

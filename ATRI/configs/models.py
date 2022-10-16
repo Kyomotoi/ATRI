@@ -58,7 +58,7 @@ class RuntimeConfig(BaseModel):
     command_start: set
     command_sep: set
     session_expire_timeout: int
-    gocq_accoutns: list
+    gocq_accounts: list
     gocq_download_domain: str
     gocq_version: str
     gocq_webui_username: str
