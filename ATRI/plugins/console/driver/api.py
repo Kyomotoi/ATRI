@@ -51,7 +51,7 @@ def get_processing_data() -> tuple:
         PlatformRuntimeInfo(
             stat_msg=msg,
             cpu_percent=str(p_cpu),
-            mem_percent=p_mem,
+            mem_percent=str(p_mem),
             disk_percent=str(disk),
             inte_send=str(inte_send),
             inte_recv=str(inte_recv),
@@ -138,13 +138,18 @@ MANEGE_DIR = Path(".") / "data" / "plugins" / "manege"
 
 
 def get_block_list() -> dict:
+    u_data = dict()
+    g_data = dict()
+
     u_f = "block_user.json"
     path = MANEGE_DIR / u_f
-    u_data = json.loads(path.read_bytes())
+    if path.is_file():
+        u_data = json.loads(path.read_bytes())
 
     g_f = "block_group.json"
     path = MANEGE_DIR / g_f
-    g_data = json.loads(path.read_bytes())
+    if path.is_file():
+        g_data = json.loads(path.read_bytes())
 
     return {"user": u_data, "group": g_data}
 
