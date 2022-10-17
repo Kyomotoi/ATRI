@@ -4,7 +4,6 @@ from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message, MessageSegme
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
 from ATRI.service import Service
-from ATRI.rule import is_in_service
 from ATRI.utils import request, Translate
 from ATRI.exceptions import RequestError
 
@@ -13,14 +12,11 @@ URL = "https://api.trace.moe/search?anilistInfo=true"
 _anime_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
-class Anime(Service):
-    def __init__(self):
-        Service.__init__(
-            self, "以图搜番", "通过一张图片搜索你需要的番！据说里*也可以", rule=is_in_service("以图搜番")
-        )
+class Anime:
+    def __init__(self, img: str):
+        self.img = img
 
-    @staticmethod
-    async def _request(url: str) -> dict:
+    async def _request(self, url: str) -> dict:
         try:
             resp = await request.get(url)
             image_bytes = resp.read()
@@ -32,9 +28,8 @@ class Anime(Service):
         result = res.json()
         return result
 
-    @classmethod
-    async def search(cls, url: str) -> str:
-        data = await cls._request(url)
+    async def do_search(self) -> str:
+        data = await self._request(self.img)
         try:
             data = data["result"]
         except Exception:
@@ -78,7 +73,10 @@ class Anime(Service):
         return msg0
 
 
-anime_search = Anime().on_command("以图搜番", "发送一张图以搜索可能的番剧")
+ani = Service("以图搜番").document("通过一张图片搜索你需要的番！据说里*也可以")
+
+
+anime_search = ani.on_command("以图搜番", "发送一张图以搜索可能的番剧")
 
 
 @anime_search.got("anime_pic", "图呢？", [Cooldown(5, prompt=_anime_flmt_notice)])
@@ -89,6 +87,6 @@ async def _deal_sear(bot: Bot, event: MessageEvent):
         await anime_search.finish("请发送图片而不是其它东西！！")
 
     await bot.send(event, "别急，在找了")
-    a = await Anime().search(img[0])
+    a = await Anime(img[0]).do_search()
     result = f"> {MessageSegment.at(user_id)}\n" + a
     await anime_search.finish(Message(result))

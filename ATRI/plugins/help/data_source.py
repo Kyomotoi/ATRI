@@ -4,9 +4,8 @@ import json
 from tabulate import tabulate
 
 from ATRI import __version__, conf
-from ATRI.rule import to_bot
 from ATRI.message import MessageBuilder
-from ATRI.service import Service, SERVICES_DIR, ServiceTools
+from ATRI.service import SERVICES_DIR, ServiceTools
 
 
 __SERVICE_INFO_FORMAT = (
@@ -26,10 +25,7 @@ __COMMAND_INFO_FORMAT = (
 )
 
 
-class Helper(Service):
-    def __init__(self):
-        Service.__init__(self, "帮助", "bot的食用指南~", rule=to_bot())
-
+class Helper:
     @staticmethod
     def menu() -> str:
         return (
@@ -38,6 +34,7 @@ class Helper(Service):
             .text("服务列表 -以查看所有可用服务")
             .text("帮助 [服务] -以查看对应服务帮助")
             .text("Tip: 均需要at触发。@bot 菜单 以打开此页面")
+            .done()
         )
 
     @staticmethod
@@ -53,6 +50,7 @@ class Helper(Service):
             .text("想进一步了解:")
             .text("atri.imki.moe")
             .text("进不去: project-atri-docs.vercel.app")
+            .done()
         )
 
     @staticmethod
@@ -76,8 +74,7 @@ class Helper(Service):
             headers=["服务名称", "开启状态(全局)", "仅支持管理员"],
             tablefmt="plain",
         )
-        repo = f"咱搭载了以下服务~\n{table}\n@bot 帮助 [服务] -以查看对应服务帮助"
-        return MessageBuilder("咱搭载了以下服务~").text(table).text("@bot 帮助 [服务] -以查看对应服务帮助")
+        return MessageBuilder("咱搭载了以下服务~").text(table).text("@bot 帮助 [服务] -以查看对应服务帮助").done()
 
     @staticmethod
     def service_info(service: str) -> str:

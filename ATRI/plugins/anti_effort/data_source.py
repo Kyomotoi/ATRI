@@ -6,8 +6,7 @@ from datetime import datetime
 from tabulate import tabulate
 
 from ATRI import driver
-from ATRI.service import Service, ServiceTools
-from ATRI.rule import is_in_service
+from ATRI.service import ServiceTools
 from ATRI.utils import request
 from ATRI.log import log
 
@@ -22,12 +21,7 @@ PLUGIN_DIR = Path(".") / "data" / "plugins" / "anti_effort"
 PLUGIN_DIR.mkdir(parents=True, exist_ok=True)
 
 
-class AntiEffort(Service):
-    def __init__(self):
-        Service.__init__(
-            self, "谁是卷王", "谁是卷王！", rule=is_in_service("谁是卷王"), main_cmd="/ae"
-        )
-
+class AntiEffort:
     def get_enabled_group(self) -> list:
         groups = list()
 

@@ -2,9 +2,8 @@ import json
 from pathlib import Path
 from datetime import datetime
 
-from nonebot.permission import SUPERUSER
-
-from ATRI.service import Service, ServiceTools
+from ATRI.service import ServiceTools
+from ATRI.message import MessageBuilder
 from ATRI.exceptions import load_error
 
 
@@ -14,17 +13,16 @@ MANAGE_DIR.mkdir(parents=True, exist_ok=True)
 ESSENTIAL_DIR.mkdir(parents=True, exist_ok=True)
 
 
-TRACK_BACK_FORMAT = """Track ID：{track_id}
-Prompt: {prompt}
-Time: {time}
-{content}
-""".strip()
+_TRACK_BACK_FORMAT = (
+    MessageBuilder("Track ID: {track_id}")
+    .text("Prompt: {prompt}")
+    .text("Time: {time}")
+    .text("{content}")
+    .done()
+)
 
 
-class Manage(Service):
-    def __init__(self):
-        Service.__init__(self, "管理", "控制bot的各项服务", True, permission=SUPERUSER)
-
+class Manage:
     @staticmethod
     def _load_block_user_list() -> dict:
         """
@@ -269,7 +267,7 @@ class Manage(Service):
         time = data.get("time", "ignore")
         content = data.get("content", "ignore")
 
-        repo = TRACK_BACK_FORMAT.format(
+        repo = _TRACK_BACK_FORMAT.format(
             track_id=track_id, prompt=prompt, time=time, content=content
         )
         return repo

@@ -5,11 +5,7 @@ import zipfile
 from random import sample
 from pathlib import Path
 
-from nonebot.permission import SUPERUSER
-
-from ATRI.service import Service
 from ATRI.utils import request
-from ATRI.rule import is_in_service
 from ATRI.exceptions import WriteFileError
 from ATRI.log import log
 
@@ -18,18 +14,7 @@ CONSOLE_DIR = Path(".") / "data" / "plugins" / "console"
 CONSOLE_DIR.mkdir(parents=True, exist_ok=True)
 
 
-class Console(Service):
-    def __init__(self):
-        Service.__init__(
-            self,
-            "控制台",
-            "前端管理页面",
-            True,
-            is_in_service("控制台"),
-            main_cmd="/con",
-            permission=SUPERUSER,
-        )
-
+class Console:
     @staticmethod
     async def get_host_ip(is_pub: bool):
         if is_pub:

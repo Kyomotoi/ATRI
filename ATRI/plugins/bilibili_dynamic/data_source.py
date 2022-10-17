@@ -2,11 +2,6 @@ import json
 from datetime import datetime
 from operator import itemgetter
 
-from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
-
-from ATRI.service import Service
-from ATRI.rule import is_in_service
 from ATRI.message import MessageBuilder
 from ATRI.utils import timestamp2datetime
 from ATRI.exceptions import BilibiliDynamicError
@@ -24,17 +19,7 @@ _OUTPUT_FORMAT = (
 )
 
 
-class BilibiliDynamicSubscriptor(Service):
-    def __init__(self):
-        Service.__init__(
-            self,
-            "b站动态订阅",
-            "b站动态订阅助手～",
-            rule=is_in_service("b站动态订阅"),
-            permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
-            main_cmd="/bd",
-        )
-
+class BilibiliDynamicSubscriptor:
     async def __add_sub(self, uid: int, group_id: int):
         try:
             async with DB() as db:

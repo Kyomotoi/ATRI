@@ -3,8 +3,6 @@ from pathlib import Path
 from jieba import posseg
 from random import choice, shuffle
 
-from ATRI.service import Service
-from ATRI.rule import to_bot, is_in_service
 from ATRI.log import log
 from ATRI.utils import request
 from ATRI.exceptions import ReadFileError, WriteFileError
@@ -15,12 +13,7 @@ CHAT_PATH.mkdir(parents=True, exist_ok=True)
 KIMO_URL = "https://jsd.imki.moe/gh/Kyomotoi/AnimeThesaurus/data.json"
 
 
-class Kimo(Service):
-    def __init__(self):
-        Service.__init__(
-            self, "kimo", "好像有点涩？", rule=to_bot() & is_in_service("kimo"), priority=5
-        )
-
+class Kimo:
     @staticmethod
     async def _request(url: str) -> dict:
         res = await request.get(url)

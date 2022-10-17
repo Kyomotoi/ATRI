@@ -2,17 +2,26 @@ import pytz
 from tabulate import tabulate
 
 from nonebot.matcher import Matcher
-from nonebot.permission import SUPERUSER
 from nonebot.params import ArgPlainText, CommandArg, ArgStr
-from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent, GroupMessageEvent
 
+from ATRI.service import Service
+from ATRI.message import MessageBuilder
+from ATRI.permission import ADMIN, MASTER
 from ATRI.utils import gen_random_str, MessageChecker
 
 from .data_source import ThesaurusManager
 
 
-add_item = ThesaurusManager().cmd_as_group("add", "添加本群词条，需审核或投票")
+thes = (
+    Service("词库管理")
+    .document("支持模糊匹配、全匹配、正则的自定义回复~\n支持分群、全局管理, 支持群内投票添加")
+    .main_cmd("/ts")
+)
+tm = ThesaurusManager()
+
+
+add_item = thes.cmd_as_group("add", "添加本群词条，需审核或投票")
 
 
 @add_item.handle()
@@ -71,9 +80,8 @@ async def _add_normal_item(
     operator = operator_info.get("card", "unknown")
     item_id = gen_random_str(6)
     ans = item_a.split(",,")
-    ts = ThesaurusManager()
 
-    result = await ts.add_item(
+    result = await tm.add_item(
         item_id,
         False,
         item_q,
@@ -89,9 +97,7 @@ async def _add_normal_item(
     await add_item.finish(result)
 
 
-add_item_as_group_admin = ThesaurusManager().cmd_as_group(
-    "add.g", "添加本群词条，仅限管理，无需审核", permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN
-)
+add_item_as_group_admin = thes.cmd_as_group("add.g", "添加本群词条，仅限管理，无需审核", permission=ADMIN)
 
 
 @add_item_as_group_admin.handle()
@@ -150,9 +156,8 @@ async def _add_group_item(
     operator = operator_info.get("card", "unknown")
     item_id = gen_random_str(6)
     ans = item_a.split(",,")
-    ts = ThesaurusManager()
 
-    result = await ts.add_item(
+    result = await tm.add_item(
         item_id,
         True,
         item_q,
@@ -168,9 +173,7 @@ async def _add_group_item(
     await add_item_as_group_admin.finish(result)
 
 
-add_item_for_global = ThesaurusManager().cmd_as_group(
-    "add.glo", "添加全局问答", permission=SUPERUSER
-)
+add_item_for_global = thes.cmd_as_group("add.glo", "添加全局问答", permission=MASTER)
 
 
 @add_item_for_global.handle()
@@ -216,11 +219,10 @@ async def _add_global_item(
     agree_list = ["y", "Y", "是", "同意", "赞成"]
     need_at = 1 if _need_at in agree_list else 0
 
-    operator = "SUPERUSER"
+    operator = "MASTER"
     opeartor_id = event.user_id
     item_id = gen_random_str(6)
     ans = item_a.split(",,")
-    tm = ThesaurusManager()
 
     result = await tm.add_item(
         item_id, True, item_q, ans, need_at, item_t, 0, operator, opeartor_id, 0, list()
@@ -228,7 +230,7 @@ async def _add_global_item(
     await add_item_for_global.finish(result)
 
 
-vote = ThesaurusManager().cmd_as_group("v", "对本群内审核中的词条进行投票")
+vote = thes.cmd_as_group("v", "对本群内审核中的词条进行投票")
 
 
 @vote.handle()
@@ -246,7 +248,6 @@ async def _get_vote_info(matcher: Matcher, args: Message = CommandArg()):
 async def _get_item_id(
     event: GroupMessageEvent, item_id: str = ArgPlainText("ts_vote_id")
 ):
-    tm = ThesaurusManager()
     user_id = event.user_id
     group_id = event.group_id
 
@@ -258,13 +259,14 @@ async def _get_item_id(
     if user_id in item_info.vote_list:
         await vote.finish("你已经参与过啦！")
 
-    result = f"""你即将要投票的词条信息:
-    词条ID: {item_info._id}
-    有人问: {item_info.matcher}
-    我答: {"、".join(map(str, item_info.result))}
-    提交人: {item_info.operator}@{item_info.operator_id}
-    当前赞成: {"、".join(map(str, item_info.vote_list))}
-    """.strip()
+    result = (
+        MessageBuilder("你即将要投票的词条信息:")
+        .text(f"词条ID: {item_info._id}")
+        .text(f"有人问: {item_info.matcher}")
+        .text(f"我答: {'、'.join(map(str, item_info.result))}")
+        .text(f"提交人: {item_info.operator}@{item_info.operator_id}")
+        .text(f"当前赞成: {'、'.join(map(str, item_info.vote_list))}")
+    )
     await vote.send(Message(result))
 
 
@@ -279,7 +281,6 @@ async def _get_voter_attitude(
     if attitude not in agree_list and attitude not in disagree_list:
         await vote.reject("你的观点似乎不相关呢...请重新输入: (y/n)")
 
-    tm = ThesaurusManager()
     group_id = event.group_id
     user_id = event.user_id
 
@@ -290,9 +291,7 @@ async def _get_voter_attitude(
         await vote.finish("好吧...")
 
 
-del_item = ThesaurusManager().cmd_as_group(
-    "del", "删除本群词条", permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN
-)
+del_item = thes.cmd_as_group("del", "删除本群词条", permission=ADMIN)
 
 
 @del_item.handle()
@@ -306,16 +305,13 @@ async def _get_del_normal_item_info(matcher: Matcher, args: Message = CommandArg
 async def _deal_del_normal_item(
     event: GroupMessageEvent, item_id: str = ArgPlainText("ts_del_item_id")
 ):
-    tm = ThesaurusManager()
     group_id = event.group_id
 
     result = await tm.del_item(item_id, group_id, True)
     await del_item.finish(result)
 
 
-del_global_item = ThesaurusManager().cmd_as_group(
-    "del.g", "删除全局词条", permission=SUPERUSER
-)
+del_global_item = thes.cmd_as_group("del.g", "删除全局词条", permission=MASTER)
 
 
 @del_global_item.handle()
@@ -327,15 +323,11 @@ async def _get_del_global_item_info(matcher: Matcher, args: Message = CommandArg
 
 @del_global_item.got("ts_del_global_item_id", "要删除词条的id是？")
 async def _deal_del_global_item(item_id: str = ArgPlainText("ts_del_global_item_id")):
-    tm = ThesaurusManager()
-
     result = await tm.del_item(item_id, 0, True)
     await del_global_item.finish(result)
 
 
-del_vote_item = ThesaurusManager().cmd_as_group(
-    "del.v", "删除本群处于投票中的词条", permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN
-)
+del_vote_item = thes.cmd_as_group("del.v", "删除本群处于投票中的词条", permission=ADMIN)
 
 
 @del_vote_item.handle()
@@ -349,7 +341,6 @@ async def _get_deal_vote_item_info(matcher: Matcher, args: Message = CommandArg(
 async def _deal_del_vote_item(
     event: GroupMessageEvent, item_id: str = ArgPlainText("ts_del_vote_item_id")
 ):
-    tm = ThesaurusManager()
     group_id = event.group_id
 
     result = await tm.del_item(item_id, group_id, False)
@@ -359,12 +350,11 @@ async def _deal_del_vote_item(
 _LIST_SHOW_DATA: dict = dict()
 
 
-list_item = ThesaurusManager().cmd_as_group("list", "查看本群词条")
+list_item = thes.cmd_as_group("list", "查看本群词条")
 
 
 @list_item.handle()
 async def _get_normal_item_list(event: GroupMessageEvent):
-    tm = ThesaurusManager()
     group_id = event.group_id
 
     query_result = await tm.get_item_list({"group_id": group_id}, True)
@@ -416,7 +406,6 @@ async def _get_normal_item_more(
     else:
         _LIST_SHOW_DATA[group_id] = {user_id: 10}
 
-    tm = ThesaurusManager()
     items = list()
     show_item = _LIST_SHOW_DATA[group_id][user_id]
     query_result = await tm.get_item_list({"group_id": group_id}, True)
@@ -439,13 +428,11 @@ async def _get_normal_item_more(
     await list_item.reject(output)
 
 
-list_global_item = ThesaurusManager().cmd_as_group("list.g", "查看全局词条")
+list_global_item = thes.cmd_as_group("list.g", "查看全局词条")
 
 
 @list_global_item.handle()
 async def _get_global_item_list(event: MessageEvent):
-    tm = ThesaurusManager()
-
     query_result = await tm.get_item_list({"group_id": 0}, True)
     if not query_result:
         await list_global_item.finish("还没有给咱添加全局词条呢...")
@@ -494,7 +481,6 @@ async def _get_global_item_more(
     else:
         _LIST_SHOW_DATA[user_id] = 10
 
-    tm = ThesaurusManager()
     items = list()
     show_item = _LIST_SHOW_DATA[user_id]
     query_result = await tm.get_item_list({"group_id": 0}, True)
@@ -517,12 +503,11 @@ async def _get_global_item_more(
     await list_global_item.reject(output)
 
 
-list_vote_item = ThesaurusManager().cmd_as_group("list.v", "查看本群待投票词条")
+list_vote_item = thes.cmd_as_group("list.v", "查看本群待投票词条")
 
 
 @list_vote_item.handle()
 async def _get_vote_item_list(event: GroupMessageEvent):
-    tm = ThesaurusManager()
     group_id = event.group_id
 
     query_result = await tm.get_item_list({"group_id": group_id})
@@ -574,7 +559,6 @@ async def _get_vote_item_more(
     else:
         _LIST_SHOW_DATA[group_id] = {user_id: 10}
 
-    tm = ThesaurusManager()
     items = list()
     show_item = _LIST_SHOW_DATA[group_id][user_id]
     query_result = await tm.get_item_list({"group_id": group_id})
@@ -597,9 +581,7 @@ async def _get_vote_item_more(
     await list_vote_item.reject(output)
 
 
-audit_item = ThesaurusManager().cmd_as_group(
-    "audit", "审核本群处于投票中的词条", permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN
-)
+audit_item = thes.cmd_as_group("audit", "审核本群处于投票中的词条", permission=ADMIN)
 
 
 @audit_item.handle()
@@ -617,7 +599,6 @@ async def _get_group_item_info(matcher: Matcher, args: Message = CommandArg()):
 async def _get_audit_item_id(
     event: GroupMessageEvent, item_id: str = ArgPlainText("ts_group_vote_id")
 ):
-    tm = ThesaurusManager()
     group_id = event.group_id
 
     query_result = await tm.get_item_list({"_id": item_id, "group_id": group_id})
@@ -625,13 +606,14 @@ async def _get_audit_item_id(
         await audit_item.finish("未找到此id相关信息...请检查是否输入正确（")
 
     item_info = query_result[0]
-    result = f"""你即将要审核的词条信息:
-    词条ID: {item_info._id}
-    有人问: {item_info.matcher}
-    我答: {"、".join(map(str, item_info.result))}
-    提交人: {item_info.operator}@{item_info.operator_id}
-    当前赞成: {"、".join(map(str, item_info.vote_list))}
-    """.strip()
+    result = (
+        MessageBuilder("你即将要审核的词条信息:")
+        .text(f"词条ID: {item_info._id}")
+        .text(f"有人问: {item_info.matcher}")
+        .text(f"我答: {'、'.join(map(str, item_info.result))}")
+        .text(f"提交人: {item_info.operator}@{item_info.operator_id}")
+        .text(f"当前赞成: {'、'.join(map(str, item_info.vote_list))}")
+    )
     await audit_item.send(Message(result))
 
 
@@ -646,7 +628,6 @@ async def _get_audit_attitude(
     if attitude not in agree_list and attitude not in disagree_list:
         await audit_item.reject("你的观点似乎不相关呢...请重新输入: (y/n)")
 
-    tm = ThesaurusManager()
     group_id = event.group_id
 
     query_result = await tm.get_item_list({"_id": item_id, "group_id": group_id})
@@ -675,19 +656,21 @@ async def _get_audit_attitude(
     await audit_item.finish("完成～！")
 
 
-_ITEM_SHOW_FORMAT = """该词条信息如下:
-词条ID: {_id}
-有人问: {matcher}
-我答: {ans}
-判断方式: {m_type}
-提交人: {operator}@{operator_id}
-更新时间: {update_time}
-是否为投票选出: {is_vote}
-投票赞成: {vote_list}
-"""
+_ITEM_SHOW_FORMAT = (
+    MessageBuilder("该词条信息如下:")
+    .text("词条ID: {_id}")
+    .text("有人问: {matcher}")
+    .text("我答: {ans}")
+    .text("判断方式: {m_type}")
+    .text("提交人: {operator}@{operator_id}")
+    .text("更新时间: {update_time}")
+    .text("是否为投票选出: {is_vote}")
+    .text("投票赞成: {vote_list}")
+    .done()
+)
 
 
-get_normal_item_info = ThesaurusManager().cmd_as_group("i", "查看本群的词条详情")
+get_normal_item_info = thes.cmd_as_group("i", "查看本群的词条详情")
 
 
 @get_normal_item_info.handle()
@@ -701,7 +684,6 @@ async def _info_normal_get_item_id(matcher: Matcher, args: Message = CommandArg(
 async def _info_normal_get_item_info(
     event: GroupMessageEvent, _id: str = ArgPlainText("info_normal_item_id")
 ):
-    tm = ThesaurusManager()
     group_id = event.group_id
 
     query_result = await tm.get_item_list({"_id": _id, "group_id": group_id}, True)
@@ -734,7 +716,7 @@ async def _info_normal_get_item_info(
     await get_normal_item_info.finish(Message(result))
 
 
-get_global_item_info = ThesaurusManager().cmd_as_group("i.g", "查看全局的词条详情")
+get_global_item_info = thes.cmd_as_group("i.g", "查看全局的词条详情")
 
 
 @get_global_item_info.handle()
@@ -746,8 +728,6 @@ async def _info_global_get_item_id(matcher: Matcher, args: Message = CommandArg(
 
 @get_global_item_info.got("info_global_item_id", "需要查看的词条ID:")
 async def _info_global_get_item_info(_id: str = ArgPlainText("info_global_item_id")):
-    tm = ThesaurusManager()
-
     query_result = await tm.get_item_list({"_id": _id, "group_id": 0}, True)
     if not query_result:
         await get_global_item_info.finish("未找到此ID相关信息...")
@@ -778,7 +758,7 @@ async def _info_global_get_item_info(_id: str = ArgPlainText("info_global_item_i
     await get_global_item_info.finish(Message(result))
 
 
-get_vote_item_info = ThesaurusManager().cmd_as_group("i.v", "查看本群的待审核/投票的词条详情")
+get_vote_item_info = thes.cmd_as_group("i.v", "查看本群的待审核/投票的词条详情")
 
 
 @get_vote_item_info.handle()
@@ -792,7 +772,6 @@ async def _info_vote_get_item_id(matcher: Matcher, args: Message = CommandArg())
 async def _info_vote_get_item_info(
     event: GroupMessageEvent, _id: str = ArgPlainText("info_vote_item_id")
 ):
-    tm = ThesaurusManager()
     group_id = event.group_id
 
     query_result = await tm.get_item_list({"_id": _id, "group_id": group_id})

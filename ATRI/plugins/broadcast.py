@@ -4,14 +4,13 @@ import asyncio
 from pathlib import Path
 
 from nonebot.matcher import Matcher
-from nonebot.permission import SUPERUSER
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent
-from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from ATRI.rule import to_bot
 from ATRI.service import Service
+from ATRI.permission import MASTER, GROUP_ADMIN
 from ATRI.message import MessageBuilder
 
 
@@ -28,10 +27,7 @@ _BROADCAST_REPO = (
 )
 
 
-class BroadCast(Service):
-    def __init__(self):
-        Service.__init__(self, "广播", "向bot所在的所有群发送信息", True, to_bot())
-
+class BroadCast:
     @staticmethod
     def load_rej_list() -> list:
         data = list()
@@ -53,8 +49,11 @@ class BroadCast(Service):
             w.write(json.dumps(data))
 
 
-caster = BroadCast().on_command(
-    "广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"bc"}, permission=SUPERUSER
+bc = Service("广播").document("向bot所在的所有群发送信息").only_admin(True).rule(to_bot())
+
+
+caster = bc.on_command(
+    "广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"bc"}, permission=MASTER
 )
 
 
@@ -95,9 +94,7 @@ async def _(bot: Bot, event: MessageEvent, s_msg: str = ArgPlainText("bc_msg")):
     await caster.finish(Message(repo_msg))
 
 
-rej_broadcast = BroadCast().on_command(
-    "拒绝广播", "拒绝来自开发者的广播推送", permission=GROUP_OWNER | GROUP_ADMIN
-)
+rej_broadcast = bc.on_command("拒绝广播", "拒绝来自开发者的广播推送", permission=GROUP_ADMIN)
 
 
 @rej_broadcast.handle()
@@ -118,9 +115,7 @@ async def _(event: PrivateMessageEvent):
     await rej_broadcast.finish("该功能仅在群聊中触发...")
 
 
-acc_broadcast = BroadCast().on_command(
-    "接受广播", "接受来自开发者的广播推送", permission=GROUP_OWNER | GROUP_ADMIN
-)
+acc_broadcast = bc.on_command("接受广播", "接受来自开发者的广播推送", permission=GROUP_ADMIN)
 
 
 @acc_broadcast.handle()

@@ -5,10 +5,15 @@ from nonebot.params import ArgPlainText, CommandArg
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
+from ATRI.service import Service
+
 from .data_source import Funny
 
 
-get_laugh = Funny().on_command("来句笑话", "隐晦的笑话...")
+plugin = Service("乐").document("乐1乐, 莫当真")
+
+
+get_laugh = plugin.on_command("来句笑话", "隐晦的笑话...")
 
 
 @get_laugh.handle()
@@ -17,7 +22,7 @@ async def _get_laugh(bot: Bot, event: MessageEvent):
     await get_laugh.finish(await Funny().idk_laugh(user_name))
 
 
-me_re_you = Funny().on_regex(r"我", "我也不懂咋解释", block=False)
+me_re_you = plugin.on_regex(r"我", "我也不懂咋解释", block=False)
 
 
 @me_re_you.handle()
@@ -32,7 +37,7 @@ async def _me_re_you(bot: Bot, event: MessageEvent):
 _fake_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
-fake_msg = Funny().on_command(
+fake_msg = plugin.on_command(
     "/fakemsg", "伪造假转发内容，格式：qq-name-content\n可构造多条，使用空格隔开，仅限群聊"
 )
 
@@ -60,7 +65,7 @@ async def _deal_fake(
         await fake_msg.finish("构造失败惹...可能是被制裁了（")
 
 
-eat_what = Funny().on_regex(r"大?[今明后]天(.*?)吃[什啥]么?", "我来决定你吃什么！")
+eat_what = plugin.on_regex(r"大?[今明后]天(.*?)吃[什啥]么?", "我来决定你吃什么！")
 
 
 @eat_what.handle([Cooldown(15, prompt="慢慢吃，不要贪心哦！")])

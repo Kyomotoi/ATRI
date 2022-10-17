@@ -1,24 +1,13 @@
 import pytz
 from datetime import datetime
 
-from ATRI.service import Service
-from ATRI.rule import is_in_service
 from ATRI.exceptions import ThesaurusError
 
 from .db import DBForTS, DBForTAL
 from .db import ThesaurusStoragor
 
 
-class ThesaurusManager(Service):
-    def __init__(self):
-        Service.__init__(
-            self,
-            "词库管理",
-            "支持模糊匹配、全匹配、正则的自定义回复～\n支持分群、全局管理，支持群内投票添加",
-            rule=is_in_service("词库管理"),
-            main_cmd="/ts",
-        )
-
+class ThesaurusManager:
     async def __add_item(self, _id: str, group_id: int, is_main: bool = False):
         if is_main:
             try:
@@ -167,10 +156,7 @@ class ThesaurusManager(Service):
         )
 
 
-class ThesaurusListener(Service):
-    def __init__(self):
-        Service.__init__(self, "词库监听", "词库监听器", rule=is_in_service("词库监听"))
-
+class ThesaurusListener:
     async def get_item_by_id(self, _id: str) -> ThesaurusStoragor:
         try:
             async with DBForTS() as db:

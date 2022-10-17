@@ -4,22 +4,17 @@ from pathlib import Path
 from random import choice, randint
 from nonebot.adapters.onebot.v11 import unescape
 
-from ATRI.service import Service
 from ATRI.log import log
 from ATRI.exceptions import RequestError
 from ATRI.utils import request
 from ATRI.utils import request, Translate
-from ATRI.rule import is_in_service
 
 
 FUNNY_DIR = Path(".") / "data" / "plugins" / "funny"
 FUNNY_DIR.mkdir(parents=True, exist_ok=True)
 
 
-class Funny(Service):
-    def __init__(self):
-        Service.__init__(self, "乐", "乐1乐，莫当真", rule=is_in_service("乐"))
-
+class Funny:
     @staticmethod
     async def idk_laugh(name: str) -> str:
         laugh_list = list()

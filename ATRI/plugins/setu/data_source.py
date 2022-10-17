@@ -2,8 +2,6 @@ import asyncio
 from nonebot.adapters.onebot.v11 import Bot, MessageSegment
 
 from ATRI import conf
-from ATRI.service import Service
-from ATRI.rule import is_in_service
 from ATRI.utils import request
 from .nsfw_checker import detect_image, init_model
 
@@ -14,10 +12,7 @@ DEFAULT_SETU = (
 )
 
 
-class Setu(Service):
-    def __init__(self):
-        Service.__init__(self, "涩图", "hso!", rule=is_in_service("涩图"))
-
+class Setu:
     @staticmethod
     def _use_proxy(url: str) -> str:
         if conf.Setu.reverse_proxy:

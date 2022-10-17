@@ -14,6 +14,8 @@ from nonebot.permission import Permission
 from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
 
 from ATRI.log import log
+from ATRI.service import Service
+from ATRI.permission import ADMIN
 from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import RssRsshubSubcription
@@ -21,7 +23,16 @@ from ATRI.database import RssRsshubSubcription
 from .data_source import RssHubSubscriptor
 
 
-add_sub = RssHubSubscriptor().cmd_as_group("add", "为本群添加 RSSHub 订阅")
+plugin = (
+    Service("rss.rsshub")
+    .document("Rss的Rsshub支持")
+    .permission(ADMIN)
+    .main_cmd("/rss.rsshub")
+)
+sub = RssHubSubscriptor()
+
+
+add_sub = plugin.cmd_as_group("add", "为本群添加 RSSHub 订阅")
 
 
 @add_sub.handle()
@@ -34,19 +45,17 @@ async def _(matcher: Matcher, args: Message = CommandArg()):
 @add_sub.got("rrh_add_url", "RSSHub 链接呢？速速")
 async def _(event: GroupMessageEvent, _url: str = ArgPlainText("rrh_add_url")):
     group_id = event.group_id
-    sub = RssHubSubscriptor()
 
     result = await sub.add_sub(_url, group_id)
     await add_sub.finish(result)
 
 
-del_sub = RssHubSubscriptor().cmd_as_group("del", "删除本群 RSSHub 订阅")
+del_sub = plugin.cmd_as_group("del", "删除本群 RSSHub 订阅")
 
 
 @del_sub.handle()
 async def _(event: GroupMessageEvent):
     group_id = event.group_id
-    sub = RssHubSubscriptor()
 
     query_result = await sub.get_sub_list({"group_id": group_id})
     if not query_result:
@@ -68,21 +77,17 @@ async def _(event: GroupMessageEvent, _id: str = ArgPlainText("rrh_del_sub_id"))
         await del_sub.finish("已取消操作~")
 
     group_id = event.group_id
-    sub = RssHubSubscriptor()
 
     result = await sub.del_sub(_id, group_id)
     await del_sub.finish(result)
 
 
-get_sub_list = RssHubSubscriptor().cmd_as_group(
-    "list", "获取本群 RSSHub 订阅列表", permission=Permission()
-)
+get_sub_list = plugin.cmd_as_group("list", "获取本群 RSSHub 订阅列表", permission=Permission())
 
 
 @get_sub_list.handle()
 async def _(event: GroupMessageEvent):
     group_id = event.group_id
-    sub = RssHubSubscriptor()
 
     query_result = await sub.get_sub_list({"group_id": group_id})
     if not query_result:
@@ -103,7 +108,7 @@ tq = asyncio.Queue()
 
 class RssHubDynamicChecker(BaseTrigger):
     def get_next_fire_time(self, previous_fire_time, now):
-        conf = RssHubSubscriptor().load_service("rss.rsshub")
+        conf = plugin.load_service("rss.rsshub")
         if conf.get("enabled"):
             return now
 
@@ -111,11 +116,10 @@ class RssHubDynamicChecker(BaseTrigger):
 @scheduler.scheduled_job(
     AndTrigger([IntervalTrigger(seconds=120), RssHubDynamicChecker()]),
     name="RssHub 订阅检查",
-    max_instances=3,
-    misfire_grace_time=60,
+    max_instances=3,  # type: ignore
+    misfire_grace_time=60,  # type: ignore
 )
 async def _():
-    sub = RssHubSubscriptor()
     try:
         all_dy = await sub.get_all_subs()
     except Exception:

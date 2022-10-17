@@ -1,11 +1,7 @@
 from datetime import datetime
 
-from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
-
 from ATRI import driver
-from ATRI.service import Service, ServiceTools
-from ATRI.rule import is_in_service
+from ATRI.service import ServiceTools
 from ATRI.log import log
 from ATRI.utils import request
 from ATRI.utils.apscheduler import scheduler
@@ -21,17 +17,7 @@ _DYNAMIC_OUTPUT_FORMAT = (
 )
 
 
-class TwitterDynamicSubscriptor(Service):
-    def __init__(self):
-        Service.__init__(
-            self,
-            "推特动态订阅",
-            "推特动态订阅助手～",
-            rule=is_in_service("推特动态订阅"),
-            permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
-            main_cmd="/td",
-        )
-
+class TwitterDynamicSubscriptor:
     async def __add_sub(self, tid: int, group_id: int):
         try:
             async with DB() as db:

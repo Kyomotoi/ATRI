@@ -1,9 +1,15 @@
 from nonebot.adapters.onebot.v11 import MessageEvent
 
+from ATRI.service import Service
+from ATRI.rule import to_bot
+
 from .data_source import Helper
 
 
-menu = Helper().on_command("菜单", "获取食用bot的方法", aliases={"menu"})
+plugin = Service("帮助").document("bot的食用指南~").rule(to_bot())
+
+
+menu = plugin.on_command("菜单", "获取食用bot的方法", aliases={"menu"})
 
 
 @menu.handle()
@@ -11,7 +17,7 @@ async def _():
     await menu.finish(Helper().menu())
 
 
-about = Helper().on_command("关于", "获取关于bot的信息", aliases={"about"})
+about = plugin.on_command("关于", "获取关于bot的信息", aliases={"about"})
 
 
 @about.handle()
@@ -19,7 +25,7 @@ async def _():
     await about.finish(Helper().about())
 
 
-service_list = Helper().on_command("服务列表", "获取服务列表", aliases={"功能列表"})
+service_list = plugin.on_command("服务列表", "获取服务列表", aliases={"功能列表"})
 
 
 @service_list.handle()
@@ -27,7 +33,7 @@ async def _():
     await service_list.finish(Helper().service_list())
 
 
-service_info = Helper().on_command("帮助", "获取对应服务详细信息", aliases={"help"})
+service_info = plugin.on_command("帮助", "获取对应服务详细信息", aliases={"help"})
 
 
 @service_info.handle()

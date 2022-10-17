@@ -14,6 +14,9 @@ from nonebot.permission import Permission
 from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
 
 from ATRI.log import log
+from ATRI.service import Service
+from ATRI.permission import ADMIN
+from ATRI.message import MessageBuilder
 from ATRI.plugins.rss.rss_rsshub.data_source import RssHubSubscriptor
 from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
@@ -22,7 +25,16 @@ from ATRI.database import RssMikananiSubcription
 from .data_source import RssMikananSubscriptor
 
 
-add_sub = RssMikananSubscriptor().cmd_as_group("add", "为本群添加 Mikan 订阅")
+plugin = (
+    Service("rss.mikan")
+    .document("Rss的mikan支持")
+    .permission(ADMIN)
+    .main_cmd("/rss.mikan")
+)
+sub = RssMikananSubscriptor()
+
+
+add_sub = plugin.cmd_as_group("add", "为本群添加 Mikan 订阅")
 
 
 @add_sub.handle()
@@ -35,19 +47,17 @@ async def _(matcher: Matcher, args: Message = CommandArg()):
 @add_sub.got("rm_add_url", prompt="Mikan 链接呢? 速速")
 async def _(event: GroupMessageEvent, _url: str = ArgPlainText("rm_add_url")):
     group_id = event.group_id
-    sub = RssMikananSubscriptor()
 
     result = await sub.add_sub(_url, group_id)
     await add_sub.finish(result)
 
 
-del_sub = RssMikananSubscriptor().cmd_as_group("del", "删除本群 Mikan 订阅")
+del_sub = plugin.cmd_as_group("del", "删除本群 Mikan 订阅")
 
 
 @del_sub.handle()
 async def _(event: GroupMessageEvent):
     group_id = event.group_id
-    sub = RssMikananSubscriptor()
 
     query_result = await sub.get_sub_list({"group_id": group_id})
     if not query_result:
@@ -69,21 +79,17 @@ async def _(event: GroupMessageEvent, _id: str = ArgPlainText("rm_del_sub_id")):
         await del_sub.finish("已取消操作~")
 
     group_id = event.group_id
-    sub = RssMikananSubscriptor()
 
     result = await sub.del_sub(_id, group_id)
     await del_sub.finish(result)
 
 
-get_sub_list = RssMikananSubscriptor().cmd_as_group(
-    "list", "获取本群 Mikan 订阅列表", permission=Permission()
-)
+get_sub_list = plugin.cmd_as_group("list", "获取本群 Mikan 订阅列表", permission=Permission())
 
 
 @get_sub_list.handle()
 async def _(event: GroupMessageEvent):
     group_id = event.group_id
-    sub = RssMikananSubscriptor()
 
     query_result = await sub.get_sub_list({"group_id": group_id})
     if not query_result:
@@ -104,7 +110,7 @@ tq = asyncio.Queue()
 
 class RssMikanDynamicChecker(BaseTrigger):
     def get_next_fire_time(self, previous_fire_time, now):
-        conf = RssHubSubscriptor().load_service("rss.mikan")
+        conf = plugin.load_service("rss.mikan")
         if conf.get("enabled"):
             return now
 
@@ -112,11 +118,10 @@ class RssMikanDynamicChecker(BaseTrigger):
 @scheduler.scheduled_job(
     AndTrigger([IntervalTrigger(seconds=60), RssMikanDynamicChecker()]),
     name="Mikan 订阅检查",
-    max_instances=3,
-    misfire_grace_time=60,
+    max_instances=3,  # type: ignore
+    misfire_grace_time=60,  # type: ignore
 )
 async def _():
-    sub = RssMikananSubscriptor()
     try:
         all_dy = await sub.get_all_subs()
     except Exception:
@@ -156,10 +161,7 @@ async def _():
         if ts < m_t:
             title = data.title
 
-            repo = f"""本群订阅的 Mikan 更新啦!
-            {title}
-            {link}
-            """
+            repo = MessageBuilder("本群订阅的 Mikan 更新啦!").text(f"{title}").text(f"{link}")
 
             bot = get_bot()
             await bot.send_group_msg(group_id=data.group_id, message=repo)

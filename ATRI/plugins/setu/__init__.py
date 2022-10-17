@@ -2,17 +2,22 @@ import re
 import asyncio
 from random import choice
 
-from nonebot.permission import SUPERUSER
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message, MessageSegment
 from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
 from ATRI import conf
+from ATRI.service import Service
+from ATRI.permission import MASTER
+
 from .data_source import Setu
 
 
-random_setu = Setu().on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
+setu = Service("涩图").document("hso!")
+
+
+random_setu = setu.on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
 
 
 @random_setu.handle([Cooldown(120)])
@@ -24,16 +29,16 @@ async def _():
 async def _random_setu(bot: Bot, event: MessageEvent):
     loop = asyncio.get_running_loop()
 
-    repo, setu = await Setu().random_setu()
+    repo, se = await Setu.random_setu()
     await bot.send(event, repo)
 
     try:
-        msg_1 = await bot.send(event, Message(setu))
+        msg_1 = await bot.send(event, Message(se))
     except Exception:
         await random_setu.finish("hso（发不出")
 
     event_id = msg_1["message_id"]
-    loop.create_task(Setu().async_recall(bot, event_id))
+    loop.create_task(Setu.async_recall(bot, event_id))
     loop.close()
 
 
@@ -46,7 +51,7 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
         await random_setu.finish(is_repo)
 
 
-tag_setu = Setu().on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
+tag_setu = setu.on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
 
 
 @tag_setu.handle([Cooldown(120, prompt="慢...慢一..点❤")])
@@ -56,19 +61,19 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     msg = str(event.get_message()).strip()
     pattern = r"来[张点丶份](.*?)的[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
-    repo, setu = await Setu().tag_setu(tag)
+    repo, se = await Setu.tag_setu(tag)
     if not setu:
         await tag_setu.finish(repo)
 
     await bot.send(event, repo)
 
     try:
-        msg_1 = await bot.send(event, Message(setu))
+        msg_1 = await bot.send(event, Message(se))
     except Exception:
         await random_setu.finish("hso（发不出")
 
     event_id = msg_1["message_id"]
-    loop.create_task(Setu().async_recall(bot, event_id))
+    loop.create_task(Setu.async_recall(bot, event_id))
     loop.close()
 
 
@@ -84,7 +89,7 @@ async def _(think: str = ArgPlainText("t_rush_after_think")):
 _catcher_max_file_size = 128
 
 
-setu_catcher = Setu().on_message("涩图嗅探", "涩图嗅探器", block=False)
+setu_catcher = setu.on_message("涩图嗅探", "涩图嗅探器", block=False)
 
 
 @setu_catcher.handle()
@@ -96,7 +101,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
         hso = list()
         for i in args:
             try:
-                data = await Setu().detecter(i, _catcher_max_file_size)
+                data = await Setu.detecter(i, _catcher_max_file_size)
             except Exception:
                 return
             if data > 0.7:
@@ -109,7 +114,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
         elif len(hso) == 1:
             u_repo = f"hso! 涩值：{'{:.2%}'.format(hso[0])}\n不行我要发给别人看"
             s_repo = (
-                f"涩图来咧！\n{MessageSegment.image(args[0])}\n涩值：{'{:.2%}'.format(hso[0])}"
+                f"涩图来咧！\n{MessageSegment.image(args[0])}\n涩值: {'{:.2%}'.format(hso[0])}"
             )
 
         else:
@@ -126,7 +131,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
             await bot.send_private_msg(user_id=superuser, message=s_repo)
 
 
-nsfw_checker = Setu().on_command("/nsfw", "涩值检测")
+nsfw_checker = setu.on_command("/nsfw", "涩值检测")
 
 
 @nsfw_checker.got("nsfw_img", "图呢？")
@@ -135,13 +140,13 @@ async def _deal_check(bot: Bot, event: MessageEvent):
     if not args:
         await nsfw_checker.reject("请发送图片而不是其他东西！！")
 
-    hso = await Setu().detecter(args[0], _catcher_max_file_size)
+    hso = await Setu.detecter(args[0], _catcher_max_file_size)
     if not hso:
         await nsfw_checker.finish("图太小了！不测！")
 
     resu = f"涩值：{'{:.2%}'.format(hso)}\n"
     if hso >= 0.75:
-        resu += "hso！不行我要发给别人看"
+        resu += "hso! 不行我要发给别人看"
         repo = f"涩图来咧！\n{MessageSegment.image(args[0])}\n涩值：{'{:.2%}'.format(hso)}"
         for superuser in conf.BotConfig.superusers:
             await bot.send_private_msg(user_id=superuser, message=repo)
@@ -154,7 +159,7 @@ async def _deal_check(bot: Bot, event: MessageEvent):
     await nsfw_checker.finish(resu)
 
 
-catcher_setting = Setu().on_command("嗅探设置", "涩图检测图片文件大小设置", permission=SUPERUSER)
+catcher_setting = setu.on_command("嗅探设置", "涩图检测图片文件大小设置", permission=MASTER)
 
 
 @catcher_setting.handle()
@@ -164,7 +169,7 @@ async def _catcher_setting(matcher: Matcher, args: Message = CommandArg()):
         matcher.set_arg("catcher_set", args)
 
 
-@catcher_setting.got("catcher_set", "数值呢？（1对应1kb，默认128）")
+@catcher_setting.got("catcher_set", "数值呢? (1对应1kb, 默认128)")
 async def _deal_setting(msg: str = ArgPlainText("catcher_set")):
     global _catcher_max_file_size
     try:

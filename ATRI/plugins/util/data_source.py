@@ -4,48 +4,40 @@ import jieba.posseg as pseg
 from typing import Union, Optional
 from random import random, choice, randint
 
-from ATRI.service import Service
-from ATRI.rule import is_in_service
+
+def roll_dice(par: str) -> str:
+    result = 0
+    proc = ""
+    proc_list = []
+    p = par.split("+")
+
+    for i in p:
+        args = re.findall(r"(\d{0,10})(?:(d)(\d{1,10}))", i)
+        args = list(args[0])
+
+        args[0] = args[0] or 1
+        if int(args[0]) >= 5000 or int(args[2]) >= 5000:
+            return "阿...好大......"
+
+        for a in range(1, int(args[0]) + 1):
+            rd = randint(1, int(args[2]))
+            result = result + rd
+
+            if len(proc_list) <= 10:
+                proc_list.append(rd)
+
+    if len(proc_list) <= 10:
+        proc += "+".join(map(str, proc_list))
+    elif len(proc_list) > 10:
+        proc += "太长了不展示了就酱w"
+    else:
+        proc += str(result)
+
+    result = f"{par}=({proc})={result}"
+    return result
 
 
-class Utils(Service):
-    def __init__(self):
-        Service.__init__(self, "小工具", "非常实用（？）的工具们！", rule=is_in_service("小工具"))
-
-    @staticmethod
-    def roll_dice(par: str) -> str:
-        result = 0
-        proc = ""
-        proc_list = []
-        p = par.split("+")
-
-        for i in p:
-            args = re.findall(r"(\d{0,10})(?:(d)(\d{1,10}))", i)
-            args = list(args[0])
-
-            args[0] = args[0] or 1
-            if int(args[0]) >= 5000 or int(args[2]) >= 5000:
-                return "阿...好大......"
-
-            for a in range(1, int(args[0]) + 1):
-                rd = randint(1, int(args[2]))
-                result = result + rd
-
-                if len(proc_list) <= 10:
-                    proc_list.append(rd)
-
-        if len(proc_list) <= 10:
-            proc += "+".join(map(str, proc_list))
-        elif len(proc_list) > 10:
-            proc += "太长了不展示了就酱w"
-        else:
-            proc += str(result)
-
-        result = f"{par}=({proc})={result}"
-        return result
-
-
-class Encrypt(Utils):
+class Encrypt:
     """
     某nb改的（逃
     总之就是非常nb
@@ -183,8 +175,10 @@ class Encrypt(Utils):
             raise ValueError("Decoding failed")
 
 
-class Yinglish(Utils):
-    @staticmethod
+class Yinglish:
+    def __init__(self, context: str):
+        self.context = context
+
     def _to_ying(x, y, ying) -> str:
         if random() > ying:
             return x
@@ -208,6 +202,5 @@ class Yinglish(Utils):
                 x = "〇" * len(x)
             return str(choice([f"...{x}", f"....{x}", f".....{x}", f"......{x}"]))
 
-    @classmethod
-    def deal(cls, text, ying: Optional[float] = 0.5) -> str:
-        return "".join([cls._to_ying(x, y, ying) for x, y in pseg.cut(text)])
+    def deal(self, ying: Optional[float] = 0.5) -> str:
+        return "".join([self._to_ying(x, y, ying) for x, y in pseg.cut(self.context)])

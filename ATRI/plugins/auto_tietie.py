@@ -1,12 +1,11 @@
 from random import choice
 
-from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import MessageEvent
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
 from ATRI.service import Service
-from ATRI.rule import is_in_service
+from ATRI.permission import MASTER
 
 
 _is_tietie = True
@@ -29,7 +28,12 @@ _tietie_wd = choice(
     ]
 )
 
-tt = Service("贴贴", "全自动贴贴机", True, is_in_service("贴贴"), permission=SUPERUSER)
+tt = (
+    Service("贴贴")
+    .document("全自动贴贴机")
+    .only_admin(True)
+    .permission(MASTER)
+)
 
 
 auto_tietie = tt.on_message(
@@ -44,7 +48,7 @@ async def _(event: MessageEvent):
 
     user_id = event.get_user_id()
     at = MessageSegment.at(user_id)
-    result = at + _tietie_wd
+    result = at + _tietie_wd  # type: ignore
     await auto_tietie.finish(result)
 
 

@@ -5,14 +5,18 @@ from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
 
 from ATRI import conf
 from ATRI.log import log
-from ATRI.service import ServiceTools
+from ATRI.service import Service, ServiceTools
 from .data_source import SauceNao
+
+
+plugin = Service("以图搜图").document("以图搜图，仅限二刺螈")
+sau = SauceNao()
 
 
 _search_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
-saucenao = SauceNao().on_command("以图搜图", "透过一张图搜索可能的来源")
+saucenao = plugin.on_command("以图搜图", "透过一张图搜索可能的来源")
 
 
 @saucenao.got("saucenao_img", "图呢？", [Cooldown(5, prompt=_search_flmt_notice)])

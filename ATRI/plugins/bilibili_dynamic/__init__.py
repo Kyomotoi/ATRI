@@ -11,10 +11,12 @@ from apscheduler.triggers.interval import IntervalTrigger
 from nonebot import get_bot
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
-from nonebot.permission import Permission, SUPERUSER
+from nonebot.permission import Permission
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent
 
 from ATRI.log import log
+from ATRI.service import Service
+from ATRI.permission import MASTER, ADMIN
 from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import BilibiliSubscription
@@ -24,8 +26,11 @@ from .data_source import BilibiliDynamicSubscriptor
 
 _CONTENT_LIMIT: int = 0
 
+plugin = Service("b站动态订阅").document("b站动态订阅助手~").permission(ADMIN).main_cmd("/bd")
+sub = BilibiliDynamicSubscriptor()
 
-add_sub = BilibiliDynamicSubscriptor().cmd_as_group("add", "添加b站up主订阅")
+
+add_sub = plugin.cmd_as_group("add", "添加b站up主订阅")
 
 
 @add_sub.handle()
@@ -46,17 +51,16 @@ async def _bd_deal_add_sub(
     __id = int(_id)
     group_id = event.group_id
 
-    result = await BilibiliDynamicSubscriptor().add_sub(__id, group_id)
+    result = await sub.add_sub(__id, group_id)
     await add_sub.finish(result)
 
 
-del_sub = BilibiliDynamicSubscriptor().cmd_as_group("del", "删除b站up主订阅")
+del_sub = plugin.cmd_as_group("del", "删除b站up主订阅")
 
 
 @del_sub.handle()
 async def _bd_del_sub(event: GroupMessageEvent):
     group_id = event.group_id
-    sub = BilibiliDynamicSubscriptor()
 
     query_result = await sub.get_sub_list(group_id=group_id)
     if not query_result:
@@ -84,19 +88,16 @@ async def _bd_deal_del_sub(
     __id = int(_id)
     group_id = event.group_id
 
-    result = await BilibiliDynamicSubscriptor().del_sub(__id, group_id)
+    result = await sub.del_sub(__id, group_id)
     await del_sub.finish(result)
 
 
-get_sub_list = BilibiliDynamicSubscriptor().cmd_as_group(
-    "list", "获取b站up主订阅列表", permission=Permission()
-)
+get_sub_list = plugin.cmd_as_group("list", "获取b站up主订阅列表", permission=Permission())
 
 
 @get_sub_list.handle()
 async def _bd_get_sub_list(event: GroupMessageEvent):
     group_id = event.group_id
-    sub = BilibiliDynamicSubscriptor()
 
     query_result = await sub.get_sub_list(group_id=group_id)
     if not query_result:
@@ -117,9 +118,7 @@ async def _bd_get_sub_list(event: GroupMessageEvent):
     await get_sub_list.finish(output)
 
 
-limit_content = BilibiliDynamicSubscriptor().cmd_as_group(
-    "limit", "设置订阅内容字数限制", permission=SUPERUSER
-)
+limit_content = plugin.cmd_as_group("limit", "设置订阅内容字数限制", permission=MASTER)
 
 
 @limit_content.handle()
@@ -147,8 +146,7 @@ tq = asyncio.Queue()
 
 class BilibiliDynamicChecker(BaseTrigger):
     def get_next_fire_time(self, previous_fire_time, now):
-        sub = BilibiliDynamicSubscriptor()
-        conf = sub.load_service("b站动态订阅")
+        conf = plugin.load_service("b站动态订阅")
         if conf.get("enabled"):
             return now
 
@@ -159,8 +157,7 @@ class BilibiliDynamicChecker(BaseTrigger):
     max_instances=3,  # type: ignore
     misfire_grace_time=60,  # type: ignore
 )
-async def _check_bd():
-    sub = BilibiliDynamicSubscriptor()
+async def _():
     try:
         all_dy = await sub.get_all_subs()
     except Exception:

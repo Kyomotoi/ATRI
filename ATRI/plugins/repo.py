@@ -6,7 +6,6 @@ from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
 from ATRI import conf
-from ATRI.rule import is_in_service
 from ATRI.service import Service
 from ATRI.message import MessageBuilder
 
@@ -24,7 +23,7 @@ _REPO_FORMAT = (
 _REPO_FORMAT = MessageBuilder("来自用户{user}反馈:").text("{msg}").done()
 
 
-repo = Service("反馈", "向维护者发送消息", rule=is_in_service("反馈"))
+repo = Service("反馈").document("向维护者发送消息")
 
 
 reporter = repo.on_command("来杯红茶", "向维护者发送消息", aliases={"反馈", "报告"})

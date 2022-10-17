@@ -1,27 +1,12 @@
 import xmltodict
 
-from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
-
-from ATRI.service import Service
-from ATRI.rule import is_in_service
 from ATRI.exceptions import RssError
 from ATRI.utils import request, gen_random_str
 
 from .db import DB
 
 
-class RssHubSubscriptor(Service):
-    def __init__(self):
-        Service.__init__(
-            self,
-            "rss.rsshub",
-            "Rss的Rsshub支持",
-            rule=is_in_service("rss.rsshub"),
-            permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
-            main_cmd="/rss.rsshub",
-        )
-
+class RssHubSubscriptor:
     async def __add_sub(self, _id: str, group_id: int):
         try:
             async with DB() as db:

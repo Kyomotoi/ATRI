@@ -4,30 +4,27 @@ import psutil
 from datetime import datetime
 
 from ATRI.service import Service
-from ATRI.rule import is_in_service
+from ATRI.message import MessageBuilder
 from ATRI.exceptions import GetStatusError
 
 
-_status_msg = """
-> Status Overview
+_STATUS_MSG = (
+    MessageBuilder("> Status Overview").
+    text("[CPU: {b_cpu}% of {p_cpu}%]")
+    .text("[Memory: {b_mem} of {p_mem}%]")
+    .text("[Disk usage: {p_disk}%]")
+    .text("")
+    .text("[Net sent: {inteSENT}MB]")
+    .text("[Net recv: {inteRECV}MB]")
+    .text("")
+    .text("[Bot runtime: {bot_time}]")
+    .text("[Platform runtime: {boot_time}]")
+    .text("{msg}")
+    .done()
+)
 
-[CPU: {b_cpu}% of {p_cpu}%]
-[Memory: {b_mem} of {p_mem}%]
-[Disk usage: {p_disk}%]
 
-[Net sent: {inteSENT}MB]
-[Net recv: {inteRECV}MB]
-
-[Bot runtime: {bot_time}]
-[Platform runtime: {boot_time}]
-{msg}
-""".strip()
-
-
-class Status(Service):
-    def __init__(self):
-        Service.__init__(self, "状态", "检查自身状态", rule=is_in_service("状态"))
-
+class Status:
     @staticmethod
     def ping() -> str:
         return "I'm fine."
@@ -75,7 +72,7 @@ class Status(Service):
         else:
             is_ok = True
 
-        msg0 = _status_msg.format(
+        msg0 = _STATUS_MSG.format(
             p_cpu=cpu,
             p_mem=mem,
             p_disk=disk,

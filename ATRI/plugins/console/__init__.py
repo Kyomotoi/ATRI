@@ -6,6 +6,8 @@ from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
 
 from ATRI import conf
 from ATRI.log import log
+from ATRI.service import Service
+from ATRI.permission import MASTER
 from ATRI.message import MessageBuilder
 from ATRI.exceptions import WriteFileError
 from ATRI.utils.apscheduler import scheduler
@@ -17,13 +19,22 @@ from .models import AuthData
 __AUTH_FILE_PATH = CONSOLE_DIR / "data.json"
 
 
+plugin = (
+    Service("控制台")
+    .document("前端管理页面")
+    .only_admin(True)
+    .permission(MASTER)
+    .main_cmd("/con")
+)
+
+
 def __del_auth_key():
     with open(__AUTH_FILE_PATH, "w", encoding="utf-8") as w:
         w.write(json.dumps({}))
     log.warning("控制台验证密钥已过期")
 
 
-gen_console_key = Console().cmd_as_group("auth", "获取进入网页后台的凭证")
+gen_console_key = plugin.cmd_as_group("auth", "获取进入网页后台的凭证")
 
 
 @gen_console_key.got("is_pub_n", "咱的运行环境是否有公网(y/n)")
@@ -41,19 +52,22 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
         with open(__AUTH_FILE_PATH, "w", encoding="utf-8") as w:
             w.write(json.dumps(dict()))
     else:
-        now_time = datetime.now().timestamp()
-        data = json.loads(__AUTH_FILE_PATH.read_bytes())["data"]
-        if now_time < data["dead_time"] and data.get("dead_time"):
-            raw_last_time = data["dead_time"] - now_time
-            last_time = datetime.fromtimestamp(raw_last_time).minute
-            await gen_console_key.finish(
-                MessageBuilder("之前生成的密钥还在有效时间内奥")
-                .text(f"Token: {data['token']}")
-                .text(f"剩余有效时间: {last_time} min")
-            )
-        else:
-            with open(__AUTH_FILE_PATH, "w", encoding="utf-8") as w:
-                w.write(json.dumps(dict()))
+        raw_data = json.loads(__AUTH_FILE_PATH.read_bytes())
+
+        data = raw_data.get("data")
+        if data:
+            now_time = datetime.now().timestamp()
+            if now_time < data["dead_time"] and data.get("dead_time"):
+                raw_last_time = data["dead_time"] - now_time
+                last_time = datetime.fromtimestamp(raw_last_time).minute
+                await gen_console_key.finish(
+                    MessageBuilder("之前生成的密钥还在有效时间内奥")
+                    .text(f"Token: {data['token']}")
+                    .text(f"剩余有效时间: {last_time} min")
+                )
+            else:
+                with open(__AUTH_FILE_PATH, "w", encoding="utf-8") as w:
+                    w.write(json.dumps(dict()))
 
     if is_pub_n != "y":
         host = str(await Console().get_host_ip(False))
@@ -80,8 +94,8 @@ async def _(event: PrivateMessageEvent, is_pub_n: str = ArgPlainText("is_pub_n")
     scheduler.add_job(
         __del_auth_key,
         name="清除后台验证凭证",
-        next_run_time=dead_time,
-        misfire_grace_time=15,
+        next_run_time=dead_time,  # type: ignore
+        misfire_grace_time=15,  # type: ignore
     )
 
     await gen_console_key.finish(msg)
@@ -92,7 +106,7 @@ async def _(event: GroupMessageEvent):
     await gen_console_key.finish("请私戳咱获取（")
 
 
-del_console_key = Console().cmd_as_group("del", "销毁进入网页后台的凭证")
+del_console_key = plugin.cmd_as_group("del", "销毁进入网页后台的凭证")
 
 
 @del_console_key.got("is_sure_d", "...你确定吗(y/n)")

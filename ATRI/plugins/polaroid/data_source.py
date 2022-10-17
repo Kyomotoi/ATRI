@@ -1,6 +1,5 @@
 from ATRI import driver
-from ATRI.service import Service, ServiceTools
-from ATRI.rule import is_in_service
+from ATRI.service import ServiceTools
 from ATRI.utils import request
 from ATRI.log import log
 from ATRI.exceptions import RequestError
@@ -12,10 +11,7 @@ TENCENT_AVATER_URL = "https://q1.qlogo.cn/g?b=qq&nk={user_id}&s=640"
 SOURCE_URL = "https://jsd.imki.moe/gh/Kyomotoi/CDN@master/project/ATRI/"
 
 
-class Polaroid(Service):
-    def __init__(self):
-        Service.__init__(self, "拍立得", "根据头像生成拍立得风格照片！", rule=is_in_service("拍立得"))
-
+class Polaroid:
     @classmethod
     async def _request(cls, user_id: str) -> bytes:
         try:

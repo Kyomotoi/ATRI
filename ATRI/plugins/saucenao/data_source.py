@@ -1,7 +1,5 @@
 from random import choice
 
-from ATRI.service import Service
-from ATRI.rule import is_in_service
 from ATRI.exceptions import RequestError
 from ATRI.utils import request
 
@@ -9,7 +7,7 @@ from ATRI.utils import request
 URL = "https://saucenao.com/search.php"
 
 
-class SauceNao(Service):
+class SauceNao:
     def __init__(
         self,
         api_key: str = str(),
@@ -19,8 +17,6 @@ class SauceNao(Service):
         db=5,
         numres=5,
     ):
-        Service.__init__(self, "以图搜图", "以图搜图，仅限二刺螈", rule=is_in_service("以图搜图"))
-
         params = dict()
         params["api_key"] = api_key
         params["output_type"] = output_type

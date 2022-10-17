@@ -5,14 +5,19 @@ from nonebot.params import ArgPlainText, CommandArg
 from nonebot.adapters.onebot.v11 import MessageEvent, Message
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
+from ATRI.service import Service
+from ATRI.rule import to_bot
 from ATRI.utils.apscheduler import scheduler
+
 from .data_source import Kimo
 
+
+plugin = Service("kimo").document("好像有点涩?").rule(to_bot()).priority(5)
 
 _chat_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~", "我开始为你以后的伴侣担心了..."])
 
 
-kimo = Kimo().on_message("文爱", "闲聊（文爱", priority=10, block=False)
+kimo = plugin.on_message("文爱", "闲聊（文爱", priority=10, block=False)
 
 
 @kimo.handle([Cooldown(3, prompt=_chat_flmt_notice)])
@@ -27,7 +32,7 @@ async def _chat(event: MessageEvent):
         return
 
 
-my_name_is = Kimo().on_command("叫我", "更改kimo时的称呼", aliases={"我是"}, priority=1)
+my_name_is = plugin.on_command("叫我", "更改kimo时的称呼", aliases={"我是"}, priority=1)
 
 
 @my_name_is.handle([Cooldown(3, prompt=_chat_flmt_notice)])

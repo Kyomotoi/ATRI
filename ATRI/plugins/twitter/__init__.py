@@ -11,12 +11,15 @@ from apscheduler.triggers.interval import IntervalTrigger
 from nonebot import get_bot
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
-from nonebot.permission import Permission, SUPERUSER
+from nonebot.permission import Permission
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEvent, Bot
 
 from ATRI.log import log
+from ATRI.service import Service
+from ATRI.permission import ADMIN
 from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
+from ATRI.permission import MASTER
 from ATRI.database import TwitterSubscription
 
 from .data_source import TwitterDynamicSubscriptor
@@ -25,7 +28,11 @@ from .data_source import TwitterDynamicSubscriptor
 _CONTENT_LIMIT: int = 0
 
 
-add_sub = TwitterDynamicSubscriptor().cmd_as_group("add", "添加推主订阅")
+twitter = Service("推特动态订阅").document("推特动态订阅助手~").permission(ADMIN).main_cmd("/td")
+sub = TwitterDynamicSubscriptor()
+
+
+add_sub = twitter.cmd_as_group("add", "添加推主订阅")
 
 
 @add_sub.handle()
@@ -40,19 +47,17 @@ async def _td_deal_add_sub(
     event: GroupMessageEvent, _name: str = ArgPlainText("td_add_sub_name")
 ):
     group_id = event.group_id
-    sub = TwitterDynamicSubscriptor()
 
     result = await sub.add_sub(_name, group_id)
     await add_sub.finish(result)
 
 
-del_sub = TwitterDynamicSubscriptor().cmd_as_group("del", "删除推主订阅")
+del_sub = twitter.cmd_as_group("del", "删除推主订阅")
 
 
 @del_sub.handle()
 async def _td_del_sub(event: GroupMessageEvent):
     group_id = event.group_id
-    sub = TwitterDynamicSubscriptor()
 
     query_result = await sub.get_sub_list(group_id=group_id)
     if not query_result:
@@ -79,21 +84,17 @@ async def _td_deal_del_sub(
 
     group_id = event.group_id
     tid = int(_tid)
-    sub = TwitterDynamicSubscriptor()
 
     result = await sub.del_sub(int(tid), group_id)
     await del_sub.finish(result)
 
 
-get_sub_list = TwitterDynamicSubscriptor().cmd_as_group(
-    "list", "获取本群推主订阅列表", permission=Permission()
-)
+get_sub_list = twitter.cmd_as_group("list", "获取本群推主订阅列表", permission=Permission())
 
 
 @get_sub_list.handle()
 async def _td_get_sub_list(event: GroupMessageEvent):
     group_id = event.group_id
-    sub = TwitterDynamicSubscriptor()
 
     query_result = await sub.get_sub_list(group_id=group_id)
     if not query_result:
@@ -114,9 +115,7 @@ async def _td_get_sub_list(event: GroupMessageEvent):
     await get_sub_list.finish(output)
 
 
-limit_content = TwitterDynamicSubscriptor().cmd_as_group(
-    "limit", "设置订阅内容字数限制", permission=SUPERUSER
-)
+limit_content = twitter.cmd_as_group("limit", "设置订阅内容字数限制", permission=MASTER)
 
 
 @limit_content.handle()
@@ -144,8 +143,7 @@ tq = asyncio.Queue()
 
 class TwitterDynamicChecker(BaseTrigger):
     def get_next_fire_time(self, previous_fire_time, now):
-        sub = TwitterDynamicSubscriptor()
-        conf = sub.load_service("推特动态订阅")
+        conf = twitter.load_service("推特动态订阅")
         if conf.get("enabled"):
             return now
 
@@ -157,7 +155,6 @@ class TwitterDynamicChecker(BaseTrigger):
     misfire_grace_time=60,  # type: ignore
 )
 async def _check_td():
-    sub = TwitterDynamicSubscriptor()
     try:
         all_dy = await sub.get_all_subs()
     except Exception:
@@ -170,7 +167,12 @@ async def _check_td():
     else:
         m: TwitterSubscription = tq.get_nowait()
 
-        _bot: Bot = get_bot()
+        try:
+            _bot: Bot = get_bot()  # type: ignore
+        except Exception:
+            log.warning("当前无在线协议端, 已停止推送")
+            return
+
         group_list = await _bot.get_group_list()
         gl = [f"{i['group_id']}" for i in group_list]
         if m.group_id not in gl:

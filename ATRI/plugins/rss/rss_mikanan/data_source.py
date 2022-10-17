@@ -1,11 +1,5 @@
 import xmltodict
 
-from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN
-
-
-from ATRI.service import Service
-from ATRI.rule import is_in_service
 from ATRI.exceptions import RssError
 from ATRI.utils import request, gen_random_str
 
@@ -13,17 +7,7 @@ from ATRI.utils import request, gen_random_str
 from .db import DB
 
 
-class RssMikananSubscriptor(Service):
-    def __init__(self):
-        Service.__init__(
-            self,
-            "rss.mikan",
-            "Rss的mikan支持",
-            rule=is_in_service("rss.mikan"),
-            permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
-            main_cmd="/rss.mikan",
-        )
-
+class RssMikananSubscriptor:
     async def __add_sub(self, _id: str, group_id: int):
         try:
             async with DB() as db:
@@ -98,7 +82,7 @@ class RssMikananSubscriptor(Service):
         try:
             resp = await request.get(url)
         except Exception:
-            RssError("rss.mikan: 请求链接失败")
+            raise RssError("rss.mikan: 请求链接失败")
 
         xml_data = resp.read()
         data = xmltodict.parse(xml_data)

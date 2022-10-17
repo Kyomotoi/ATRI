@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Union
 
 import nonebot
-from nonebot.permission import SUPERUSER
 from nonebot.message import run_preprocessor
 from nonebot.exception import IgnoredException
 from nonebot.adapters.onebot.v11 import (
@@ -32,6 +31,7 @@ from ATRI.service import Service
 from ATRI.log import log
 from ATRI.utils import MessageChecker
 from ATRI.utils.apscheduler import scheduler
+from ATRI.permission import MASTER
 
 
 bots = nonebot.get_bots()
@@ -93,12 +93,10 @@ class GroupRequestInfo(BaseModel):
     is_approve: bool
 
 
-class Essential(Service):
-    def __init__(self):
-        Service.__init__(self, "基础部件", "对bot基础/必须请求进行处理")
+ess = Service("基础部件").document("对bot基础/必须请求进行处理")
 
 
-friend_add_event = Essential().on_request("好友添加", "好友添加检测")
+friend_add_event = ess.on_request("好友添加", "好友添加检测")
 
 
 @friend_add_event.handle()
@@ -144,7 +142,7 @@ async def _friend_add(bot: Bot, event: FriendRequestEvent):
         await bot.send_private_msg(user_id=superuser, message=repo)
 
 
-group_invite_event = Essential().on_request("邀请入群", "被邀请入群检测")
+group_invite_event = ess.on_request("邀请入群", "被邀请入群检测")
 
 
 @group_invite_event.handle()
@@ -190,7 +188,7 @@ async def _group_invite(bot: Bot, event: GroupRequestEvent):
         await bot.send_private_msg(user_id=superuser, message=repo)
 
 
-group_member_event = Essential().on_notice("群成员变动", "群成员变动检测")
+group_member_event = ess.on_notice("群成员变动", "群成员变动检测")
 
 
 @group_member_event.handle()
@@ -206,7 +204,7 @@ async def _group_member_left(bot: Bot, event: GroupDecreaseNoticeEvent):
     await group_member_event.finish("呜——有人跑了...")
 
 
-group_admin_event = Essential().on_notice("群管理变动", "群管理变动检测")
+group_admin_event = ess.on_notice("群管理变动", "群管理变动检测")
 
 
 @group_admin_event.handle()
@@ -220,7 +218,7 @@ async def _group_admin_event(bot: Bot, event: GroupAdminNoticeEvent):
         )
 
 
-group_ban_event = Essential().on_notice("群禁言变动", "群禁言变动检测")
+group_ban_event = ess.on_notice("群禁言变动", "群禁言变动检测")
 
 
 @group_ban_event.handle()
@@ -245,7 +243,7 @@ async def _group_ban_event(bot: Bot, event: GroupBanNoticeEvent):
 _acc_recall = True
 
 
-recall_event = Essential().on_notice("撤回事件", "撤回事件检测")
+recall_event = ess.on_notice("撤回事件", "撤回事件检测")
 
 
 @recall_event.handle()
@@ -310,7 +308,7 @@ async def _recall_private_event(bot: Bot, event: FriendRecallNoticeEvent):
         await bot.send_private_msg(user_id=int(superuser), message=Message(msg))
 
 
-rej_recall = Essential().on_command("拒绝撤回", "拒绝撤回信息", permission=SUPERUSER)
+rej_recall = ess.on_command("拒绝撤回", "拒绝撤回信息", permission=MASTER)
 
 
 @rej_recall.handle()
@@ -320,7 +318,7 @@ async def _():
     await rej_recall.finish("已拒绝撤回信息...")
 
 
-acc_recall = Essential().on_command("接受撤回", "接受撤回信息", permission=SUPERUSER)
+acc_recall = ess.on_command("接受撤回", "接受撤回信息", permission=MASTER)
 
 
 @acc_recall.handle()
