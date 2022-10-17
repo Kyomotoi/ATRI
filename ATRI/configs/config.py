@@ -5,6 +5,9 @@ from pathlib import Path
 from .models import BotConfig, ConfigModel, WithGoCQHTTP, RuntimeConfig
 
 
+CONFIG_PATH = Path(".") / "data" / "config"
+CONFIG_PATH.mkdir(parents=True, exist_ok=True)
+
 _DEFAULT_CONFIG_PATH = Path(".") / "ATRI" / "configs" / "default_config.yml"
 
 
