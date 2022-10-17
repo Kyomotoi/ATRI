@@ -9,8 +9,8 @@ from ATRI.exceptions import GetStatusError
 
 
 _STATUS_MSG = (
-    MessageBuilder("> Status Overview").
-    text("[CPU: {b_cpu}% of {p_cpu}%]")
+    MessageBuilder("> Status Overview")
+    .text("[CPU: {b_cpu}% of {p_cpu}%]")
     .text("[Memory: {b_mem} of {p_mem}%]")
     .text("[Disk usage: {p_disk}%]")
     .text("")

@@ -192,9 +192,7 @@ async def _user_unblock_service(event: MessageEvent):
     await user_unblock_service.finish(f"完成～已允许用户 {aim_user} 使用 {aim_service}")
 
 
-group_block_service = plugin.on_command(
-    "禁用", "针对所在群禁用某服务", permission=ADMIN
-)
+group_block_service = plugin.on_command("禁用", "针对所在群禁用某服务", permission=ADMIN)
 
 
 @group_block_service.handle()
@@ -221,9 +219,7 @@ async def _deal_group_block_service(
     await group_block_service.finish(f"完成！～已禁止本群使用服务：{aim_service}")
 
 
-group_unblock_service = plugin.on_command(
-    "启用", "针对所在群启用某服务", permission=ADMIN
-)
+group_unblock_service = plugin.on_command("启用", "针对所在群启用某服务", permission=ADMIN)
 
 
 @group_unblock_service.handle()

@@ -74,7 +74,12 @@ class Helper:
             headers=["服务名称", "开启状态(全局)", "仅支持管理员"],
             tablefmt="plain",
         )
-        return MessageBuilder("咱搭载了以下服务~").text(table).text("@bot 帮助 [服务] -以查看对应服务帮助").done()
+        return (
+            MessageBuilder("咱搭载了以下服务~")
+            .text(table)
+            .text("@bot 帮助 [服务] -以查看对应服务帮助")
+            .done()
+        )
 
     @staticmethod
     def service_info(service: str) -> str:

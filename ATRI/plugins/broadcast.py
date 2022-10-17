@@ -52,9 +52,7 @@ class BroadCast:
 bc = Service("广播").document("向bot所在的所有群发送信息").only_admin(True).rule(to_bot())
 
 
-caster = bc.on_command(
-    "广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"bc"}, permission=MASTER
-)
+caster = bc.on_command("广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"bc"}, permission=MASTER)
 
 
 @caster.handle()

@@ -97,7 +97,9 @@ async def _add_normal_item(
     await add_item.finish(result)
 
 
-add_item_as_group_admin = thes.cmd_as_group("add.g", "添加本群词条，仅限管理，无需审核", permission=ADMIN)
+add_item_as_group_admin = thes.cmd_as_group(
+    "add.g", "添加本群词条，仅限管理，无需审核", permission=ADMIN
+)
 
 
 @add_item_as_group_admin.handle()

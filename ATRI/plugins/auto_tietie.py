@@ -28,12 +28,7 @@ _tietie_wd = choice(
     ]
 )
 
-tt = (
-    Service("贴贴")
-    .document("全自动贴贴机")
-    .only_admin(True)
-    .permission(MASTER)
-)
+tt = Service("贴贴").document("全自动贴贴机").only_admin(True).permission(MASTER)
 
 
 auto_tietie = tt.on_message(
