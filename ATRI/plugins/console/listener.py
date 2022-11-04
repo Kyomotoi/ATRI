@@ -30,7 +30,7 @@ async def _(exception: Optional[Exception]):
     total_r_m += 1
 
 
-def get_message_deal_info() -> dict:
+def get_message_info() -> dict:
     return MessageDealerInfo(
         recv_msg=str(recv_msg),
         deal_msg=str(deal_msg),
