@@ -2,10 +2,9 @@ from random import choice
 
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
-from nonebot.adapters.onebot.v11 import MessageEvent, Message
+from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
-from ATRI.bot import Bot
 from ATRI.service import Service
 from ATRI.message import MessageBuilder
 
@@ -23,10 +22,10 @@ _REPO_FORMAT = (
 _REPO_FORMAT = MessageBuilder("来自用户{user}反馈:").text("{msg}").done()
 
 
-repo = Service("反馈").document("向维护者发送消息")
+plugin = Service("反馈").document("向维护者发送消息")
 
 
-reporter = repo.on_command("来杯红茶", "向维护者发送消息", aliases={"反馈", "报告"})
+reporter = plugin.on_command("来杯红茶", "向维护者发送消息", aliases={"反馈", "报告"})
 
 
 @reporter.handle([Cooldown(120, prompt=_repo_flmt_notice)])
@@ -46,7 +45,7 @@ async def _deal_repo(
     repo_0 = _REPO_FORMAT.format(user=user_id, msg=repo_msg)
 
     try:
-        await bot.send_to_master(repo_0)
+        await plugin.send_to_master(repo_0)
     except Exception:
         await reporter.finish("发送失败了呢...")
 

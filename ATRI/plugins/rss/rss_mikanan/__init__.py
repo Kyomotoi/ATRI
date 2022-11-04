@@ -25,13 +25,15 @@ from ATRI.database import RssMikananiSubcription
 from .data_source import RssMikananSubscriptor
 
 
+sub = RssMikananSubscriptor()
+
+
 plugin = (
     Service("rss.mikan")
     .document("Rss的mikan支持")
     .permission(ADMIN)
     .main_cmd("/rss.mikan")
 )
-sub = RssMikananSubscriptor()
 
 
 add_sub = plugin.cmd_as_group("add", "为本群添加 Mikan 订阅")

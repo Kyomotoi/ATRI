@@ -1,7 +1,7 @@
 import re
 from math import floor
 import jieba.posseg as pseg
-from typing import Union, Optional
+from typing import Union
 from random import random, choice, randint
 
 
@@ -179,7 +179,7 @@ class Yinglish:
     def __init__(self, context: str):
         self.context = context
 
-    def _to_ying(x, y, ying) -> str:
+    def _to_ying(self, x: str, y: str, ying: float) -> str:
         if random() > ying:
             return x
         if x in ["，", "。"]:
@@ -202,5 +202,5 @@ class Yinglish:
                 x = "〇" * len(x)
             return str(choice([f"...{x}", f"....{x}", f".....{x}", f"......{x}"]))
 
-    def deal(self, ying: Optional[float] = 0.5) -> str:
+    def deal(self, ying: float = 0.5) -> str:
         return "".join([self._to_ying(x, y, ying) for x, y in pseg.cut(self.context)])

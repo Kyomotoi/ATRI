@@ -4,10 +4,8 @@ import asyncio
 
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
-from nonebot.adapters.onebot.v11 import Message, MessageEvent
-from nonebot.adapters.onebot.v11 import GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent, GroupMessageEvent
 
-from ATRI.bot import Bot
 from ATRI.rule import to_bot
 from ATRI.service import Service
 from ATRI.utils import FileDealer
@@ -15,7 +13,7 @@ from ATRI.permission import ADMIN, MASTER
 from ATRI.message import MessageBuilder
 
 
-__BROADCAST_REPO_FORMAT = (
+_BROADCAST_REPO_FORMAT = (
     MessageBuilder("广播报告:")
     .text("信息: {msg}")
     .text("预计推送群:{len_group} 个")
@@ -80,7 +78,7 @@ async def _(bot: Bot, event: MessageEvent, msg: str = ArgPlainText("bc_msg")):
 
         await asyncio.sleep(random.randint(2, 4))
 
-    result = __BROADCAST_REPO_FORMAT.format(
+    result = _BROADCAST_REPO_FORMAT.format(
         msg=bc_msg,
         len_group=len(group_list),
         success_group=len(success_group),

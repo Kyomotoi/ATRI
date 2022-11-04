@@ -246,7 +246,7 @@ async def _deal_group_unblock_service(
     await group_unblock_service.finish(f"完成！～已允许本群使用服务：{aim_service}")
 
 
-get_friend_add_list = plugin.on_command("获取好友申请", "获取好友申请列表")
+get_friend_add_list = plugin.on_command("好友申请列表", "获取好友申请列表")
 
 
 @get_friend_add_list.handle()
@@ -325,7 +325,7 @@ async def _deal_refuse_friend_add(
     await refuse_friend_add.finish("已拒绝！")
 
 
-get_group_invite_list = plugin.on_command("获取邀请列表", "获取群邀请列表")
+get_group_invite_list = plugin.on_command("应邀入群列表", "获取群邀请列表")
 
 
 @get_group_invite_list.handle()

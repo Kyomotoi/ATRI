@@ -23,13 +23,15 @@ from ATRI.database import RssRsshubSubcription
 from .data_source import RssHubSubscriptor
 
 
+sub = RssHubSubscriptor()
+
+
 plugin = (
     Service("rss.rsshub")
     .document("Rss的Rsshub支持")
     .permission(ADMIN)
     .main_cmd("/rss.rsshub")
 )
-sub = RssHubSubscriptor()
 
 
 add_sub = plugin.cmd_as_group("add", "为本群添加 RSSHub 订阅")

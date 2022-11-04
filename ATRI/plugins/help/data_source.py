@@ -8,15 +8,15 @@ from ATRI.message import MessageBuilder
 from ATRI.service import SERVICES_DIR, ServiceTools
 
 
-__SERVICE_INFO_FORMAT = (
+_SERVICE_INFO_FORMAT = (
     MessageBuilder("服务名：{service}")
     .text("说明：{docs}")
     .text("可用命令：\n{cmd_list}")
     .text("是否全局启用：{enabled}")
-    .text("Tip: @bot 帮助 [服务] [命令] 以查看对应命令详细信息")
+    .text("Tip: @bot 帮助 (服务) (命令) 以查看对应命令详细信息")
     .done()
 )
-__COMMAND_INFO_FORMAT = (
+_COMMAND_INFO_FORMAT = (
     MessageBuilder("命令：{cmd}")
     .text("类型：{cmd_type}")
     .text("说明：{docs}")
@@ -32,7 +32,7 @@ class Helper:
             MessageBuilder("哦呀?~需要帮助?")
             .text("关于 查看bot基本信息")
             .text("服务列表 -以查看所有可用服务")
-            .text("帮助 [服务] -以查看对应服务帮助")
+            .text("帮助 (服务) -以查看对应服务帮助")
             .text("Tip: 均需要at触发。@bot 菜单 以打开此页面")
             .done()
         )
@@ -77,7 +77,7 @@ class Helper:
         return (
             MessageBuilder("咱搭载了以下服务~")
             .text(table)
-            .text("@bot 帮助 [服务] -以查看对应服务帮助")
+            .text("@bot 帮助 (服务) -以查看对应服务帮助")
             .done()
         )
 
@@ -86,7 +86,7 @@ class Helper:
         try:
             data = ServiceTools().load_service(service)
         except Exception:
-            return "请检查是否输入错误呢...@bot 帮助 [服务]"
+            return "请检查是否输入错误呢...@bot 帮助 (服务)"
 
         service_name = data.service
         service_docs = data.docs
@@ -95,7 +95,7 @@ class Helper:
         _service_cmd_list = list(data.cmd_list)
         service_cmd_list = "\n".join(map(str, _service_cmd_list))
 
-        repo = __SERVICE_INFO_FORMAT.format(
+        repo = _SERVICE_INFO_FORMAT.format(
             service=service_name,
             docs=service_docs,
             cmd_list=service_cmd_list,
@@ -118,7 +118,7 @@ class Helper:
         docs = cmd_info.get("docs", "ignore")
         aliases = cmd_info.get("aliases", "ignore")
 
-        repo = __COMMAND_INFO_FORMAT.format(
+        repo = _COMMAND_INFO_FORMAT.format(
             cmd=cmd, cmd_type=cmd_type, docs=docs, aliases=aliases
         )
         return repo

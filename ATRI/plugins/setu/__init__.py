@@ -14,10 +14,10 @@ from ATRI.permission import MASTER
 from .data_source import Setu
 
 
-setu = Service("涩图").document("hso!")
+plugin = Service("涩图").document("hso!")
 
 
-random_setu = setu.on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
+random_setu = plugin.on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
 
 
 @random_setu.handle([Cooldown(120)])
@@ -51,7 +51,7 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
         await random_setu.finish(is_repo)
 
 
-tag_setu = setu.on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
+tag_setu = plugin.on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
 
 
 @tag_setu.handle([Cooldown(120, prompt="慢...慢一..点❤")])
@@ -62,7 +62,7 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     pattern = r"来[张点丶份](.*?)的[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
     repo, se = await Setu.tag_setu(tag)
-    if not setu:
+    if not plugin:
         await tag_setu.finish(repo)
 
     await bot.send(event, repo)
@@ -89,7 +89,7 @@ async def _(think: str = ArgPlainText("t_rush_after_think")):
 _catcher_max_file_size = 128
 
 
-setu_catcher = setu.on_message("涩图嗅探", "涩图嗅探器", block=False)
+setu_catcher = plugin.on_message("涩图嗅探", "涩图嗅探器", block=False)
 
 
 @setu_catcher.handle()
@@ -131,7 +131,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
             await bot.send_private_msg(user_id=superuser, message=s_repo)
 
 
-nsfw_checker = setu.on_command("/nsfw", "涩值检测")
+nsfw_checker = plugin.on_command("/nsfw", "涩值检测")
 
 
 @nsfw_checker.got("nsfw_img", "图呢？")
@@ -159,7 +159,7 @@ async def _deal_check(bot: Bot, event: MessageEvent):
     await nsfw_checker.finish(resu)
 
 
-catcher_setting = setu.on_command("嗅探设置", "涩图检测图片文件大小设置", permission=MASTER)
+catcher_setting = plugin.on_command("嗅探设置", "涩图检测图片文件大小设置", permission=MASTER)
 
 
 @catcher_setting.handle()

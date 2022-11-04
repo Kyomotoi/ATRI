@@ -26,7 +26,7 @@ ae = AntiEffort()
 
 _lmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~", "呜呜...别急"])
 
-__GET_URL_MSG = (
+_GET_URL_MSG = (
     MessageBuilder("请键入wakatime share embed URL:")
     .text("- 前往 wakatime.com/share/embed")
     .text("- Format 选择 JSON")
@@ -41,7 +41,7 @@ add_user = plugin.on_command("!我也要卷", "加入卷王统计榜")
 
 @add_user.got(
     "waka_url",
-    __GET_URL_MSG,
+    _GET_URL_MSG,
 )
 @add_user.got("rank_nickname", "如何在排行榜中称呼你捏")
 @add_user.got("to_global", "你希望加入公共排行榜吗？(y/n)", [Cooldown(60, prompt=_lmt_notice)])
@@ -80,7 +80,7 @@ async def _join_global_rank(event: GroupMessageEvent):
                 await join_global_rank.finish("完成~！")
 
 
-@join_global_rank.got("waka_url", __GET_URL_MSG)
+@join_global_rank.got("waka_url", _GET_URL_MSG)
 @join_global_rank.got(
     "rank_nickname", "如何在排行榜中称呼你捏", [Cooldown(60, prompt=_lmt_notice)]
 )
