@@ -1,10 +1,11 @@
 import os
 import re
-import string
+import json
 import pytz
 import yaml
-import aiofiles
 import time
+import string
+import aiofiles
 from pathlib import Path
 from random import sample
 from datetime import datetime
@@ -111,25 +112,25 @@ class MessageChecker:
 
 class FileDealer:
     """
-    打开文件
+    操作文件
     """
 
     def __init__(self, path: Path, encoding: str = "utf-8"):
         self.path = path
         self.encoding = encoding
 
-    async def write(self, path: Path, content):
+    async def write(self, content):
         try:
-            async with aiofiles.open(path, "w", encoding=self.encoding) as target:
+            async with aiofiles.open(self.path, "w", encoding=self.encoding) as target:
                 await target.write(content)
         except Exception:
-            raise Exception(f"Writing file({path}) failed!")
+            raise Exception(f"Writing file ({self.path}) failed!")
 
     async def _reader(self) -> AsyncTextIOWrapper:
         try:
             tar = await aiofiles.open(self.path, "r", encoding=self.encoding)
         except Exception:
-            raise FileNotFoundError(f"File({self.path}) not find!")
+            raise FileNotFoundError(f"File ({self.path}) not find!")
         return tar
 
     async def read(self):
@@ -147,6 +148,9 @@ class FileDealer:
     async def readtable(self):
         tar = await self._reader()
         return tar.readable()
+    
+    def json(self) -> dict:
+        return json.loads(self.path.read_bytes())
 
 
 class ImageDealer:
