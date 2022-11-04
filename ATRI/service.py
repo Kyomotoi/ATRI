@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from typing import List, Set, Tuple, Type, Union, Optional
 
 from nonebot.matcher import Matcher
-from nonebot.permission import Permission
 from nonebot.dependencies import Dependent
 from nonebot.typing import (
     T_State,
@@ -18,6 +17,7 @@ from nonebot.rule import Rule, command, keyword, regex
 from nonebot.adapters import Bot, Event
 from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
 
+from ATRI.permission import MASTER, Permission
 from ATRI.exceptions import ReadFileError, WriteFileError
 
 
@@ -28,6 +28,7 @@ SERVICES_DIR.mkdir(parents=True, exist_ok=True)
 class ServiceInfo(BaseModel):
     service: str
     docs: str
+    permission: list
     cmd_list: dict
     enabled: bool
     only_admin: bool
@@ -48,6 +49,7 @@ class Service:
     {
         "service": "Service name",
         "docs": "Main helps and commands",
+        "permission": ["Master", ...]
         "cmd_list": {
             "/cmd0": {
                 "type": "Command type",
@@ -70,7 +72,7 @@ class Service:
             return
 
         self.service = service
-        self._only_admin = False
+        self._only_master = False
         self._rule = is_in_service(service)
         self._permission = None
         self._handlers = None
@@ -79,6 +81,9 @@ class Service:
         self._state = None
         self._main_cmd = (str(),)
 
+        self._path = Path(".") / "data" / "plugins" / self.service
+        self._path.mkdir(parents=True, exist_ok=True)
+
     def document(self, context: str) -> "Service":
         """为服务添加说明"""
 
@@ -86,9 +91,11 @@ class Service:
         return self
 
     def only_admin(self, _is: bool) -> "Service":
-        """标记服务仅管理员可用"""
+        """标记服务仅主人可用"""
 
-        self._only_admin = _is
+        self._only_master = _is
+        self._permission = MASTER
+        
         return self
 
     def rule(self, rule: Optional[Union[Rule, T_RuleChecker]]) -> "Service":
@@ -101,6 +108,11 @@ class Service:
         """为服务添加权限判定"""
 
         self._permission = perm
+
+        data = self.load_service(self.service)
+        if perm not in data["permission"]:
+            data["permission"].append(perm.name)  # type: ignore
+        self.save_service(data, self.service)
         return self
 
     def handlers(self, hand: Optional[List[T_Handler]]) -> "Service":
@@ -133,14 +145,18 @@ class Service:
         self._main_cmd = (cmd,)
         return self
 
+    def get_path(self) -> Path:
+        return self._path
+
     def __generate_service_config(self, service: str, docs: str = str()) -> None:
         path = SERVICES_DIR / f"{service}.json"
         data = ServiceInfo(
             service=service,
             docs=docs,
+            permission=list(),
             cmd_list=dict(),
             enabled=True,
-            only_admin=self._only_admin,
+            only_admin=self._only_master,
             disable_user=list(),
             disable_group=list(),
         )
@@ -361,7 +377,7 @@ class ServiceTools:
             w.write(json.dumps(service_data, indent=4))
 
     @staticmethod
-    def load_service(service: str) -> dict:
+    def load_service(service: str) -> ServiceInfo:
         path = SERVICES_DIR / f"{service}.json"
         if not path.is_file():
             raise ReadFileError(
@@ -372,15 +388,15 @@ class ServiceTools:
 
         with open(path, "r", encoding="utf-8") as r:
             data = json.loads(r.read())
-        return data
+        return ServiceInfo.parse_file(path)
 
     @classmethod
     def auth_service(cls, service, user_id: str = str(), group_id: str = str()) -> bool:
         data = cls.load_service(service)
 
-        auth_global = data.get("enabled", True)
-        auth_user = data.get("disable_user", list())
-        auth_group = data.get("disable_group", list())
+        auth_global = data.enabled
+        auth_user = data.disable_user
+        auth_group = data.disable_group
 
         if user_id:
             if user_id in auth_user:
@@ -394,8 +410,8 @@ class ServiceTools:
     @classmethod
     def service_controller(cls, service: str, is_enabled: bool):
         data = cls.load_service(service)
-        data["enabled"] = is_enabled
-        cls.save_service(data, service)
+        data.enabled = is_enabled
+        cls.save_service(data.dict(), service)
 
 
 def is_in_service(service: str) -> Rule:
