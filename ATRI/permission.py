@@ -17,15 +17,19 @@ if not MASTER_FILE_PATH.is_file():
 MASTER_LIST = set()
 
 
-def is_master(bot: Bot, event: Event) -> bool:
+def init_permission():
     global MASTER_LIST
+    data = json.loads(MASTER_FILE_PATH.read_bytes())
+    MASTER_LIST = set.union(set(data), conf.BotConfig.superusers)
+
+
+def is_master(bot: Bot, event: Event) -> bool:
+    init_permission()
     try:
         user_id = event.get_user_id()
     except Exception:
         return False
 
-    data = json.loads(MASTER_FILE_PATH.read_bytes())
-    MASTER_LIST = set.union(set(data), conf.BotConfig.superusers)
     return True if user_id in MASTER_LIST else False
 
 
@@ -65,5 +69,6 @@ class Admin:
             return is_master(bot, event)
 
 
+init_permission()
 MASTER = Permission(MasterList()).set_name("Master")
 ADMIN = Permission(Admin()).set_name("Admin")
