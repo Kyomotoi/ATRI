@@ -71,7 +71,7 @@ async def get_host_ip(is_pub: bool):
 FRONTEND_DIR = CONSOLE_DIR / "frontend"
 FRONTEND_DIR.mkdir(parents=True, exist_ok=True)
 __CONSOLE_RESOURCE_URL = (
-    "https://jsd.imki.moe/gh/kyomotoi/Project-ATRI-Console@main/archive/dist.zip"
+    "https://guc.imki.moe/kyomotoi/Project-ATRI-Console/main/archive/dist.zip"
 )
 
 
