@@ -5,6 +5,7 @@ from types import ModuleType
 from pydantic import BaseModel
 from typing import List, Set, Tuple, Type, Union, Optional
 
+from nonebot import get_bot
 from nonebot.matcher import Matcher
 from nonebot.dependencies import Dependent
 from nonebot.typing import (
@@ -15,9 +16,9 @@ from nonebot.typing import (
 )
 from nonebot.rule import Rule, command, keyword, regex
 from nonebot.adapters import Bot, Event
-from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Message, PrivateMessageEvent, GroupMessageEvent
 
-from ATRI.permission import MASTER, Permission
+from ATRI.permission import MASTER, Permission, MASTER_LIST
 from ATRI.exceptions import ReadFileError, WriteFileError
 
 
@@ -82,7 +83,7 @@ class Service:
         self._main_cmd = (str(),)
 
         self._path = Path(".") / "data" / "plugins" / self.service
-        self._path.mkdir(parents=True, exist_ok=True)
+        # self._path.mkdir(parents=True, exist_ok=True)
 
     def document(self, context: str) -> "Service":
         """为服务添加说明"""
@@ -358,6 +359,12 @@ class Service:
             del kwargs["aliases"]
 
         return self.on_command(_cmd, docs, **kwargs)
+    
+    @staticmethod
+    async def send_to_master(message: Union[str, Message]):
+        bot = get_bot()
+        for m in MASTER_LIST:
+            await bot.send_private_msg(user_id=m, message=message)
 
 
 class ServiceTools:
