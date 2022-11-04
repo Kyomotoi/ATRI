@@ -7,7 +7,7 @@ from ATRI.message import MessageSegment
 def recall_msg_dealer(message: Union[dict, str]) -> str:
     if isinstance(message, str):
         return message
-    
+
     cache_list = list()
     for i in message:
         _type = i.get("type")
@@ -25,5 +25,5 @@ def recall_msg_dealer(message: Union[dict, str]) -> str:
             cache_list.append(MessageSegment.face(_data["id"]))
         else:
             cache_list.append(f"[未知类型信息: {_data}]")
-    
+
     return str().join(map(str, cache_list))

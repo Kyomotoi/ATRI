@@ -148,7 +148,7 @@ class FileDealer:
     async def readtable(self):
         tar = await self._reader()
         return tar.readable()
-    
+
     def json(self) -> dict:
         return json.loads(self.path.read_bytes())
 

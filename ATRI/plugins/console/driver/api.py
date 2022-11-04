@@ -79,7 +79,9 @@ def block_list_info(_=Depends(http_author)):
     return {"status": status.HTTP_200_OK, "data": get_block_list()}
 
 
-def edit_block_list(enabled: str, user_id: str = str(), group_id: str = str(), _=Depends(http_author)):
+def edit_block_list(
+    enabled: str, user_id: str = str(), group_id: str = str(), _=Depends(http_author)
+):
     return {
         "status": status.HTTP_200_OK,
         "data": _edit_block_list(bool(int(enabled)), user_id, group_id),

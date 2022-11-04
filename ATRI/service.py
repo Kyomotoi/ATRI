@@ -96,7 +96,7 @@ class Service:
 
         self._only_master = _is
         self._permission = MASTER
-        
+
         return self
 
     def rule(self, rule: Optional[Union[Rule, T_RuleChecker]]) -> "Service":
@@ -359,7 +359,7 @@ class Service:
             del kwargs["aliases"]
 
         return self.on_command(_cmd, docs, **kwargs)
-    
+
     @staticmethod
     async def send_to_master(message: Union[str, Message]):
         bot = get_bot()
