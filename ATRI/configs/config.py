@@ -36,7 +36,7 @@ class Config:
         raw_conf = yaml.safe_load(_DEFAULT_CONFIG_PATH.read_bytes())
         conf = yaml.safe_load(config_path.read_bytes())
 
-        if raw_conf["ConfigVersion"] != conf["ConfigVersion"]:
+        if raw_conf.get("ConfigVersion") != conf.get("ConfigVersion"):
             print("!!! 你的 config.yml 文件已废弃, 请 删除/备份 并重新启动")
             sleep(3)
             exit(-1)
