@@ -1,58 +1,54 @@
 import json
 import random
 import asyncio
-from pathlib import Path
 
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
-from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
+from nonebot.adapters.onebot.v11 import Message, MessageEvent
+from nonebot.adapters.onebot.v11 import GroupMessageEvent
 
+from ATRI.bot import Bot
 from ATRI.rule import to_bot
 from ATRI.service import Service
-from ATRI.permission import MASTER, GROUP_ADMIN
+from ATRI.utils import FileDealer
+from ATRI.permission import ADMIN, MASTER
 from ATRI.message import MessageBuilder
 
 
-BC_PATH = Path(".") / "data" / "plugins" / "broadcast"
-BC_PATH.mkdir(parents=True, exist_ok=True)
-
-_BROADCAST_REPO = (
+__BROADCAST_REPO_FORMAT = (
     MessageBuilder("广播报告:")
     .text("信息: {msg}")
-    .text("预计推送群:{len_g} 个")
-    .text("成功: {su_g} 失败: {fl_g}")
-    .text("失败群列表: {f_g}")
+    .text("预计推送群:{len_group} 个")
+    .text("成功: {success_group} 失败: {failed_group}")
+    .text("失败群列表:")
+    .text("{failed_group_list}")
     .done()
 )
 
 
-class BroadCast:
-    @staticmethod
-    def load_rej_list() -> list:
-        data = list()
-        path = BC_PATH / "rej_list.json"
-        if not path.is_file():
-            with open(path, "w", encoding="utf-8") as w:
-                w.write(json.dumps(data))
-            return data
+async def __load_reject_list() -> list:
+    path = plugin.get_path() / "rej_list.json"
+    file = FileDealer(path)
+    if not path.is_file():
+        await file.write(list())
+        return list()
 
-        return json.loads(path.read_bytes())
-
-    @classmethod
-    def store_rej_list(cls, data: list):
-        path = BC_PATH / "rej_list.json"
-        if not path.is_file():
-            cls.load_rej_list()
-
-        with open(path, "w", encoding="utf-8") as w:
-            w.write(json.dumps(data))
+    return list(file.json())
 
 
-bc = Service("广播").document("向bot所在的所有群发送信息").only_admin(True).rule(to_bot())
+async def __store_reject_list(data: list) -> None:
+    path = plugin.get_path() / "rej_list.json"
+    file = FileDealer(path)
+    if not path.is_file():
+        await __load_reject_list()
+
+    await file.write(json.dumps(data))
 
 
-caster = bc.on_command("广播", "向bot所在的所有群发送信息，有防寄延迟", aliases={"bc"}, permission=MASTER)
+plugin = Service("广播").document("向bot所在的所有群发送信息").rule(to_bot())
+
+
+caster = plugin.on_command("广播", "向bot所在的群发送信息", aliases={"/bc"}, permission=MASTER)
 
 
 @caster.handle()
@@ -62,73 +58,65 @@ async def _(matcher: Matcher, args: Message = CommandArg()):
         matcher.set_arg("bc_msg", args)
 
 
-@caster.got("bc_msg", "想要咱群发什么呢？")
-async def _(bot: Bot, event: MessageEvent, s_msg: str = ArgPlainText("bc_msg")):
-    w_group = await bot.get_group_list()
+@caster.got("bc_msg", prompt="需要咱广播啥呢")
+async def _(bot: Bot, event: MessageEvent, msg: str = ArgPlainText("bc_msg")):
+    group_list = await bot.get_group_list()
+    if not group_list:
+        await caster.finish("你还没让咱加入任何群呢...")
 
-    await bot.send(event, "正在推送...（每个群延迟1～3s）")
+    await caster.send("正在推送...(每群延迟2-4s)")
 
-    w_msg = Message(f"来自维护者的信息：\n{s_msg}")
+    bc_msg = Message(f"来自维护者的消息:\n{msg}")
 
-    su_g = list()
-    fl_g = list()
-    for i in w_group:
+    success_group = list()
+    failed_group = list()
+    for i in group_list:
         group_id = i["group_id"]
         try:
-            await bot.send_group_msg(group_id=group_id, message=w_msg)
-            su_g.append(group_id)
+            await bot.send_group_msg(group_id=group_id, message=bc_msg)
+            success_group.append(group_id)
         except Exception:
-            fl_g.append(group_id)
+            failed_group.append(group_id)
 
-        await asyncio.sleep(random.randint(2, 3))
+        await asyncio.sleep(random.randint(2, 4))
 
-    repo_msg = _BROADCAST_REPO.format(
-        msg=s_msg,
-        len_g=len(w_group),
-        su_g=su_g,
-        fl_g=fl_g,
-        f_g=", ".join(map(str, fl_g)),
+    result = __BROADCAST_REPO_FORMAT.format(
+        msg=bc_msg,
+        len_group=len(group_list),
+        success_group=len(success_group),
+        failed_group=len(failed_group),
+        failed_group_list=", ".join(map(str, failed_group)),
     )
-    await caster.finish(Message(repo_msg))
+    await caster.finish(Message(result))
 
 
-rej_broadcast = bc.on_command("拒绝广播", "拒绝来自开发者的广播推送", permission=GROUP_ADMIN)
+reject_bc = plugin.on_command("拒绝广播", "拒绝来自维护者的信息推送", permission=ADMIN)
 
 
-@rej_broadcast.handle()
-async def _(bot: Bot, event: GroupMessageEvent):
+@reject_bc.handle()
+async def _(event: GroupMessageEvent):
     group_id = str(event.group_id)
 
-    rej_g = BroadCast().load_rej_list()
-    if group_id in rej_g:
-        await rej_broadcast.finish("本群已在推送黑名单内辣！")
+    reject_list = await __load_reject_list()
+    if group_id in reject_list:
+        await reject_bc.finish("本群拒绝过啦~")
     else:
-        rej_g.append(group_id)
-        BroadCast().store_rej_list(rej_g)
-        await rej_broadcast.finish("完成～！已将本群列入推送黑名单")
+        reject_list.append(group_id)
+        await __store_reject_list(reject_list)
+        await reject_bc.finish("完成!")
 
 
-@rej_broadcast.handle()
-async def _(event: PrivateMessageEvent):
-    await rej_broadcast.finish("该功能仅在群聊中触发...")
+accept_bc = plugin.on_command("接受广播", "接受来自维护者的信息推送", permission=ADMIN)
 
 
-acc_broadcast = bc.on_command("接受广播", "接受来自开发者的广播推送", permission=GROUP_ADMIN)
-
-
-@acc_broadcast.handle()
-async def _(bot: Bot, event: GroupMessageEvent):
+@accept_bc.handle()
+async def _(event: GroupMessageEvent):
     group_id = str(event.group_id)
 
-    rej_g = BroadCast().load_rej_list()
-    if group_id in rej_g:
-        rej_g.remove(group_id)
-        BroadCast().store_rej_list(rej_g)
-        await rej_broadcast.finish("已将本群移除推送黑名单！")
+    reject_list = await __load_reject_list()
+    if group_id in reject_list:
+        reject_list.remove(group_id)
+        await __store_reject_list(reject_list)
+        await accept_bc.finish("完成!")
     else:
-        await rej_broadcast.finish("本群不在推送黑名单里呢...")
-
-
-@acc_broadcast.handle()
-async def _(event: PrivateMessageEvent):
-    await rej_broadcast.finish("该功能仅在群聊中触发...")
+        await accept_bc.finish("本群未拒绝广播呢...")

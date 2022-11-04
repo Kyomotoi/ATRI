@@ -8,8 +8,8 @@ from ATRI.utils import request, Translate
 from ATRI.exceptions import RequestError
 
 
-URL = "https://api.trace.moe/search?anilistInfo=true"
-_anime_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
+__TRACE_URL = "https://api.trace.moe/search?anilistInfo=true"
+__FLMT_NOTICE = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 
 class Anime:
@@ -21,7 +21,7 @@ class Anime:
             resp = await request.get(url)
             image_bytes = resp.read()
             res = await request.post(
-                URL, data=image_bytes, headers={"Content-Type": "image/jpeg"}
+                __TRACE_URL, data=image_bytes, headers={"Content-Type": "image/jpeg"}
             )
         except Exception:
             raise RequestError("Request failed!")
@@ -73,13 +73,13 @@ class Anime:
         return msg0
 
 
-ani = Service("以图搜番").document("通过一张图片搜索你需要的番！据说里*也可以")
+plugin = Service("以图搜番").document("通过一张图片搜索你需要的番！据说里*也可以")
 
 
-anime_search = ani.on_command("以图搜番", "发送一张图以搜索可能的番剧")
+anime_search = plugin.on_command("以图搜番", "发送一张图以搜索可能的番剧")
 
 
-@anime_search.got("anime_pic", "图呢？", [Cooldown(5, prompt=_anime_flmt_notice)])
+@anime_search.got("anime_pic", "图呢？", [Cooldown(5, prompt=__FLMT_NOTICE)])
 async def _deal_sear(bot: Bot, event: MessageEvent):
     user_id = event.get_user_id()
     img = extract_image_urls(event.message)

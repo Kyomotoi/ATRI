@@ -25,14 +25,16 @@ from ATRI.database import TwitterSubscription
 from .data_source import TwitterDynamicSubscriptor
 
 
-_CONTENT_LIMIT: int = 0
+__CONTENT_LIMIT = 0
 
 
-twitter = Service("推特动态订阅").document("推特动态订阅助手~").permission(ADMIN).main_cmd("/td")
 sub = TwitterDynamicSubscriptor()
 
 
-add_sub = twitter.cmd_as_group("add", "添加推主订阅")
+plugin = Service("推特动态订阅").document("推特动态订阅助手~").permission(ADMIN).main_cmd("/td")
+
+
+add_sub = plugin.cmd_as_group("add", "添加推主订阅")
 
 
 @add_sub.handle()
@@ -52,7 +54,7 @@ async def _td_deal_add_sub(
     await add_sub.finish(result)
 
 
-del_sub = twitter.cmd_as_group("del", "删除推主订阅")
+del_sub = plugin.cmd_as_group("del", "删除推主订阅")
 
 
 @del_sub.handle()
@@ -89,7 +91,7 @@ async def _td_deal_del_sub(
     await del_sub.finish(result)
 
 
-get_sub_list = twitter.cmd_as_group("list", "获取本群推主订阅列表", permission=Permission())
+get_sub_list = plugin.cmd_as_group("list", "获取本群推主订阅列表", permission=Permission())
 
 
 @get_sub_list.handle()
@@ -115,7 +117,7 @@ async def _td_get_sub_list(event: GroupMessageEvent):
     await get_sub_list.finish(output)
 
 
-limit_content = twitter.cmd_as_group("limit", "设置订阅内容字数限制", permission=MASTER)
+limit_content = plugin.cmd_as_group("limit", "设置订阅内容字数限制", permission=MASTER)
 
 
 @limit_content.handle()
@@ -133,9 +135,9 @@ async def _td_deal_limit(
     if not re.match(patt, _limit):
         await limit_content.reject("请键入阿拉伯数字:")
 
-    global _CONTENT_LIMIT
-    _CONTENT_LIMIT = int(_limit)
-    await limit_content.finish(f"成功！订阅内容展示将限制在 {_CONTENT_LIMIT} 以内！")
+    global __CONTENT_LIMIT
+    __CONTENT_LIMIT = int(_limit)
+    await limit_content.finish(f"成功！订阅内容展示将限制在 {__CONTENT_LIMIT} 以内！")
 
 
 tq = asyncio.Queue()
@@ -143,7 +145,7 @@ tq = asyncio.Queue()
 
 class TwitterDynamicChecker(BaseTrigger):
     def get_next_fire_time(self, previous_fire_time, now):
-        conf = twitter.load_service("推特动态订阅")
+        conf = plugin.load_service("推特动态订阅")
         if conf.get("enabled"):
             return now
 
@@ -205,7 +207,7 @@ async def _check_td():
                 "name": info["name"],
                 "content": info["status"]["text"],
             }
-            content = sub.gen_output(data, _CONTENT_LIMIT)
+            content = sub.gen_output(data, __CONTENT_LIMIT)
 
             try:
                 await _bot.send_group_msg(group_id=m.group_id, message=content)

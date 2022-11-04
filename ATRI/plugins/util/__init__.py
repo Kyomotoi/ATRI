@@ -11,10 +11,10 @@ from ATRI.service import Service
 from .data_source import Encrypt, Yinglish, roll_dice
 
 
-utils = Service("小工具").document("非常实用(?)的工具们!")
+plugin = Service("小工具").document("非常实用(?)的工具们!")
 
 
-roll = utils.on_command("/roll", "骰子~用法: 1d10 或 2d10+2d10+more")
+roll = plugin.on_command("/roll", "骰子~用法: 1d10 或 2d10+2d10+more")
 
 
 @roll.handle()
@@ -35,7 +35,7 @@ async def _deal_roll(roll_msg: str = ArgPlainText("roll")):
     await roll.finish(msg)
 
 
-encrypt_en = utils.on_command("加密", "我们之间的秘密❤")
+encrypt_en = plugin.on_command("加密", "我们之间的秘密❤")
 
 
 @encrypt_en.handle()
@@ -55,7 +55,7 @@ async def _deal_en(text: str = ArgPlainText("encr_en_text")):
     await encrypt_en.finish(result)
 
 
-encrypt_de = utils.on_command("解密", "解开我们的秘密❤")
+encrypt_de = plugin.on_command("解密", "解开我们的秘密❤")
 
 
 @encrypt_de.handle()
@@ -72,7 +72,7 @@ async def _deal_de(text: str = ArgPlainText("encr_de_text")):
     await encrypt_de.finish(result)
 
 
-sepi = utils.on_command("涩批一下", "将正常的句子涩一涩~")
+sepi = plugin.on_command("涩批一下", "将正常的句子涩一涩~")
 
 
 _sepi_flmt_notice = choice(["涩批爬", "✌🥵✌"])

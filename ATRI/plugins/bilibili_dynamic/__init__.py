@@ -24,7 +24,7 @@ from ATRI.database import BilibiliSubscription
 from .data_source import BilibiliDynamicSubscriptor
 
 
-_CONTENT_LIMIT: int = 0
+__CONTENT_LIMIT = 0
 
 plugin = Service("b站动态订阅").document("b站动态订阅助手~").permission(ADMIN).main_cmd("/bd")
 sub = BilibiliDynamicSubscriptor()
@@ -136,9 +136,9 @@ async def _td_deal_limit(
     if not re.match(patt, _limit):
         await limit_content.reject("请键入阿拉伯数字:")
 
-    global _CONTENT_LIMIT
-    _CONTENT_LIMIT = int(_limit)
-    await limit_content.finish(f"成功！订阅内容展示将限制在 {_CONTENT_LIMIT} 以内！")
+    global __CONTENT_LIMIT
+    __CONTENT_LIMIT = int(_limit)
+    await limit_content.finish(f"成功！订阅内容展示将限制在 {__CONTENT_LIMIT} 以内！")
 
 
 tq = asyncio.Queue()
@@ -183,7 +183,7 @@ async def _():
         for i in result:
             i["name"] = m.up_nickname
             if ts < i["timestamp"]:
-                content = sub.gen_output(i, _CONTENT_LIMIT)
+                content = sub.gen_output(i, __CONTENT_LIMIT)
                 _pic = i.get("pic", None)
 
                 bot = get_bot()

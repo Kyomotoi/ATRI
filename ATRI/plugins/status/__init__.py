@@ -8,10 +8,10 @@ from ATRI.utils.apscheduler import scheduler
 from .data_source import Status
 
 
-stat = Service("状态").document("检查自身状态")
+plugin = Service("状态").document("检查自身状态")
 
 
-ping = stat.on_command("/ping", "检测bot简单信息处理速度")
+ping = plugin.on_command("/ping", "检测bot简单信息处理速度")
 
 
 @ping.handle()
@@ -19,7 +19,7 @@ async def _():
     await ping.finish(Status.ping())
 
 
-status = stat.on_command("/status", "查看运行资源占用")
+status = plugin.on_command("/status", "查看运行资源占用")
 
 
 @status.handle()

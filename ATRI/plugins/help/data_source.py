@@ -88,11 +88,11 @@ class Helper:
         except Exception:
             return "请检查是否输入错误呢...@bot 帮助 [服务]"
 
-        service_name = data.get("service", "error")
-        service_docs = data.get("docs", "error")
-        service_enabled = data.get("enabled", True)
+        service_name = data.service
+        service_docs = data.docs
+        service_enabled = data.enabled
 
-        _service_cmd_list = list(data.get("cmd_list", {"error"}))
+        _service_cmd_list = list(data.cmd_list)
         service_cmd_list = "\n".join(map(str, _service_cmd_list))
 
         repo = __SERVICE_INFO_FORMAT.format(
@@ -110,7 +110,7 @@ class Helper:
         except Exception:
             return "请检查是否输入错误..."
 
-        cmd_list: dict = data["cmd_list"]
+        cmd_list: dict = data.cmd_list
         cmd_info = cmd_list.get(cmd, dict())
         if not cmd_info:
             return "请检查命令是否输入错误..."

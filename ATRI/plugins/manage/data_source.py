@@ -147,8 +147,8 @@ class Manage:
             data = ServiceTools().load_service(service)
         except Exception:
             return False
-        data["enabled"] = is_enabled
-        ServiceTools().save_service(data, service)
+        data.enabled = is_enabled
+        ServiceTools().save_service(data.dict(), service)
         return True
 
     @staticmethod
@@ -160,7 +160,7 @@ class Manage:
             data = ServiceTools().load_service(service)
         except Exception:
             return False
-        temp_list: list = data.get("disable_user", list())
+        temp_list: list = data.disable_user
 
         if is_enabled:
             try:
@@ -173,8 +173,8 @@ class Manage:
 
             temp_list.append(user_id)
 
-        data["disable_user"] = temp_list
-        ServiceTools().save_service(data, service)
+        data.disable_user = temp_list
+        ServiceTools().save_service(data.dict(), service)
         return True
 
     @staticmethod
@@ -187,7 +187,7 @@ class Manage:
             data = ServiceTools().load_service(service)
         except Exception:
             return False
-        temp_list: list = data.get("disable_group", list())
+        temp_list: list = data.disable_group
 
         if is_enabled:
             try:
@@ -200,8 +200,8 @@ class Manage:
 
             temp_list.append(group_id)
 
-        data["disable_group"] = temp_list
-        ServiceTools().save_service(data, service)
+        data.disable_group = temp_list
+        ServiceTools().save_service(data.dict(), service)
         return True
 
     @staticmethod
