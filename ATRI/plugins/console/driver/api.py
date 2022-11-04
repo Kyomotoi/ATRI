@@ -2,7 +2,7 @@ import asyncio
 
 from fastapi import Depends, status
 from starlette.websockets import WebSocket, WebSocketState
-from websockets.exceptions import ConnectionClosedOK
+from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
 
 from .depends import *
 from .data_source import (
@@ -34,6 +34,8 @@ async def runtime_info(websocket: WebSocket, _pass=Depends(websocket_author)):
             await asyncio.sleep(1)
     except ConnectionClosedOK:
         pass
+    except ConnectionClosedError:
+        pass
     finally:
         await websocket.close()
     return
@@ -49,6 +51,8 @@ async def message_info(websocket: WebSocket, _pass=Depends(websocket_author)):
             await websocket.send_json(get_message_info())
             await asyncio.sleep(1)
     except ConnectionClosedOK:
+        pass
+    except ConnectionClosedError:
         pass
     finally:
         await websocket.close()
@@ -79,10 +83,10 @@ def block_list_info(_=Depends(http_author)):
     return {"status": status.HTTP_200_OK, "data": get_block_list()}
 
 
-def edit_block_list(
+async def edit_block_list(
     enabled: str, user_id: str = str(), group_id: str = str(), _=Depends(http_author)
 ):
     return {
         "status": status.HTTP_200_OK,
-        "data": _edit_block_list(bool(int(enabled)), user_id, group_id),
+        "data": await _edit_block_list(bool(int(enabled)), user_id, group_id),
     }
