@@ -40,12 +40,18 @@ class Setu(BaseModel):
     reverse_proxy_domain: str
 
 
+class GeoIP(BaseModel):
+    account_id: str
+    license_key: str
+
+
 class ConfigModel(BaseModel):
     ConfigVersion: str
     BotConfig: BotConfig
     WithGoCQHTTP: WithGoCQHTTP
     SauceNAO: SauceNAO
     Setu: Setu
+    GeoIP: GeoIP
 
 
 class RuntimeConfig(BaseModel):
