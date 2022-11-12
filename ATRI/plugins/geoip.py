@@ -16,10 +16,18 @@ async def _(ip_address: str = ArgStr()):
     with geoip2.webservice.Client(
         conf.GeoIP.account_id, conf.GeoIP.license_key, host="geolite.info"
     ) as client:
+        await query_geoip.send("正在查询...请稍候")
         response = client.city(ip_address)
         country = response.country.names[LANG]
         city = response.city.names[LANG]
+        org = response.traits.autonomous_system_organization
+        network = str(response.traits.network)
         subdivision = ""
-        if response.subdivisions:
-            subdivision = response.subdivisions[0].names[LANG]
-        await query_geoip.finish(f"IP: {ip_address}\n" f"{country}{subdivision}{city}")
+        if subs := response.subdivisions:
+            subdivision = subs[0].names[LANG]
+        await query_geoip.finish(
+            f"IP: {ip_address}\n"
+            f"{country}{subdivision}{city}\n"
+            f"运营商{org}\n"
+            f"网段{network}"
+        )

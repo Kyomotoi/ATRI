@@ -225,6 +225,8 @@ async def _():
         raw_data = json.loads(file_path.read_bytes())
         data = raw_data["data"]
         data = sorted(data, key=lambda x: x["recent_count"], reverse=True)
+        if len(data) == 0:
+            continue
         winner = data[0]
         winner_id = int(winner["user_id"])
         winner_nickname = winner["user_nickname"]
