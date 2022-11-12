@@ -23,3 +23,9 @@ async def post(url: str, **kwargs):
     log.debug(f"POST {url} by {proxy if proxy else 'No proxy'} | MORE: \n {kwargs}")
     async with httpx.AsyncClient(proxies=proxy, timeout=timeout) as client:  # type: ignore
         return await client.post(url, **kwargs)
+
+
+async def delete(url: str, **kwargs):
+    log.debug(f"DELETE {url} by {proxy if proxy else 'No proxy'} | MORE: \n {kwargs}")
+    async with httpx.AsyncClient(proxies=proxy, timeout=timeout) as client:  # type: ignore
+        return await client.delete(url, **kwargs)
