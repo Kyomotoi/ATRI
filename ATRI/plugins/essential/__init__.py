@@ -45,7 +45,7 @@ friend_add_event = plugin.on_request("好友申请", "好友申请检测")
 
 
 @friend_add_event.handle()
-async def _(event: FriendRequestEvent):
+async def _(bot: Bot, event: FriendRequestEvent):
     path = __ESSENTIAL_DIR / "friend_add.json"
     file = FileDealer(path)
     if not path.is_file():
@@ -62,7 +62,7 @@ async def _(event: FriendRequestEvent):
         user_id=user_id,
         comment=apply_comment,
         time=now_time,
-    )
+    ).dict()
     await file.write(json.dumps(data))
 
     result = (
