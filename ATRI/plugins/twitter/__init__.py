@@ -177,7 +177,7 @@ async def _check_td():
 
         group_list = await _bot.get_group_list()
         gl = [f"{i['group_id']}" for i in group_list]
-        if m.group_id not in gl:
+        if str(m.group_id) not in gl:
             await sub.del_sub(m.tid, m.group_id)
             log.warning(f"群 {m.group_id} 不存在, 已删除订阅 {m.name}@{m.screen_name}")
 
