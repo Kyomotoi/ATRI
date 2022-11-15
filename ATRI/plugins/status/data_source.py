@@ -3,13 +3,12 @@ import time
 import psutil
 from datetime import datetime
 
-from ATRI.service import Service
 from ATRI.message import MessageBuilder
 from ATRI.exceptions import GetStatusError
 
 
 _STATUS_MSG = (
-    MessageBuilder("> Status Overview")
+    MessageBuilder("[Status Overview]")
     .text("[CPU: {b_cpu}% of {p_cpu}%]")
     .text("[Memory: {b_mem} of {p_mem}%]")
     .text("[Disk usage: {p_disk}%]")
@@ -17,8 +16,9 @@ _STATUS_MSG = (
     .text("[Net sent: {inteSENT}MB]")
     .text("[Net recv: {inteRECV}MB]")
     .text("")
-    .text("[Bot runtime: {bot_time}]")
-    .text("[Platform runtime: {boot_time}]")
+    .text("[Run Duration]")
+    .text("[Bot: {bot_time}]")
+    .text("[Platform: {boot_time}]")
     .text("{msg}")
     .done()
 )
