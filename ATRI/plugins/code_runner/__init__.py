@@ -6,6 +6,7 @@ from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment, u
 from nonebot.adapters.onebot.v11.helpers import Cooldown
 
 from ATRI.service import Service
+from ATRI.utils import MessageChecker
 
 from .data_source import CodeRunner
 
@@ -26,7 +27,7 @@ async def _code_runner(matcher: Matcher, args: Message = CommandArg()):
         matcher.set_arg("opt", args)
     else:
         content = "请键入 /code.help 以获取帮助~！"
-        await code_runner.finish(Message(content))
+        await code_runner.finish(content)
 
 
 @code_runner.got("opt", prompt="需要运行的语言及代码？\n获取帮助：/code.help")
@@ -38,6 +39,9 @@ async def _(event: MessageEvent, opt: str = ArgPlainText("opt")):
         await code_runner.finish(CodeRunner().help())
 
     content = MessageSegment.at(user_id) + str(await CodeRunner().runner(unescape(opt)))
+    is_save = MessageChecker(str(content)).check_cq_code
+    if not is_save:
+        await code_runner.finish("有潜在的风险, 不予发送")
     await code_runner.finish(Message(content))
 
 
