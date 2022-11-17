@@ -1,6 +1,7 @@
 import pytz
 from datetime import datetime
 
+from ATRI.message import MessageBuilder
 from ATRI.exceptions import ThesaurusError
 
 from .db import DBForTS, DBForTAL
@@ -98,8 +99,14 @@ class ThesaurusManager:
             {"matcher": q, "group_id": group_id}, is_main
         )
         if query_result:
+            await self.del_item(_id, group_id, is_main)
             item_info = query_result[0]
-            return f"""{"(需审核/投票)" if not is_main else str()}该词条已存在！！ ID: {item_info._id}"""
+            return (
+                MessageBuilder(f"{str() if is_main else '(需审核/投票)'}该词条已存在!!")
+                .text(f"ID: {item_info._id}")
+                .text("因此, 此新增词条将被删除")
+                .done()
+            )
 
         if t == "全匹配":
             m_type = 0
