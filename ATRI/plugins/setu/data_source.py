@@ -72,11 +72,6 @@ class Setu:
         data = await detect_image(url, file_size)
         return data
 
-    @staticmethod
-    async def async_recall(bot: Bot, event_id):
-        await asyncio.sleep(30)
-        await bot.delete_msg(message_id=event_id)
-
 
 from ATRI import driver
 

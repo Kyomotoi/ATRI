@@ -37,9 +37,11 @@ async def _random_setu(bot: Bot, event: MessageEvent):
     except Exception:
         await random_setu.finish("hso（发不出")
 
-    event_id = msg_1["message_id"]
-    loop.create_task(Setu.async_recall(bot, event_id))
-    loop.close()
+    msg_id = msg_1["message_id"]
+    loop.call_later(
+        60,
+        lambda: loop.create_task(bot.delete_msg(message_id=msg_id))
+    )
 
 
 @random_setu.got("r_rush_after_think", prompt="看完不来点感想么-w-")
@@ -72,9 +74,11 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     except Exception:
         await random_setu.finish("hso（发不出")
 
-    event_id = msg_1["message_id"]
-    loop.create_task(Setu.async_recall(bot, event_id))
-    loop.close()
+    msg_id = msg_1["message_id"]
+    loop.call_later(
+        60,
+        lambda: loop.create_task(bot.delete_msg(message_id=msg_id))
+    )
 
 
 @tag_setu.got("t_rush_after_think", prompt="看完不来点感想么-w-")
