@@ -2,8 +2,6 @@ import os
 import re
 import json
 import pytz
-import yaml
-import time
 import string
 import asyncio
 import aiofiles
@@ -15,42 +13,53 @@ from collections import defaultdict
 from aiofiles.threadpool.text import AsyncTextIOWrapper
 
 
-def timestamp2datetimestr(timestamp: int) -> str:
-    format = "%Y-%m-%d %H:%M:%S"
-    tt = time.localtime(timestamp)
-    dt = time.strftime(format, tt)
-    return dt
-
-
-def timestamp2datetime(value: float) -> datetime:
-    tz = pytz.timezone("Asia/Shanghai")
-    return datetime.fromtimestamp(value, tz=tz)
-
-
-def now_time() -> float:
-    """获取当前时间的整数."""
-    now_ = datetime.now()
-    hour = now_.hour
-    minute = now_.minute
-    now = hour + minute / 60
-    return now
-
-
-def load_yml(file: Path, encoding="utf-8") -> dict:
-    """打开 yaml 格式的文件."""
-    with open(file, "r", encoding=encoding) as f:
-        data = yaml.safe_load(f)
-    return data
-
-
-def safe_string(value):
-    if isinstance(value, bytes):
-        return value.decode()
-    return str(value)
-
-
 def gen_random_str(k: int) -> str:
     return str().join(sample(string.ascii_letters + string.digits, k))
+
+
+class TimeDealer:
+    def __init__(self, timestamp: float):
+        """对时间进行处理
+
+        Args:
+            timestamp (int): _description_
+        """
+        self.timestamp = timestamp
+
+    def to_str(
+        self, tz=pytz.timezone("Asia/Shanghai"), format: str = "%Y-%m-%d %H:%M:%S"
+    ) -> str:
+        """将时间戳转换为格式化形式
+
+        Args:
+            tz: 时区. 默认: `pytz.timezone("Asia/Shanghai")`.
+            format: 时间格式. 默认: `"%Y-%m-%d %H:%M:%S"`.
+
+        Returns:
+            str: 格式化后的时间戳
+        """
+        return datetime.fromtimestamp(self.timestamp, tz).strftime(format)
+
+    def to_datetime(self, tz=pytz.timezone("Asia/Shanghai")) -> datetime:
+        """将时间戳转化成 datetime 类型
+
+        Args:
+            tz: 时区. 默认: `pytz.timezone("Asia/Shanghai")`.
+
+        Returns:
+            datetime: 转换后的 datetime 类型
+        """
+        return datetime.fromtimestamp(self.timestamp, tz)
+
+    def int_now(self) -> float:
+        """将时间戳转换为一天中整数的时间.
+        e.g. 9:30 > 9.50
+
+        Returns:
+            float: 转换后的整数时间
+        """
+        time = datetime.fromtimestamp(self.timestamp)
+        return time.hour + time.minute / 60
 
 
 class ListDealer:
@@ -241,7 +250,7 @@ class Limiter:
             loop = asyncio.get_running_loop()
             loop.call_later(self.down_time, self.reset)
             return False
-            
+
         return True
 
     def increase(self, key: str, times: int = 1) -> None:
