@@ -7,13 +7,12 @@ from pydantic.main import BaseModel
 
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import ActionFailed
-from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
 from nonebot.message import run_postprocessor
 
-from ATRI import conf
-
 from .log import log
-from .utils import gen_random_str
+from .message import MessageBuilder
+from .utils import Limiter, gen_random_str
 
 
 ERROR_DIR = Path(".") / "data" / "errors"
@@ -103,6 +102,9 @@ class RssError(BaseBotException):
     prompt = "RSS订阅错误"
 
 
+limiter = Limiter(3, 600)
+
+
 @run_postprocessor
 async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
     if not exception:
@@ -117,21 +119,23 @@ async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
         prompt = "请参考协议端输出"
         track_id = _save_error(prompt, format_exc())
     except Exception as err:
-        prompt = "Unknown ERROR->" + err.__class__.__name__
+        prompt = "UnkErr " + err.__class__.__name__
         track_id = _save_error(prompt, format_exc())
 
-    if isinstance(event, PrivateMessageEvent):
-        _id = "用户" + event.get_user_id()
-    elif isinstance(event, GroupMessageEvent):
-        _id = "群" + str(event.group_id)
-    else:
-        _id = "unknown"
-
     log.error(f"Error Track ID: {track_id}")
-    msg = f"呜——出错了...追踪: {track_id}\n来自: {_id}"
 
-    for superusers in conf.BotConfig.superusers:
-        try:
-            await bot.send_private_msg(user_id=superusers, message=msg)
-        except BaseBotException:
-            return
+    msg = (
+        MessageBuilder("呜——出错了...请反馈维护者")
+        .text(f"信息: {prompt}")
+        .text(f"追踪ID: {track_id}")
+    )
+    if isinstance(event, GroupMessageEvent):
+        group_id = str(event.group_id)
+        if not limiter.check(group_id):
+            msg = MessageBuilder("该群报错提示已达限制, 将冷却10min").text("如需反馈请: 来杯红茶")
+        limiter.increase(group_id)
+
+    try:
+        await matcher.finish(msg)
+    except Exception:
+        return
