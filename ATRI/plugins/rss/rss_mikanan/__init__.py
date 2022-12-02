@@ -17,7 +17,6 @@ from ATRI.log import log
 from ATRI.service import Service
 from ATRI.permission import ADMIN
 from ATRI.message import MessageBuilder
-from ATRI.plugins.rss.rss_rsshub.data_source import RssHubSubscriptor
 from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import RssMikananiSubcription
