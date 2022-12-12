@@ -9,7 +9,7 @@ from .models import SetuInfo
 from .nsfw_checker import detect_image, init_model
 
 
-__LOLICON_URL = "https://api.lolicon.app/setu/v2"
+_LOLICON_URL = "https://api.lolicon.app/setu/v2"
 
 
 class Setu:
@@ -29,9 +29,9 @@ class Setu:
         Returns:
             Tuple[MessageSegment, dict]: 涩图本体, 涩图信息
         """
-        url = __LOLICON_URL
+        url = _LOLICON_URL
         if tag:
-            url = __LOLICON_URL + f"?tag={tag}"
+            url = _LOLICON_URL + f"?tag={tag}"
         try:
             req = await request.get(url)
         except Exception:
