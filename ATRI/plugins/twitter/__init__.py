@@ -17,7 +17,7 @@ from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEve
 from ATRI.log import log
 from ATRI.service import Service
 from ATRI.permission import ADMIN
-from ATRI.utils import timestamp2datetime
+from ATRI.utils import TimeDealer
 from ATRI.utils.apscheduler import scheduler
 from ATRI.permission import MASTER
 from ATRI.database import TwitterSubscription
@@ -215,7 +215,7 @@ async def _check_td():
                 log.warning("推信息发送失败")
 
             await sub.update_sub(
-                m.tid, m.group_id, {"last_update": timestamp2datetime(ts_t)}
+                m.tid, m.group_id, {"last_update": TimeDealer(ts_t).to_datetime()}
             )
             if _pic:
                 pic = Message(MessageSegment.image(_pic))
