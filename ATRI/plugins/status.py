@@ -11,6 +11,7 @@ from ATRI.log import log
 from ATRI.service import Service
 from ATRI.message import MessageBuilder
 from ATRI.exceptions import GetStatusError
+from ATRI.utils import Limiter
 from ATRI.utils.apscheduler import scheduler
 
 
@@ -35,7 +36,10 @@ async def _():
     await status.finish(msg)
 
 
-@scheduler.scheduled_job("interval", name="状态检查", minutes=15, misfire_grace_time=15)
+limiter = Limiter(5, 21600)
+
+
+@scheduler.scheduled_job("interval", name="状态检查", minutes=30, misfire_grace_time=15)
 async def _():
     log.info("检查资源消耗中...")
     msg, stat = get_status()
@@ -46,8 +50,12 @@ async def _():
             bot = get_bot()
         except Exception:
             bot = None
-        
-        if bot: await plugin.send_to_master(msg)
+        if not limiter.check("114514"):
+            try:
+                if bot: await plugin.send_to_master(msg)
+                limiter.increase("114514")
+            except Exception:
+                return
     else:
         log.info("资源消耗正常")
 
