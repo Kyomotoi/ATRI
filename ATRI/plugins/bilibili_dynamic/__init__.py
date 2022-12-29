@@ -16,8 +16,8 @@ from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEve
 
 from ATRI.log import log
 from ATRI.service import Service
+from ATRI.utils import TimeDealer
 from ATRI.permission import MASTER, ADMIN
-from ATRI.utils import timestamp2datetime
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import BilibiliSubscription
 
@@ -192,7 +192,7 @@ async def _():
                     m.uid,
                     m.group_id,
                     {
-                        "last_update": timestamp2datetime(i["timestamp"]),
+                        "last_update": TimeDealer(float(i["timestamp"])).to_datetime(),
                     },
                 )
                 if _pic:

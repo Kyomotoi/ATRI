@@ -29,17 +29,17 @@ async def _():
 async def _random_setu(bot: Bot, event: MessageEvent):
     loop = asyncio.get_running_loop()
 
-    repo, se = await Setu.random_setu()
-    await bot.send(event, repo)
+    setu, setu_data = await Setu.new()
+    setu_info = f"Title: {setu_data.title}\nPid: {setu_data.pid}"
+    await bot.send(event, setu_info)
 
     try:
-        msg_1 = await bot.send(event, Message(se))
+        msg_1 = await bot.send(event, setu)
     except Exception:
-        await random_setu.finish("hso（发不出")
+        await random_setu.finish("hso (发不出")
 
-    event_id = msg_1["message_id"]
-    loop.create_task(Setu.async_recall(bot, event_id))
-    loop.close()
+    msg_id = msg_1["message_id"]
+    loop.call_later(60, lambda: loop.create_task(bot.delete_msg(message_id=msg_id)))
 
 
 @random_setu.got("r_rush_after_think", prompt="看完不来点感想么-w-")
@@ -54,27 +54,24 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
 tag_setu = plugin.on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
 
 
-@tag_setu.handle([Cooldown(120, prompt="慢...慢一..点❤")])
+@tag_setu.handle([Cooldown(120, prompt="")])
 async def _tag_setu(bot: Bot, event: MessageEvent):
     loop = asyncio.get_running_loop()
 
     msg = str(event.get_message()).strip()
     pattern = r"来[张点丶份](.*?)的[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
-    repo, se = await Setu.tag_setu(tag)
-    if not plugin:
-        await tag_setu.finish(repo)
-
-    await bot.send(event, repo)
+    setu, setu_data = await Setu.new(tag)
+    setu_info = f"Title: {setu_data.title}\nPid: {setu_data.pid}"
+    await bot.send(event, setu_info)
 
     try:
-        msg_1 = await bot.send(event, Message(se))
+        msg_1 = await bot.send(event, setu)
     except Exception:
-        await random_setu.finish("hso（发不出")
+        await random_setu.finish("hso (发不出")
 
-    event_id = msg_1["message_id"]
-    loop.create_task(Setu.async_recall(bot, event_id))
-    loop.close()
+    msg_id = msg_1["message_id"]
+    loop.call_later(60, lambda: loop.create_task(bot.delete_msg(message_id=msg_id)))
 
 
 @tag_setu.got("t_rush_after_think", prompt="看完不来点感想么-w-")
@@ -101,7 +98,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
         hso = list()
         for i in args:
             try:
-                data = await Setu.detecter(i, _catcher_max_file_size)
+                data = await Setu(i).detecter(_catcher_max_file_size)
             except Exception:
                 return
             if data > 0.7:
@@ -140,7 +137,7 @@ async def _deal_check(bot: Bot, event: MessageEvent):
     if not args:
         await nsfw_checker.reject("请发送图片而不是其他东西！！")
 
-    hso = await Setu.detecter(args[0], _catcher_max_file_size)
+    hso = await Setu(args[0]).detecter(_catcher_max_file_size)
     if not hso:
         await nsfw_checker.finish("图太小了！不测！")
 

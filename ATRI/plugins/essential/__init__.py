@@ -96,7 +96,7 @@ async def _(event: GroupRequestEvent):
         user_id=user_id,
         comment=apply_comment,
         time=now_time,
-    )
+    ).dict()
     await file.write(json.dumps(data))
 
     result = (

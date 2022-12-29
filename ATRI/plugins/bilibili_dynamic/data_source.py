@@ -3,7 +3,7 @@ from datetime import datetime
 from operator import itemgetter
 
 from ATRI.message import MessageBuilder
-from ATRI.utils import timestamp2datetime
+from ATRI.utils import TimeDealer
 from ATRI.exceptions import BilibiliDynamicError
 
 from .db import DB
@@ -95,7 +95,7 @@ class BilibiliDynamicSubscriptor:
             pattern["like"] = desc["like"]
             pattern["dynamic_id"] = desc["dynamic_id"]
             pattern["timestamp"] = desc["timestamp"]
-            pattern["time"] = timestamp2datetime(desc["timestamp"])
+            pattern["time"] = TimeDealer(float(desc["timestamp"])).to_datetime()
             pattern["type_zh"] = str()
 
             # alternative 部分

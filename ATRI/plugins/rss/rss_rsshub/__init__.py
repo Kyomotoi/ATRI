@@ -16,7 +16,7 @@ from nonebot.adapters.onebot.v11 import Message, GroupMessageEvent
 from ATRI.log import log
 from ATRI.service import Service
 from ATRI.permission import ADMIN
-from ATRI.utils import timestamp2datetime
+from ATRI.utils import TimeDealer
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import RssRsshubSubcription
 
@@ -164,5 +164,5 @@ async def _():
             bot = get_bot()
             await bot.send_group_msg(group_id=m.group_id, message=repo)
             await sub.update_sub(
-                m._id, m.group_id, {"update_time": timestamp2datetime(ts_t)}
+                m._id, m.group_id, {"update_time": TimeDealer(ts_t).to_datetime()}
             )

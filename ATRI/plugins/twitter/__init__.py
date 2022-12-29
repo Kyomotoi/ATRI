@@ -17,7 +17,7 @@ from nonebot.adapters.onebot.v11 import Message, MessageSegment, GroupMessageEve
 from ATRI.log import log
 from ATRI.service import Service
 from ATRI.permission import ADMIN
-from ATRI.utils import timestamp2datetime
+from ATRI.utils import TimeDealer
 from ATRI.utils.apscheduler import scheduler
 from ATRI.permission import MASTER
 from ATRI.database import TwitterSubscription
@@ -177,7 +177,7 @@ async def _check_td():
 
         group_list = await _bot.get_group_list()
         gl = [f"{i['group_id']}" for i in group_list]
-        if m.group_id not in gl:
+        if str(m.group_id) not in gl:
             await sub.del_sub(m.tid, m.group_id)
             log.warning(f"群 {m.group_id} 不存在, 已删除订阅 {m.name}@{m.screen_name}")
 
@@ -215,7 +215,7 @@ async def _check_td():
                 log.warning("推信息发送失败")
 
             await sub.update_sub(
-                m.tid, m.group_id, {"last_update": timestamp2datetime(ts_t)}
+                m.tid, m.group_id, {"last_update": TimeDealer(ts_t).to_datetime()}
             )
             if _pic:
                 pic = Message(MessageSegment.image(_pic))

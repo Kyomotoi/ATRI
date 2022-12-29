@@ -63,14 +63,3 @@ async def _deal_fake(
         await bot.send_group_forward_msg(group_id=group_id, messages=node)
     except Exception:
         await fake_msg.finish("构造失败惹...可能是被制裁了（")
-
-
-eat_what = plugin.on_regex(r"大?[今明后]天(.*?)吃[什啥]么?", "我来决定你吃什么！")
-
-
-@eat_what.handle([Cooldown(15, prompt="慢慢吃，不要贪心哦！")])
-async def _eat_what(event: MessageEvent):
-    msg = str(event.get_message())
-    user_name = event.sender.nickname or "裙友"
-    eat = await Funny().eat_what(user_name, msg)
-    await eat_what.finish(Message(eat))
