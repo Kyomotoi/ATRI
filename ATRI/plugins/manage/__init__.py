@@ -290,6 +290,8 @@ async def _deal_approve_friend_add(
     except Exception:
         await approve_friend_add.finish("同意失败...尝试下手动？")
     data = Manage().load_friend_apply_list()
+    if apply_code not in data:
+        await approve_friend_add.reject("申请码不存在...请检查是否输入正确")
     data.pop(apply_code)
     Manage().save_friend_apply_list(data)
     await approve_friend_add.finish("好欸！申请已通过！")
