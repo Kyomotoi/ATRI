@@ -1,5 +1,5 @@
 # 设置参考文档: https://atri.imki.moe/install/configuration-bot/
-ConfigVersion: "1.1.0"
+ConfigVersion: "1.2.0"
 
 BotConfig:
   host: "127.0.0.1"
@@ -35,5 +35,5 @@ Setu:
   reverse_proxy_domain: "i.pixiv.re"
 
 GeoIP:
-  account_id:
-  license_key:
+  account_id: 0
+  license_key: ""
