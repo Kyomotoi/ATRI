@@ -52,9 +52,10 @@ async def _():
             bot = None
         if not limiter.check("114514"):
             msg = "状态检查提示已达限制, 将冷却 6h"
-        
+
         try:
-            if bot: await plugin.send_to_master(msg)
+            if bot:
+                await plugin.send_to_master(msg)
             limiter.increase("114514")
         except Exception:
             return
