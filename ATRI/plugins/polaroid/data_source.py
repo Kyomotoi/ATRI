@@ -47,7 +47,7 @@ async def init_source():
                 with open(path, "wb") as w:
                     w.write(data.read())  # type: ignore
     except Exception:
-        ServiceTools.service_controller("拍立得", False)
+        ServiceTools("拍立得").service_controller(False)
         log.error(f"插件 polaroid 装载资源失败. 已自动禁用")
 
     log.success("插件 polaroid 装载资源完成")

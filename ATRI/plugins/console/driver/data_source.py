@@ -87,7 +87,7 @@ def get_service_list() -> dict:
 def edit_service(
     service: str, global_enabled: int, enabled: bool, user_id: str, group_id: str
 ):
-    data = ServiceTools.load_service(service)
+    data = ServiceTools(service).load_service()
 
     if global_enabled != 2 and global_enabled:
         data.enabled = bool(global_enabled)
@@ -115,7 +115,7 @@ def edit_service(
             else:
                 return {"detail": "群已存在于禁用名单"}
 
-    ServiceTools.save_service(data.dict(), service)
+    ServiceTools(service).save_service(data.dict())
 
     return {"detail": "操作完成~"}
 

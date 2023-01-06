@@ -258,7 +258,7 @@ async def init_source():
                 with open(file_path, "wb") as f:
                     f.write(data.read())  # type: ignore
     except Exception:
-        ServiceTools.service_controller("谁是卷王", False)
+        ServiceTools("谁是卷王").service_controller(False)
         log.error(f"插件 anti_effort 装载资源失败. 已自动禁用")
 
     log.success("插件 anti_effort 装载资源完成")

@@ -144,11 +144,11 @@ class Manage:
         Only SUPERUSER.
         """
         try:
-            data = ServiceTools().load_service(service)
+            data = ServiceTools(service).load_service()
         except Exception:
             return False
         data.enabled = is_enabled
-        ServiceTools().save_service(data.dict(), service)
+        ServiceTools(service).save_service(data.dict())
         return True
 
     @staticmethod
@@ -157,7 +157,7 @@ class Manage:
         Only SUPERUSER.
         """
         try:
-            data = ServiceTools().load_service(service)
+            data = ServiceTools(service).load_service()
         except Exception:
             return False
         temp_list: list = data.disable_user
@@ -174,7 +174,7 @@ class Manage:
             temp_list.append(user_id)
 
         data.disable_user = temp_list
-        ServiceTools().save_service(data.dict(), service)
+        ServiceTools(service).save_service(data.dict())
         return True
 
     @staticmethod
@@ -184,7 +184,7 @@ class Manage:
         Only current group.
         """
         try:
-            data = ServiceTools().load_service(service)
+            data = ServiceTools(service).load_service()
         except Exception:
             return False
         temp_list: list = data.disable_group
@@ -201,7 +201,7 @@ class Manage:
             temp_list.append(group_id)
 
         data.disable_group = temp_list
-        ServiceTools().save_service(data.dict(), service)
+        ServiceTools(service).save_service(data.dict())
         return True
 
     @staticmethod

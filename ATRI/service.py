@@ -369,37 +369,34 @@ class Service:
 
 class ServiceTools:
     """针对服务的工具类"""
+    def __init__(self, service: str):
+        self.service = service
 
-    @staticmethod
-    def save_service(service_data: dict, service: str):
-        path = SERVICES_DIR / f"{service}.json"
+    def save_service(self, service_data: dict):
+        path = SERVICES_DIR / f"{self.service}.json"
         if not path.is_file():
             raise ReadFileError(
-                f"Can't find service file: {service}\n"
-                "Please delete all file in data/service/services\n"
-                "And reboot bot."
+                f"无法找到服务 {self.service} 对应的信息文件\n"
+                "请删除此目录下的文件: data/service/services\n"
+                "接着重新启动"
             )
 
         with open(path, "w", encoding="utf-8") as w:
             w.write(json.dumps(service_data, indent=4))
 
-    @staticmethod
-    def load_service(service: str) -> ServiceInfo:
-        path = SERVICES_DIR / f"{service}.json"
+    def load_service(self) -> ServiceInfo:
+        path = SERVICES_DIR / f"{self.service}.json"
         if not path.is_file():
             raise ReadFileError(
-                f"Can't find service file: {service}\n"
-                "Please delete all file in data/service/services\n"
-                "And reboot bot."
+                f"无法找到服务 {self.service} 对应的信息文件\n"
+                "请删除此目录下的文件: data/service/services\n"
+                "接着重新启动"
             )
 
-        with open(path, "r", encoding="utf-8") as r:
-            data = json.loads(r.read())
         return ServiceInfo.parse_file(path)
 
-    @classmethod
-    def auth_service(cls, service, user_id: str = str(), group_id: str = str()) -> bool:
-        data = cls.load_service(service)
+    def auth_service(self, user_id: str = str(), group_id: str = str()) -> bool:
+        data = self.load_service()
 
         auth_global = data.enabled
         auth_user = data.disable_user
@@ -414,27 +411,26 @@ class ServiceTools:
 
         return auth_global
 
-    @classmethod
-    def service_controller(cls, service: str, is_enabled: bool):
-        data = cls.load_service(service)
+    def service_controller(self, is_enabled: bool):
+        data = self.load_service()
         data.enabled = is_enabled
-        cls.save_service(data.dict(), service)
+        self.save_service(data.dict())
 
 
 def is_in_service(service: str) -> Rule:
     async def _is_in_service(bot: Bot, event: Event) -> bool:
-        result = ServiceTools().auth_service(service)
+        result = ServiceTools(service).auth_service()
         if not result:
             return False
 
         if isinstance(event, PrivateMessageEvent):
             user_id = event.get_user_id()
-            result = ServiceTools().auth_service(service, user_id)
+            result = ServiceTools(service).auth_service(user_id)
             return result
         elif isinstance(event, GroupMessageEvent):
             user_id = event.get_user_id()
             group_id = str(event.group_id)
-            result = ServiceTools().auth_service(service, user_id, group_id)
+            result = ServiceTools(service).auth_service(user_id, group_id)
             return result
         else:
             return True

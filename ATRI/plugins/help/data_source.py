@@ -84,7 +84,7 @@ class Helper:
     @staticmethod
     def service_info(service: str) -> str:
         try:
-            data = ServiceTools().load_service(service)
+            data = ServiceTools(service).load_service()
         except Exception:
             return "请检查是否输入错误呢...@bot 帮助 (服务)"
 
@@ -106,7 +106,7 @@ class Helper:
     @staticmethod
     def cmd_info(service: str, cmd: str) -> str:
         try:
-            data = ServiceTools().load_service(service)
+            data = ServiceTools(service).load_service()
         except Exception:
             return "请检查是否输入错误..."
 
