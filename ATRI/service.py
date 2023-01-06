@@ -369,6 +369,7 @@ class Service:
 
 class ServiceTools:
     """针对服务的工具类"""
+
     def __init__(self, service: str):
         self.service = service
 
