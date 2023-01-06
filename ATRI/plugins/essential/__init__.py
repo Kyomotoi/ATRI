@@ -171,7 +171,7 @@ recall_event = plugin.on_notice("撤回事件", "撤回事件检测")
 
 @recall_event.handle()
 async def _(bot: Bot, event: FriendRecallNoticeEvent):
-    if event.is_tome() and not _acc_recall:
+    if not event.is_tome() and not _acc_recall:
         return
 
     try:
@@ -199,7 +199,7 @@ async def _(bot: Bot, event: FriendRecallNoticeEvent):
 
 @recall_event.handle()
 async def _(bot: Bot, event: GroupRecallNoticeEvent):
-    if event.is_tome() and not _acc_recall:
+    if not event.is_tome() and not _acc_recall:
         return
 
     try:
