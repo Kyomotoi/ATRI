@@ -133,7 +133,8 @@ async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
         group_id = str(event.group_id)
         if not limiter.check(group_id):
             msg = MessageBuilder("该群报错提示已达限制, 将冷却10min").text("如需反馈请: 来杯红茶")
-        limiter.increase(group_id)
+        else:
+            limiter.increase(group_id)
 
     try:
         await matcher.finish(msg)
