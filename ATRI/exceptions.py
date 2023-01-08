@@ -137,6 +137,6 @@ async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
             limiter.increase(group_id)
 
     try:
-        await matcher.finish(msg)
+        await bot.send(event, msg)
     except Exception:
         return

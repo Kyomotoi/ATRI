@@ -165,7 +165,7 @@ user_block_service = plugin.on_regex(r"对用户(.*?)禁用(.*)", "针对某一�
 async def _user_block_service(event: MessageEvent):
     msg = str(event.message).strip()
     pattern = r"对用户(.*?)禁用(.*)"
-    reg = re.findall(pattern, msg)
+    reg = re.findall(pattern, msg)[0]
     aim_user = reg[0]
     aim_service = reg[1]
 
@@ -182,7 +182,7 @@ user_unblock_service = plugin.on_regex(r"对用户(.*?)启用(.*)", "针对某�
 async def _user_unblock_service(event: MessageEvent):
     msg = str(event.message).strip()
     pattern = r"对用户(.*?)启用(.*)"
-    reg = re.findall(pattern, msg)
+    reg = re.findall(pattern, msg)[0]
     aim_user = reg[0]
     aim_service = reg[1]
 
