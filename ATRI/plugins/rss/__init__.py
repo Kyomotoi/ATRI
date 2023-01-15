@@ -15,7 +15,6 @@ rss_helper = (
     .document("Rss系插件助手")
     .only_admin(True)
     .permission(ADMIN)
-    .main_cmd("/rss")
 )
 
 
