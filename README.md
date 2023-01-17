@@ -128,7 +128,13 @@
 - linx 33.00 CNY
 - 屁东 5.00 CNY
 - A_Kyuu 200.00 CNY
-> Total: 543.92 CNY. 17 sponsors.
+- Copper_Sulfate 11.00 CNY
+- YQ233 11.00 CNY
+- Wuid 7.50 CNY
+- AfdianUser_veuW 5.00 CNY
+- KadiASD 7.50 CNY
+- (*°ω°*)ﾉ" 11.45 CNY
+> Total: 653.51 CNY. 25 sponsors.
 </details>
 
 ## 👥 贡献 | Contribution
