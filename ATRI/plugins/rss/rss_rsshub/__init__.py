@@ -1,7 +1,7 @@
-import pytz
+# from dateutil import tz
 import asyncio
 from tabulate import tabulate
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta, timezone as tz
 
 from apscheduler.triggers.base import BaseTrigger
 from apscheduler.triggers.combining import AndTrigger
@@ -17,6 +17,7 @@ from ATRI.log import log
 from ATRI.service import Service
 from ATRI.permission import ADMIN
 from ATRI.utils import TimeDealer
+from ATRI.message import MessageBuilder
 from ATRI.utils.apscheduler import scheduler
 from ATRI.database import RssRsshubSubcription
 
@@ -97,7 +98,10 @@ async def _(event: GroupMessageEvent):
 
     subs = list()
     for i in query_result:
-        subs.append([i.update_time, i.title])
+        t = i.update_time.replace(
+            tzinfo=tz(timedelta(hours=8))
+        )
+        subs.append([t, i.title])
 
     output = "本群的 RSSHub 订阅列表如下～\n" + tabulate(
         subs, headers=["最后更新时间", "标题"], tablefmt="plain"
@@ -135,10 +139,12 @@ async def _():
         m: RssRsshubSubcription = tq.get_nowait()
         log.info(f"准备查询 RssHub: {m.rss_link} 的动态, 队列剩余 {tq.qsize()}")
 
-        raw_ts = m.update_time.replace(
-            tzinfo=pytz.timezone("Asia/Shanghai")
-        ) + timedelta(hours=8)
-        ts = raw_ts.timestamp()
+        # raw_ts = m.update_time.replace(
+        #     tzinfo=pytz.timezone("Asia/Shanghai")
+        # ) + timedelta(hours=8)
+        # ts = raw_ts.timestamp()
+        ts = m.update_time.timestamp()
+        log.info(f"db time: {ts}")
 
         info: dict = await sub.get_rsshub_info(m.rss_link)
         if not info:
@@ -148,21 +154,27 @@ async def _():
         t_time = info["item"][0]["pubDate"]
         time_patt = "%a, %d %b %Y %H:%M:%S GMT"
 
-        raw_t = datetime.strptime(t_time, time_patt) + timedelta(hours=8)
-        ts_t = raw_t.timestamp()
+        # raw_t = datetime.strptime(t_time, time_patt) + timedelta(hours=8)
+        # ts_t = raw_t.timestamp()
+        log.info(f"rsshub time: {t_time}")
+        ts_t = datetime.strptime(t_time, time_patt).timestamp()
+        log.info(f"rsshub time: {ts_t}")
 
         if ts < ts_t:
             item = info["item"][0]
             title = item["title"]
             link = item["link"]
 
-            repo = f"""本群订阅的 RssHub 更新啦！
-            {title}
-            {link}
-            """
+            repo = (
+                MessageBuilder("本群订阅的 RssHub 更新啦!")
+                .text(f"标题: {title}")
+                .text(
+                    f"链接: {link}".replace("https://", str()).replace("http://", str())
+                )
+            )
 
             bot = get_bot()
             await bot.send_group_msg(group_id=m.group_id, message=repo)
             await sub.update_sub(
-                m._id, m.group_id, {"update_time": TimeDealer(ts_t).to_datetime()}
+                m._id, m.group_id, {"update_time": TimeDealer(ts_t, tz(timedelta(hours=0))).to_datetime()}
             )

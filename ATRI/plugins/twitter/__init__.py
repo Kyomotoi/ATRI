@@ -1,8 +1,7 @@
 import re
-import pytz
 import asyncio
 from tabulate import tabulate
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as tz
 
 from apscheduler.triggers.base import BaseTrigger
 from apscheduler.triggers.combining import AndTrigger
@@ -104,12 +103,10 @@ async def _td_get_sub_list(event: GroupMessageEvent):
 
     subs = list()
     for i in query_result:
-        raw_tm = (
-            i.last_update.replace(tzinfo=pytz.timezone("Asia/Shanghai"))
-            + timedelta(hours=8, minutes=8)
+        t = (
+            i.last_update.replace(tzinfo=tz(timedelta(hours=8)))
         ).timestamp()
-        tm = datetime.fromtimestamp(raw_tm).strftime("%m-%d %H:%M:%S")
-        subs.append([i.name, tm])
+        subs.append([i.name, t])
 
     output = "本群订阅的推主列表如下～\n" + tabulate(
         subs, headers=["推主", "最后更新时间"], tablefmt="plain"
@@ -183,10 +180,11 @@ async def _check_td():
 
         log.info(f"准备查询推主 {m.name}@{m.screen_name} 的动态，队列剩余 {tq.qsize()}")
 
-        raw_ts = m.last_update.replace(
-            tzinfo=pytz.timezone("Asia/Shanghai")
-        ) + timedelta(hours=8, minutes=8)
-        ts = raw_ts.timestamp()
+        # raw_ts = m.last_update.replace(
+        #     tzinfo=pytz.timezone("Asia/Shanghai")
+        # ) + timedelta(hours=8, minutes=8)
+        # ts = raw_ts.timestamp()
+        ts = m.last_update.timestamp()
 
         info: dict = await sub.get_twitter_user_info(m.screen_name)
         if not info.get("status", list()):
@@ -196,8 +194,9 @@ async def _check_td():
         t_time = info["status"]["created_at"]
         time_patt = "%a %b %d %H:%M:%S +0000 %Y"
 
-        raw_t = datetime.strptime(t_time, time_patt) + timedelta(hours=8)
-        ts_t = raw_t.timestamp()
+        # raw_t = datetime.strptime(t_time, time_patt) + timedelta(hours=8)
+        # ts_t = raw_t.timestamp()
+        ts_t = datetime.strptime(t_time, time_patt).timestamp()
 
         if ts < ts_t:
             raw_media = info["status"]["entities"].get("media", dict())
@@ -215,7 +214,7 @@ async def _check_td():
                 log.warning("推信息发送失败")
 
             await sub.update_sub(
-                m.tid, m.group_id, {"last_update": TimeDealer(ts_t).to_datetime()}
+                m.tid, m.group_id, {"last_update": TimeDealer(ts_t, tz(timedelta(hours=0))).to_datetime()}
             )
             if _pic:
                 pic = Message(MessageSegment.image(_pic))

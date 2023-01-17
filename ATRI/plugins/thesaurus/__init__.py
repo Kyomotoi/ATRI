@@ -1,5 +1,5 @@
-import pytz
 from tabulate import tabulate
+from datetime import timedelta, timezone as tz
 
 from nonebot.matcher import Matcher
 from nonebot.params import ArgPlainText, CommandArg, ArgStr
@@ -710,7 +710,7 @@ async def _info_normal_get_item_info(
         operator=item_info.operator,
         operator_id=item_info.operator_id,
         update_time=item_info.update_time.replace(
-            tzinfo=pytz.timezone("Asia/Shanghai")
+            tzinfo=tz(timedelta(hours=8))
         ),
         is_vote="是" if item_info.is_vote else "否",
         vote_list=item_info.vote_list,
@@ -752,7 +752,7 @@ async def _info_global_get_item_info(_id: str = ArgPlainText("info_global_item_i
         operator=item_info.operator,
         operator_id=item_info.operator_id,
         update_time=item_info.update_time.replace(
-            tzinfo=pytz.timezone("Asia/Shanghai")
+            tzinfo=tz(timedelta(hours=8))
         ),
         is_vote="是" if item_info.is_vote else "否",
         vote_list=item_info.vote_list,
@@ -798,7 +798,7 @@ async def _info_vote_get_item_info(
         operator=item_info.operator,
         operator_id=item_info.operator_id,
         update_time=item_info.update_time.replace(
-            tzinfo=pytz.timezone("Asia/Shanghai")
+            tzinfo=tz(timedelta(hours=8))
         ),
         is_vote="是" if item_info.is_vote else "否",
         vote_list=item_info.vote_list,

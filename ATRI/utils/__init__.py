@@ -1,7 +1,6 @@
 import os
 import re
 import json
-import pytz
 import string
 import asyncio
 import aiofiles
@@ -18,38 +17,36 @@ def gen_random_str(k: int) -> str:
 
 
 class TimeDealer:
-    def __init__(self, timestamp: float):
+    def __init__(self, timestamp: float, timezone):
         """对时间进行处理
 
         Args:
-            timestamp (int): _description_
+            timestamp (float): 时间戳
+            timezone (_type_): 时区 (datetime.timezone)
         """
         self.timestamp = timestamp
+        self.timezone = timezone
 
     def to_str(
-        self, tz=pytz.timezone("Asia/Shanghai"), format: str = "%Y-%m-%d %H:%M:%S"
+        self, format: str = "%Y-%m-%d %H:%M:%S"
     ) -> str:
         """将时间戳转换为格式化形式
 
         Args:
-            tz: 时区. 默认: `pytz.timezone("Asia/Shanghai")`.
             format: 时间格式. 默认: `"%Y-%m-%d %H:%M:%S"`.
 
         Returns:
             str: 格式化后的时间戳
         """
-        return datetime.fromtimestamp(self.timestamp, tz).strftime(format)
+        return datetime.fromtimestamp(self.timestamp, self.timezone).strftime(format)
 
-    def to_datetime(self, tz=pytz.timezone("Asia/Shanghai")) -> datetime:
+    def to_datetime(self) -> datetime:
         """将时间戳转化成 datetime 类型
-
-        Args:
-            tz: 时区. 默认: `pytz.timezone("Asia/Shanghai")`.
 
         Returns:
             datetime: 转换后的 datetime 类型
         """
-        return datetime.fromtimestamp(self.timestamp, tz)
+        return datetime.fromtimestamp(self.timestamp, self.timezone)
 
     def int_now(self) -> float:
         """将时间戳转换为一天中整数的时间.
@@ -58,7 +55,7 @@ class TimeDealer:
         Returns:
             float: 转换后的整数时间
         """
-        time = datetime.fromtimestamp(self.timestamp)
+        time = datetime.fromtimestamp(self.timestamp, self.timezone)
         return time.hour + time.minute / 60
 
 

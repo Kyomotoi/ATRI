@@ -1,7 +1,6 @@
-import pytz
 import asyncio
 from tabulate import tabulate
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta, timezone as tz
 
 from apscheduler.triggers.base import BaseTrigger
 from apscheduler.triggers.combining import AndTrigger
@@ -136,10 +135,11 @@ async def _():
         data: RssMikananiSubcription = tq.get_nowait()
         log.info(f"准备查询 Mikan: {data.title} 的动态, 队列剩余 {tq.qsize()}")
 
-        raw_ts = data.update_time.replace(
-            tzinfo=pytz.timezone("Asia/Shanghai")
-        ) + timedelta(hours=8)
-        ts = raw_ts.timestamp()
+        # raw_ts = data.update_time.replace(
+        #     tzinfo=pytz.timezone("Asia/Shanghai")
+        # ) + timedelta(hours=8)
+        # ts = raw_ts.timestamp()
+        ts = data.update_time.timestamp()
 
         info = await sub.get_mikan_info(data.rss_link)
         if not info:
@@ -167,5 +167,5 @@ async def _():
             bot = get_bot()
             await bot.send_group_msg(group_id=data.group_id, message=repo)
             await sub.update_sub(
-                data._id, data.group_id, {"update_time": TimeDealer(m_t).to_datetime()}
+                data._id, data.group_id, {"update_time": TimeDealer(m_t, tz(timedelta(hours=8))).to_datetime()}
             )

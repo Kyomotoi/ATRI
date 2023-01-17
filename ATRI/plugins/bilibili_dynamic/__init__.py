@@ -1,8 +1,7 @@
 import re
-import pytz
 import asyncio
 from tabulate import tabulate
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as tz
 
 from apscheduler.triggers.base import BaseTrigger
 from apscheduler.triggers.combining import AndTrigger
@@ -106,7 +105,7 @@ async def _bd_get_sub_list(event: GroupMessageEvent):
     subs = list()
     for i in query_result:
         raw_tm = (
-            i.last_update.replace(tzinfo=pytz.timezone("Asia/Shanghai"))
+            i.last_update.replace(tzinfo=tz(timedelta(hours=8)))
             + timedelta(hours=8)
         ).timestamp()
         tm = datetime.fromtimestamp(raw_tm).strftime("%m-%d %H:%M:%S")
@@ -192,7 +191,7 @@ async def _():
                     m.uid,
                     m.group_id,
                     {
-                        "last_update": TimeDealer(float(i["timestamp"])).to_datetime(),
+                        "last_update": TimeDealer(float(i["timestamp"]), tz(timedelta(hours=8))).to_datetime(),
                     },
                 )
                 if _pic:

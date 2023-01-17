@@ -1,5 +1,4 @@
-import pytz
-from datetime import datetime
+from datetime import datetime, timedelta, timezone as tz
 
 from ATRI.message import MessageBuilder
 from ATRI.exceptions import ThesaurusError
@@ -123,7 +122,7 @@ class ThesaurusManager:
             "group_id": group_id,
             "operator": operator,
             "operator_id": operator_id,
-            "update_time": datetime.now(pytz.timezone("Asia/Shanghai")),
+            "update_time": datetime.now(tz(timedelta(hours=8))),
             "is_vote": is_vote,
             "vote_list": vote_list,
         }
@@ -158,7 +157,7 @@ class ThesaurusManager:
             group_id,
             {
                 "vote_list": vote_list,
-                "update_time": datetime.now(pytz.timezone("Asia/Shanghai")),
+                "update_time": datetime.now(tz(timedelta(hours=8))),
             },
         )
 
