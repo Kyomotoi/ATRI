@@ -135,10 +135,6 @@ async def _():
         data: RssMikananiSubcription = tq.get_nowait()
         log.info(f"准备查询 Mikan: {data.title} 的动态, 队列剩余 {tq.qsize()}")
 
-        # raw_ts = data.update_time.replace(
-        #     tzinfo=pytz.timezone("Asia/Shanghai")
-        # ) + timedelta(hours=8)
-        # ts = raw_ts.timestamp()
         ts = data.update_time.timestamp()
 
         info = await sub.get_mikan_info(data.rss_link)

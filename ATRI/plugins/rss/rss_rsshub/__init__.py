@@ -1,4 +1,3 @@
-# from dateutil import tz
 import asyncio
 from tabulate import tabulate
 from datetime import datetime, timedelta, timezone as tz
@@ -139,13 +138,7 @@ async def _():
         m: RssRsshubSubcription = tq.get_nowait()
         log.info(f"准备查询 RssHub: {m.rss_link} 的动态, 队列剩余 {tq.qsize()}")
 
-        # raw_ts = m.update_time.replace(
-        #     tzinfo=pytz.timezone("Asia/Shanghai")
-        # ) + timedelta(hours=8)
-        # ts = raw_ts.timestamp()
         ts = m.update_time.timestamp()
-        log.info(f"db time: {ts}")
-
         info: dict = await sub.get_rsshub_info(m.rss_link)
         if not info:
             log.warning(f"无法获取 RssHub: {m.rss_link} 的动态")
@@ -154,11 +147,7 @@ async def _():
         t_time = info["item"][0]["pubDate"]
         time_patt = "%a, %d %b %Y %H:%M:%S GMT"
 
-        # raw_t = datetime.strptime(t_time, time_patt) + timedelta(hours=8)
-        # ts_t = raw_t.timestamp()
-        log.info(f"rsshub time: {t_time}")
         ts_t = datetime.strptime(t_time, time_patt).timestamp()
-        log.info(f"rsshub time: {ts_t}")
 
         if ts < ts_t:
             item = info["item"][0]
