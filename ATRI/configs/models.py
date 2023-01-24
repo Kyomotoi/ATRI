@@ -41,7 +41,7 @@ class Setu(BaseModel):
 
 
 class GeoIP(BaseModel):
-    account_id: str
+    account_id: int
     license_key: str
 
 
