@@ -163,5 +163,7 @@ async def _():
             bot = get_bot()
             await bot.send_group_msg(group_id=data.group_id, message=repo)
             await sub.update_sub(
-                data._id, data.group_id, {"update_time": TimeDealer(m_t, tz(timedelta(hours=8))).to_datetime()}
+                data._id,
+                data.group_id,
+                {"update_time": TimeDealer(m_t, tz(timedelta(hours=8))).to_datetime()},
             )

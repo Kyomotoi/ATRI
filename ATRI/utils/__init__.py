@@ -27,9 +27,7 @@ class TimeDealer:
         self.timestamp = timestamp
         self.timezone = timezone
 
-    def to_str(
-        self, format: str = "%Y-%m-%d %H:%M:%S"
-    ) -> str:
+    def to_str(self, format: str = "%Y-%m-%d %H:%M:%S") -> str:
         """将时间戳转换为格式化形式
 
         Args:

@@ -95,7 +95,9 @@ class BilibiliDynamicSubscriptor:
             pattern["like"] = desc["like"]
             pattern["dynamic_id"] = desc["dynamic_id"]
             pattern["timestamp"] = desc["timestamp"]
-            pattern["time"] = TimeDealer(float(desc["timestamp"]), tz(timedelta(hours=8))).to_datetime()
+            pattern["time"] = TimeDealer(
+                float(desc["timestamp"]), tz(timedelta(hours=8))
+            ).to_datetime()
             pattern["type_zh"] = str()
 
             # alternative 部分
