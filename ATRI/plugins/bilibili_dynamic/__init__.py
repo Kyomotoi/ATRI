@@ -105,8 +105,7 @@ async def _bd_get_sub_list(event: GroupMessageEvent):
     subs = list()
     for i in query_result:
         raw_tm = (
-            i.last_update.replace(tzinfo=tz(timedelta(hours=8)))
-            + timedelta(hours=8)
+            i.last_update.replace(tzinfo=tz(timedelta(hours=8))) + timedelta(hours=8)
         ).timestamp()
         tm = datetime.fromtimestamp(raw_tm).strftime("%m-%d %H:%M:%S")
         subs.append([i.up_nickname, tm])
@@ -191,7 +190,9 @@ async def _():
                     m.uid,
                     m.group_id,
                     {
-                        "last_update": TimeDealer(float(i["timestamp"]), tz(timedelta(hours=8))).to_datetime(),
+                        "last_update": TimeDealer(
+                            float(i["timestamp"]), tz(timedelta(hours=8))
+                        ).to_datetime(),
                     },
                 )
                 if _pic:

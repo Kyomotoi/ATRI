@@ -103,9 +103,7 @@ async def _td_get_sub_list(event: GroupMessageEvent):
 
     subs = list()
     for i in query_result:
-        t = (
-            i.last_update.replace(tzinfo=tz(timedelta(hours=8)))
-        ).timestamp()
+        t = (i.last_update.replace(tzinfo=tz(timedelta(hours=8)))).timestamp()
         subs.append([i.name, t])
 
     output = "本群订阅的推主列表如下～\n" + tabulate(
@@ -214,7 +212,9 @@ async def _check_td():
                 log.warning("推信息发送失败")
 
             await sub.update_sub(
-                m.tid, m.group_id, {"last_update": TimeDealer(ts_t, tz(timedelta(hours=0))).to_datetime()}
+                m.tid,
+                m.group_id,
+                {"last_update": TimeDealer(ts_t, tz(timedelta(hours=0))).to_datetime()},
             )
             if _pic:
                 pic = Message(MessageSegment.image(_pic))

@@ -97,9 +97,7 @@ async def _(event: GroupMessageEvent):
 
     subs = list()
     for i in query_result:
-        t = i.update_time.replace(
-            tzinfo=tz(timedelta(hours=8))
-        )
+        t = i.update_time.replace(tzinfo=tz(timedelta(hours=8)))
         subs.append([t, i.title])
 
     output = "本群的 RSSHub 订阅列表如下～\n" + tabulate(
@@ -165,5 +163,7 @@ async def _():
             bot = get_bot()
             await bot.send_group_msg(group_id=m.group_id, message=repo)
             await sub.update_sub(
-                m._id, m.group_id, {"update_time": TimeDealer(ts_t, tz(timedelta(hours=0))).to_datetime()}
+                m._id,
+                m.group_id,
+                {"update_time": TimeDealer(ts_t, tz(timedelta(hours=0))).to_datetime()},
             )
