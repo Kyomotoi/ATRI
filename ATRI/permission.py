@@ -2,14 +2,13 @@ import json
 
 from nonebot.adapters import Bot, Event
 from nonebot.permission import Permission as _Permission
-from nonebot.adapters.onebot.v11 import GROUP_OWNER, GROUP_ADMIN as _GROUP_ADMIN
 from nonebot.adapters.onebot.v11 import GroupMessageEvent
 
 from ATRI import conf
-from ATRI.configs.config import CONFIG_PATH
+from ATRI.configs.config import CONFIG_DATA_PATH
 
 
-MASTER_FILE_PATH = CONFIG_PATH / "master.json"
+MASTER_FILE_PATH = CONFIG_DATA_PATH / "master.json"
 if not MASTER_FILE_PATH.is_file():
     with open(MASTER_FILE_PATH, "w") as w:
         w.write(json.dumps(list()))
