@@ -21,7 +21,7 @@ async def _(matcher: Matcher, event: MessageEvent):
 
     if not "nonebot_" in plugin_name:
         return
-    
+
     if not "gocqhttp" in plugin_name:
         serv = ServiceTools(plugin_name)
         try:

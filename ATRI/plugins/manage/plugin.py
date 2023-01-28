@@ -27,7 +27,7 @@ class NonebotPluginManager:
         if not self._conf_path.is_file():
             with open(self._conf_path, "w", encoding="utf-8") as w:
                 w.write(json.dumps(list()))
-            
+
             with open(".env.prod", "w", encoding="utf-8") as w:
                 w.write("# 请在此填写来自 Nonebot 商店的插件设置, 填写后需重启以生效")
 

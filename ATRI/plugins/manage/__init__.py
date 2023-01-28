@@ -499,7 +499,9 @@ async def _(
     await remove_nonebot_plugin.finish(result)
 
 
-upgrade_nonebot_plugin = plugin.on_command("更新插件", "更新来自 Nonebot 商店的插件", aliases={"升级插件"})
+upgrade_nonebot_plugin = plugin.on_command(
+    "更新插件", "更新来自 Nonebot 商店的插件", aliases={"升级插件"}
+)
 
 
 @upgrade_nonebot_plugin.handle()
@@ -507,7 +509,7 @@ async def _(event: MessageEvent):
     result = NonebotPluginManager.upgrade_plugin()
     if not result:
         await upgrade_nonebot_plugin.finish("当前没有插件可更新...")
-    
+
     msg = "更新完成~! 成功更新:" + "\n".join(map(str, result))
     await upgrade_nonebot_plugin.finish(msg)
 
