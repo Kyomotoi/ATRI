@@ -264,11 +264,3 @@ async def _():
         __TEMP_DIR.mkdir(parents=True, exist_ok=True)
     except Exception:
         log.warning("清除缓存失败, 请手动清除: data/temp")
-
-
-from ATRI import driver
-
-from .listener import init_listener
-
-
-driver().on_startup(init_listener)
