@@ -145,6 +145,15 @@ class Service:
 
         self._main_cmd = (cmd,)
         return self
+    
+    def is_nonebot_plugin(self) -> "Service":
+        cmd_list = self.__load_cmds()
+        name = "请参考对应插件文档"
+        cmd_list[name] = CommandInfo(
+            type="ignore", docs=str(), aliases=list()
+        ).dict()
+        self.__save_cmds(cmd_list)
+        return self
 
     def get_path(self) -> Path:
         return self._path
@@ -395,6 +404,10 @@ class ServiceTools:
             )
 
         return ServiceInfo.parse_file(path)
+    
+    def del_service(self):
+        path = SERVICES_DIR / f"{self.service}.json"
+        path.unlink()
 
     def auth_service(self, user_id: str = str(), group_id: str = str()) -> bool:
         data = self.load_service()

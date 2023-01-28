@@ -6,9 +6,11 @@ from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent, GroupMessage
 
 from ATRI.rule import to_bot
 from ATRI.service import Service
+from ATRI.message import MessageBuilder
 from ATRI.permission import MASTER, ADMIN
 
 from .data_source import Manage
+from .plugin import NonebotPluginManager
 
 
 plugin = Service("管理").document("控制bot的各项服务").only_admin(True).permission(MASTER)
@@ -441,3 +443,87 @@ async def _recall_msg(bot: Bot, event: MessageEvent):
         await recall_msg.finish("无法获取必要信息...没法撤回惹...")
 
     await bot.delete_msg(message_id=recall_id)
+
+
+add_nonebot_plugin = plugin.on_command("添加插件", "添加来自 nonebot 商店的插件")
+
+
+@add_nonebot_plugin.got("plguin_name", "插件名呢?")
+async def _(plugin_name: str = ArgPlainText("plguin_name")):
+    nbm = NonebotPluginManager().assign_plugin(plugin_name)
+
+    if nbm.plugin_is_exist(True):
+        await add_nonebot_plugin.finish("该插件已存在")
+
+    if not (plugin_info := nbm.get_plugin_info()):
+        await add_nonebot_plugin.finish("未找到该插件")
+
+    msg = (
+        MessageBuilder(f"[{plugin_name}]")
+        .text(f"名称: {plugin_info.name}")
+        .text(f"说明: {plugin_info.desc}")
+        .text(f"作者: {plugin_info.author}")
+        .text(f"插件主页: {plugin_info.homepage}")
+        .text(f"{str() if plugin_info.is_official else '[!] 非'}官方插件")
+    )
+    await add_nonebot_plugin.send(msg)
+
+
+@add_nonebot_plugin.got("att", "是否安装(y/n)")
+async def _(
+    att: str = ArgPlainText("att"), plugin_name: str = ArgPlainText("plguin_name")
+):
+    if att not in ["y", "Y", "是"]:
+        await add_nonebot_plugin.finish("反悔了呢")
+
+    nbm = NonebotPluginManager().assign_plugin(plugin_name)
+    result = nbm.add_plugin()
+    await add_nonebot_plugin.finish(result)
+
+
+remove_nonebot_plugin = plugin.on_command(
+    "移除插件", "移除来自 nonebot 商店的插件", aliases={"删除插件", "卸载插件"}
+)
+
+
+@remove_nonebot_plugin.got("plugin_name", "要移除的插件名呢?")
+@remove_nonebot_plugin.got("att", "确定吗(y/n)")
+async def _(
+    att: str = ArgPlainText("att"), plugin_name: str = ArgPlainText("plugin_name")
+):
+    if att not in ["y", "Y", "是"]:
+        await remove_nonebot_plugin.finish("反悔了呢")
+
+    nbm = NonebotPluginManager().assign_plugin(plugin_name)
+    result = nbm.remove_plugin()
+    await remove_nonebot_plugin.finish(result)
+
+
+upgrade_nonebot_plugin = plugin.on_command("更新插件", "更新来自 Nonebot 商店的插件", aliases={"升级插件"})
+
+
+@upgrade_nonebot_plugin.handle()
+async def _(event: MessageEvent):
+    result = NonebotPluginManager.upgrade_plugin()
+    if not result:
+        await upgrade_nonebot_plugin.finish("当前没有插件可更新...")
+    
+    msg = "更新完成~! 成功更新:" + "\n".join(map(str, result))
+    await upgrade_nonebot_plugin.finish(msg)
+
+
+from ATRI import driver
+from ATRI.utils.apscheduler import scheduler
+
+from .listener import init_listener
+
+driver().on_startup(init_listener)
+driver().on_startup(NonebotPluginManager().get_store_list)
+driver().on_startup(NonebotPluginManager.load_plugin)
+scheduler.scheduled_job(
+    "interval",
+    name="Nonebot 商店刷新",
+    hours=1,
+    max_instances=3,
+    misfire_grace_time=60,
+)(NonebotPluginManager().get_store_list)
