@@ -9,7 +9,7 @@ class Console(C):
     def info(self, content: str, *args, **kwargs):
         text = "[blue][¡][/blue] " + content
         self.console.print(text, *args, **kwargs)
-    
+
     def success(self, content: str, *args, **kwargs):
         text = "[green][√][/green] " + content
         self.console.print(text, *args, **kwargs)
