@@ -118,7 +118,7 @@ class MessageChecker:
 
 class FileDealer:
     """
-    操作文件
+    异步方式操作文件
     """
 
     def __init__(self, path: Path, encoding: str = "utf-8"):
