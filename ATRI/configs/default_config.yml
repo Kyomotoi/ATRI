@@ -22,7 +22,7 @@ WithGoCQHTTP:
       protocol: {protocol}
   
   download_domain: "{download_domain}"
-  download_version: "v1.0.0-rc3"
+  download_version: "v1.0.0-rc4"
 
   gocq_webui_username: "ATRI"
   gocq_webui_password: "ATRI1314000***"
