@@ -49,7 +49,6 @@ class Helper:
             .text(f"咱的型号是：{__version__}")
             .text("想进一步了解:")
             .text("atri.imki.moe")
-            .text("进不去: project-atri-docs.vercel.app")
             .done()
         )
 
@@ -64,14 +63,14 @@ class Helper:
                 service = json.load(r)
                 services.append(
                     [
-                        prefix,
                         "√" if service["enabled"] else "×",
                         "√" if service["only_admin"] else "×",
+                        prefix,
                     ]
                 )
         table = tabulate(
             services,
-            headers=["服务名称", "开启状态(全局)", "仅支持管理员"],
+            headers=["开启状态(全局)", "仅管理员", "服务名称"],
             tablefmt="plain",
         )
         return (
