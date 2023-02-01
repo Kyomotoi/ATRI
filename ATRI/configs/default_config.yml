@@ -5,7 +5,7 @@ BotConfig:
   host: "{host}"
   port: {port}
   debug: false
-  superusers: [{superusers}]
+  superusers: {superusers}
   nickname: ["ATRI", "Atri", "atri", "亚托莉", "アトリ"]
   command_start: ["", "/"]
   command_sep: ["."]
