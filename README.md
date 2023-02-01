@@ -80,8 +80,6 @@
 ## 📖 文档 | Documentation
 所有公开的信息都可在 [atri.imki.moe](https://atri.imki.moe) 获取. 使用 [MkDocs](https://github.com/mkdocs/mkdocs/) 构建. 
 
-对于 Mainland 用户**无法**访问: [文档](https://project-atri-docs.vercel.app/).
-
 [文档仓库](https://github.com/Kyomotoi/Project-ATRI-Docs)
 
 ## ⚡️ 性能表现 | Performance
@@ -134,7 +132,11 @@
 - AfdianUser_veuW 5.00 CNY
 - KadiASD 7.50 CNY
 - (*°ω°*)ﾉ" 11.45 CNY
-> Total: 653.51 CNY. 25 sponsors.
+- lanx 6.66 CNY
+- Azazel_BBF 33.00 CNY
+- hongshi 10.00 CNY
+- 这是01 45.14 CNY
+> Total: 703.17 CNY. 25 sponsors.
 </details>
 
 ## 👥 贡献 | Contribution
