@@ -21,7 +21,6 @@ saucenao = plugin.on_command("以图搜图", "透过一张图搜索可能的来�
 
 @saucenao.got("saucenao_img", "图呢？", [Cooldown(5, prompt=_search_flmt_notice)])
 async def _deal_search(event: MessageEvent):
-
     # cache fix
     if not conf.SauceNAO.key:
         ServiceTools("以图搜图").service_controller(False)

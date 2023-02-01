@@ -186,7 +186,6 @@ class AntiEffort:
     async def gen_img(
         self, user_id: int, user_nickname: str, coding_time: float
     ) -> str:
-
         try:
             resp = await request.get(TENCENT_AVATER_URL.format(user_id=user_id))
         except Exception:
