@@ -126,6 +126,7 @@ async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
 
     msg = (
         MessageBuilder("呜——出错了...请反馈维护者")
+        .text(f"来自: {matcher.module_name}")
         .text(f"信息: {prompt}")
         .text(f"追踪ID: {track_id}")
     )
