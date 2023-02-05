@@ -85,8 +85,8 @@ def init_config(conf_path: Path, default_conf_path: Path):
     console.success("[white]至此, 所需基本配置已填写完毕[white]")
 
     raw_conf = default_conf_path.read_text("utf-8")
-    raw_conf = raw_conf.replace("{host}", host)
-    raw_conf = raw_conf.replace("{port}", port)
+    raw_conf = raw_conf.replace("{host}", str(host))
+    raw_conf = raw_conf.replace("{port}", str(port))
     raw_conf = raw_conf.replace("{superusers}", str(superusers.split(",")))
     raw_conf = raw_conf.replace("{access_token}", access_token)
     raw_conf = raw_conf.replace("{proxy}", proxy)
