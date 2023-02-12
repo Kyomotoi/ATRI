@@ -46,6 +46,9 @@ async def _():
     if not stat:
         log.warning("资源消耗异常")
 
+        if limiter.get_times("114514") > 5:
+            return
+
         try:
             bot = get_bot()
         except Exception:
