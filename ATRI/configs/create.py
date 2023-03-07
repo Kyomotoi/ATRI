@@ -53,7 +53,7 @@ def init_config(conf_path: Path, default_conf_path: Path):
         "是否启用内置的 gocqhttp? (y/n) (默认: y)", "y", str, "输入不正确 示例: y"
     )
     if is_use_with_gocq in ["y", "Y", "true", "True", "是"]:
-        uin = console.input("Bot 账号", str(), int, "输入不正确 示例: 1145141919")
+        uin = console.input("Bot 账号", "1145141919", int, "输入不正确 示例: 1145141919")
         password = console.input(
             "Bot 账号密码 (已做隐藏处理, 如不确定是否填写正确, 请查阅填写完毕后所生成的文件: config.yml)",
             str(),
