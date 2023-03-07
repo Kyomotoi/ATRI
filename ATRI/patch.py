@@ -51,7 +51,7 @@ async def simple_run(
     except StopPropagation:
         self.block = True
     finally:
-        logger.info(f"{self} running complete")
+        logger.debug(f"{self} running complete")
         current_bot.reset(b_t)
         current_event.reset(e_t)
         current_matcher.reset(m_t)

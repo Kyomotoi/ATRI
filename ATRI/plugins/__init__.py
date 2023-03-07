@@ -6,6 +6,8 @@ from ATRI.database import init_database, close_database_connection
 
 from time import sleep
 
+from ATRI.patch import *
+
 driver = ATRI.driver()
 
 
