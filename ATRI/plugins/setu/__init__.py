@@ -99,7 +99,9 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
         hso = list()
         for i in args:
             try:
-                data = await Setu(i).detecter(_catcher_max_file_size, _catcher_disab_gif)
+                data = await Setu(i).detecter(
+                    _catcher_max_file_size, _catcher_disab_gif
+                )
             except Exception:
                 return
             if data > 0.7:
