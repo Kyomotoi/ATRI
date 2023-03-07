@@ -57,16 +57,17 @@ class Setu:
 
         return setu, setu_data
 
-    async def detecter(self, max_size: int) -> float:
+    async def detecter(self, max_size: int, disab_gif: bool) -> float:
         """图片涩值检测
 
         Args:
             max_size (int): 检测文件大小限制
+            disab_gif (bool): 是否检测动图
 
         Returns:
             float: 百分比涩值
         """
-        return await detect_image(self.url, max_size)
+        return await detect_image(self.url, max_size, disab_gif)
 
 
 from ATRI import driver

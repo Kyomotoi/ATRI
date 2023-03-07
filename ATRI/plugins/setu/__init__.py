@@ -14,7 +14,7 @@ from ATRI.permission import MASTER
 from .data_source import Setu
 
 
-plugin = Service("涩图").document("hso!")
+plugin = Service("涩图").document("hso!").main_cmd("/setu")
 
 
 random_setu = plugin.on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
@@ -51,7 +51,7 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
         await random_setu.finish(is_repo)
 
 
-tag_setu = plugin.on_regex(r"来[张点丶份](.*?)的[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
+tag_setu = plugin.on_regex(r"来[张点丶份](.*?)的?[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
 
 
 @tag_setu.handle([Cooldown(120, prompt="")])
@@ -84,6 +84,7 @@ async def _(think: str = ArgPlainText("t_rush_after_think")):
 
 
 _catcher_max_file_size = 128
+_catcher_disab_gif = False
 
 
 setu_catcher = plugin.on_message("涩图嗅探", "涩图嗅探器", block=False)
@@ -98,7 +99,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
         hso = list()
         for i in args:
             try:
-                data = await Setu(i).detecter(_catcher_max_file_size)
+                data = await Setu(i).detecter(_catcher_max_file_size, _catcher_disab_gif)
             except Exception:
                 return
             if data > 0.7:
@@ -128,7 +129,7 @@ async def _setu_catcher(bot: Bot, event: MessageEvent):
             await bot.send_private_msg(user_id=superuser, message=s_repo)
 
 
-nsfw_checker = plugin.on_command("/nsfw", "涩值检测")
+nsfw_checker = plugin.cmd_as_group("nsfw", "涩值检测")
 
 
 @nsfw_checker.got("nsfw_img", "图呢？")
@@ -137,9 +138,9 @@ async def _deal_check(bot: Bot, event: MessageEvent):
     if not args:
         await nsfw_checker.reject("请发送图片而不是其他东西！！")
 
-    hso = await Setu(args[0]).detecter(_catcher_max_file_size)
+    hso = await Setu(args[0]).detecter(_catcher_max_file_size, _catcher_disab_gif)
     if not hso:
-        await nsfw_checker.finish("图太小了！不测！")
+        await nsfw_checker.finish("图不行，不测！")
 
     resu = f"涩值：{'{:.2%}'.format(hso)}\n"
     if hso >= 0.75:
@@ -156,7 +157,7 @@ async def _deal_check(bot: Bot, event: MessageEvent):
     await nsfw_checker.finish(resu)
 
 
-catcher_setting = plugin.on_command("嗅探设置", "涩图检测图片文件大小设置", permission=MASTER)
+catcher_setting = plugin.cmd_as_group("nsfw.size", "涩图检测图片文件大小设置", permission=MASTER)
 
 
 @catcher_setting.handle()
@@ -176,6 +177,21 @@ async def _deal_setting(msg: str = ArgPlainText("catcher_set")):
 
     repo = f"好诶！涩图检测文件最小值已设为：{_catcher_max_file_size}kb"
     await catcher_setting.finish(repo)
+
+
+animation_checker = plugin.cmd_as_group("nsfw.gif", "对动图的检测开关", permission=MASTER)
+
+
+@animation_checker.handle()
+async def _(event: MessageEvent):
+    global _catcher_disab_gif
+    if _catcher_disab_gif:
+        _catcher_disab_gif = False
+    else:
+        _catcher_disab_gif = True
+    await animation_checker.finish(
+        f"已{'禁用' if _catcher_disab_gif else '启用'}对 gif 的涩值检测"
+    )
 
 
 _ag_l = ["涩图来", "来点涩图", "来份涩图"]

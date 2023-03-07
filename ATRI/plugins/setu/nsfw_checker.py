@@ -40,9 +40,13 @@ def prepare_image(img):
     return image
 
 
-async def detect_image(url: str, max_size: int) -> float:
+async def detect_image(url: str, max_size: int, disab_gif: bool) -> float:
     try:
         req = await request.get(url)
+        if itype := req.headers.get("Content-Type"):
+            if disab_gif and itype == "image/gif":
+                return 0
+
     except Exception:
         raise RequestError("Get info from download image failed!")
 
