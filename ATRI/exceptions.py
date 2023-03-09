@@ -115,12 +115,15 @@ async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
     except BaseBotException as err:
         prompt = err.prompt or err.__class__.__name__
         track_id = err.track_id
+        log.warning(f"BotException: {prompt}")
     except ActionFailed as err:
         prompt = "请参考协议端输出"
         track_id = _save_error(prompt, format_exc())
+        log.warning(f"ActionFailed: {prompt}")
     except Exception as err:
         prompt = "UnkErr " + err.__class__.__name__
         track_id = _save_error(prompt, format_exc())
+        log.warning(f"Exception: {prompt}")
 
     log.error(f"Error Track ID: {track_id}")
 
