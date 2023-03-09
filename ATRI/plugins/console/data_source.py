@@ -68,27 +68,27 @@ async def get_host_ip(is_pub: bool):
             s.close()
 
 
-FRONTEND_DIR = CONSOLE_DIR / "frontend"
-FRONTEND_DIR.mkdir(parents=True, exist_ok=True)
-__CONSOLE_RESOURCE_URL = (
-    "https://guc.imki.moe/kyomotoi/Project-ATRI-Console/main/archive/dist.zip"
-)
+# FRONTEND_DIR = CONSOLE_DIR / "frontend"
+# FRONTEND_DIR.mkdir(parents=True, exist_ok=True)
+# __CONSOLE_RESOURCE_URL = (
+#     "https://guc.imki.moe/kyomotoi/Project-ATRI-Console/main/archive/dist.zip"
+# )
 
 
-async def init_resource():
-    log.info("控制台初始化中...")
+# async def init_resource():
+#     log.info("控制台初始化中...")
 
-    try:
-        resp = await request.get(__CONSOLE_RESOURCE_URL)
-    except Exception:
-        log.error("控制台资源装载失败, 将无法访问管理界面")
-        return
+#     try:
+#         resp = await request.get(__CONSOLE_RESOURCE_URL)
+#     except Exception:
+#         log.error("控制台资源装载失败, 将无法访问管理界面")
+#         return
 
-    file_path = CONSOLE_DIR / "dist.zip"
-    with open(file_path, "wb") as w:
-        w.write(resp.read())
+#     file_path = CONSOLE_DIR / "dist.zip"
+#     with open(file_path, "wb") as w:
+#         w.write(resp.read())
 
-    with zipfile.ZipFile(file_path, "r") as zr:
-        zr.extractall(FRONTEND_DIR)
+#     with zipfile.ZipFile(file_path, "r") as zr:
+#         zr.extractall(FRONTEND_DIR)
 
-    log.success("控制台初始化完成")
+#     log.success("控制台初始化完成")

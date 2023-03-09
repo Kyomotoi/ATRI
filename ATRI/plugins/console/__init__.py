@@ -102,10 +102,9 @@ async def _(is_sure: str = ArgPlainText("is_sure_d")):
     await del_console_key.finish("销毁成功！如需再次获取: /con.auth")
 
 
-from ATRI import driver as dr
-from .data_source import init_resource
-from .driver import init_driver
+import nonebot
 
+from .backend import app
 
-dr().on_startup(init_resource)
-dr().on_startup(init_driver)
+driver = nonebot.get_app()
+driver.mount("/", app, name="test")
