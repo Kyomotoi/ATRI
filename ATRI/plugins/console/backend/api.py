@@ -79,9 +79,9 @@ async def _(websocket: WebSocket):
         while websocket.client_state == WebSocketState.CONNECTED:
             await websocket.send_json(
                 models.Response(
-                status=status.HTTP_200_OK,
-                detail="OK",
-                data=get_message_info().dict()
+                    status=status.HTTP_200_OK,
+                    detail="OK",
+                    data=get_message_info().dict(),
                 ).dict()
             )
             await asyncio.sleep(1)

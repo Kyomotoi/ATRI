@@ -55,7 +55,6 @@ class NetInfo(BaseModel):
     package_recv: int
 
 
-
 def get_platform_info() -> PlatformInfo:
     return PlatformInfo(
         name=platform.platform(), struct=platform.architecture()[0], type=pf
@@ -154,5 +153,5 @@ def get_net_info():
         sent_total=net.bytes_sent,
         recv_total=net.bytes_recv,
         package_sent=net.packets_sent,
-        package_recv=net.packets_recv
+        package_recv=net.packets_recv,
     )
