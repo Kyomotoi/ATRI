@@ -59,7 +59,7 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     loop = asyncio.get_running_loop()
 
     msg = str(event.get_message()).strip()
-    pattern = r"来[张点丶份](.*?)的[涩色🐍]图"
+    pattern = r"来[张点丶份](.*?)的?[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
     setu, setu_data = await Setu.new(tag)
     setu_info = f"Title: {setu_data.title}\nPid: {setu_data.pid}"
