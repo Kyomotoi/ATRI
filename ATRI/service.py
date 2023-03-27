@@ -113,6 +113,8 @@ class Service:
         data = self.load_service(self.service)
         if perm not in data["permission"]:
             data["permission"].append(perm.name)  # type: ignore
+        elif perm in data["permission"]:
+            pass
         self.save_service(data, self.service)
         return self
 
