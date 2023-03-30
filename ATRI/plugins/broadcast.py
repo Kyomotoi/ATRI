@@ -40,7 +40,7 @@ async def __store_reject_list(data: list) -> None:
     if not path.is_file():
         await __load_reject_list()
 
-    await file.write(json.dumps(data))
+    await file.write(data)
 
 
 plugin = Service("广播").document("向bot所在的所有群发送信息").rule(to_bot())

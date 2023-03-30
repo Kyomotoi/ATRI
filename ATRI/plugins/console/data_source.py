@@ -35,7 +35,7 @@ class AuthDealer:
     async def store(self) -> AuthData:
         dead_time = (datetime.now() + timedelta(minutes=15)).timestamp()
         data = AuthData(token=self.token, md5=self.get_md5(), dead_time=int(dead_time))
-        await FileDealer(self.AUTH_FILE_PATH).write(json.dumps(data.dict()))
+        await FileDealer(self.AUTH_FILE_PATH).write(data.dict())
         return data
 
     @classmethod
@@ -49,7 +49,7 @@ class AuthDealer:
 
     @classmethod
     async def clear(cls):
-        await FileDealer(cls.AUTH_FILE_PATH).write(json.dumps(dict()))
+        await FileDealer(cls.AUTH_FILE_PATH).write(dict())
 
 
 async def get_host_ip(is_pub: bool):

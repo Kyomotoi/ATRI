@@ -49,7 +49,7 @@ async def _(event: FriendRequestEvent):
     path = __ESSENTIAL_DIR / "friend_add.json"
     file = FileDealer(path)
     if not path.is_file():
-        await file.write(json.dumps(dict()))
+        await file.write(dict())
         data = dict()
 
     apply_code = event.flag
@@ -83,7 +83,7 @@ async def _(event: GroupRequestEvent):
     path = __ESSENTIAL_DIR / "group_invite.json"
     file = FileDealer(path)
     if not path.is_file():
-        await file.write(json.dumps(dict()))
+        await file.write(dict())
         data = dict()
 
     apply_code = event.flag

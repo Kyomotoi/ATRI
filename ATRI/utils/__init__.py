@@ -128,7 +128,7 @@ class FileDealer:
     async def write(self, content):
         try:
             async with aiofiles.open(self.path, "w", encoding=self.encoding) as target:
-                await target.write(content)
+                await target.write(json.dumps(content))
         except Exception:
             raise Exception(f"Writing file ({self.path}) failed!")
 
