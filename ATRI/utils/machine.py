@@ -1,13 +1,12 @@
 import psutil
 import platform
 from pydantic import BaseModel
-from sys import platform as pf, modules
-from importlib.util import find_spec
+from sys import platform as pf
 
 from .apscheduler import scheduler
 
-if pf == "win32" and find_spec("win32com"):
-    import wmi  # type: ignore
+if pf == "win32":
+    import wmi
     from win32com.client import GetObject
 
 
@@ -23,6 +22,7 @@ class CpuInfo(BaseModel):
     max_freq: str
     current_freq: str
     percent: float
+    process: int
 
 
 class MemInfo(BaseModel):
@@ -45,6 +45,7 @@ class DiskInfo(BaseModel):
     total: int
     used: int
     free: int
+    drive: int
 
 
 class NetInfo(BaseModel):
@@ -63,16 +64,17 @@ def get_platform_info() -> PlatformInfo:
 
 def get_cpu_info() -> CpuInfo:
     cpu_name = platform.processor()
-    if pf == "win32" and "win32com" in modules:
+    if pf == "win32":
         winm = GetObject("winmgmts:root\cimv2")
         cpus = winm.ExecQuery("SELECT * FROM Win32_Processor")
-        cpu_name = cpus[0].Name
+        cpu_name = cpus[0].Name.strip()
 
     cpu_count = psutil.cpu_count(False)
     _freq = psutil.cpu_freq()
     cpu_max_freq = f"{'%.2f'%(_freq.max / 1000)}"
-    cpu_current_freq = f"{'%.2f'%(_freq.current)}"
+    cpu_current_freq = f"{'%.2f'%(_freq.current / 1000)}"
     cpu_percent = psutil.cpu_percent(interval=0.1)
+    process = len(psutil.pids())
 
     return CpuInfo(
         name=cpu_name,
@@ -80,6 +82,7 @@ def get_cpu_info() -> CpuInfo:
         max_freq=cpu_max_freq,
         current_freq=cpu_current_freq,
         percent=cpu_percent,
+        process=process,
     )
 
 
@@ -106,7 +109,8 @@ def get_disk_info():
     disk_total = int()
     disk_used = int()
     disk_free = int()
-    if pf == "win32" and "win32com" in modules:
+    disk_drive = 1
+    if pf == "win32":
         w = wmi.WMI()
         disk_list = [d.DeviceID for d in w.Win32_LogicalDisk()]
         for i in disk_list:
@@ -116,6 +120,7 @@ def get_disk_info():
             disk_free += disk.free
 
         disk_name = w.Win32_DiskDrive()[0].Model
+        disk_drive = len(w.Win32_DiskDrive())
     else:
         disk = psutil.disk_usage("/")
         disk_total = disk.total
@@ -127,6 +132,7 @@ def get_disk_info():
         total=disk_total,
         used=disk_used,
         free=disk_free,
+        drive=disk_drive,
     )
 
 
