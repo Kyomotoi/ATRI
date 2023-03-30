@@ -35,6 +35,7 @@ parsel = "^1.6.0"
 onnxruntime = "^1.12.1"
 geoip2 = "^4.6.0"
 rich = "^13.3.1"
+wmi = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3"
