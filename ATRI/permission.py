@@ -78,9 +78,9 @@ class Admin:
 
     async def __call__(self, bot: Bot, event: Event) -> bool:
         if isinstance(event, GroupMessageEvent):
-            return event.sender.role in ["admin", "owner"]
+            return event.sender.role in ["admin", "owner"] or is_master(bot, event)
         else:
-            return is_master(bot, event)
+            return False
 
 
 init_permission()
