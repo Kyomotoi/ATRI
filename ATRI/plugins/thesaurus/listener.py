@@ -74,100 +74,42 @@ def init_listener():
     )
 
 
+async def process_message(event: MessageEvent, query_group_id: int = int()):
+    tl = ThesaurusListener()
+    msg = event.get_message().extract_plain_text()
+
+    query_result = await tl.get_item_list(query_group_id)
+    if not query_result:
+        return
+
+    shuffle(query_result)
+
+    for i in query_result:
+        item_info: ThesaurusStoragor = i
+        if not item_info.result:
+            continue
+
+        match_type = item_info.m_type
+        matcher = item_info.matcher
+        if item_info.need_at and not event.is_tome():
+            return
+        if match_type == 1 and matcher in msg:
+            await main_listener.finish(Message(choice(item_info.result)))
+        elif match_type == 2 and re.findall(matcher, msg):
+            await main_listener.finish(Message(choice(item_info.result)))
+        elif matcher == msg:
+            await main_listener.finish(Message(choice(item_info.result)))
+
+
 main_listener = thes_listener.on_message(
     "词库监听器", "监听所有消息判断是否满足触发词条条件", priority=4, block=False
 )
 
 
 @main_listener.handle([Cooldown(3)])
-async def _tl_listener(event: MessageEvent):
-    tl = ThesaurusListener()
-    msg = event.get_message().extract_plain_text()
-
-    group_id = int()
+async def _(event: MessageEvent):
     if isinstance(event, GroupMessageEvent):
         group_id = event.group_id
+        await process_message(event, group_id)
 
-    query_result = await tl.get_item_list(group_id)
-    if not query_result:
-        query_result = await tl.get_item_list(int())
-        if not query_result:
-            return
-
-    shuffle(query_result)
-
-    for item in query_result:
-        item_info: ThesaurusStoragor = item
-
-        if not item_info.result:
-            continue
-
-        if item_info.m_type == 1:
-            if item_info.matcher in msg:
-                if item_info.need_at:
-                    if event.is_tome():
-                        await main_listener.finish(Message(choice(item_info.result)))
-                    else:
-                        return
-                else:
-                    await main_listener.finish(Message(choice(item_info.result)))
-        elif item_info.m_type == 2:
-            patt = item_info.matcher
-            if re.findall(patt, msg):
-                if item_info.need_at:
-                    if event.is_tome():
-                        await main_listener.finish(Message(choice(item_info.result)))
-                    else:
-                        return
-                else:
-                    await main_listener.finish(Message(choice(item_info.result)))
-        else:
-            if item_info.matcher == msg:
-                if item_info.need_at:
-                    if event.is_tome():
-                        await main_listener.finish(Message(choice(item_info.result)))
-                    else:
-                        return
-                else:
-                    await main_listener.finish(Message(choice(item_info.result)))
-
-    query_result = await tl.get_item_list(int())
-    if not query_result:
-        return
-
-    shuffle(query_result)
-
-    for item in query_result:
-        item_info: ThesaurusStoragor = item
-
-        if not item_info.result:
-            continue
-
-        if item_info.m_type == 1:
-            if item_info.matcher in msg:
-                if item_info.need_at:
-                    if event.is_tome():
-                        await main_listener.finish(Message(choice(item_info.result)))
-                    else:
-                        return
-                else:
-                    await main_listener.finish(Message(choice(item_info.result)))
-        elif item_info.m_type == 2:
-            patt = item_info.matcher
-            if re.findall(patt, msg):
-                if item_info.need_at:
-                    if event.is_tome():
-                        await main_listener.finish(Message(choice(item_info.result)))
-                    else:
-                        return
-                else:
-                    await main_listener.finish(Message(choice(item_info.result)))
-        else:
-            if item_info.matcher == msg:
-                if item_info.need_at:
-                    if event.is_tome():
-                        await main_listener.finish(Message(choice(item_info.result)))
-                    else:
-                        return
-                else:
-                    await main_listener.finish(Message(choice(item_info.result)))
+    await process_message(event)

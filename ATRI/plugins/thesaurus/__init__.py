@@ -4,6 +4,7 @@ from datetime import timedelta, timezone as tz
 from nonebot.matcher import Matcher
 from nonebot.params import ArgPlainText, CommandArg, ArgStr
 from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent, GroupMessageEvent
+from nonebot.adapters.onebot.v11.utils import unescape
 
 from ATRI.service import Service
 from ATRI.message import MessageBuilder
@@ -64,8 +65,8 @@ async def _add_normal_item(
     if item_t not in type_list:
         await add_item.finish("该类型不支持 (全匹配、模糊匹配、正则)\n请重新提交.")
 
-    q_checker = MessageChecker(item_q).check_cq_code
-    a_checker = MessageChecker(item_a).check_cq_code
+    q_checker = MessageChecker(unescape(item_q)).check_cq_code
+    a_checker = MessageChecker(unescape(item_a)).check_cq_code
     if not q_checker or not a_checker:
         await add_item.finish("请不要尝试注入！")
 
@@ -79,12 +80,12 @@ async def _add_normal_item(
     )
     operator = operator_info.get("card", "unknown")
     item_id = gen_random_str(6)
-    ans = item_a.split(",,")
+    ans = unescape(item_a).split(",,")
 
     result = await tm.add_item(
         item_id,
         False,
-        item_q,
+        unescape(item_q),
         ans,
         need_at,
         item_t,
@@ -142,8 +143,8 @@ async def _add_group_item(
     if item_t not in type_list:
         await add_item_as_group_admin.finish("该类型不支持 (全匹配、模糊匹配、正则)\n请重新提交.")
 
-    q_checker = MessageChecker(item_q).check_cq_code
-    a_checker = MessageChecker(item_a).check_cq_code
+    q_checker = MessageChecker(unescape(item_q)).check_cq_code
+    a_checker = MessageChecker(unescape(item_a)).check_cq_code
     if not q_checker or not a_checker:
         await add_item_as_group_admin.finish("请不要尝试注入！")
 
@@ -157,12 +158,12 @@ async def _add_group_item(
     )
     operator = operator_info.get("card", "unknown")
     item_id = gen_random_str(6)
-    ans = item_a.split(",,")
+    ans = unescape(item_a).split(",,")
 
     result = await tm.add_item(
         item_id,
         True,
-        item_q,
+        unescape(item_q),
         ans,
         need_at,
         item_t,
@@ -224,10 +225,10 @@ async def _add_global_item(
     operator = "MASTER"
     opeartor_id = event.user_id
     item_id = gen_random_str(6)
-    ans = item_a.split(",,")
+    ans = unescape(item_a).split(",,")
 
     result = await tm.add_item(
-        item_id, True, item_q, ans, need_at, item_t, 0, operator, opeartor_id, 0, list()
+        item_id, True, unescape(item_q), ans, need_at, item_t, 0, operator, opeartor_id, 0, list()
     )
     await add_item_for_global.finish(result)
 
