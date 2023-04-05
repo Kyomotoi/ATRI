@@ -17,7 +17,9 @@ from .data_source import Setu
 plugin = Service("涩图").document("hso!").main_cmd("/setu")
 
 
-random_setu = plugin.on_command("来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"})
+random_setu = plugin.on_command(
+    "来张涩图", "来张随机涩图，冷却2分钟", aliases={"涩图来", "来点涩图", "来份涩图"}, priority=5
+)
 
 
 @random_setu.handle([Cooldown(120)])
@@ -51,7 +53,7 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
         await random_setu.finish(is_repo)
 
 
-tag_setu = plugin.on_regex(r"来[张点丶份](.*?)的?[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟")
+tag_setu = plugin.on_regex(r"来[张点丶份](.*?)的?[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟", priority=6)
 
 
 @tag_setu.handle([Cooldown(120, prompt="")])
