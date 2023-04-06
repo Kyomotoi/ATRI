@@ -2,43 +2,40 @@ import xmltodict
 
 from ATRI.exceptions import RssError
 from ATRI.utils import request, gen_random_str
+from ATRI.database import DatabaseWrapper, RssRsshubSubcription
 
-from .db import DB
+
+DB = DatabaseWrapper(RssRsshubSubcription)
 
 
 class RssHubSubscriptor:
     async def __add_sub(self, _id: str, group_id: int):
         try:
-            async with DB() as db:
-                await db.add_sub(_id, group_id)
+            await DB.add_sub(_id=_id, group_id=group_id)
         except Exception:
             raise RssError("rss.rsshub: 添加订阅失败")
 
     async def update_sub(self, _id: str, group_id: int, update_map: dict):
         try:
-            async with DB() as db:
-                await db.update_sub(_id, group_id, update_map)
+            await DB.update_sub(update_map=update_map, _id=_id, group_id=group_id)
         except Exception:
             raise RssError("rss.rsshub: 更新订阅失败")
 
     async def __del_sub(self, _id: str, group_id: int):
         try:
-            async with DB() as db:
-                await db.del_sub({"_id": _id, "group_id": group_id})
+            await DB.del_sub({"_id": _id, "group_id": group_id})
         except Exception:
             raise RssError("rss.rsshub: 删除订阅失败")
 
     async def get_sub_list(self, query_map: dict) -> list:
         try:
-            async with DB() as db:
-                return await db.get_sub_list(query_map)
+            return await DB.get_sub_list(query_map)
         except Exception:
             raise RssError("rss.rsshub: 获取订阅列表失败")
 
     async def get_all_subs(self) -> list:
         try:
-            async with DB() as db:
-                return await db.get_all_subs()
+            return await DB.get_all_subs()
         except Exception:
             raise RssError("rss.rsshub: 获取所有订阅失败")
 

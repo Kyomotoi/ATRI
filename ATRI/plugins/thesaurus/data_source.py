@@ -2,23 +2,23 @@ from datetime import datetime, timedelta, timezone as tz
 
 from ATRI.message import MessageBuilder
 from ATRI.exceptions import ThesaurusError
+from ATRI.database import DatabaseWrapper, ThesaurusStoragor, ThesaurusAuditList
 
-from .db import DBForTS, DBForTAL
-from .db import ThesaurusStoragor
+
+DBForTS = DatabaseWrapper(ThesaurusStoragor)
+DBForTAL = DatabaseWrapper(ThesaurusAuditList)
 
 
 class ThesaurusManager:
     async def __add_item(self, _id: str, group_id: int, is_main: bool = False):
         if is_main:
             try:
-                async with DBForTS() as db:
-                    await db.add_item(_id, group_id)
+                await DBForTS.add_sub(_id=_id, group_id=group_id)
             except Exception:
                 raise ThesaurusError(f"添加词库(ts)数据失败 目标词id: {_id}")
         else:
             try:
-                async with DBForTAL() as db:
-                    await db.add_item(_id, group_id)
+                await DBForTAL.add_sub(_id=_id, group_id=group_id)
             except Exception:
                 raise ThesaurusError(f"添加词库(tal)数据失败 目标词id: {_id}")
 
@@ -27,56 +27,52 @@ class ThesaurusManager:
     ):
         if is_main:
             try:
-                async with DBForTS() as db:
-                    await db.update_item(_id, group_id, update_map)
+                await DBForTS.update_sub(
+                    update_map=update_map, _id=_id, group_id=group_id
+                )
             except Exception:
                 raise ThesaurusError(f"更新词库(ts)数据失败 目标词id: {_id}")
         else:
             try:
-                async with DBForTAL() as db:
-                    await db.update_item(_id, group_id, update_map)
+                await DBForTAL.update_sub(
+                    update_map=update_map, _id=_id, group_id=group_id
+                )
             except Exception:
                 raise ThesaurusError(f"更新词库(tal)数据失败 目标词id: {_id}")
 
     async def __del_item(self, _id: str, group_id: int, is_main: bool = False):
         if is_main:
             try:
-                async with DBForTS() as db:
-                    await db.del_item({"_id": _id, "group_id": group_id})
+                await DBForTS.del_sub({"_id": _id, "group_id": group_id})
             except Exception:
                 raise ThesaurusError(f"删除词库(ts)数据失败 目标词id: {_id}")
         else:
             try:
-                async with DBForTAL() as db:
-                    await db.del_item({"_id": _id, "group_id": group_id})
+                await DBForTAL.del_sub({"_id": _id, "group_id": group_id})
             except Exception:
                 raise ThesaurusError(f"删除词库(tal)数据失败 目标词id: {_id}")
 
     async def get_item_list(self, query_map: dict, is_main: bool = False) -> list:
         if is_main:
             try:
-                async with DBForTS() as db:
-                    return await db.get_item_list(query_map)
+                return await DBForTS.get_sub_list(query_map)
             except Exception:
                 raise ThesaurusError("获取词库(ts)列表数据失败")
         else:
             try:
-                async with DBForTAL() as db:
-                    return await db.get_item_list(query_map)
+                return await DBForTAL.get_sub_list(query_map)
             except Exception:
                 raise ThesaurusError("获取词库(tal)列表数据失败")
 
     async def get_all_items(self, is_main: bool = False) -> list:
         if is_main:
             try:
-                async with DBForTS() as db:
-                    return await db.get_all_items()
+                return await DBForTS.get_all_subs()
             except Exception:
                 raise ThesaurusError("获取全部词库(ts)列表数据失败")
         else:
             try:
-                async with DBForTAL() as db:
-                    return await db.get_all_items()
+                return await DBForTAL.get_all_subs()
             except Exception:
                 raise ThesaurusError("获取全部词库(tal)列表数据失败")
 
@@ -165,8 +161,7 @@ class ThesaurusManager:
 class ThesaurusListener:
     async def get_item_by_id(self, _id: str) -> ThesaurusStoragor:
         try:
-            async with DBForTS() as db:
-                data = await db.get_item_list({"_id": _id})
+            data = await DBForTS.get_sub_list({"_id": _id})
         except Exception:
             raise ThesaurusError(f"获取词库(ts)数据失败 词条ID: {_id}")
 
@@ -174,7 +169,6 @@ class ThesaurusListener:
 
     async def get_item_list(self, group_id: int):
         try:
-            async with DBForTS() as db:
-                return await db.get_item_list({"group_id": group_id})
+            return await DBForTS.get_sub_list({"group_id": group_id})
         except Exception:
             raise ThesaurusError(f"获取词库(ts)数据失败 目标群号: {group_id}")

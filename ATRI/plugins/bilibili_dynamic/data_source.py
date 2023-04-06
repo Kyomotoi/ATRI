@@ -5,8 +5,8 @@ from operator import itemgetter
 from ATRI.message import MessageBuilder
 from ATRI.utils import TimeDealer
 from ATRI.exceptions import BilibiliDynamicError
+from ATRI.database import DatabaseWrapper, BilibiliSubscription
 
-from .db import DB
 from .api import API
 
 
@@ -17,27 +17,25 @@ _OUTPUT_FORMAT = (
     .text("链接: {up_dy_link}")
     .done()
 )
+DB = DatabaseWrapper(BilibiliSubscription)
 
 
 class BilibiliDynamicSubscriptor:
     async def __add_sub(self, uid: int, group_id: int):
         try:
-            async with DB() as db:
-                await db.add_sub(uid, group_id)
+            await DB.add_sub(uid=uid, group_id=group_id)
         except Exception:
             raise BilibiliDynamicError("添加订阅失败")
 
     async def update_sub(self, uid: int, group_id: int, update_map: dict):
         try:
-            async with DB() as db:
-                await db.update_sub(uid, group_id, update_map)
+            await DB.update_sub(update_map=update_map, uid=uid, group_id=group_id)
         except Exception:
             raise BilibiliDynamicError("更新订阅失败")
 
     async def __del_sub(self, uid: int, group_id: int):
         try:
-            async with DB() as db:
-                await db.del_sub({"uid": uid, "group_id": group_id})
+            await DB.del_sub({"uid": uid, "group_id": group_id})
         except Exception:
             raise BilibiliDynamicError("删除订阅失败")
 
@@ -48,15 +46,13 @@ class BilibiliDynamicSubscriptor:
             query_map = {"uid": uid, "group_id": group_id}
 
         try:
-            async with DB() as db:
-                return await db.get_sub_list(query_map)
+            return await DB.get_sub_list(query_map)
         except Exception:
             raise BilibiliDynamicError("获取订阅列表失败")
 
     async def get_all_subs(self) -> list:
         try:
-            async with DB() as db:
-                return await db.get_all_subs()
+            return await DB.get_all_subs()
         except Exception:
             raise BilibiliDynamicError("获取全部订阅列表失败")
 
