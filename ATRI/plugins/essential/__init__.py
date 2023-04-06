@@ -49,7 +49,7 @@ async def _(event: FriendRequestEvent):
     path = __ESSENTIAL_DIR / "friend_add.json"
     file = FileDealer(path)
     if not path.is_file():
-        await file.write(dict())
+        await file.write_json(dict())
         data = dict()
 
     apply_code = event.flag
@@ -63,7 +63,7 @@ async def _(event: FriendRequestEvent):
         comment=apply_comment,
         time=now_time,
     ).dict()
-    await file.write(json.dumps(data))
+    await file.write_json(data)
 
     result = (
         MessageBuilder("咱收到一条好友请求!")
@@ -83,7 +83,7 @@ async def _(event: GroupRequestEvent):
     path = __ESSENTIAL_DIR / "group_invite.json"
     file = FileDealer(path)
     if not path.is_file():
-        await file.write(dict())
+        await file.write_json(dict())
         data = dict()
 
     apply_code = event.flag
@@ -97,7 +97,7 @@ async def _(event: GroupRequestEvent):
         comment=apply_comment,
         time=now_time,
     ).dict()
-    await file.write(json.dumps(data))
+    await file.write_json(data)
 
     result = (
         MessageBuilder("咱收到一条应邀入群请求!")

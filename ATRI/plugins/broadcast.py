@@ -1,4 +1,3 @@
-import json
 import random
 import asyncio
 
@@ -28,7 +27,7 @@ async def __load_reject_list() -> list:
     path = plugin.get_path() / "rej_list.json"
     file = FileDealer(path)
     if not path.is_file():
-        await file.write(list())
+        await file.write_json(list())
         return list()
 
     return list(file.json())
@@ -40,7 +39,7 @@ async def __store_reject_list(data: list) -> None:
     if not path.is_file():
         await __load_reject_list()
 
-    await file.write(data)
+    await file.write_json(data)
 
 
 plugin = Service("广播").document("向bot所在的所有群发送信息").rule(to_bot())
