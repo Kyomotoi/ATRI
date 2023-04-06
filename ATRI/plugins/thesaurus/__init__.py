@@ -228,7 +228,17 @@ async def _add_global_item(
     ans = unescape(item_a).split(",,")
 
     result = await tm.add_item(
-        item_id, True, unescape(item_q), ans, need_at, item_t, 0, operator, opeartor_id, 0, list()
+        item_id,
+        True,
+        unescape(item_q),
+        ans,
+        need_at,
+        item_t,
+        0,
+        operator,
+        opeartor_id,
+        0,
+        list(),
     )
     await add_item_for_global.finish(result)
 
