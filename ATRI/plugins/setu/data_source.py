@@ -1,3 +1,4 @@
+import re
 from typing import Tuple
 from nonebot.adapters.onebot.v11 import MessageSegment
 
@@ -5,7 +6,7 @@ from ATRI import conf
 from ATRI.utils import request
 from ATRI.exceptions import RequestError
 
-from .models import SetuInfo
+from .models import LoliconResponse, SetuInfo
 from .nsfw_checker import detect_image, init_model
 
 
@@ -29,31 +30,27 @@ class Setu:
         Returns:
             Tuple[MessageSegment, dict]: 涩图本体, 涩图信息
         """
-        url = _LOLICON_URL
-        if tag:
-            url = _LOLICON_URL + f"?tag={tag}"
+        url = _LOLICON_URL + (f"?tag={tag}" if tag else str())
         try:
             req = await request.get(url)
         except Exception:
             raise RequestError("setu: 请求失败")
 
-        data = req.json()
-        cache_data = data.get("data")
-        if not cache_data:
-            raise RequestError("今天不可以涩")
-
-        data = cache_data[0]
-        title = data["title"]
-        pid = data["pid"]
-        setu = data["urls"].get("original", "ignore")
+        data = LoliconResponse.parse_obj(req.json()).data[0]
+        title = data.title
+        pid = data.pid
+        url = data.urls.original
 
         if conf.Setu.reverse_proxy:
-            setu = MessageSegment.image(
-                file=setu.replace("i.pixiv.cat", conf.Setu.reverse_proxy_domain),
-                timeout=114514,
-            )
+            patt = "://(.*?)/"
+            domain = re.findall(patt, url)[0]
+            setu = url.replace(domain, conf.Setu.reverse_proxy_domain)
 
-        setu_data = SetuInfo(title=title, pid=pid)
+        setu_data = SetuInfo(title=title, pid=pid, url=url)
+        setu = MessageSegment.image(
+            file=url,
+            timeout=114514,
+        )
 
         return setu, setu_data
 

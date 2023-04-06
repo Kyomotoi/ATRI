@@ -1,11 +1,14 @@
 import re
-import asyncio
 from random import choice
 
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message, MessageSegment
-from nonebot.adapters.onebot.v11.helpers import extract_image_urls, Cooldown
+from nonebot.adapters.onebot.v11.helpers import (
+    extract_image_urls,
+    Cooldown,
+    autorevoke_send,
+)
 
 from ATRI import conf
 from ATRI.service import Service
@@ -28,20 +31,16 @@ async def _():
 
 
 @random_setu.handle()
-async def _random_setu(bot: Bot, event: MessageEvent):
-    loop = asyncio.get_running_loop()
-
+async def _(bot: Bot, event: MessageEvent):
     setu, setu_data = await Setu.new()
     setu_info = f"Title: {setu_data.title}\nPid: {setu_data.pid}"
     await bot.send(event, setu_info)
 
     try:
-        msg_1 = await bot.send(event, setu)
+        await autorevoke_send(bot, event, setu)
     except Exception:
-        await random_setu.finish("hso (发不出")
-
-    msg_id = msg_1["message_id"]
-    loop.call_later(60, lambda: loop.create_task(bot.delete_msg(message_id=msg_id)))
+        await random_setu.send("hso (发不出")
+        await random_setu.send(f"自己动手: {setu_data.url}")
 
 
 @random_setu.got("r_rush_after_think", prompt="看完不来点感想么-w-")
@@ -56,10 +55,8 @@ async def _(think: str = ArgPlainText("r_rush_after_think")):
 tag_setu = plugin.on_regex(r"来[张点丶份](.*?)的?[涩色🐍]图", "根据提供的tag查找涩图，冷却2分钟", priority=6)
 
 
-@tag_setu.handle([Cooldown(120, prompt="")])
-async def _tag_setu(bot: Bot, event: MessageEvent):
-    loop = asyncio.get_running_loop()
-
+@tag_setu.handle([Cooldown(120)])
+async def _(bot: Bot, event: MessageEvent):
     msg = str(event.get_message()).strip()
     pattern = r"来[张点丶份](.*?)的?[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
@@ -68,12 +65,11 @@ async def _tag_setu(bot: Bot, event: MessageEvent):
     await bot.send(event, setu_info)
 
     try:
-        msg_1 = await bot.send(event, setu)
+        await autorevoke_send(bot, event, setu)
     except Exception:
-        await random_setu.finish("hso (发不出")
-
-    msg_id = msg_1["message_id"]
-    loop.call_later(60, lambda: loop.create_task(bot.delete_msg(message_id=msg_id)))
+        await random_setu.send("hso (发不出")
+        await random_setu.send(f"自己动手: {setu_data.url}")
+        return
 
 
 @tag_setu.got("t_rush_after_think", prompt="看完不来点感想么-w-")
@@ -93,7 +89,7 @@ setu_catcher = plugin.on_message("涩图嗅探", "涩图嗅探器", block=False)
 
 
 @setu_catcher.handle()
-async def _setu_catcher(bot: Bot, event: MessageEvent):
+async def _(bot: Bot, event: MessageEvent):
     args = extract_image_urls(event.message)
     if not args:
         return
@@ -137,7 +133,7 @@ nsfw_checker = plugin.cmd_as_group("nsfw", "涩值检测")
 
 
 @nsfw_checker.got("nsfw_img", "图呢？")
-async def _deal_check(bot: Bot, event: MessageEvent):
+async def _(bot: Bot, event: MessageEvent):
     args = extract_image_urls(event.message)
     if not args:
         await nsfw_checker.reject("请发送图片而不是其他东西！！")
@@ -165,14 +161,14 @@ catcher_setting = plugin.cmd_as_group("nsfw.size", "涩图检测图片文件大�
 
 
 @catcher_setting.handle()
-async def _catcher_setting(matcher: Matcher, args: Message = CommandArg()):
+async def _(matcher: Matcher, args: Message = CommandArg()):
     msg = args.extract_plain_text()
     if msg:
         matcher.set_arg("catcher_set", args)
 
 
 @catcher_setting.got("catcher_set", "数值呢? (1对应1kb, 默认128)")
-async def _deal_setting(msg: str = ArgPlainText("catcher_set")):
+async def _(msg: str = ArgPlainText("catcher_set")):
     global _catcher_max_file_size
     try:
         _catcher_max_file_size = int(msg)
