@@ -36,7 +36,12 @@ class Setu:
         except Exception:
             raise RequestError("setu: 请求失败")
 
-        data = LoliconResponse.parse_obj(req.json()).data[0]
+        raw_data = LoliconResponse.parse_obj(req.json()).data
+        if not raw_data:
+            return MessageSegment.text(str()), SetuInfo(
+                title=str(), pid=int(), url=str()
+            )
+        data = raw_data[0]
         title = data.title
         pid = data.pid
         url = data.urls.original

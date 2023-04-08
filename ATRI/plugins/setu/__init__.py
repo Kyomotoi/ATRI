@@ -61,6 +61,9 @@ async def _(bot: Bot, event: MessageEvent):
     pattern = r"来[张点丶份](.*?)的?[涩色🐍]图"
     tag = re.findall(pattern, msg)[0]
     setu, setu_data = await Setu.new(tag)
+    if not setu_data.url:
+        await tag_setu.finish("没有合适的涩图呢...")
+
     setu_info = f"Title: {setu_data.title}\nPid: {setu_data.pid}"
     await bot.send(event, setu_info)
 
