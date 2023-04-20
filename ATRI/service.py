@@ -105,13 +105,13 @@ class Service:
         self._rule = self._rule & rule
         return self
 
-    def permission(self, perm: Optional[Permission]) -> "Service":
+    def permission(self, perm: Permission) -> "Service":
         """为服务添加权限判定"""
 
         self._permission = perm
 
         data = self.load_service(self.service)
-        if perm in data["permission"]:
+        if perm.name in data["permission"]:
             pass
         else:
             data["permission"].append(perm.name)  # type: ignore

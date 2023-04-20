@@ -42,7 +42,7 @@ def is_master(bot: Bot, event: Event) -> bool:
 
 
 class Permission(_Permission):
-    name = str()
+    name = "UnknownPermission"
 
     def set_name(self, name: str) -> "Permission":
         """为当前权限设置名称
