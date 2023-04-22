@@ -8,7 +8,6 @@ class API:
 
     async def _request(self, url: str, params: dict = dict()) -> dict:
         headers = {
-            "Referer": "https://www.bilibili.com",
             "User-Agent": "Mozilla/5.0",
         }
 
