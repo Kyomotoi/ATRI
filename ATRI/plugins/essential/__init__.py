@@ -1,15 +1,11 @@
-import json
 import shutil
 import asyncio
 from pathlib import Path
-from datetime import datetime
 from random import choice, randint
 
 from nonebot.adapters.onebot.v11 import (
     Bot,
     MessageEvent,
-    FriendRequestEvent,
-    GroupRequestEvent,
     GroupIncreaseNoticeEvent,
     GroupDecreaseNoticeEvent,
     GroupAdminNoticeEvent,
