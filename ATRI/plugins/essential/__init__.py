@@ -22,11 +22,10 @@ from ATRI import conf
 from ATRI.log import log
 from ATRI.service import Service
 from ATRI.utils.apscheduler import scheduler
-from ATRI.utils import FileDealer, MessageChecker
+from ATRI.utils import MessageChecker
 from ATRI.permission import MASTER
 from ATRI.message import MessageBuilder
 
-from .models import RequestInfo
 from .data_source import recall_msg_dealer
 
 
@@ -39,74 +38,6 @@ __TEMP_DIR.mkdir(parents=True, exist_ok=True)
 
 
 plugin = Service("基础部件").document("对基础请求进行处理")
-
-
-friend_add_event = plugin.on_request("好友申请", "好友申请检测")
-
-
-@friend_add_event.handle()
-async def _(event: FriendRequestEvent):
-    path = __ESSENTIAL_DIR / "friend_add.json"
-    file = FileDealer(path)
-    if not path.is_file():
-        await file.write_json(dict())
-        data = dict()
-
-    apply_code = event.flag
-    user_id = event.get_user_id()
-    apply_comment = event.comment
-    now_time = str(datetime.now().timestamp())
-
-    data = file.json()
-    data[apply_code] = RequestInfo(
-        user_id=user_id,
-        comment=apply_comment,
-        time=now_time,
-    ).dict()
-    await file.write_json(data)
-
-    result = (
-        MessageBuilder("咱收到一条好友请求!")
-        .text(f"请求人: {user_id}")
-        .text(f"申请信息: {apply_comment}")
-        .text(f"申请码: {apply_code}")
-        .text("Tip: 好友申请列表")
-    )
-    await plugin.send_to_master(result)
-
-
-group_invite_request = plugin.on_request("应邀入群", "应邀入群检测")
-
-
-@group_invite_request.handle()
-async def _(event: GroupRequestEvent):
-    path = __ESSENTIAL_DIR / "group_invite.json"
-    file = FileDealer(path)
-    if not path.is_file():
-        await file.write_json(dict())
-        data = dict()
-
-    apply_code = event.flag
-    user_id = event.get_user_id()
-    apply_comment = event.comment
-    now_time = str(datetime.now().timestamp())
-
-    data = file.json()
-    data[apply_code] = RequestInfo(
-        user_id=user_id,
-        comment=apply_comment,
-        time=now_time,
-    ).dict()
-    await file.write_json(data)
-
-    result = (
-        MessageBuilder("咱收到一条应邀入群请求!")
-        .text(f"申请人: {user_id}")
-        .text(f"申请信息: {apply_comment}")
-        .text(f"申请码: {apply_code}")
-        .text("Tip: 应邀入群列表")
-    )
-    await plugin.send_to_master(result)
 
 
 group_member_event = plugin.on_notice("群成员变动", "群成员变动检测")

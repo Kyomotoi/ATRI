@@ -33,7 +33,7 @@ class NonebotPluginManager:
 
         return json.loads(self._conf_path.read_bytes())
 
-    def revise_list(self, is_del: bool):
+    def revise_list(self, is_del: bool) -> None:
         data = self.get_list()
         if is_del:
             if self._plugin_name in data:
@@ -49,7 +49,7 @@ class NonebotPluginManager:
         self._plugin_name = plugin_name
         return self
 
-    async def get_store_list(self):
+    async def get_store_list(self) -> None:
         global _plugin_list
 
         if not _plugin_list:
@@ -105,9 +105,8 @@ class NonebotPluginManager:
             return f"部分完成: 信息文件删除失败, 路径: data/services/{self._plugin_name}.json"
         return "完成~! 将在下次重启生效"
 
-    @classmethod
-    def upgrade_plugin(cls) -> list:
-        if not (plugin_list := cls.get_list(cls)):
+    def upgrade_plugin(self) -> list:
+        if not (plugin_list := self.get_list()):
             return list()
 
         succ_list = list()
@@ -121,8 +120,7 @@ class NonebotPluginManager:
 
         return succ_list
 
-    @classmethod
-    def load_plugin(cls):
-        plugin_list = cls.get_list(cls)
+    def load_plugin(self) -> None:
+        plugin_list = self.get_list()
         for plugin in plugin_list:
             nonebot.load_plugin(plugin)
