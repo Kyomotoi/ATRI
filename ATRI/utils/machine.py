@@ -46,6 +46,7 @@ class DiskInfo(BaseModel):
     used: int
     free: int
     drive: int
+    speed: list[int]
 
 
 class NetInfo(BaseModel):
@@ -104,6 +105,22 @@ def get_mem_info() -> MemInfo:
     )
 
 
+last_disk_io = [0, 0]
+now_disk_io = [0, 0]
+
+
+@scheduler.scheduled_job("interval", seconds=1, misfire_grace_time=15)
+async def _():
+    global last_disk_io, now_disk_io
+
+    disk_counters = psutil.disk_io_counters()
+    now_disk_io = [
+        disk_counters.write_bytes - last_disk_io[0],  # type: ignore
+        disk_counters.read_bytes - last_disk_io[1],  # type: ignore
+    ]
+    last_disk_io = [disk_counters.write_bytes, disk_counters.read_bytes]  # type: ignore
+
+
 def get_disk_info():
     disk_name = "ATRI Disk Pro Plus"
     disk_total = int()
@@ -133,6 +150,7 @@ def get_disk_info():
         used=disk_used,
         free=disk_free,
         drive=disk_drive,
+        speed=now_disk_io,
     )
 
 
