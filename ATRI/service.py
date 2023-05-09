@@ -382,7 +382,7 @@ class ServiceTools:
     def __init__(self, service: str):
         self.service = service
 
-    def save_service(self, service_data: dict):
+    def save_service(self, service_data: ServiceInfo):
         path = SERVICES_DIR / f"{self.service}.json"
         if not path.is_file():
             raise ReadFileError(
@@ -392,7 +392,7 @@ class ServiceTools:
             )
 
         with open(path, "w", encoding="utf-8") as w:
-            w.write(json.dumps(service_data, indent=4))
+            w.write(json.dumps(service_data.dict(), indent=4))
 
     def load_service(self) -> ServiceInfo:
         path = SERVICES_DIR / f"{self.service}.json"
@@ -428,7 +428,7 @@ class ServiceTools:
     def service_controller(self, is_enabled: bool):
         data = self.load_service()
         data.enabled = is_enabled
-        self.save_service(data.dict())
+        self.save_service(data)
 
 
 def is_in_service(service: str) -> Rule:
