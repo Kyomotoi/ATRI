@@ -40,9 +40,9 @@ def _save_error(prompt: str, content: str) -> str:
     return track_id
 
 
-def load_error(track_id: str) -> dict:
+def load_error(track_id: str) -> ErrorInfo:
     path = ERROR_DIR / f"{track_id}.json"
-    return json.loads(path.read_bytes())
+    return ErrorInfo.parse_file(path)
 
 
 class BaseBotException(Exception):
@@ -111,10 +111,12 @@ async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
         return
 
     try:
-        raise exception
+        prompt =  exception.__class__.__name__
+        track_id = _save_error(prompt, format_exc())
+        log.warning(f"Ignore Exception: {prompt}")
     except BaseBotException as err:
         prompt = err.prompt or err.__class__.__name__
-        track_id = err.track_id
+        track_id = _save_error(prompt, format_exc())
         log.warning(f"BotException: {prompt}")
     except ActionFailed as err:
         prompt = "请参考协议端输出"
