@@ -14,7 +14,7 @@ MASTER_FILE = FileDealer(MASTER_FILE_PATH)
 MASTER_LIST = set()
 
 
-def create_master_file():
+def __create_master_file():
     if not MASTER_FILE_PATH.is_file():
         data = dict()
         for i in conf.BotConfig.superusers:
@@ -24,21 +24,34 @@ def create_master_file():
             w.write(json.dumps(data))
 
 
-def init_permission():
+def __init_permission():
     global MASTER_LIST
-    create_master_file()
+    __create_master_file()
     data = MASTER_FILE.json()
     MASTER_LIST = set.union(set(data), conf.BotConfig.superusers)
 
 
 def is_master(bot: Bot, event: Event) -> bool:
-    init_permission()
+    __init_permission()
     try:
         user_id = event.get_user_id()
     except Exception:
         return False
 
     return user_id in MASTER_LIST
+
+
+async def toggle_master(user_id: str):
+    """
+    添加/移除主人
+    如存在即移除，如不存在即添加
+    """
+    data = MASTER_FILE.json()
+    if user_id in data:
+        data.pop(user_id)
+    else:
+        data[user_id] = {"is_conf": False}
+    await MASTER_FILE.write_json(data)
 
 
 class Permission(_Permission):
@@ -83,6 +96,6 @@ class Admin:
             return False
 
 
-init_permission()
+__init_permission()
 MASTER = Permission(Master()).set_name("Master")
 ADMIN = Permission(Admin()).set_name("Admin")
