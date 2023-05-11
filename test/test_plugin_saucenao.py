@@ -1,32 +1,24 @@
 import pytest
 from nonebug import App
 
-from nonebot.adapters.onebot.v11 import MessageSegment
+from nonebot.adapters.onebot.v11 import Bot, Message
 
-from .utils import make_fake_message, make_fake_event
+from .utils import group_message_event
 
 
 @pytest.mark.asyncio
 async def test_saucenao(app: App):
     from ATRI.plugins.saucenao import saucenao
 
-    Message = make_fake_message()
-
     async with app.test_matcher(saucenao) as ctx:
-        bot = ctx.create_bot()
-
-        msg = Message("以图搜图")
-        event = make_fake_event(_message=msg)()
+        bot = ctx.create_bot(base=Bot)
+        event = group_message_event(message=Message("以图搜图"))
 
         ctx.receive_event(bot, event)
         ctx.should_call_send(event, "图呢？", True)
 
-        msg = Message(
-            MessageSegment.image(
-                "https://jsd.imki.moe/gh/Kyomotoi/CDN@master/noting/88674944_p0.png"
-            )
-        )
-        event = make_fake_event(_message=msg)()
+        event = group_message_event(message=Message("test"))
 
         ctx.receive_event(bot, event)
-        ctx.should_call_send(event, "失败了...", False)
+        ctx.should_call_send(event, "请发送图片而不是其他东西！！", True)
+        ctx.should_rejected()

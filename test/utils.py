@@ -1,87 +1,72 @@
-"""
-Fork from: https://github.com/nonebot/nonebot2/blob/master/tests/utils.py
-"""
-from typing import TYPE_CHECKING, Type, Optional
+from typing import Literal
+from pydantic import BaseModel, create_model
 
-from pydantic import create_model
-
-if TYPE_CHECKING:
-    from nonebot.adapters import Event, Message
-
-
-def make_fake_message() -> Type["Message"]:
-    from nonebot.adapters import Message, MessageSegment
-
-    class FakeMessageSegment(MessageSegment):
-        @classmethod
-        def get_message_class(cls):
-            return FakeMessage
-
-        def __str__(self) -> str:
-            return self.data["text"] if self.type == "text" else f"[fake:{self.type}]"
-
-        @classmethod
-        def text(cls, text: str):
-            return cls("text", {"text": text})
-
-        @classmethod
-        def image(cls, url: str):
-            return cls("image", {"url": url})
-
-        def is_text(self) -> bool:
-            return self.type == "text"
-
-    class FakeMessage(Message):
-        @classmethod
-        def get_segment_class(cls):
-            return FakeMessageSegment
-
-        @staticmethod
-        def _construct(msg: str):
-            yield FakeMessageSegment.text(msg)
-
-    return FakeMessage
+from nonebot.adapters.onebot.v11 import Message
+from nonebot.adapters.onebot.v11.event import (
+    Sender,
+    GroupMessageEvent,
+    PrivateMessageEvent,
+)
 
 
-def make_fake_event(
-    _type: str = "message",
-    _name: str = "test",
-    _description: str = "test",
-    _user_id: str = "test",
-    _session_id: str = "test",
-    _message: Optional["Message"] = None,
-    _to_me: bool = True,
-    **fields,
-) -> Type["Event"]:
-    from nonebot.adapters import Event
+def escape_text(s: str, *, escape_comma: bool = True) -> str:
+    s = s.replace("&", "&amp;").replace("[", "&#91;").replace("]", "&#93;")
+    if escape_comma:
+        s = s.replace(",", "&#44;")
+    return s
 
-    _Fake = create_model("_Fake", __base__=Event, **fields)
+
+class CommonFields(BaseModel):
+    time: int = 1000000
+    self_id: int = 1
+    post_type: str = "message"
+    sub_type: str = "normal"
+    message_id: int = 1
+    message: Message = Message("test")
+    original_message: Message = Message("test")
+    raw_message: str = "test"
+    font: int = 0
+    to_me: bool = False
+
+
+class GroupMessageEventFields(BaseModel):
+    user_id: int = 1145141919
+    message_type: Literal["group"] = "group"
+    group_id: int = 10000
+    sender: Sender = Sender(card="", nickname="test", role="member")
+
+
+class PrivateMessageEventFields(BaseModel):
+    sub_type: str = "friend"
+    user_id: int = 1145141919
+    message_type: Literal["private"] = "private"
+    sender: Sender = Sender(nickname="test")
+
+
+def fake_event(event_cls, upgrade_cls: BaseModel, **field):
+    _Fake = create_model("_Fake", __base__=event_cls)
 
     class FakeEvent(_Fake):
-        def get_type(self) -> str:
-            return _type
-
-        def get_event_name(self) -> str:
-            return _name
-
-        def get_event_description(self) -> str:
-            return _description
-
-        def get_user_id(self) -> str:
-            return _user_id
-
-        def get_session_id(self) -> str:
-            return _session_id
-
-        def get_message(self) -> "Message":
-            if _message is not None:
-                return _message
-            raise NotImplementedError
-
-        def is_tome(self) -> bool:
-            return _to_me
+        __fields__ = {
+            **CommonFields.__fields__,
+            **upgrade_cls.__fields__,
+        }
 
         class Config:
             extra = "forbid"
 
-    return FakeEvent
+    return FakeEvent(**field)
+
+
+def group_message_event(**field) -> GroupMessageEvent:
+    if "message" in field:
+        field.update({"original_message": field["message"]})
+        field.update({"raw_message": str(field["message"])})
+    return fake_event(GroupMessageEvent, GroupMessageEventFields, **field)  # type: ignore
+
+
+def private_message_event(**field) -> PrivateMessageEvent:
+    if "message" in field:
+        field.update({"original_message": field["message"]})
+        field.update({"raw_message": str(field["message"])})
+    return fake_event(PrivateMessageEvent, PrivateMessageEventFields, **field)  # type: ignore
