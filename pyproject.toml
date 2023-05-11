@@ -39,10 +39,13 @@ wmi = {version = "^1.5.1", markers = "sys_platform == 'win32'"}
 
 [tool.poetry.dev-dependencies]
 black = "^22.3"
-nonebug = "^0.2.1"
 
 [tool.poetry.group.dev.dependencies]
 black = {version = "^22.8.0", allow-prereleases = true}
+
+[tool.poetry.group.test.dependencies]
+pytest-asyncio = "^0.21.0"
+nonebug = "^0.3.3"
 
 [tool.pytest.ini_options]
 addopts = '-p no:warnings'

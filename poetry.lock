@@ -371,7 +371,7 @@ reference = "tsinghua-mirror"
 
 [[package]]
 name = "flatbuffers"
-version = "23.3.3"
+version = "23.5.8"
 description = "The FlatBuffers serialization format for Python"
 category = "main"
 optional = false
@@ -397,17 +397,16 @@ reference = "tsinghua-mirror"
 
 [[package]]
 name = "geoip2"
-version = "4.6.0"
+version = "4.7.0"
 description = "MaxMind GeoIP2 API"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 aiohttp = ">=3.6.2,<4.0.0"
-maxminddb = ">=2.2.0,<3.0.0"
+maxminddb = ">=2.3.0,<3.0.0"
 requests = ">=2.24.0,<3.0.0"
-urllib3 = ">=1.25.2,<2.0.0"
 
 [package.source]
 type = "legacy"
@@ -672,11 +671,11 @@ reference = "tsinghua-mirror"
 
 [[package]]
 name = "maxminddb"
-version = "2.2.0"
+version = "2.3.0"
 description = "Reader for the MaxMind DB format"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.source]
 type = "legacy"
@@ -845,7 +844,7 @@ reference = "tsinghua-mirror"
 
 [[package]]
 name = "nonebug"
-version = "0.2.3"
+version = "0.3.3"
 description = "nonebot2 test framework"
 category = "dev"
 optional = false
@@ -854,7 +853,7 @@ python-versions = ">=3.8,<4.0"
 [package.dependencies]
 asgiref = ">=3.4.0,<4.0.0"
 async-asgi-testclient = ">=1.4.8,<2.0.0"
-nonebot2 = ">=2.0.0-beta.1,<3.0.0"
+nonebot2 = ">=2.0.0-rc.2,<3.0.0"
 pytest = ">=7.0.0,<8.0.0"
 typing-extensions = ">=4.0.0,<5.0.0"
 
@@ -1137,6 +1136,26 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tsinghua-mirror"
 
 [[package]]
+name = "pytest-asyncio"
+version = "0.21.0"
+description = "Pytest support for asyncio"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+pytest = ">=7.0.0"
+
+[package.extras]
+docs = ["sphinx (>=5.3)", "sphinx-rtd-theme (>=1.0)"]
+testing = ["coverage (>=6.2)", "flaky (>=3.5.0)", "hypothesis (>=5.7.1)", "mypy (>=0.931)", "pytest-trio (>=0.7.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua-mirror"
+
+[[package]]
 name = "python-dotenv"
 version = "1.0.0"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -1403,7 +1422,7 @@ reference = "tsinghua-mirror"
 
 [[package]]
 name = "sympy"
-version = "1.11.1"
+version = "1.12"
 description = "Computer algebra system (CAS) in Python"
 category = "main"
 optional = false
@@ -1541,16 +1560,17 @@ reference = "tsinghua-mirror"
 
 [[package]]
 name = "urllib3"
-version = "1.26.15"
+version = "2.0.2"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+python-versions = ">=3.7"
 
 [package.extras]
-brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)", "brotlipy (>=0.6.0)"]
-secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "pyOpenSSL (>=0.14)", "urllib3-secure-extra"]
-socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
+brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)"]
+secure = ["certifi", "cryptography (>=1.9)", "idna (>=2.0.0)", "pyopenssl (>=17.1.0)", "urllib3-secure-extra"]
+socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
+zstd = ["zstandard (>=0.18.0)"]
 
 [package.source]
 type = "legacy"
@@ -1729,7 +1749,7 @@ reference = "tsinghua-mirror"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8.5"
-content-hash = "1eb92dc1a102f8433f6412dfffe7402b2c0c1687a2232cc8b8df006e36bb1ab7"
+content-hash = "1b6e381ae709c88686405aa3a76745b988da7770c46cd73d90c9e30898caf286"
 
 [metadata.files]
 aiofiles = [
@@ -1998,8 +2018,8 @@ fastapi = [
     {file = "fastapi-0.95.1.tar.gz", hash = "sha256:9569f0a381f8a457ec479d90fa01005cfddaae07546eb1f3fa035bc4797ae7d5"},
 ]
 flatbuffers = [
-    {file = "flatbuffers-23.3.3-py2.py3-none-any.whl", hash = "sha256:5ad36d376240090757e8f0a2cfaf6abcc81c6536c0dc988060375fd0899121f8"},
-    {file = "flatbuffers-23.3.3.tar.gz", hash = "sha256:cabd87c4882f37840f6081f094b2c5bc28cefc2a6357732746936d055ab45c3d"},
+    {file = "flatbuffers-23.5.8-py2.py3-none-any.whl", hash = "sha256:2278ae4f463798fd0d82f595a3d97e01d733142786270f018ba3c8f8ae8cb40a"},
+    {file = "flatbuffers-23.5.8.tar.gz", hash = "sha256:29bb3cfb60c6690d627299fd2b6a5953d2500e4f0c192be4cb1ca2cf921004e1"},
 ]
 frozenlist = [
     {file = "frozenlist-1.3.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:ff8bf625fe85e119553b5383ba0fb6aa3d0ec2ae980295aaefa552374926b3f4"},
@@ -2078,8 +2098,8 @@ frozenlist = [
     {file = "frozenlist-1.3.3.tar.gz", hash = "sha256:58bcc55721e8a90b88332d6cd441261ebb22342e238296bb330968952fbb3a6a"},
 ]
 geoip2 = [
-    {file = "geoip2-4.6.0-py2.py3-none-any.whl", hash = "sha256:745e2d7a665072690056f9566774727da89216c7858793f89804f6945f969714"},
-    {file = "geoip2-4.6.0.tar.gz", hash = "sha256:f0e80bce80b06bb38bd08bf4877d5a84e354e932095e6ccfb4d27bb598fa4f83"},
+    {file = "geoip2-4.7.0-py2.py3-none-any.whl", hash = "sha256:078fcd4cce26ea029b1e3252a0f0ec20a1f42e7ab0f19b7be3864f20f4db2b51"},
+    {file = "geoip2-4.7.0.tar.gz", hash = "sha256:3bdde4994f6bc917eafab5b51e772d737b2ae00037a5b85001fb06dc68f779df"},
 ]
 h11 = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
@@ -2251,7 +2271,7 @@ markdown-it-py = [
     {file = "markdown_it_py-2.2.0-py3-none-any.whl", hash = "sha256:5a35f8d1870171d9acc47b99612dc146129b631baf04970128b568f190d0cc30"},
 ]
 maxminddb = [
-    {file = "maxminddb-2.2.0.tar.gz", hash = "sha256:e37707ec4fab115804670e0fb7aedb4b57075a8b6f80052bdc648d3c005184e5"},
+    {file = "maxminddb-2.3.0.tar.gz", hash = "sha256:120920dddd955f32ae48c207c6cef6fd5dc8874a889ba94b0f2c1f736ecdf308"},
 ]
 mdurl = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
@@ -2423,8 +2443,8 @@ nonebot2 = [
     {file = "nonebot2-2.0.0rc4.tar.gz", hash = "sha256:572ab5a2678155dca93ec27695a51b1c8b3ad43c3329a360e67ce11c6dd01c7d"},
 ]
 nonebug = [
-    {file = "nonebug-0.2.3-py3-none-any.whl", hash = "sha256:5c83bd885899b2857323fa19eff6bbc3f160729453b2f289d8305a99b7b95fc9"},
-    {file = "nonebug-0.2.3.tar.gz", hash = "sha256:3e59757b32b6b96cd8c36c4c9fd6050e611b1ffad058ec5fa82cba3f86495c61"},
+    {file = "nonebug-0.3.3-py3-none-any.whl", hash = "sha256:c3e53e9fe0859083512b78b1af5c29c2ba73b86957fac6a028f094a64a04ea5a"},
+    {file = "nonebug-0.3.3.tar.gz", hash = "sha256:3ef520e60c9af97fc4f4dbddcc46723aedb8a127b84369b49d2e9a40bea5b799"},
 ]
 numpy = [
     {file = "numpy-1.24.3-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:3c1104d3c036fb81ab923f507536daedc718d0ad5a8707c6061cdfd6d184e570"},
@@ -2668,6 +2688,10 @@ pytest = [
     {file = "pytest-7.3.1-py3-none-any.whl", hash = "sha256:3799fa815351fea3a5e96ac7e503a96fa51cc9942c3753cda7651b93c1cfa362"},
     {file = "pytest-7.3.1.tar.gz", hash = "sha256:434afafd78b1d78ed0addf160ad2b77a30d35d4bdf8af234fe621919d9ed15e3"},
 ]
+pytest-asyncio = [
+    {file = "pytest-asyncio-0.21.0.tar.gz", hash = "sha256:2b38a496aef56f56b0e87557ec313e11e1ab9276fc3863f6a7be0f1d0e415e1b"},
+    {file = "pytest_asyncio-0.21.0-py3-none-any.whl", hash = "sha256:f2b3366b7cd501a4056858bd39349d5af19742aed2d81660b7998b6341c7eb9c"},
+]
 python-dotenv = [
     {file = "python-dotenv-1.0.0.tar.gz", hash = "sha256:a8df96034aae6d2d50a4ebe8216326c61c3eb64836776504fcca410e5937a3ba"},
     {file = "python_dotenv-1.0.0-py3-none-any.whl", hash = "sha256:f5971a9226b701070a4bf2c38c89e5a3f0d64de8debda981d1db98583009122a"},
@@ -2838,8 +2862,8 @@ starlette = [
     {file = "starlette-0.26.1.tar.gz", hash = "sha256:41da799057ea8620e4667a3e69a5b1923ebd32b1819c8fa75634bbe8d8bea9bd"},
 ]
 sympy = [
-    {file = "sympy-1.11.1-py3-none-any.whl", hash = "sha256:938f984ee2b1e8eae8a07b884c8b7a1146010040fccddc6539c54f401c8f6fcf"},
-    {file = "sympy-1.11.1.tar.gz", hash = "sha256:e32380dce63cb7c0108ed525570092fd45168bdae2faa17e528221ef72e88658"},
+    {file = "sympy-1.12-py3-none-any.whl", hash = "sha256:c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5"},
+    {file = "sympy-1.12.tar.gz", hash = "sha256:ebf595c8dac3e0fdc4152c51878b498396ec7f30e7a914d6071e674d49420fb8"},
 ]
 tabulate = [
     {file = "tabulate-0.8.10-py3-none-any.whl", hash = "sha256:0ba055423dbaa164b9e456abe7920c5e8ed33fcc16f6d1b2f2d152c8e1e8b4fc"},
@@ -2870,8 +2894,8 @@ tzlocal = [
     {file = "tzlocal-4.3.tar.gz", hash = "sha256:3f21d09e1b2aa9f2dacca12da240ca37de3ba5237a93addfd6d593afe9073355"},
 ]
 urllib3 = [
-    {file = "urllib3-1.26.15-py2.py3-none-any.whl", hash = "sha256:aa751d169e23c7479ce47a0cb0da579e3ede798f994f5816a74e4f4500dcea42"},
-    {file = "urllib3-1.26.15.tar.gz", hash = "sha256:8a388717b9476f934a21484e8c8e61875ab60644d29b9b39e11e4b9dc1c6b305"},
+    {file = "urllib3-2.0.2-py3-none-any.whl", hash = "sha256:d055c2f9d38dc53c808f6fdc8eab7360b6fdbbde02340ed25cfbcd817c62469e"},
+    {file = "urllib3-2.0.2.tar.gz", hash = "sha256:61717a1095d7e155cdb737ac7bb2f4324a858a1e2e6466f6d03ff630ca68d3cc"},
 ]
 uvicorn = [
     {file = "uvicorn-0.22.0-py3-none-any.whl", hash = "sha256:e9434d3bbf05f310e762147f769c9f21235ee118ba2d2bf1155a7196448bd996"},
