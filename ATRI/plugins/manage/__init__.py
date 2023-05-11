@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import Type, Callable
 from asyncio import iscoroutinefunction
@@ -90,14 +91,6 @@ handle_command(
 )
 
 
-toggle_user_service = plugin.on_command("用户控制", "针对单一用户禁用/启用某一服务")
-handle_command(
-    toggle_user_service,
-    BotManager().toggle_user_service,
-    "服务 {} 已针对该用户",
-)
-
-
 toggle_group_service = plugin.on_command("控制", "针对所在群禁用/启用某一服务", permission=ADMIN)
 handle_command(
     toggle_group_service,
@@ -106,9 +99,9 @@ handle_command(
 )
 
 
-track = plugin.on_command("追踪", "根据ID获取对应报错信息", aliases={"/track"})
+track_error = plugin.on_command("追踪", "根据ID获取对应报错信息", aliases={"/track"})
 handle_command(
-    track,
+    track_error,
     BotManager().track_error,
     "{}",
 )
@@ -128,6 +121,25 @@ handle_command(apply_group_req, BotManager().apply_group_req, "已同意该邀�
 
 reject_group_req = plugin.on_command("拒绝邀请", "根据申请码拒绝对应群邀请")
 handle_command(reject_group_req, BotManager().reject_group_req, "已拒绝该邀请")
+
+
+toggle_user_service = plugin.on_regex(r"对用户(.*?)(启用|禁用)(.*)", "针对单一用户禁用/启用某一服务")
+
+
+@toggle_user_service.handle()
+async def _(event: MessageEvent):
+    msg = str(event.get_message()).strip()
+    reg = re.findall("对用户(.*?)(启用|禁用)(.*)", msg)[0]
+    target_user = reg[0]
+    target_service = reg[2]
+
+    try:
+        result = BotManager().toggle_user_service(target_service, target_user)
+    except Exception as e:
+        await toggle_user_service.finish(f"操作失败，原因：{str(e)}")
+    await toggle_user_service.finish(
+        f"已{'允许' if result else '禁止'}用户 {target_user} 使用 {target_service}"
+    )
 
 
 friend_req = plugin.on_request("好友申请", "好友申请检测")

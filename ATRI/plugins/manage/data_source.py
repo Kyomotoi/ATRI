@@ -142,8 +142,7 @@ class BotManager:
             return result
         raise Exception("该功能只能在群聊中使用")
 
-    def toggle_user_service(self, service: str, event: MessageEvent) -> bool:
-        user_id = event.get_user_id()
+    def toggle_user_service(self, service: str, user_id: str) -> bool:
         serv = ServiceTools(service)
         try:
             data = serv.load_service()
