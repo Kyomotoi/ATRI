@@ -111,7 +111,7 @@ async def _(bot: Bot, event, matcher: Matcher, exception: Optional[Exception]):
         return
 
     try:
-        prompt =  exception.__class__.__name__
+        prompt = exception.__class__.__name__
         track_id = _save_error(prompt, format_exc())
         log.warning(f"Ignore Exception: {prompt}")
     except BaseBotException as err:
