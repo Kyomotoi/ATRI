@@ -29,11 +29,11 @@ class Helper:
     @staticmethod
     def menu() -> str:
         return (
-            MessageBuilder("哦呀?~需要帮助?")
-            .text("关于 查看bot基本信息")
-            .text("服务列表 -以查看所有可用服务")
-            .text("帮助 (服务) -以查看对应服务帮助")
-            .text("Tip: 均需要at触发。@bot 菜单 以打开此页面")
+            MessageBuilder("哦呀？~需要帮助？")
+            .text("关于 -查看bot基本信息")
+            .text("服务列表 -查看所有可用服务")
+            .text("帮助（服务） -查看对应服务帮助")
+            .text("Tip：均需要at触发。@bot 菜单 以打开此页面")
             .done()
         )
 
@@ -44,9 +44,9 @@ class Helper:
             temp_list.append(i)
         nickname = "、".join(map(str, temp_list))
         return (
-            MessageBuilder("唔...是来认识咱的么")
-            .text(f"可以称呼咱：{nickname}")
-            .text(f"咱的型号是：{__version__}")
+            MessageBuilder("吾乃 ATRI！")
+            .text(f"可以称呼：{nickname}")
+            .text(f"型号是：{__version__}")
             .text("想进一步了解:")
             .text("atri.imki.moe")
             .done()
