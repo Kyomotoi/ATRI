@@ -64,10 +64,10 @@ def handle_command(
             await plugin.send(fail_msg.format(target, error_msg))
 
 
-plugin = Service("管理").document("控制bot的各项服务").only_admin(True).permission(MASTER)
+plugin = Service("管理").document("控制 ATRI 的各项服务").only_admin(True).permission(MASTER)
 
 
-block_user = plugin.on_command("封禁用户", "阻止目标用户使用bot")
+block_user = plugin.on_command("封禁用户", "阻止目标用户使用 ATRI")
 handle_command(block_user, BotManager().block_user, "用户 {} 危！")
 
 
@@ -75,7 +75,7 @@ unblock_user = plugin.on_command("解封用户", "对被阻止的用户解封")
 handle_command(unblock_user, BotManager().unblock_user, "用户 {} 已解封")
 
 
-block_group = plugin.on_command("封禁群", "阻止目标群所有人使用bot")
+block_group = plugin.on_command("封禁群", "阻止目标群所有人使用 ATRI")
 handle_command(block_group, BotManager().block_group, "群 {} 危！")
 
 
@@ -251,7 +251,7 @@ async def _():
     await get_group_req_list.finish(result)
 
 
-recall_msg = plugin.on_command("撤回", "撤回bot已发送的信息", to_bot())
+recall_msg = plugin.on_command("撤回", "撤回 ATRI 已发送的信息", to_bot())
 
 
 @recall_msg.handle()
@@ -264,11 +264,11 @@ async def _recall_msg(bot: Bot, event: MessageEvent):
     await bot.delete_msg(message_id=recall_id)
 
 
-add_nonebot_plugin = plugin.on_command("添加插件", "添加来自 nonebot 商店的插件")
+add_nonebot_plugin = plugin.on_command("添加插件", "添加来自 NoneBot 商店的插件")
 
 
-@add_nonebot_plugin.got("plguin_name", "插件名呢?")
-async def _(plugin_name: str = ArgPlainText("plguin_name")):
+@add_nonebot_plugin.got("plugin_name", "插件名呢?")
+async def _(plugin_name: str = ArgPlainText("plugin_name")):
     nbm = NonebotPluginManager().assign_plugin(plugin_name)
 
     if nbm.plugin_is_exist(True):
@@ -301,7 +301,7 @@ async def _(
 
 
 remove_nonebot_plugin = plugin.on_command(
-    "移除插件", "移除来自 nonebot 商店的插件", aliases={"删除插件", "卸载插件"}
+    "移除插件", "移除来自 NoneBot 商店的插件", aliases={"删除插件", "卸载插件"}
 )
 
 
@@ -319,7 +319,7 @@ async def _(
 
 
 upgrade_nonebot_plugin = plugin.on_command(
-    "更新插件", "更新来自 Nonebot 商店的插件", aliases={"升级插件"}
+    "更新插件", "更新来自 NoneBot 商店的插件", aliases={"升级插件"}
 )
 
 
@@ -343,7 +343,7 @@ driver().on_startup(NonebotPluginManager().get_store_list)
 driver().on_startup(NonebotPluginManager().load_plugin)
 scheduler.scheduled_job(
     "interval",
-    name="Nonebot 商店刷新",
+    name="NoneBot 商店刷新",
     hours=1,
     max_instances=3,
     misfire_grace_time=60,

@@ -168,7 +168,7 @@ async def _(event: MessageEvent):
     await reject_recall.finish("完成~")
 
 
-accept_recall = plugin.on_command("接受撤回", "拒绝撤回信息", permission=MASTER)
+accept_recall = plugin.on_command("接受撤回", "接受撤回信息", permission=MASTER)
 
 
 @accept_recall.handle()

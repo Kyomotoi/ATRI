@@ -6,7 +6,7 @@ from ATRI.rule import to_bot
 from .data_source import Helper
 
 
-plugin = Service("帮助").document("bot的食用指南~").rule(to_bot())
+plugin = Service("帮助").document("ATRI 的食用指南~").rule(to_bot())
 
 
 menu = plugin.on_command("菜单", "获取食用bot的方法", aliases={"menu"})

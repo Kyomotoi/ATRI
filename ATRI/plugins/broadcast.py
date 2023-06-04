@@ -42,10 +42,10 @@ async def __store_reject_list(data: list) -> None:
     await file.write_json(data)
 
 
-plugin = Service("广播").document("向bot所在的所有群发送信息").rule(to_bot())
+plugin = Service("广播").document("向 ATRI 所在的所有群发送信息").rule(to_bot())
 
 
-caster = plugin.on_command("广播", "向bot所在的群发送信息", aliases={"/bc"}, permission=MASTER)
+caster = plugin.on_command("广播", "向 ATRI 所在的群发送信息", aliases={"/bc"}, permission=MASTER)
 
 
 @caster.handle()

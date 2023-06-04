@@ -15,10 +15,10 @@ from ATRI.utils import Limiter
 from ATRI.utils.apscheduler import scheduler
 
 
-plugin = Service("状态").document("检查自身状态")
+plugin = Service("状态").document("检查 ATRI 状态")
 
 
-ping = plugin.on_command("/ping", "检测bot是否存活")
+ping = plugin.on_command("/ping", "检测 ATRI 是否存活")
 
 
 @ping.handle()
@@ -26,7 +26,7 @@ async def _():
     await ping.finish("I'm fine.")
 
 
-status = plugin.on_command("/status", "检查bot运行资源占用")
+status = plugin.on_command("/status", "检查 ATRI 运行资源占用")
 
 
 @status.handle()
