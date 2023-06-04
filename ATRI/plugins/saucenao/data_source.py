@@ -1,69 +1,67 @@
-from random import choice
+import json
+from typing import List
 
-from ATRI.exceptions import RequestError
 from ATRI.utils import request
+from ATRI.message import MessageBuilder
+
+from .models import SauceNAORequest, SauceNAOResponse, SauceNAOResult
+
+SAUCENAO_URL: str = "https://saucenao.com/search.php"
 
 
-URL = "https://saucenao.com/search.php"
-
-
-class SauceNao:
+class SauceNAO:
     def __init__(
         self,
-        api_key: str = str(),
-        output_type=2,
-        testmode=1,
-        dbmaski=32768,
-        db=5,
-        numres=5,
-    ):
-        params = dict()
-        params["api_key"] = api_key
-        params["output_type"] = output_type
-        params["testmode"] = testmode
-        params["dbmaski"] = dbmaski
-        params["db"] = db
-        params["numres"] = numres
-        self.params = params
+        api_key: str,
+        output_type: int = 2,
+        testmode: int = 1,
+        dbmaski: int = 32768,
+        db: int = 5,
+        numres: int = 5,
+    ) -> None:
+        self.params = SauceNAORequest(
+            api_key=api_key,
+            output_type=output_type,
+            testmode=testmode,
+            dbmaski=dbmaski,
+            db=db,
+            numres=numres,
+        )
 
-    async def _request(self, url: str):
-        self.params["url"] = url
-        try:
-            res = await request.get(URL, params=self.params)
-        except Exception:
-            raise RequestError("Request failed!")
-        data = res.json()
-        return data
+    async def _request(self, url: str) -> SauceNAOResponse:
+        self.params.url = url
+        resp = await request.get(SAUCENAO_URL, params=self.params.dict())
+        return SauceNAOResponse.parse_obj(resp.json())
 
     async def search(self, url: str) -> str:
-        data = await self._request(url)
         try:
-            res = data.get("results", "result")
-        except Exception:
-            return "没有相似的结果呢..."
+            data = await self._request(url)
+        except Exception as err:
+            raise Exception(f"处理 SauceNAO 数据失败：{str(err)}")
 
-        r = list()
+        r: List[SauceNAOResult] = list()
         for i in range(3):
-            data = res[i]
-
-            sim = data["header"]["similarity"]
+            _data = data.results[i]
+            sim = _data.header.similarity
             if float(sim) >= 70:
-                _result = dict()
-                _result["similarity"] = sim
-                _result["index_name"] = data["header"]["index_name"]
-                _result["url"] = choice(data["data"].get("ext_urls", ["None"]))
-                r.append(_result)
+                r.append(
+                    SauceNAOResult(
+                        similarity=sim,
+                        index_name=_data.header.index_name,
+                        url=_data.data.ext_urls[0] if _data.data.ext_urls else "None",
+                    )
+                )
 
         if not r:
-            return "没有相似的结果呢..."
+            return "SauceNAO 中没有相似的结果"
 
-        msg0 = str()
+        result = str()
         for i in r:
-            msg0 += (
-                "\n——————————\n"
-                f"Similarity: {i['similarity']}\n"
-                f"Name: {i['index_name']}\n"
-                f"URL: {i['url'].replace('https://', '')}"
+            result += (
+                MessageBuilder("\n——————————")
+                .text(f"相似度：{i.similarity}")
+                .text(f"名称：{i.index_name}")
+                .text(f"URL: {i.url.replace('https://', str()).replace('http://', str())}")
+                .done()
             )
-
-        return msg0
+        return result
