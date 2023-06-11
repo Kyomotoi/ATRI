@@ -290,7 +290,7 @@ async def _(plugin_name: str = ArgPlainText("plugin_name")):
 
 @add_nonebot_plugin.got("att", "是否安装(y/n)")
 async def _(
-    att: str = ArgPlainText("att"), plugin_name: str = ArgPlainText("plguin_name")
+    att: str = ArgPlainText("att"), plugin_name: str = ArgPlainText("plugin_name")
 ):
     if att not in ["y", "Y", "是"]:
         await add_nonebot_plugin.finish("反悔了呢")
