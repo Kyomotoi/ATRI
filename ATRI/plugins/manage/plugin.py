@@ -13,7 +13,7 @@ from .models import NonebotPluginInfo
 
 
 _NONEBOT_STORE_URL = (
-    "https://jsd.imki.moe/gh/nonebot/nonebot2/website/static/plugins.json"
+    "https://jsd.imki.moe/gh/nonebot/nonebot2@master/website/static/plugins.json"
 )
 
 _plugin_list = dict()
