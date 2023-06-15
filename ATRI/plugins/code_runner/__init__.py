@@ -39,8 +39,8 @@ async def _(event: MessageEvent, opt: str = ArgPlainText("opt")):
         await code_runner.finish(CodeRunner().help())
 
     content = MessageSegment.at(user_id) + str(await CodeRunner().runner(unescape(opt)))
-    is_save = MessageChecker(str(content)).check_cq_code
-    if not is_save:
+    is_safe = MessageChecker(str(content)).check_cq_code
+    if not is_safe:
         await code_runner.finish("有潜在的风险, 不予发送")
     await code_runner.finish(Message(content))
 
