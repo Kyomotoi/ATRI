@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import Union
 from pip import main as pipmain
+from asyncio import as_completed
 
 import nonebot
 
@@ -12,9 +13,14 @@ from ATRI.service import Service, ServiceTools
 from .models import NonebotPluginInfo
 
 
-_NONEBOT_STORE_URL = (
-    "https://jsd.imki.moe/gh/nonebot/nonebot2@master/website/static/plugins.json"
-)
+_NONEBOT_STORE_URLS = [
+    "https://nonebot.dev/plugins.json",
+    "https://jsd.imki.moe/gh/nonebot/nonebot2@master/website/static/plugins.json",
+    "https://raw.fastgit.org/nonebot/nonebot2/master/website/static/plugins.json",
+    "https://cdn.jsdelivr.net/gh/nonebot/nonebot2@master/website/static/plugins.json",
+    "https://cdn.staticaly.com/gh/nonebot/nonebot2@master/website/static/plugins.json",
+    "https://jsd.cdn.zzko.cn/gh/nonebot/nonebot2@master/website/static/plugins.json",
+]
 
 _plugin_list = dict()
 
@@ -53,12 +59,17 @@ class NonebotPluginManager:
         global _plugin_list
 
         if not _plugin_list:
-            try:
-                data = await request.get(_NONEBOT_STORE_URL)
-                _plugin_list = {plugin["module_name"]: plugin for plugin in data.json()}
-                log.success("刷新 Nonebot 商店成功")
-            except Exception:
-                log.warning("刷新 Nonebot 商店失败")
+            tasks = [request.get(url) for url in _NONEBOT_STORE_URLS]
+            for future in as_completed(tasks, timeout=114514):
+                try:
+                    data = await future
+                    _plugin_list = {
+                        plugin["module_name"]: plugin for plugin in data.json()
+                    }
+                    log.success("刷新 Nonebot 商店成功")
+                    return
+                except Exception:
+                    log.warning("刷新 Nonebot 商店失败, 尝试下一个链接")
 
     def get_plugin_info(self) -> Union[NonebotPluginInfo, None]:
         if plugin_data := _plugin_list.get(self._plugin_name):
