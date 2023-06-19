@@ -16,10 +16,7 @@ BotConfig:
 
 WithGoCQHTTP:
   enabled: {is_use_with_gocq}
-  accounts:
-    - uin: {uin}
-      password: "{password}"
-      protocol: {protocol}
+  accounts: {accounts}
   
   download_domain: "{download_domain}"
   download_version: "v1.0.0-rc4"
