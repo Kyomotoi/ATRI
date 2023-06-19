@@ -93,12 +93,15 @@ def init_config(conf_path: Path, default_conf_path: Path):
 
     if is_use_with_gocq:
         raw_conf = raw_conf.replace("{is_use_with_gocq}", "true")
-        raw_conf = raw_conf.replace("{uin}", str(uin))  # type: ignore
-        raw_conf = raw_conf.replace("{password}", password)  # type: ignore
-        raw_conf = raw_conf.replace("{protocol}", str(protocol))  # type: ignore
         raw_conf = raw_conf.replace("{download_domain}", download_domain)  # type: ignore
+        raw_conf = raw_conf.replace("{accounts}", """
+    - uin: {uin}
+      password: "{password}"
+      protocol: {protocol}""".
+      format(uin=str(uin), password=password, protocol=str(protocol)))  # type: ignore
     else:
         raw_conf = raw_conf.replace("{is_use_with_gocq}", "false")
+        raw_conf = raw_conf.replace("{account}", "[]")
 
     raw_conf = raw_conf.replace("{saucenao_key}", saucenao_key)
 
