@@ -1,3 +1,4 @@
+from typing import Dict
 from pydantic import BaseModel
 
 
@@ -5,6 +6,10 @@ class RequestInfo(BaseModel):
     user_id: str
     comment: str
     time: str
+
+
+class RequestList(BaseModel):
+    data: Dict[str, RequestInfo]
 
 
 class NonebotPluginInfo(BaseModel):

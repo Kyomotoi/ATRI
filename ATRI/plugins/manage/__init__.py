@@ -154,8 +154,9 @@ async def _(event: FriendRequestEvent):
     apply_comment = event.comment
     now_time = str(datetime.now().timestamp())
 
-    data = await BotManager().load_friend_req()
-    data[apply_code] = RequestInfo(  # type: ignore
+    raw_data = await BotManager().load_friend_req()
+    data = raw_data.dict()
+    data["data"][apply_code] = RequestInfo(
         user_id=user_id,
         comment=apply_comment,
         time=now_time,
@@ -186,8 +187,9 @@ async def _(event: GroupRequestEvent):
     apply_comment = event.comment
     now_time = str(datetime.now().timestamp())
 
-    data = await BotManager().load_group_req()
-    data[apply_code] = RequestInfo(  # type: ignore
+    raw_data = await BotManager().load_group_req()
+    data = raw_data.dict()
+    data["data"][apply_code] = RequestInfo(
         user_id=user_id,
         comment=apply_comment + f"(目标群{target_group})",
         time=now_time,
@@ -215,10 +217,11 @@ async def _():
         await get_friend_req_list.finish("当前没有申请")
 
     cache_list = list()
-    for i in data:
+    for i in data.data:
         apply_code = i
-        apply_user = data[i].user_id
-        apply_comment = data[i].comment
+        apply_data = data.data[i]
+        apply_user = apply_data.user_id
+        apply_comment = apply_data.comment
         cache_list.append(f"{apply_user} | {apply_comment} | {apply_code}")
 
     result = (
@@ -239,10 +242,11 @@ async def _():
         await get_group_req_list.finish("当前没有申请")
 
     cache_list = list()
-    for i in data:
+    for i in data.data:
         apply_code = i
-        apply_user = data[i].user_id
-        apply_comment = data[i].comment
+        apply_data = data.data[i]
+        apply_user = apply_data.user_id
+        apply_comment = apply_data.comment
         cache_list.append(f"{apply_user} | {apply_comment} | {apply_code}")
 
     result = (

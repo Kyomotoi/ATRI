@@ -11,7 +11,7 @@ from ATRI.service import ServiceTools
 from ATRI.message import MessageBuilder
 from ATRI.exceptions import load_error
 
-from .models import RequestInfo
+from .models import RequestList
 
 
 MANAGE_DIR = Path(".") / "data" / "plugins" / "manage"
@@ -60,14 +60,14 @@ class BotManager:
     async def __store_block_user(self, data: dict) -> None:
         await self.__store_data("block_user.json", data)
 
-    async def load_friend_req(self) -> Dict[str, RequestInfo]:
-        return await self.__load_data("friend_add.json")
+    async def load_friend_req(self) -> RequestList:
+        return RequestList.parse_obj(await self.__load_data("friend_add.json"))
 
     async def store_friend_req(self, data: dict) -> None:
         await self.__store_data("friend_add.json", data)
 
-    async def load_group_req(self) -> Dict[str, RequestInfo]:
-        return await self.__load_data("group_invite.json")
+    async def load_group_req(self) -> RequestList:
+        return RequestList.parse_obj(await self.__load_data("group_invite.json"))
 
     async def store_group_req(self, data: dict) -> None:
         await self.__store_data("group_invite.json", data)
@@ -184,9 +184,11 @@ class BotManager:
             await bot.call_api("set_friend_add_request", flag=code, approve=True)
         except Exception:
             raise Exception("同意失败，请尝试手动同意")
-        data = await self.load_friend_req()
+        raw_data = await self.load_friend_req()
+        data = raw_data.data
         data.pop(code)
-        await self.store_friend_req(data)
+        raw_data.data = data
+        await self.store_friend_req(raw_data.dict())
 
     async def reject_friend_req(self, code: str) -> None:
         bot = self.__get_bot()
@@ -194,9 +196,11 @@ class BotManager:
             await bot.call_api("set_friend_add_request", flag=code, approve=False)
         except Exception:
             raise Exception("拒绝失败，请尝试手动拒绝")
-        data = await self.load_friend_req()
+        raw_data = await self.load_friend_req()
+        data = raw_data.data
         data.pop(code)
-        await self.store_friend_req(data)
+        raw_data.data = data
+        await self.store_friend_req(raw_data.dict())
 
     async def apply_group_req(self, code: str) -> None:
         bot = self.__get_bot()
@@ -206,9 +210,11 @@ class BotManager:
             )
         except Exception:
             raise Exception("同意失败，请尝试手动同意")
-        data = await self.load_group_req()
+        raw_data = await self.load_group_req()
+        data = raw_data.data
         data.pop(code)
-        await self.store_group_req(data)
+        raw_data.data = data
+        await self.store_group_req(raw_data.dict())
 
     async def reject_group_req(self, code: str) -> None:
         bot = self.__get_bot()
@@ -218,6 +224,8 @@ class BotManager:
             )
         except Exception:
             raise Exception("拒绝失败，请尝试手动拒绝")
-        data = await self.load_group_req()
+        raw_data = await self.load_group_req()
+        data = raw_data.data
         data.pop(code)
-        await self.store_group_req(data)
+        raw_data.data = data
+        await self.store_group_req(raw_data.dict())
