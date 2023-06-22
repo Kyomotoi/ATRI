@@ -4,7 +4,7 @@ from datetime import datetime
 
 from nonebot import get_bot
 from nonebot.adapters import Bot
-from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import GroupMessageEvent
 
 from ATRI.utils import FileDealer
 from ATRI.service import ServiceTools
