@@ -58,7 +58,9 @@ def handle_command(
             msg = success_msg.format(target)
             if type(result) == bool:
                 msg += "启用" if result else "禁用"
-            await plugin.send(msg.format(target))
+            if type(result) == str:
+                msg = result
+            await plugin.send(msg)
         except Exception as e:
             error_msg = str(e)
             await plugin.send(fail_msg.format(target, error_msg))
@@ -153,11 +155,11 @@ async def _(event: FriendRequestEvent):
     now_time = str(datetime.now().timestamp())
 
     data = await BotManager().load_friend_req()
-    data[apply_code] = RequestInfo(
+    data[apply_code] = RequestInfo(  # type: ignore
         user_id=user_id,
         comment=apply_comment,
         time=now_time,
-    )
+    ).dict()
     await BotManager().store_friend_req(data)
 
     result = (
@@ -185,11 +187,11 @@ async def _(event: GroupRequestEvent):
     now_time = str(datetime.now().timestamp())
 
     data = await BotManager().load_group_req()
-    data[apply_code] = RequestInfo(
+    data[apply_code] = RequestInfo(  # type: ignore
         user_id=user_id,
         comment=apply_comment + f"(目标群{target_group})",
         time=now_time,
-    )
+    ).dict()
     await BotManager().store_group_req(data)
 
     result = (
