@@ -14,12 +14,11 @@ from .models import NonebotPluginInfo
 
 
 _NONEBOT_STORE_URLS = [
-    "https://nonebot.dev/plugins.json",
-    "https://jsd.imki.moe/gh/nonebot/nonebot2@master/website/static/plugins.json",
-    "https://raw.fastgit.org/nonebot/nonebot2/master/website/static/plugins.json",
-    "https://cdn.jsdelivr.net/gh/nonebot/nonebot2@master/website/static/plugins.json",
-    "https://cdn.staticaly.com/gh/nonebot/nonebot2@master/website/static/plugins.json",
-    "https://jsd.cdn.zzko.cn/gh/nonebot/nonebot2@master/website/static/plugins.json",
+    "https://registry.nonebot.dev/plugins.json",
+    "https://jsd.imki.moe/gh/nonebot/registry@results/plugins.json",
+    "https://cdn.staticaly.com/gh/nonebot/registry@results/plugins.json",
+    "https://jsd.cdn.zzko.cn/gh/nonebot/registry@results/plugins.json",
+    "https://ghproxy.com/https://raw.githubusercontent.com/nonebot/registry/results/plugins.json",
 ]
 
 _plugin_list = dict()
