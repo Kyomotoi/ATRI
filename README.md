@@ -23,7 +23,7 @@
 - 使用 [go-cqhttp](https://go-cqhttp.org/) 作为默认协议端.
 - 遵循 [OneBot v11](https://onebot.dev/) 规范.
 - 易于上手的 [可视化界面](https://github.com/Kyomotoi/Project-ATRI-Console).
-- Comming soon...
+- Coming soon...
 
 ## 📱 功能概览 | Services Overview
 
