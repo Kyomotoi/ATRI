@@ -101,7 +101,7 @@ def init_config(conf_path: Path, default_conf_path: Path):
       format(uin=str(uin), password=password, protocol=str(protocol)))  # type: ignore
     else:
         raw_conf = raw_conf.replace("{is_use_with_gocq}", "false")
-        raw_conf = raw_conf.replace("{account}", "[]")
+        raw_conf = raw_conf.replace("{accounts}", "[]")
 
     raw_conf = raw_conf.replace("{saucenao_key}", saucenao_key)
 

@@ -1,6 +1,6 @@
 > 此处仅为记录重大更新，修复 BUG/以及其它 请关注[`GitHub commits`](https://github.com/Kyomotoi/ATRI/commits/main)
 
-## Comming soon...
+## Coming soon...
 - Next: `YHN-001-A06`
 
 ---
