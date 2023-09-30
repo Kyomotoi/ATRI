@@ -78,7 +78,7 @@
 请参考文档: [部署项目](https://atri.imki.moe/install/installation/)
 
 ## 📖 文档 | Documentation
-所有公开的信息都可在 [atri.imki.moe](https://atri.imki.moe) 获取. 使用 [MkDocs](https://github.com/mkdocs/mkdocs/) 构建. 
+所有公开的信息都可在 [atri.imki.moe](https://atri.imki.moe) 获取. 使用 [VitePress](https://vitepress.dev/) 构建. 
 
 [文档仓库](https://github.com/Kyomotoi/Project-ATRI-Docs)
 
