@@ -1,23 +1,33 @@
-FROM flyingjoe/uvicorn-gunicorn-fastapi:python3.9-slim
+FROM sunpeek/poetry:py3.10-slim as base
+# python
+ENV PYTHONUNBUFFERED=1 \
+    # prevents python creating .pyc files
+    PYTHONDONTWRITEBYTECODE=1 \
+    \
+    POETRY_VERSION=1.1.4 \
+    # make poetry install to this location
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_NO_INTERACTION=1 \
+    \
+    # paths
+    # this is where our requirements + virtual environment will live
+    PYSETUP_PATH="/opt/pysetup" \
+    VENV_PATH="/opt/pysetup/.venv"
 
-WORKDIR /app
+# prepend poetry and venv to path
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
-ENV PATH="${PATH}:/root/.local/bin"
-
-ADD . /app/
-
-EXPOSE 20000
-
-RUN sed -i "s@http://deb.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list && rm -Rf /var/lib/apt/lists/* && apt-get update
-
-RUN  apt install curl -y
-
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-RUN /usr/local/bin/python -m pip install  --no-cache-dir --upgrade --quiet pip
-
+FROM base as base-builder
+WORKDIR $PYSETUP_PATH
+ADD ./poetry.lock ./pyproject.toml ./
 RUN poetry install
 
+FROM base as pre-production
+EXPOSE 20000
+COPY --from=base-builder $VENV_PATH /app/.venv/
+COPY . /app/
 VOLUME /app/accounts /app/data
+WORKDIR /app
 
 CMD poetry run python3 main.py

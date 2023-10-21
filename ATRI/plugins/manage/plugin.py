@@ -16,7 +16,7 @@ from .models import NonebotPluginInfo
 _NONEBOT_STORE_URLS = [
     "https://registry.nonebot.dev/plugins.json",
     "https://jsd.imki.moe/gh/nonebot/registry@results/plugins.json",
-    "https://cdn.staticaly.com/gh/nonebot/registry@results/plugins.json",
+    "https://cdn.statically.io/gh/nonebot/registry@results/plugins.json",
     "https://jsd.cdn.zzko.cn/gh/nonebot/registry@results/plugins.json",
     "https://ghproxy.com/https://raw.githubusercontent.com/nonebot/registry/results/plugins.json",
 ]
